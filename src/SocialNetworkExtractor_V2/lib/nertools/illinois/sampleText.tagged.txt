@@ -1,0 +1,7 @@
+Hi . 
+My name is [PER Lev Ratinov  ] , and I go to school in [LOC Urbana-Champaign  ] . 
+The [ORG University of Illinois  ] at [LOC Urbana-Champaign  ] is known as [ORG UIUC  ] . 
+[PER Bush  ] has visited [PER Putin  ] in [LOC Moscow  ] . 
+Later , [PER Bush  ] talked to former [MISC Soviet  ] president , [PER Gorbachev  ] . 
+Young [MISC American  ] soldiers help their nation by being a hard-lo-label entity . 
+Joe lives in [LOC Chicago  ] and likes to travel with [PER John Denver  ] to [LOC Washington  ] . 
