@@ -47,7 +47,7 @@ public class Parameters extends ParametersForLbjCode{
 		
 		BrownClusters.init();
 		if(Parameters.featuresToUse.containsKey("GazetteersFeatures"))
-			Gazzetteers.init("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists");
+			Gazzetteers.init("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists");
 		if(Parameters.featuresToUse.containsKey("NEShapeTaggerFeatures")){
 			System.out.println("loading contextless shape classifier");
 			ShapeClassifierManager.load();

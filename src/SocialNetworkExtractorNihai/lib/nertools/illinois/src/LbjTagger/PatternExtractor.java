@@ -216,7 +216,7 @@ public class PatternExtractor {
 	
 	public static void main(String[] args){
 		Parameters.readConfigAndLoadExternalData("Config/baselineFeatures.config");
-		Reuters2003Parser parser=new Reuters2003Parser("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/GoldData/Reuters/BIO.testb");
+		Reuters2003Parser parser=new Reuters2003Parser("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/GoldData/Reuters/BIO.testb");
 		Vector<LinkedVector> data=parser.readAndAnnotate();
 		annotate(data, true, true);
 	}

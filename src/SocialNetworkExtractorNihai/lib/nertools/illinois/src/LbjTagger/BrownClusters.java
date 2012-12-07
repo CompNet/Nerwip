@@ -27,7 +27,7 @@ public class BrownClusters {
 	public static void init(){
 		wordToPath=new Hashtable<String, String>();
 		//InFile in=new InFile("Data/BrownHierarchicalWordClusters/brownBllipClusters");
-		InFile in=new InFile("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/BrownHierarchicalWordClusters/brownBllipClusters");
+		InFile in=new InFile("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/BrownHierarchicalWordClusters/brownBllipClusters");
 		String line=in.readLine();
 		int wordsAdded=0;
 		while(line!=null){

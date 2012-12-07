@@ -387,7 +387,7 @@ public class GlobalFeatures {
 		System.out.println("Reading config");
 		Parameters.readConfigAndLoadExternalData("Config/withLookaheadDualTokenizingBILOU.config");
 		System.out.println("Reading data");
-		Vector<LinkedVector> data=BracketFileManager.readAndAnnotate("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/temp.txt");
+		Vector<LinkedVector> data=BracketFileManager.readAndAnnotate("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/temp.txt");
 		System.out.println("extracting non-local features");
 		NETaggerLevel1.isTraining=true;
 		NETaggerLevel2.isTraining=true;

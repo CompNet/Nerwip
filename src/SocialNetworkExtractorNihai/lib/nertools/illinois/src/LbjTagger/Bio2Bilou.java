@@ -159,9 +159,9 @@ public class Bio2Bilou {
 		Parameters.taggingScheme=Parameters.BILOU;// should be either BIO or BILOU		
 		Parameters.featuresToUse=new Hashtable<String, Boolean>();
 
-		Reuters2003Parser parser = new Reuters2003Parser("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/GoldData/Reuters/BIO.testa");
+		Reuters2003Parser parser = new Reuters2003Parser("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/GoldData/Reuters/BIO.testa");
 		Vector<LinkedVector> testData1 = parser.readAndAnnotate();
-		parser = new Reuters2003Parser("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/GoldData/Reuters/BIO.testa");
+		parser = new Reuters2003Parser("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/GoldData/Reuters/BIO.testa");
 		Vector<LinkedVector> testData2 = parser.readAndAnnotate();
 		Bio2BilouLabels(testData1);
 		Bilou2BioLabels(testData1);

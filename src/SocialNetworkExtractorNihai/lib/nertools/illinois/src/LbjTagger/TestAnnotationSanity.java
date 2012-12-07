@@ -38,7 +38,7 @@ public class TestAnnotationSanity {
 		try{
 		  	Parameters.readConfigAndLoadExternalData(args[args.length-1]);
 		    if(Parameters.featuresToUse.containsKey("GazetteersFeatures"))
-				Gazzetteers.init("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists");
+				Gazzetteers.init("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists");
 			
 		    NETagPlain.tagFile(args[0], args[1],false);
 			

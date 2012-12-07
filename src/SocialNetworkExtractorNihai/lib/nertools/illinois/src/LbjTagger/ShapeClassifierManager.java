@@ -76,9 +76,9 @@ public class ShapeClassifierManager {
 		shapeClassifier.forget();
 		int size=200000;
 		shapeClassifier.forget();
-		Vector<NEWord> pers=getEntities("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists/WikiPeople.lst",size,"PER");
-		Vector<NEWord> locs=getEntities("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists/WikiLocations.lst",size,"LOC");
-		Vector<NEWord> orgs=getEntities("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists/WikiOrganizations.lst",size,"ORG");
+		Vector<NEWord> pers=getEntities("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists/WikiPeople.lst",size,"PER");
+		Vector<NEWord> locs=getEntities("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists/WikiLocations.lst",size,"LOC");
+		Vector<NEWord> orgs=getEntities("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/KnownLists/WikiOrganizations.lst",size,"ORG");
 		 
 		Vector<NEWord> all=new Vector<NEWord>(pers.size()+locs.size()+orgs.size());
 		for(int i=0;i<size;i++){
@@ -134,13 +134,13 @@ public class ShapeClassifierManager {
 	
 	public static void save(){
 		System.out.println("saving shape classifier");
-		NETypeTagger.getInstance().binaryWrite("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/Models/shapeClassifier");
+		NETypeTagger.getInstance().binaryWrite("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/Models/shapeClassifier");
 		System.out.println("Done-saving shape classifier");
 	}
 
 	public static void load(){
 		System.out.println("loading shape classifier");
-		shapeClassifier=(NETypeTagger)Classifier.binaryRead("/home/samet/.bin/Dropbox/workspace/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/Models/shapeClassifier");
+		shapeClassifier=(NETypeTagger)Classifier.binaryRead("/home/samet/.bin/Dropbox/workspace/src/SocialNetworkExtractorNihai/lib/nertools/illinois/Data/Models/shapeClassifier");
 		System.out.println("Done loading shape classifier");
 	}
 	
