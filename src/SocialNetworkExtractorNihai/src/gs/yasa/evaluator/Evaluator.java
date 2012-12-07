@@ -47,7 +47,7 @@ public class Evaluator {
 //		}else if(args.length>1){
 //			numbersonly = true;
 //		}
-		String propertiesFilePath = "/home/samet/.bin/Dropbox/workspace/sne.properties_linux"; 
+		String propertiesFilePath = "/home/samet/.bin/Dropbox/workspace/config/sne.properties_linux"; 
 		Properties prop = new Properties();
 		prop.load(new FileInputStream(propertiesFilePath));
 		

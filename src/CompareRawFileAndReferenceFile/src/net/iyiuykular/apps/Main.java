@@ -44,7 +44,7 @@ public class Main {
 	
 	public static void main(String[] args) throws IOException {
 		
-		String propertiesFilePath = "/home/samet/.bin/Dropbox/workspace/sne.properties_linux"; 
+		String propertiesFilePath = "/home/samet/.bin/Dropbox/workspace/config/sne.properties_linux"; 
 		Properties prop = new Properties();
 		prop.load(new FileInputStream(propertiesFilePath));
 		
