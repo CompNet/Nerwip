@@ -1,4 +1,0 @@
-#!/bin/sh
-clear
-
-/usr/java/jdk1.6.0_01/bin/java -classpath $LBJ2.jar:LBJ2Library.jar:bin -Xmx2000m  LbjTagger.NerTagger -annotateAndDebug $1 $2 $3 $4
