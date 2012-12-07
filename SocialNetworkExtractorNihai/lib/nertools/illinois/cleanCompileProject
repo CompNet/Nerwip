@@ -1,0 +1,17 @@
+#!/bin/sh
+clear
+
+cpath="LBJ2.jar:LBJ2Library.jar:bin"
+srcdir="src/IO:src/StringStatisticsUtils:src/LbjTagger"
+
+
+rm bin/IO/*.class bin/StringStatisticsUtils/*.class  bin/LbjTagger/*.class bin/lbj/*.class bin/lbj/*.lc
+rm src/lbj/*.java 
+
+javac -cp $cpath -d bin -sourcepath ${srcdir} ./src/IO/*.java ./src/StringStatisticsUtils/*.java 
+javac -cp $cpath -d bin -sourcepath ${srcdir} ./src/LbjTagger/NEWord.java
+javac -cp $cpath -d bin -sourcepath ${srcdir} ./src/LbjTagger/RandomLabelGenerator.java ./src/LbjTagger/ParametersForLbjCode.java ./src/LbjTagger/Gazzetteers.java ./src/LbjTagger/BrownClusters.java ./src/LbjTagger/BrownClusters.java
+java -cp $cpath LBJ2.Main -d bin -gsp src LbjTagger.lbj
+javac -cp $cpath -d bin -sourcepath ${srcdir}  ./src/LbjTagger/*.java
+
+
