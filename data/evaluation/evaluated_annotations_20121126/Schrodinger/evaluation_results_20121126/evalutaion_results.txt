@@ -1,0 +1,37 @@
+STANFORD
+true positives correct_type: 91
+true positives incorrect_type: 36
+partial positives correct_type: 3
+partial positives incorrect_type: 5
+excess positives correct_type: 3
+excess positives incorrect_type: 2
+false positives correct/incorrect_type: 019
+false negatives correct/incorrect_type: 049
+AGGREGATOR
+true positives correct_type: 184
+true positives incorrect_type: 25
+partial positives correct_type: 1
+partial positives incorrect_type: 6
+excess positives correct_type: 8
+excess positives incorrect_type: 6
+false positives correct/incorrect_type: 019
+false negatives correct/incorrect_type: 012
+DATEPARSER
+true positives correct_type: 51
+true positives incorrect_type: 4
+partial positives correct_type: 0
+partial positives incorrect_type: 0
+excess positives correct_type: 2
+excess positives incorrect_type: 0
+false positives correct/incorrect_type: 02
+false negatives correct/incorrect_type: 00
+OPENCALAIS
+true positives correct_type: 118
+true positives incorrect_type: 6
+partial positives correct_type: 1
+partial positives incorrect_type: 3
+excess positives correct_type: 6
+excess positives incorrect_type: 7
+false positives correct/incorrect_type: 05
+false negatives correct/incorrect_type: 065
+https://chart.googleapis.com/chart?cht=bhs&chco=67f94d,43a333,4d6ef9,3349a3,f9be4d,a37c33,a33433,f94f4d&chd=t:51,118,184,91|4,6,25,36|0,1,1,3|0,3,6,5|2,6,8,3|0,7,6,2|2,5,19,19|0,65,12,49&chxt=x,y&chxl=1:|STANFORD(default)|AGGREGATOR(default)|OPENCALAIS(default)|DATEPARSER(default)&chs=600x260&chdl=True%20Positive%20(CT)|True%20Positive%20(IT)|Partial%20Positive%20(CT)|Partial%20Positive%20(IT)|Excess%20Positives%20(CT)|Excess%20Positives%20(IT)|False%20Positives|False%20Negatives&chtt=Comparaison%20des%20outils%20NER%20a%20partir%20d'un%20texte%20Wikipedia&chds=0,1000
