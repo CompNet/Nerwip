@@ -24,6 +24,12 @@ public class Main {
 			stream.close();
 		}
 	}
+	private static void log(String text) {
+		Boolean debug = false;
+		if (debug) {
+			System.out.println(text);
+		}
+	}
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -48,23 +54,47 @@ public class Main {
 				stringBuffer.append(String.valueOf(rawChar));
 				rawChar = rawFileCharIterator.next();
 				refChar = refFileCharIterator.next();
+				log(stringBuffer.toString());
 			} else {
-//				if (rawChar == 'C') {
-//					StringBuffer tmpBuffer = stringBuffer;
-//					//System.out.println(tmpBuffer.toString());
-//				}
 				if (refChar == '[') {
 					StringBuilder s = new StringBuilder();
 					for (int i=0; i<3; i++) {
 						s.append(refFileCharIterator.next());
 					}
-					if (s.toString() == "PER") {
-						stringBuffer.append(refChar);
+					String threeChars = s.toString();
+					if (threeChars.equals("PER") || threeChars.equals("MIS") || threeChars.equals("ORG") || threeChars.equals("LOC")) {
+						StringBuilder detectedAnnotation = new StringBuilder();
+						detectedAnnotation.append("[");
+						detectedAnnotation.append(threeChars);
+						
+						// Annotation types are represented with three chars, except MISC type.
+						if (threeChars.toString().equals("MIS")) {
+							detectedAnnotation.append("C");
+							refChar = refFileCharIterator.next();
+						}
+						
+						// Add another space, coming after annotation type:
+						detectedAnnotation.append(" ");
+						refChar = refFileCharIterator.next();
+												
 						while(refChar != ']') {
 							refChar = refFileCharIterator.next();
-							stringBuffer.append(refChar);
+							detectedAnnotation.append(refChar);
+							log(detectedAnnotation.toString());
 						}
-						System.out.println(stringBuffer.toString());
+						stringBuffer.append(detectedAnnotation.toString());
+						
+						// Annotation is represented as this: [PER Person Name  ]
+						// So that we substract 8 chars to find real length of annotation.
+						int trimmedAnnotationLength = detectedAnnotation.toString().length() - 8;
+						if (threeChars.equals("MIS")) {
+							trimmedAnnotationLength--;
+						}
+						for(int i=0; i<trimmedAnnotationLength; i++) {
+							rawChar = rawFileCharIterator.next();
+						}
+						
+						log(stringBuffer.toString());
 						refChar = refFileCharIterator.next();	
 					} else {
 						stringBuffer.append("[");
@@ -73,15 +103,17 @@ public class Main {
 							rawFileCharIterator.next();
 						}
 					}
-					
-//				} else if(rawChar == ' ') {
-//					stringBuffer.append(rawChar);
-//					rawChar = rawFileCharIterator.next();
-				} else {
+				} else if (rawChar == ';'){
+					if (refChar == ' ' && refFileCharIterator.next() == ';') {
+						refChar = ';';
+					}
+				} else if (rawChar == '\n') {
 					stringBuffer.append(rawChar);
-					StringBuffer tmp = stringBuffer;
-					//System.out.println(tmp);
 					rawChar = rawFileCharIterator.next();
+				} else {
+					//stringBuffer.append(rawChar);
+					//StringBuffer tmp = stringBuffer;
+					//rawChar = rawFileCharIterator.next();
 					refChar = refFileCharIterator.next();
 				}
 			}
