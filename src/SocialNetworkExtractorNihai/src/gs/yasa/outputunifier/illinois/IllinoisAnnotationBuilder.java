@@ -49,19 +49,23 @@ public class IllinoisAnnotationBuilder {
 	 */	
 	public Annotation build(String rawText,int startPos, int endPos)
 	{
-		String[] splittedText = rawText.split(" ",2);
-		AnnotationType entityType = conversionMap.get(splittedText[0].substring(1));
-		String entityName = "";
-		Annotation result = null;
-		try
-		{
-		 entityName = splittedText[1].substring(0, splittedText[1].length()-3);
-		 result = new Annotation(entityName,entityType,startPos,endPos,rawText,AnnotationTool.ILLINOIS);
-		}catch(StringIndexOutOfBoundsException e)
-		{
-			e.printStackTrace();
+		if (rawText.contains(" ")) {
+			String[] splittedText = rawText.split(" ",2);
+			AnnotationType entityType = conversionMap.get(splittedText[0].substring(1));
+			String entityName = "";
+			Annotation result = null;
+			try
+			{
+			  entityName = splittedText[1].substring(0, splittedText[1].length()-3);
+			  result = new Annotation(entityName,entityType,startPos,endPos,rawText,AnnotationTool.ILLINOIS);
+			}catch(StringIndexOutOfBoundsException e)
+			{
+				e.printStackTrace();
+			}
+			return result;
+		} else {
+			return null;
 		}
-		return result;
 	}
 
 	/**

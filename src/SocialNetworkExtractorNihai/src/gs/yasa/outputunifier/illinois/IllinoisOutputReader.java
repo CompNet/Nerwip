@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -26,6 +29,19 @@ import java.util.regex.Pattern;
 public class IllinoisOutputReader extends OutputReader{
 
 	
+	// Read file into String.
+	private static String readFile(String path) throws IOException {
+		FileInputStream stream = new FileInputStream	(new File(path));
+		try {
+			FileChannel fc = stream.getChannel();
+			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0,
+					fc.size());
+			/* Instead of using default, pass in a decoder. */
+			return Charset.forName("UTF-8").decode(bb).toString();
+		} finally {
+			stream.close();
+		}
+	}
 	private static void writeFile(String path, String content) throws IOException {
 		Writer out = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(path), "UTF-8"));
@@ -72,7 +88,7 @@ public class IllinoisOutputReader extends OutputReader{
 		if(debug)
 		{
 			try {
-				writeFile("/tmp/afterannotation.txt", annotatedString);
+				writeFile("/tmp/illinoistooloutfile.txt", annotatedString);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -83,7 +99,14 @@ public class IllinoisOutputReader extends OutputReader{
 		}
 		
 		//remove the extra and unnecessary spaces (only for illinois) in the document
-		annotatedString = fixAddedSpaces(annotatedString);
+		//annotatedString = fixAddedSpaces(annotatedString);
+		
+		try {
+			annotatedString = readFile("/tmp/cleared.txt");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		if(debug)
 		{
@@ -105,8 +128,13 @@ public class IllinoisOutputReader extends OutputReader{
 		ArrayList<Annotation> annotations = new ArrayList<Annotation>();
 		while(matcher.find())
 		{
-			annotations.add(annotationBuilder.build(matcher.group(),
-					matcher.start(), matcher.end()));
+			if (matcher.group().contains("  ]")) {
+				Annotation annotation = annotationBuilder.build(
+						matcher.group(), matcher.start(), matcher.end());
+				if (annotation != null) {
+					annotations.add(annotation);
+				}
+			}
 		}
 		
 		if(debug)

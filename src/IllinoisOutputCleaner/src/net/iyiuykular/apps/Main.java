@@ -1,8 +1,12 @@
 package net.iyiuykular.apps;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -24,6 +28,16 @@ public class Main {
 			stream.close();
 		}
 	}
+	
+	private static void writeFile(String path, String content) throws IOException {
+		Writer out = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(path), "UTF-8"));
+		try {
+			out.write(content);
+		} finally {
+			out.close();
+		}
+	}
 	private static void log(String text) {
 		Boolean debug = false;
 		if (debug) {
@@ -37,7 +51,10 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		
 		String rawFilePath = "data/originalfile.txt";
-		String referenceFilePath = "data/afterannotation.txt"; 
+		String referenceFilePath = "data/afterannotation.txt";
+		
+		rawFilePath = "/tmp/annotations/Adolf_hitler/Adolf_hitler";
+		referenceFilePath = "/tmp/annotated.txt";
 		// TODO Auto-generated method stub
 		String rawFile = readFile(rawFilePath);
 		String referenceFile = readFile(referenceFilePath);
@@ -121,6 +138,7 @@ public class Main {
 		}
 		String content = stringBuffer.toString();
 		System.out.println(content);
+		writeFile("/tmp/cleared.txt", content);
 		System.out.println("FINISHED");
 	}
 
