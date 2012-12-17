@@ -124,11 +124,11 @@ public class SocialNetworkExtractor {
 			
 			//initialize the tools
 			ArrayList<NERTool> tools = new ArrayList<NERTool>();
-			tools.add(new StanfordNERTool());
+			//tools.add(new StanfordNERTool());
 			tools.add(new IllinoisNERTool());
-			tools.add(new OpenCalaisNERTool());
+			//tools.add(new OpenCalaisNERTool());
 			//tools.add(new LinkedEntityRecognizerNERTool());
-			tools.add(new DateParserNERTool());
+			//tools.add(new DateParserNERTool());
 			//perform the annotations
 			for (NERTool nerTool : tools) {
 				try

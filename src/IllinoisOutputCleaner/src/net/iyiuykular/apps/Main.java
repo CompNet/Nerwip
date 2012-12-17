@@ -53,8 +53,9 @@ public class Main {
 		String rawFilePath = "data/originalfile.txt";
 		String referenceFilePath = "data/afterannotation.txt";
 		
-		rawFilePath = "/tmp/annotations/Adolf_hitler/Adolf_hitler";
-		referenceFilePath = "/tmp/annotated.txt";
+		rawFilePath = "/tmp/annotations/Schrodinger/Schrodinger";
+		referenceFilePath = "/tmp/illinoistooloutfile.txt";
+		referenceFilePath="/tmp/out-1355782783734";
 		// TODO Auto-generated method stub
 		String rawFile = readFile(rawFilePath);
 		String referenceFile = readFile(referenceFilePath);

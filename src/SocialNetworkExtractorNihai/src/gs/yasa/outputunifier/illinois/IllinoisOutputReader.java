@@ -15,7 +15,10 @@ import java.io.Writer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,6 +54,7 @@ public class IllinoisOutputReader extends OutputReader{
 			out.close();
 		}
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see gs.yasa.outputunifier.OutputReader#read(java.io.File)
@@ -99,14 +103,14 @@ public class IllinoisOutputReader extends OutputReader{
 		}
 		
 		//remove the extra and unnecessary spaces (only for illinois) in the document
-		//annotatedString = fixAddedSpaces(annotatedString);
+		annotatedString = fixAddedSpaces(annotatedString);
 		
-		try {
-			annotatedString = readFile("/tmp/cleared.txt");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		try {
+//			annotatedString = readFile("/tmp/cleared.txt");
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 
 		if(debug)
 		{
@@ -174,32 +178,108 @@ public class IllinoisOutputReader extends OutputReader{
 	 */
 	private String fixAddedSpaces(String annotatedText)
 	{
-		String annotatedString = annotatedText;
-		annotatedString=annotatedString.replaceAll("\\( ", "\\(");
+		String propertiesFilePath = "/home/samet/.bin/Dropbox/workspace/config/sne.properties_linux"; 
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream(propertiesFilePath));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		
-		annotatedString=annotatedString.replaceAll(" \\)", "\\)");
-		annotatedString=annotatedString.replaceAll(" ,", ",");
-		annotatedString=annotatedString.replaceAll(" ;", ";");
-		annotatedString=annotatedString.replaceAll(" \\. ", ". ");
-		annotatedString=annotatedString.replaceAll("\\] '", "\\]'");
-		annotatedString=annotatedString.replaceAll(" 's", "'s");
-		// Samet added
-		annotatedString=annotatedString.replaceAll("&#160 ; ;", "&#160; ;");
-		annotatedString=annotatedString.replaceAll(";;", "; ;");
-		annotatedString=annotatedString.replaceAll(":  \\]", "  \\]:");
-		annotatedString=annotatedString.replaceAll(" \\.\\) ", "\\.\\) ");
-		annotatedString=annotatedString.replaceAll(" \\.\\)\\.", "\\.\\)\\.");
-		annotatedString=annotatedString.replaceAll("\\.\" \\:", "\\.\"\\:");
-		annotatedString=annotatedString.replaceAll("\" \\.:", "\"\\.:");
-		annotatedString=annotatedString.replaceAll("\\. \\.", "\\. \\.\n");
-		annotatedString=annotatedString.replaceAll(" ! ", "! ");
-		annotatedString=annotatedString.replaceAll("\" — ", "\"— ");
-		annotatedString=annotatedString.replaceAll(". .\n ", ". .\n");
+		String outputDirectory = prop.getProperty("outputDirectory");
+		
+		String rawFilePath = outputDirectory + "input";
+		
+		String rawText = "";
+		try {
+			rawText = readFile(rawFilePath);
+		} catch (IOException e) {
+			System.out.println("Raw text file cannot be found at: " + rawFilePath);
+			e.printStackTrace();
+		}
+		CharacterIterator rawFileCharIterator = new StringCharacterIterator(rawText);
+		CharacterIterator refFileCharIterator = new StringCharacterIterator(annotatedText);
+		StringBuffer stringBuffer = new StringBuffer();
+		char rawChar = rawFileCharIterator.first();
+		char refChar = refFileCharIterator.first();
+		
+		for(; rawChar != rawFileCharIterator.DONE && refChar != refFileCharIterator.DONE;) {
 
-		// This line was here.
-		annotatedString=annotatedString.replaceAll("\" (.+?) \"", "\"$1\"");
-		// End of Samet added
-		annotatedString=annotatedString.replaceAll(" \\?\"\\. ", "\\?\"\\. ");
-		return annotatedString;
+			if (rawChar == refChar) {
+				stringBuffer.append(String.valueOf(rawChar));
+				rawChar = rawFileCharIterator.next();
+				refChar = refFileCharIterator.next();
+				log(stringBuffer.toString());
+			} else {
+				if (refChar == '[') {
+					StringBuilder s = new StringBuilder();
+					for (int i=0; i<3; i++) {
+						s.append(refFileCharIterator.next());
+					}
+					String threeChars = s.toString();
+					if (threeChars.equals("PER") || threeChars.equals("MIS") || threeChars.equals("ORG") || threeChars.equals("LOC")) {
+						StringBuilder detectedAnnotation = new StringBuilder();
+						detectedAnnotation.append("[");
+						detectedAnnotation.append(threeChars);
+						
+						// Annotation types are represented with three chars, except MISC type.
+						if (threeChars.toString().equals("MIS")) {
+							detectedAnnotation.append("C");
+							refChar = refFileCharIterator.next();
+						}
+						
+						// Add another space, coming after annotation type:
+						detectedAnnotation.append(" ");
+						refChar = refFileCharIterator.next();
+												
+						while(refChar != ']') {
+							refChar = refFileCharIterator.next();
+							detectedAnnotation.append(refChar);
+							log(detectedAnnotation.toString());
+						}
+						stringBuffer.append(detectedAnnotation.toString());
+						
+						// Annotation is represented as this: [PER Person Name  ]
+						// So that we substract 8 chars to find real length of annotation.
+						int trimmedAnnotationLength = detectedAnnotation.toString().length() - 8;
+						if (threeChars.equals("MIS")) {
+							trimmedAnnotationLength--;
+						}
+						for(int i=0; i<trimmedAnnotationLength; i++) {
+							rawChar = rawFileCharIterator.next();
+						}
+						
+						log(stringBuffer.toString());
+						refChar = refFileCharIterator.next();	
+					} else {
+						stringBuffer.append("[");
+						stringBuffer.append(s.toString());
+						for (int i=0; i<3; i++) {
+							rawFileCharIterator.next();
+						}
+					}
+				} else if (rawChar == ';'){
+					if (refChar == ' ' && refFileCharIterator.next() == ';') {
+						refChar = ';';
+					}
+				} else if (rawChar == '\n') {
+					stringBuffer.append(rawChar);
+					rawChar = rawFileCharIterator.next();
+				} else {
+					refChar = refFileCharIterator.next();
+				}
+			}
+			
+		}
+		String content = stringBuffer.toString();
+		return content;
+	}
+	private static void log(String text) {
+		Boolean debug = false;
+		if (debug) {
+			System.out.println(text);
+		}
 	}
 }
