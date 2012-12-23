@@ -19,7 +19,8 @@ public class StanfordNERTool implements NERTool{
 	
 	public StanfordNERTool()
 	{
-		this("lib/nertools/stanford/classifiers/ner-eng-ie.crf-4-conll-distsim.ser.gz");
+		//this("lib/nertools/stanford/classifiers/ner-eng-ie.crf-4-conll-distsim.ser.gz");
+		this("lib/nertools/stanford/classifiers/english.all.3class.distsim.crf.ser.gz");
 	}
 	public StanfordNERTool(String classifier)
 	{

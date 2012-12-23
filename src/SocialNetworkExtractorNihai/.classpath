@@ -6,15 +6,14 @@
 	<classpathentry kind="lib" path="lib/httpclient-4.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/json_simple-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/nertools/stanford/stanford-ner.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/filterbuilder.jar"/>
 	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="lib/thumbelina.jar"/>
-	<classpathentry kind="lib" path="lib/nertools/stanford/stanford-ner-2009-01-16.jar"/>
 	<classpathentry kind="lib" path="lib/htmllexer.jar"/>
 	<classpathentry kind="lib" path="lib/nertools/illinois/LBJ2.jar"/>
 	<classpathentry kind="lib" path="lib/nertools/illinois/LBJ2Library.jar"/>
 	<classpathentry kind="lib" path="lib/nertools/illinois/bin"/>
+	<classpathentry kind="lib" path="lib/nertools/stanford/stanford-ner-2012-11-11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

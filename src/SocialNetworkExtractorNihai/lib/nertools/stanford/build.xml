@@ -39,8 +39,8 @@
   <property name="compile.debug"       value="true"/>
   <property name="compile.deprecation" value="false"/>
   <property name="compile.optimize"    value="true"/>
-  <property name="compile.source"      value="1.5" />
-  <property name="compile.target"      value="1.5" />
+  <property name="compile.source"      value="1.6" />
+  <property name="compile.target"      value="1.6" />
 
 
 
@@ -84,14 +84,14 @@
 
   <target name="classpath" description="Sets the classpath">
       <path id="compile.classpath">
-        <!--<fileset dir="${basedir}/lib">
+       <!-- <fileset dir="${basedir}/lib">
           <include name="*.jar"/>
           <exclude name="javanlp*"/>
-        </fileset>-->
+        </fileset> -->
       </path>
   </target>
 
-  
+
 
 
 
@@ -114,6 +114,7 @@
     <javac srcdir="${src.home}"
           destdir="${build.home}"
             debug="${compile.debug}"
+         encoding="utf-8" 
       deprecation="${compile.deprecation}"
          optimize="${compile.optimize}"
 	   source="${compile.source}"
@@ -152,14 +153,14 @@
     <javadoc sourcepath="${src.home}"
                 destdir="${javadoc.home}"
               maxmemory="768m"
-                 author="true"      
-                 source="1.5"
+                 author="true"
+                 source="1.6"
                 Overview="${src.home}/edu/stanford/nlp/overview.html"
-                Doctitle="Stanford JavaNLP API Documentation" 
+                Doctitle="Stanford JavaNLP API Documentation"
              Windowtitle="Stanford JavaNLP API"
            packagenames="*">
       <bottom><![CDATA[<FONT SIZE=2><A HREF=\"http://nlp.stanford.edu\">Stanford NLP Group</A></FONT>]]></bottom>
-      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+      <link href="http://java.sun.com/j2se/1.6.0/docs/api/"/>
     </javadoc>
 
   </target>

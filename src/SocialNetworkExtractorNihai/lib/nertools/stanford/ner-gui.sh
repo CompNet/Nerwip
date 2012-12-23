@@ -1,2 +1,4 @@
 #!/bin/sh
-java -mx1024m -cp "stanford-ner.jar:" edu.stanford.nlp.ie.crf.NERGUI
+scriptdir=`dirname $0`
+
+java -mx700m -cp "$scriptdir/stanford-ner.jar:" edu.stanford.nlp.ie.crf.NERGUI
