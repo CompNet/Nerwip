@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" source="REFERENCE" date="03-05-2013" xsi:noNamespaceSchemaLocation="..\..\res\schemas\entities.xsd">
+	<entity start="0" end="13" type="PERSON">
+		<string>Radivoj Korać</string>
+	</entity>
+	<entity start="41" end="49" type="PERSON">
+		<string>Radivoje</string>
+	</entity>
+	<entity start="52" end="68" type="DATE">
+		<string>November 5, 1938</string>
+	</entity>
+	<entity start="71" end="83" type="DATE">
+		<string>June 2, 1969</string>
+	</entity>
+	<entity start="133" end="143" type="ORGANIZATION">
+		<string>Yugoslavia</string>
+	</entity>
+	<entity start="145" end="150" type="PERSON">
+		<string>Korać</string>
+	</entity>
+	<entity start="163" end="169" type="LOCATION">
+		<string>Sombor</string>
+	</entity>
+	<entity start="177" end="198" type="ORGANIZATION">
+		<string>Kingdom of Yugoslavia</string>
+	</entity>
+	<entity start="223" end="226" type="ORGANIZATION">
+		<string>BSK</string>
+	</entity>
+	<entity start="228" end="240" type="ORGANIZATION">
+		<string>OKK Belgrade</string>
+	</entity>
+	<entity start="325" end="330" type="PERSON">
+		<string>Žućko</string>
+	</entity>
+	<entity start="398" end="408" type="LOCATION">
+		<string>Yugoslavia</string>
+	</entity>
+	<entity start="416" end="421" type="DATE">
+		<string>1960s</string>
+	</entity>
+	<entity start="426" end="430" type="DATE">
+		<string>1960</string>
+	</entity>
+	<entity start="431" end="436" type="PERSON">
+		<string>Korać</string>
+	</entity>
+	<entity start="481" end="496" type="ORGANIZATION">
+		<string>Yugoslav league</string>
+	</entity>
+	<entity start="541" end="574" type="ORGANIZATION">
+		<string>Yugoslav national basketball team</string>
+	</entity>
+	<entity start="578" end="582" type="DATE">
+		<string>1958</string>
+	</entity>
+	<entity start="674" end="679" type="PERSON">
+		<string>Korać</string>
+	</entity>
+	<entity start="706" end="717" type="ORGANIZATION">
+		<string>OKK Beograd</string>
+	</entity>
+	<entity start="784" end="789" type="PERSON">
+		<string>Korać</string>
+	</entity>
+	<entity start="857" end="861" type="DATE">
+		<string>1964</string>
+	</entity>
+	<entity start="862" end="864" type="DATE">
+		<string>65</string>
+	</entity>
+	<entity start="865" end="869" type="ORGANIZATION">
+		<string>FIBA</string>
+	</entity>
+	<entity start="943" end="948" type="PERSON">
+		<string>Alvik</string>
+	</entity>
+	<entity start="954" end="963" type="ORGANIZATION">
+		<string>Stockholm</string>
+	</entity>
+	<entity start="1041" end="1046" type="PERSON">
+		<string>Korać</string>
+	</entity>
+	<entity start="1128" end="1161" type="ORGANIZATION">
+		<string>Faculty of Electrical Engineering</string>
+	</entity>
+	<entity start="1163" end="1166" type="ORGANIZATION">
+		<string>ETF</string>
+	</entity>
+	<entity start="1175" end="1197" type="ORGANIZATION">
+		<string>University of Belgrade</string>
+	</entity>
+	<entity start="1263" end="1274" type="ORGANIZATION">
+		<string>KK Red star</string>
+	</entity>
+	<entity start="1279" end="1291" type="DATE">
+		<string>June 2, 1969</string>
+	</entity>
+	<entity start="1311" end="1316" type="PERSON">
+		<string>Korać</string>
+	</entity>
+	<entity start="1340" end="1347" type="LOCATION">
+		<string>Vogošća</string>
+	</entity>
+	<entity start="1360" end="1368" type="LOCATION">
+		<string>Sarajevo</string>
+	</entity>
+	<entity start="1381" end="1385" type="DATE">
+		<string>1971</string>
+	</entity>
+	<entity start="1387" end="1391" type="ORGANIZATION">
+		<string>FIBA</string>
+	</entity>
+	<entity start="1481" end="1491" type="ORGANIZATION">
+		<string>Yugoslavia</string>
+	</entity>
+	<entity start="1495" end="1501" type="DATE">
+		<string>June 2</string>
+	</entity>
+	<entity start="1537" end="1558" type="ORGANIZATION">
+		<string>Basketball Federation</string>
+	</entity>
+	<entity start="1564" end="1570" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="1590" end="1594" type="DATE">
+		<string>2002</string>
+	</entity>
+	<entity start="1639" end="1656" type="LOCATION">
+		<string>Serbia-Montenegro</string>
+	</entity>
+	<entity start="1740" end="1757" type="ORGANIZATION">
+		<string>FIBA Hall of Fame</string>
+	</entity>
+	<entity start="1761" end="1765" type="DATE">
+		<string>2007</string>
+	</entity>
+</entities>
+

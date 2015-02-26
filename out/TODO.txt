@@ -1,0 +1,1 @@
+These articles are just a small sample of our corpus. If you want the rest, see the Installation section in the README file.

@@ -1,8 +1,0 @@
-#is used by the NER server
-
-#!/bin/sh
-clear
-
-cpath="LBJ2.jar:LBJ2Library.jar:bin"
-
-/usr/java/jdk1.6.0_01/bin/java -cp $cpath -Xmx2000m  LbjTagger.NerTagger -demo true Config/allFeaturesBigTrainingSet.config 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+<!-- 
+	Nerwip - Named Entity Extraction in Wikipedia Pages
+	Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
+	Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
+	Copyright 2013 Samet Atdağ & Vincent Labatut
+	Copyright 2014-15 Vincent Labatut
+	
+	This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
+	
+	Nerwip - Named Entity Extraction in Wikipedia Pages is free software: you can 
+	redistribute it and/or modify it under the terms of the GNU General Public License 
+	as published by the Free Software Foundation, either version 2 of the License, or
+	(at your option) any later version.
+	
+	Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+	of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
+	License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
+	If not, see <http://www.gnu.org/licenses/>.
+ -->
+ 
+	<xsd:simpleType name="tType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DATE" />
+			<xsd:enumeration value="LOCATION" />
+			<xsd:enumeration value="ORGANIZATION" />
+			<xsd:enumeration value="PERSON" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="tEntity">
+		<xsd:sequence>
+			<xsd:element name="string" type="xsd:string" />
+			<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="type" type="tType" use="required" />
+		<xsd:attribute name="start" type="xsd:integer" use="required" />
+		<xsd:attribute name="end" type="xsd:integer" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="tEntities">
+		<xsd:sequence>
+			<xsd:element name="entity" type="tEntity" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="date" type="xsd:string" use="optional" />
+		<xsd:attribute name="source" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:element name="entities" type="tEntities" />
+
+</xsd:schema>

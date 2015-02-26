@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar" sourcepath="lib/commons-logging-1.1.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/filterbuilder.jar"/>
+	<classpathentry kind="lib" path="lib/htmllexer.jar"/>
+	<classpathentry kind="lib" path="lib/htmlparser-src.zip" sourcepath="lib/htmlparser-2-src.zip.zip"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/json_simple-1.1.jar" sourcepath="lib/json_simple-1.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/lingpipe-4.1.0.jar" sourcepath="lib/lingpipe-4.0.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
+	<classpathentry kind="lib" path="lib/thumbelina.jar"/>
+	<classpathentry kind="lib" path="lib/jdom-1.1.jar" sourcepath="lib/jdom-1.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/stanford-ner-2012-11-11.jar" sourcepath="lib/stanford-ner-1.2.7-src.zip"/>
+	<classpathentry kind="lib" path="lib/LBJ2.jar" sourcepath="lib/lbj-2.8.2-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="http://cogcomp.cs.illinois.edu/software/doc/LBJ2/library/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LBJ2Library.jar" sourcepath="lib/lbj-2.8.2-src.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="http://cogcomp.cs.illinois.edu/software/doc/LBJ2/library/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LbjNerTagger-2.1.jar" sourcepath="lib/LbjNerTagger-2.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/libsvm-3.17.jar" sourcepath="lib/libsvm-3.17-src.zip"/>
+	<classpathentry kind="lib" path="lib/opennlp-maxent-3.0.3.jar" sourcepath="lib/opennlp-maxent-3.0.3-src.zip"/>
+	<classpathentry kind="lib" path="lib/opennlp-tools-1.5.3.jar" sourcepath="lib/opennlp-tools-1.5.3-src.zip"/>
+	<classpathentry kind="lib" path="lib/jericho-html-3.1.jar" sourcepath="lib/jericho-html-3.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/jsoup-1.7.2.jar" sourcepath="lib/jsoup-1.7.2-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

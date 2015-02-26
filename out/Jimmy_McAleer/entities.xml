@@ -1,0 +1,1288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" source="REFERENCE" date="03-05-2013" xsi:noNamespaceSchemaLocation="..\..\res\schemas\entities.xsd">
+	<entity start="0" end="29" type="PERSON">
+		<string>James Robert "Loafer" McAleer</string>
+	</entity>
+	<entity start="31" end="44" type="DATE">
+		<string>July 10, 1864</string>
+	</entity>
+	<entity start="47" end="61" type="DATE">
+		<string>April 29, 1931</string>
+	</entity>
+	<entity start="123" end="144" type="ORGANIZATION">
+		<string>Major League Baseball</string>
+	</entity>
+	<entity start="178" end="193" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="250" end="267" type="ORGANIZATION">
+		<string>Cleveland Spiders</string>
+	</entity>
+	<entity start="295" end="310" type="ORGANIZATION">
+		<string>Cleveland Blues</string>
+	</entity>
+	<entity start="312" end="328" type="ORGANIZATION">
+		<string>St. Louis Browns</string>
+	</entity>
+	<entity start="335" end="353" type="ORGANIZATION">
+		<string>ashington Senators</string>
+	</entity>
+	<entity start="423" end="437" type="ORGANIZATION">
+		<string>Boston Red Sox</string>
+	</entity>
+	<entity start="509" end="516" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="518" end="525" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="571" end="582" type="PERSON">
+		<string>Ban Johnson</string>
+	</entity>
+	<entity start="601" end="616" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="682" end="689" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="726" end="747" type="ORGANIZATION">
+		<string>Major League Baseball</string>
+	</entity>
+	<entity start="749" end="756" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="769" end="776" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="1017" end="1030" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="1071" end="1078" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="1091" end="1101" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="1103" end="1107" type="LOCATION">
+		<string>Ohio</string>
+	</entity>
+	<entity start="1165" end="1177" type="LOCATION">
+		<string>Pennsylvania</string>
+	</entity>
+	<entity start="1191" end="1203" type="PERSON">
+		<string>Owen McAleer</string>
+	</entity>
+	<entity start="1234" end="1241" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="1252" end="1256" type="PERSON">
+		<string>Mary</string>
+	</entity>
+	<entity start="1337" end="1344" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="1408" end="1415" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="1465" end="1482" type="ORGANIZATION">
+		<string>Rayen High School</string>
+	</entity>
+	<entity start="1517" end="1524" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="1582" end="1599" type="PERSON">
+		<string>Owen McAleer, Jr.</string>
+	</entity>
+	<entity start="1631" end="1642" type="LOCATION">
+		<string>Los Angeles</string>
+	</entity>
+	<entity start="1644" end="1654" type="LOCATION">
+		<string>California</string>
+	</entity>
+	<entity start="1702" end="1709" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="1782" end="1792" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="1823" end="1827" type="DATE">
+		<string>1882</string>
+	</entity>
+	<entity start="1859" end="1863" type="DATE">
+		<string>1884</string>
+	</entity>
+	<entity start="1868" end="1872" type="DATE">
+		<string>1885</string>
+	</entity>
+	<entity start="1874" end="1881" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="1926" end="1936" type="LOCATION">
+		<string>Charleston</string>
+	</entity>
+	<entity start="1938" end="1952" type="LOCATION">
+		<string>South Carolina</string>
+	</entity>
+	<entity start="1961" end="1965" type="DATE">
+		<string>1887</string>
+	</entity>
+	<entity start="1997" end="2004" type="LOCATION">
+		<string>Memphis</string>
+	</entity>
+	<entity start="2006" end="2015" type="LOCATION">
+		<string>Tennessee</string>
+	</entity>
+	<entity start="2065" end="2069" type="DATE">
+		<string>1888</string>
+	</entity>
+	<entity start="2106" end="2115" type="LOCATION">
+		<string>Milwaukee</string>
+	</entity>
+	<entity start="2117" end="2126" type="LOCATION">
+		<string>Wisconsin</string>
+	</entity>
+	<entity start="2177" end="2184" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="2305" end="2327" type="ORGANIZATION">
+		<string>DeHaven Comedy Company</string>
+	</entity>
+	<entity start="2376" end="2386" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="2458" end="2465" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="2501" end="2509" type="ORGANIZATION">
+		<string>Broadway</string>
+	</entity>
+	<entity start="2533" end="2548" type="PERSON">
+		<string>George M. Cohan</string>
+	</entity>
+	<entity start="2553" end="2567" type="DATE">
+		<string>April 24, 1889</string>
+	</entity>
+	<entity start="2569" end="2576" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="2592" end="2605" type="ORGANIZATION">
+		<string>Major Leagues</string>
+	</entity>
+	<entity start="2609" end="2618" type="LOCATION">
+		<string>Cleveland</string>
+	</entity>
+	<entity start="2620" end="2624" type="LOCATION">
+		<string>Ohio</string>
+	</entity>
+	<entity start="2689" end="2693" type="DATE">
+		<string>1891</string>
+	</entity>
+	<entity start="2700" end="2712" type="PERSON">
+		<string>Patsy Tebeau</string>
+	</entity>
+	<entity start="2735" end="2752" type="ORGANIZATION">
+		<string>Cleveland Spiders</string>
+	</entity>
+	<entity start="2804" end="2810" type="PERSON">
+		<string>Tebeau</string>
+	</entity>
+	<entity start="2919" end="2923" type="DATE">
+		<string>1896</string>
+	</entity>
+	<entity start="2929" end="2938" type="ORGANIZATION">
+		<string>Cleveland</string>
+	</entity>
+	<entity start="3035" end="3048" type="DATE">
+		<string>June 27, 1896</string>
+	</entity>
+	<entity start="3050" end="3057" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="3076" end="3085" type="ORGANIZATION">
+		<string>Cleveland</string>
+	</entity>
+	<entity start="3111" end="3121" type="LOCATION">
+		<string>Louisville</string>
+	</entity>
+	<entity start="3123" end="3131" type="LOCATION">
+		<string>Kentucky</string>
+	</entity>
+	<entity start="3224" end="3239" type="ORGANIZATION">
+		<string>National League</string>
+	</entity>
+	<entity start="3270" end="3279" type="ORGANIZATION">
+		<string>Cleveland</string>
+	</entity>
+	<entity start="3292" end="3299" type="ORGANIZATION">
+		<string>Spiders</string>
+	</entity>
+	<entity start="3320" end="3327" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="3413" end="3428" type="DATE">
+		<string>August 18, 1891</string>
+	</entity>
+	<entity start="3443" end="3458" type="ORGANIZATION">
+		<string>Cincinnati Reds</string>
+	</entity>
+	<entity start="3460" end="3464" type="ORGANIZATION">
+		<string>Reds</string>
+	</entity>
+	<entity start="3472" end="3484" type="PERSON">
+		<string>Arlie Latham</string>
+	</entity>
+	<entity start="3493" end="3500" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="3527" end="3534" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="3556" end="3562" type="PERSON">
+		<string>Latham</string>
+	</entity>
+	<entity start="3626" end="3633" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="3793" end="3800" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="4058" end="4065" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="4229" end="4243" type="DATE">
+		<string>April 24, 1894</string>
+	</entity>
+	<entity start="4260" end="4269" type="ORGANIZATION">
+		<string>Cleveland</string>
+	</entity>
+	<entity start="4289" end="4299" type="ORGANIZATION">
+		<string>Cincinnati</string>
+	</entity>
+	<entity start="4343" end="4353" type="PERSON">
+		<string>Buck Ewing</string>
+	</entity>
+	<entity start="4393" end="4401" type="PERSON">
+		<string>Cy Young</string>
+	</entity>
+	<entity start="4403" end="4416" type="PERSON">
+		<string>Jesse Burkett</string>
+	</entity>
+	<entity start="4418" end="4431" type="PERSON">
+		<string>John Clarkson</string>
+	</entity>
+	<entity start="4437" end="4451" type="PERSON">
+		<string>Charles Zimmer</string>
+	</entity>
+	<entity start="4453" end="4460" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="4486" end="4493" type="ORGANIZATION">
+		<string>Spiders</string>
+	</entity>
+	<entity start="4512" end="4529" type="ORGANIZATION">
+		<string>Baltimore Orioles</string>
+	</entity>
+	<entity start="4537" end="4541" type="DATE">
+		<string>1895</string>
+	</entity>
+	<entity start="4619" end="4634" type="ORGANIZATION">
+		<string>National League</string>
+	</entity>
+	<entity start="4640" end="4647" type="ORGANIZATION">
+		<string>Spiders</string>
+	</entity>
+	<entity start="4669" end="4676" type="ORGANIZATION">
+		<string>Orioles</string>
+	</entity>
+	<entity start="4702" end="4706" type="DATE">
+		<string>1895</string>
+	</entity>
+	<entity start="4711" end="4715" type="DATE">
+		<string>1896</string>
+	</entity>
+	<entity start="4725" end="4732" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="4815" end="4827" type="LOCATION">
+		<string>Philadelphia</string>
+	</entity>
+	<entity start="4831" end="4846" type="DATE">
+		<string>August 24, 1895</string>
+	</entity>
+	<entity start="4977" end="4987" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="5010" end="5014" type="DATE">
+		<string>1895</string>
+	</entity>
+	<entity start="5016" end="5023" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="5218" end="5222" type="DATE">
+		<string>1898</string>
+	</entity>
+	<entity start="5233" end="5240" type="ORGANIZATION">
+		<string>Spiders</string>
+	</entity>
+	<entity start="5263" end="5279" type="ORGANIZATION">
+		<string>St. Louis Browns</string>
+	</entity>
+	<entity start="5291" end="5298" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="5316" end="5325" type="LOCATION">
+		<string>Cleveland</string>
+	</entity>
+	<entity start="5373" end="5388" type="ORGANIZATION">
+		<string>Cleveland Blues</string>
+	</entity>
+	<entity start="5423" end="5438" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="5440" end="5442" type="ORGANIZATION">
+		<string>AL</string>
+	</entity>
+	<entity start="5478" end="5485" type="ORGANIZATION">
+		<string>Spiders</string>
+	</entity>
+	<entity start="5534" end="5538" type="DATE">
+		<string>1899</string>
+	</entity>
+	<entity start="5634" end="5646" type="ORGANIZATION">
+		<string>Major League</string>
+	</entity>
+	<entity start="5678" end="5688" type="PERSON">
+		<string>Bill James</string>
+	</entity>
+	<entity start="5700" end="5707" type="ORGANIZATION">
+		<string>Spiders</string>
+	</entity>
+	<entity start="5871" end="5875" type="DATE">
+		<string>1899</string>
+	</entity>
+	<entity start="5877" end="5884" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="5899" end="5908" type="ORGANIZATION">
+		<string>Cleveland</string>
+	</entity>
+	<entity start="5920" end="5924" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="5968" end="5989" type="ORGANIZATION">
+		<string>Cleveland Lake Shores</string>
+	</entity>
+	<entity start="6007" end="6022" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="6045" end="6052" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="6078" end="6090" type="ORGANIZATION">
+		<string>major league</string>
+	</entity>
+	<entity start="6100" end="6104" type="DATE">
+		<string>1901</string>
+	</entity>
+	<entity start="6105" end="6109" type="DATE">
+		<string>1911</string>
+	</entity>
+	<entity start="6147" end="6151" type="DATE">
+		<string>1882</string>
+	</entity>
+	<entity start="6152" end="6156" type="DATE">
+		<string>1907</string>
+	</entity>
+	<entity start="6207" end="6211" type="DATE">
+		<string>1903</string>
+	</entity>
+	<entity start="6216" end="6220" type="DATE">
+		<string>1906</string>
+	</entity>
+	<entity start="6222" end="6229" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="6249" end="6261" type="ORGANIZATION">
+		<string>Major League</string>
+	</entity>
+	<entity start="6270" end="6282" type="DATE">
+		<string>July 8, 1907</string>
+	</entity>
+	<entity start="6287" end="6291" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="6293" end="6300" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="6330" end="6351" type="ORGANIZATION">
+		<string>Cleveland Lake Shores</string>
+	</entity>
+	<entity start="6374" end="6391" type="ORGANIZATION">
+		<string>Cleveland Indians</string>
+	</entity>
+	<entity start="6429" end="6433" type="DATE">
+		<string>1901</string>
+	</entity>
+	<entity start="6444" end="6459" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="6514" end="6519" type="ORGANIZATION">
+		<string>Blues</string>
+	</entity>
+	<entity start="6578" end="6593" type="ORGANIZATION">
+		<string>National League</string>
+	</entity>
+	<entity start="6605" end="6610" type="DATE">
+		<string>1870s</string>
+	</entity>
+	<entity start="6615" end="6620" type="DATE">
+		<string>1880s</string>
+	</entity>
+	<entity start="6626" end="6631" type="ORGANIZATION">
+		<string>Blues</string>
+	</entity>
+	<entity start="6665" end="6679" type="DATE">
+		<string>April 24, 1901</string>
+	</entity>
+	<entity start="6705" end="6722" type="ORGANIZATION">
+		<string>Chicago White Sox</string>
+	</entity>
+	<entity start="6815" end="6820" type="ORGANIZATION">
+		<string>Blues</string>
+	</entity>
+	<entity start="6825" end="6834" type="ORGANIZATION">
+		<string>White Sox</string>
+	</entity>
+	<entity start="6871" end="6873" type="ORGANIZATION">
+		<string>AL</string>
+	</entity>
+	<entity start="6878" end="6882" type="DATE">
+		<string>July</string>
+	</entity>
+	<entity start="6897" end="6904" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="6923" end="6928" type="ORGANIZATION">
+		<string>Blues</string>
+	</entity>
+	<entity start="6952" end="6966" type="ORGANIZATION">
+		<string>Detroit Tigers</string>
+	</entity>
+	<entity start="6981" end="6987" type="ORGANIZATION">
+		<string>Tigers</string>
+	</entity>
+	<entity start="6998" end="7009" type="PERSON">
+		<string>Tommy Burns</string>
+	</entity>
+	<entity start="7064" end="7077" type="PERSON">
+		<string>Joe Cantillon</string>
+	</entity>
+	<entity start="7115" end="7122" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="7142" end="7148" type="ORGANIZATION">
+		<string>Tigers</string>
+	</entity>
+	<entity start="7177" end="7182" type="ORGANIZATION">
+		<string>Blues</string>
+	</entity>
+	<entity start="7267" end="7282" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="7284" end="7291" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="7341" end="7345" type="DATE">
+		<string>1901</string>
+	</entity>
+	<entity start="7386" end="7391" type="ORGANIZATION">
+		<string>Blues</string>
+	</entity>
+	<entity start="7397" end="7399" type="ORGANIZATION">
+		<string>AL</string>
+	</entity>
+	<entity start="7416" end="7420" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="7424" end="7435" type="PERSON">
+		<string>Ban Johnson</string>
+	</entity>
+	<entity start="7461" end="7475" type="ORGANIZATION">
+		<string>Western League</string>
+	</entity>
+	<entity start="7542" end="7557" type="ORGANIZATION">
+		<string>National League</string>
+	</entity>
+	<entity start="7559" end="7561" type="ORGANIZATION">
+		<string>NL</string>
+	</entity>
+	<entity start="7564" end="7571" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="7591" end="7598" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="7618" end="7634" type="PERSON">
+		<string>Charles Comiskey</string>
+	</entity>
+	<entity start="7745" end="7747" type="ORGANIZATION">
+		<string>NL</string>
+	</entity>
+	<entity start="7767" end="7773" type="ORGANIZATION">
+		<string>Browns</string>
+	</entity>
+	<entity start="7775" end="7782" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="7805" end="7819" type="ORGANIZATION">
+		<string>Hall of Famers</string>
+	</entity>
+	<entity start="7820" end="7833" type="PERSON">
+		<string>Jesse Burkett</string>
+	</entity>
+	<entity start="7838" end="7851" type="PERSON">
+		<string>Bobby Wallace</string>
+	</entity>
+	<entity start="7856" end="7860" type="DATE">
+		<string>1902</string>
+	</entity>
+	<entity start="7866" end="7872" type="ORGANIZATION">
+		<string>Browns</string>
+	</entity>
+	<entity start="7954" end="7958" type="DATE">
+		<string>1903</string>
+	</entity>
+	<entity start="7963" end="7967" type="DATE">
+		<string>1907</string>
+	</entity>
+	<entity start="8040" end="8042" type="ORGANIZATION">
+		<string>AL</string>
+	</entity>
+	<entity start="8053" end="8057" type="DATE">
+		<string>1908</string>
+	</entity>
+	<entity start="8200" end="8202" type="ORGANIZATION">
+		<string>AL</string>
+	</entity>
+	<entity start="8208" end="8214" type="ORGANIZATION">
+		<string>Browns</string>
+	</entity>
+	<entity start="8225" end="8229" type="DATE">
+		<string>1909</string>
+	</entity>
+	<entity start="8294" end="8301" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="8340" end="8346" type="ORGANIZATION">
+		<string>Browns</string>
+	</entity>
+	<entity start="8353" end="8369" type="PERSON">
+		<string>Robert L. Hedges</string>
+	</entity>
+	<entity start="8373" end="8383" type="LOCATION">
+		<string>Cincinnati</string>
+	</entity>
+	<entity start="8423" end="8430" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="8451" end="8464" type="PERSON">
+		<string>Jack O'Connor</string>
+	</entity>
+	<entity start="8502" end="8506" type="DATE">
+		<string>1910</string>
+	</entity>
+	<entity start="8583" end="8601" type="DATE">
+		<string>September 22, 1909</string>
+	</entity>
+	<entity start="8603" end="8610" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="8633" end="8652" type="ORGANIZATION">
+		<string>Washington Senators</string>
+	</entity>
+	<entity start="8678" end="8687" type="ORGANIZATION">
+		<string>Nationals</string>
+	</entity>
+	<entity start="8763" end="8775" type="PERSON">
+		<string>Ed Delahanty</string>
+	</entity>
+	<entity start="8830" end="8837" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="8929" end="8933" type="DATE">
+		<string>1910</string>
+	</entity>
+	<entity start="8991" end="8998" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="9046" end="9060" type="DATE">
+		<string>April 14, 1910</string>
+	</entity>
+	<entity start="9090" end="9109" type="PERSON">
+		<string>William Howard Taft</string>
+	</entity>
+	<entity start="9168" end="9172" type="PERSON">
+		<string>Taft</string>
+	</entity>
+	<entity start="9237" end="9249" type="PERSON">
+		<string>Donald Dewey</string>
+	</entity>
+	<entity start="9254" end="9271" type="PERSON">
+		<string>Nicholas Acocella</string>
+	</entity>
+	<entity start="9329" end="9331" type="ORGANIZATION">
+		<string>US</string>
+	</entity>
+	<entity start="9347" end="9363" type="PERSON">
+		<string>James S. Sherman</string>
+	</entity>
+	<entity start="9402" end="9413" type="PERSON">
+		<string>Frank Baker</string>
+	</entity>
+	<entity start="9497" end="9511" type="PERSON">
+		<string>Walter Johnson</string>
+	</entity>
+	<entity start="9525" end="9533" type="ORGANIZATION">
+		<string>Senators</string>
+	</entity>
+	<entity start="9560" end="9582" type="ORGANIZATION">
+		<string>Philadelphia Athletics</string>
+	</entity>
+	<entity start="9608" end="9612" type="DATE">
+		<string>1911</string>
+	</entity>
+	<entity start="9621" end="9628" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="9673" end="9681" type="ORGANIZATION">
+		<string>Senators</string>
+	</entity>
+	<entity start="9686" end="9690" type="DATE">
+		<string>1912</string>
+	</entity>
+	<entity start="9729" end="9743" type="ORGANIZATION">
+		<string>Boston Red Sox</string>
+	</entity>
+	<entity start="9800" end="9807" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="9868" end="9875" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="9906" end="9910" type="DATE">
+		<string>1912</string>
+	</entity>
+	<entity start="9966" end="9981" type="ORGANIZATION">
+		<string>New York Giants</string>
+	</entity>
+	<entity start="10037" end="10044" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="10075" end="10085" type="PERSON">
+		<string>Jake Stahl</string>
+	</entity>
+	<entity start="10126" end="10138" type="PERSON">
+		<string>Buck O'Brien</string>
+	</entity>
+	<entity start="10159" end="10166" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="10283" end="10289" type="LOCATION">
+		<string>Boston</string>
+	</entity>
+	<entity start="10296" end="10307" type="LOCATION">
+		<string>Fenway Park</string>
+	</entity>
+	<entity start="10322" end="10329" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="10344" end="10350" type="ORGANIZATION">
+		<string>Giants</string>
+	</entity>
+	<entity start="10405" end="10411" type="LOCATION">
+		<string>Boston</string>
+	</entity>
+	<entity start="10451" end="10458" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="10463" end="10468" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="10512" end="10517" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="10532" end="10539" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="10625" end="10632" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="10640" end="10651" type="LOCATION">
+		<string>Fenway Park</string>
+	</entity>
+	<entity start="10680" end="10686" type="ORGANIZATION">
+		<string>Giants</string>
+	</entity>
+	<entity start="10749" end="10756" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="10856" end="10869" type="ORGANIZATION">
+		<string>Royal Rooters</string>
+	</entity>
+	<entity start="10910" end="10923" type="ORGANIZATION">
+		<string>Royal Rooters</string>
+	</entity>
+	<entity start="10932" end="10938" type="ORGANIZATION">
+		<string>Boston</string>
+	</entity>
+	<entity start="10945" end="10973" type="PERSON">
+		<string>John "Honey Fitz" Fitzgerald</string>
+	</entity>
+	<entity start="11083" end="11089" type="ORGANIZATION">
+		<string>Boston</string>
+	</entity>
+	<entity start="11148" end="11155" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="11259" end="11265" type="ORGANIZATION">
+		<string>Giants</string>
+	</entity>
+	<entity start="11267" end="11274" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="11348" end="11358" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="11437" end="11464" type="ORGANIZATION">
+		<string>Youngstown Daily Vindicator</string>
+	</entity>
+	<entity start="11500" end="11507" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="11520" end="11539" type="LOCATION">
+		<string>West Federal Street</string>
+	</entity>
+	<entity start="11588" end="11602" type="LOCATION">
+		<string>Central Square</string>
+	</entity>
+	<entity start="11798" end="11805" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="11836" end="11843" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="11868" end="11881" type="DATE">
+		<string>July 15, 1913</string>
+	</entity>
+	<entity start="11883" end="11890" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="11943" end="11954" type="PERSON">
+		<string>Ban Johnson</string>
+	</entity>
+	<entity start="11961" end="11968" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="11995" end="12002" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="12011" end="12021" type="PERSON">
+		<string>Jake Stahl</string>
+	</entity>
+	<entity start="12030" end="12037" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="12063" end="12070" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="12096" end="12101" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="12138" end="12143" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="12277" end="12284" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="12286" end="12293" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="12319" end="12326" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="12342" end="12349" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="12432" end="12448" type="PERSON">
+		<string>Charles Comiskey</string>
+	</entity>
+	<entity start="12481" end="12488" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="12607" end="12620" type="PERSON">
+		<string>Frank B. Ward</string>
+	</entity>
+	<entity start="12645" end="12676" type="ORGANIZATION">
+		<string>The Youngstown Daily Vindicator</string>
+	</entity>
+	<entity start="12744" end="12751" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="12808" end="12812" type="PERSON">
+		<string>Ward</string>
+	</entity>
+	<entity start="12824" end="12831" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="12856" end="12863" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="12904" end="12911" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="12959" end="12966" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="13036" end="13040" type="PERSON">
+		<string>Ward</string>
+	</entity>
+	<entity start="13061" end="13068" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="13126" end="13131" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13183" end="13188" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13208" end="13215" type="LOCATION">
+		<string>Chicago</string>
+	</entity>
+	<entity start="13266" end="13273" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="13322" end="13327" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13332" end="13339" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="13360" end="13364" type="DATE">
+		<string>1912</string>
+	</entity>
+	<entity start="13373" end="13378" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13387" end="13394" type="LOCATION">
+		<string>Chicago</string>
+	</entity>
+	<entity start="13410" end="13417" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="13467" end="13474" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="13480" end="13487" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="13578" end="13583" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13588" end="13593" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13637" end="13644" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="13663" end="13670" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="13684" end="13689" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13747" end="13752" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="13776" end="13783" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="13819" end="13826" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="13880" end="13887" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="13926" end="13930" type="PERSON">
+		<string>Ward</string>
+	</entity>
+	<entity start="14029" end="14041" type="PERSON">
+		<string>David Fleitz</string>
+	</entity>
+	<entity start="14063" end="14068" type="PERSON">
+		<string>Dewey</string>
+	</entity>
+	<entity start="14073" end="14081" type="PERSON">
+		<string>Acocella</string>
+	</entity>
+	<entity start="14141" end="14148" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="14167" end="14174" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="14190" end="14197" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="14212" end="14216" type="DATE">
+		<string>1913</string>
+	</entity>
+	<entity start="14233" end="14241" type="PERSON">
+		<string>Comiskey</string>
+	</entity>
+	<entity start="14243" end="14258" type="ORGANIZATION">
+		<string>New York Giants</string>
+	</entity>
+	<entity start="14267" end="14278" type="PERSON">
+		<string>John McGraw</string>
+	</entity>
+	<entity start="14299" end="14306" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="14340" end="14347" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="14364" end="14369" type="PERSON">
+		<string>Stahl</string>
+	</entity>
+	<entity start="14446" end="14458" type="PERSON">
+		<string>Tris Speaker</string>
+	</entity>
+	<entity start="14463" end="14483" type="PERSON">
+		<string>Joe "Smoky Joe" Wood</string>
+	</entity>
+	<entity start="14502" end="14515" type="PERSON">
+		<string>Heinie Wagner</string>
+	</entity>
+	<entity start="14520" end="14533" type="PERSON">
+		<string>Bill Carrigan</string>
+	</entity>
+	<entity start="14663" end="14682" type="ORGANIZATION">
+		<string>Knights of Columbus</string>
+	</entity>
+	<entity start="14685" end="14692" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="14713" end="14719" type="PERSON">
+		<string>Wagner</string>
+	</entity>
+	<entity start="14724" end="14732" type="PERSON">
+		<string>Carrigan</string>
+	</entity>
+	<entity start="14842" end="14849" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="14867" end="14874" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="14944" end="14949" type="PERSON">
+		<string>Dewey</string>
+	</entity>
+	<entity start="14954" end="14962" type="PERSON">
+		<string>Acocella</string>
+	</entity>
+	<entity start="15013" end="15025" type="PERSON">
+		<string>David Fleitz</string>
+	</entity>
+	<entity start="15040" end="15047" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="15082" end="15089" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="15213" end="15220" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="15316" end="15330" type="PERSON">
+		<string>Hannah McAleer</string>
+	</entity>
+	<entity start="15358" end="15370" type="DATE">
+		<string>20th century</string>
+	</entity>
+	<entity start="15409" end="15420" type="PERSON">
+		<string>Anna Durbin</string>
+	</entity>
+	<entity start="15434" end="15441" type="LOCATION">
+		<string>Trenton</string>
+	</entity>
+	<entity start="15443" end="15453" type="LOCATION">
+		<string>New Jersey</string>
+	</entity>
+	<entity start="15510" end="15522" type="PERSON">
+		<string>Anna McAleer</string>
+	</entity>
+	<entity start="15639" end="15649" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="15653" end="15657" type="DATE">
+		<string>1913</string>
+	</entity>
+	<entity start="15707" end="15731" type="ORGANIZATION">
+		<string>Altar and Rosary Society</string>
+	</entity>
+	<entity start="15735" end="15755" type="ORGANIZATION">
+		<string>St. Columba's Church</string>
+	</entity>
+	<entity start="15799" end="15803" type="DATE">
+		<string>1930</string>
+	</entity>
+	<entity start="15805" end="15817" type="PERSON">
+		<string>Anna McAleer</string>
+	</entity>
+	<entity start="15887" end="15897" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="15899" end="15912" type="PERSON">
+		<string>James McAleer</string>
+	</entity>
+	<entity start="15990" end="15997" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="16150" end="16157" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="16168" end="16178" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="16186" end="16202" type="PERSON">
+		<string>Georgianna Rudge</string>
+	</entity>
+	<entity start="16222" end="16247" type="ORGANIZATION">
+		<string>Juilliard School of Music</string>
+	</entity>
+	<entity start="16306" end="16324" type="PERSON">
+		<string>Georgianna McAleer</string>
+	</entity>
+	<entity start="16388" end="16401" type="PERSON">
+		<string>James McAleer</string>
+	</entity>
+	<entity start="16504" end="16511" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="16524" end="16534" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="16592" end="16599" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="16675" end="16679" type="LOCATION">
+		<string>Ohio</string>
+	</entity>
+	<entity start="16689" end="16701" type="PERSON">
+		<string>James M. Cox</string>
+	</entity>
+	<entity start="16815" end="16830" type="PERSON">
+		<string>George M. Cohan</string>
+	</entity>
+	<entity start="16835" end="16852" type="PERSON">
+		<string>King Alfonso XIII</string>
+	</entity>
+	<entity start="16856" end="16861" type="LOCATION">
+		<string>Spain</string>
+	</entity>
+	<entity start="16863" end="16870" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="16946" end="16953" type="ORGANIZATION">
+		<string>Red Sox</string>
+	</entity>
+	<entity start="16971" end="16975" type="DATE">
+		<string>1912</string>
+	</entity>
+	<entity start="16976" end="16980" type="DATE">
+		<string>1913</string>
+	</entity>
+	<entity start="17058" end="17065" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="17201" end="17213" type="PERSON">
+		<string>David Fleitz</string>
+	</entity>
+	<entity start="17234" end="17241" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="17280" end="17291" type="DATE">
+		<string>early 1930s</string>
+	</entity>
+	<entity start="17307" end="17314" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="17332" end="17346" type="DATE">
+		<string>April 29, 1931</string>
+	</entity>
+	<entity start="17451" end="17454" type="PERSON">
+		<string>Orr</string>
+	</entity>
+	<entity start="17471" end="17478" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="17506" end="17523" type="ORGANIZATION">
+		<string>Oak Hill Cemetery</string>
+	</entity>
+	<entity start="17528" end="17538" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="17609" end="17622" type="PERSON">
+		<string>J. C. McAleer</string>
+	</entity>
+	<entity start="17626" end="17636" type="LOCATION">
+		<string>Austintown</string>
+	</entity>
+	<entity start="17638" end="17642" type="LOCATION">
+		<string>Ohio</string>
+	</entity>
+	<entity start="17648" end="17660" type="PERSON">
+		<string>Owen McAleer</string>
+	</entity>
+	<entity start="17664" end="17675" type="LOCATION">
+		<string>Los Angeles</string>
+	</entity>
+	<entity start="17715" end="17739" type="PERSON">
+		<string>Captain Charlies McAleer</string>
+	</entity>
+	<entity start="17759" end="17766" type="ORGANIZATION">
+		<string>US Army</string>
+	</entity>
+	<entity start="17772" end="17785" type="PERSON">
+		<string>James McAleer</string>
+	</entity>
+	<entity start="17789" end="17800" type="LOCATION">
+		<string>Los Angeles</string>
+	</entity>
+	<entity start="17822" end="17829" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="17944" end="17965" type="ORGANIZATION">
+		<string>Major League Baseball</string>
+	</entity>
+	<entity start="18044" end="18051" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="18076" end="18083" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="18106" end="18137" type="ORGANIZATION">
+		<string>The Youngstown Daily Vindicator</string>
+	</entity>
+	<entity start="18306" end="18322" type="PERSON">
+		<string>James R. McAleer</string>
+	</entity>
+	<entity start="18374" end="18396" type="PERSON">
+		<string>Byron Bancroft Johnson</string>
+	</entity>
+	<entity start="18438" end="18453" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="18551" end="18558" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="18615" end="18619" type="DATE">
+		<string>1905</string>
+	</entity>
+	<entity start="18657" end="18673" type="ORGANIZATION">
+		<string>St. Louis Browns</string>
+	</entity>
+	<entity start="18675" end="18682" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="18697" end="18709" type="ORGANIZATION">
+		<string>Hall of Fame</string>
+	</entity>
+	<entity start="18717" end="18728" type="PERSON">
+		<string>Billy Evans</string>
+	</entity>
+	<entity start="18756" end="18771" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+	<entity start="18802" end="18809" type="PERSON">
+		<string>Johnson</string>
+	</entity>
+	<entity start="18813" end="18818" type="PERSON">
+		<string>Evans</string>
+	</entity>
+	<entity start="18839" end="18846" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="18879" end="18889" type="LOCATION">
+		<string>Youngstown</string>
+	</entity>
+	<entity start="18900" end="18923" type="PERSON">
+		<string>John "Bonesetter" Reese</string>
+	</entity>
+	<entity start="18990" end="18998" type="PERSON">
+		<string>Cy Young</string>
+	</entity>
+	<entity start="19000" end="19007" type="PERSON">
+		<string>Ty Cobb</string>
+	</entity>
+	<entity start="19009" end="19023" type="PERSON">
+		<string>Rogers Hornsby</string>
+	</entity>
+	<entity start="19025" end="19039" type="PERSON">
+		<string>Walter Johnson</string>
+	</entity>
+	<entity start="19045" end="19056" type="PERSON">
+		<string>John McGraw</string>
+	</entity>
+	<entity start="19058" end="19065" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="19127" end="19148" type="ORGANIZATION">
+		<string>Baseball Hall of Fame</string>
+	</entity>
+	<entity start="19162" end="19166" type="DATE">
+		<string>1936</string>
+	</entity>
+	<entity start="19202" end="19223" type="ORGANIZATION">
+		<string>Baseball Hall of Fame</string>
+	</entity>
+	<entity start="19272" end="19284" type="DATE">
+		<string>19th-century</string>
+	</entity>
+	<entity start="19308" end="19315" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="19356" end="19368" type="ORGANIZATION">
+		<string>Hall of Fame</string>
+	</entity>
+	<entity start="19384" end="19394" type="PERSON">
+		<string>Nap Lajoie</string>
+	</entity>
+	<entity start="19410" end="19417" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="19445" end="19452" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="19467" end="19485" type="ORGANIZATION">
+		<string>The New York Times</string>
+	</entity>
+	<entity start="19577" end="19581" type="DATE">
+		<string>2003</string>
+	</entity>
+	<entity start="19583" end="19593" type="PERSON">
+		<string>Bill James</string>
+	</entity>
+	<entity start="19604" end="19611" type="PERSON">
+		<string>McAleer</string>
+	</entity>
+	<entity start="19653" end="19658" type="DATE">
+		<string>1890s</string>
+	</entity>
+	<entity start="19695" end="19707" type="PERSON">
+		<string>David Fleitz</string>
+	</entity>
+	<entity start="19859" end="19874" type="ORGANIZATION">
+		<string>American League</string>
+	</entity>
+</entities>
+

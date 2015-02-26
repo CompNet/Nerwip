@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" source="REFERENCE" date="30-10-2013" xsi:noNamespaceSchemaLocation="..\..\res\schemas\entities.xsd">
+	<entity start="0" end="12" type="PERSON">
+		<string>Elvira Lindo</string>
+	</entity>
+	<entity start="19" end="34" type="DATE">
+		<string>23 January 1962</string>
+	</entity>
+	<entity start="38" end="43" type="LOCATION">
+		<string>Cádiz</string>
+	</entity>
+	<entity start="45" end="50" type="LOCATION">
+		<string>Spain</string>
+	</entity>
+	<entity start="105" end="110" type="PERSON">
+		<string>Lindo</string>
+	</entity>
+	<entity start="120" end="126" type="LOCATION">
+		<string>Madrid</string>
+	</entity>
+	<entity start="357" end="373" type="PERSON">
+		<string>Manolito Gafotas</string>
+	</entity>
+	<entity start="434" end="442" type="PERSON">
+		<string>Manolito</string>
+	</entity>
+	<entity start="523" end="534" type="LOCATION">
+		<string>Carabanchel</string>
+	</entity>
+	<entity start="684" end="689" type="PERSON">
+		<string>Lindo</string>
+	</entity>
+	<entity start="827" end="844" type="PERSON">
+		<string>Miguel Albadalejo</string>
+	</entity>
+	<entity start="978" end="998" type="PERSON">
+		<string>Antonio Muñoz Molina</string>
+	</entity>
+	<entity start="1023" end="1043" type="PERSON">
+		<string>Antonio Muñoz Molina</string>
+	</entity>
+	<entity start="1074" end="1093" type="ORGANIZATION">
+		<string>Instituto Cervantes</string>
+	</entity>
+	<entity start="1097" end="1105" type="LOCATION">
+		<string>New York</string>
+	</entity>
+	<entity start="1107" end="1112" type="PERSON">
+		<string>Lindo</string>
+	</entity>
+	<entity start="1126" end="1139" type="ORGANIZATION">
+		<string>New York City</string>
+	</entity>
+	<entity start="1193" end="1200" type="ORGANIZATION">
+		<string>El País</string>
+	</entity>
+	<entity start="1292" end="1296" type="DATE">
+		<string>1998</string>
+	</entity>
+	<entity start="1297" end="1302" type="PERSON">
+		<string>Lindo</string>
+	</entity>
+	<entity start="1627" end="1643" type="DATE">
+		<string>September 3 2010</string>
+	</entity>
+</entities>
+

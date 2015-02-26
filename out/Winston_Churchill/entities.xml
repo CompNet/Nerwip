@@ -1,0 +1,4912 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" source="REFERENCE" date="30-10-2013" xsi:noNamespaceSchemaLocation="..\..\res\schemas\entities.xsd">
+	<entity start="4" end="37" type="PERSON">
+		<string>Winston Leonard Spencer-Churchill</string>
+	</entity>
+	<entity start="73" end="89" type="DATE">
+		<string>30 November 1874</string>
+	</entity>
+	<entity start="92" end="107" type="DATE">
+		<string>24 January 1965</string>
+	</entity>
+	<entity start="164" end="178" type="ORGANIZATION">
+		<string>United Kingdom</string>
+	</entity>
+	<entity start="184" end="188" type="DATE">
+		<string>1940</string>
+	</entity>
+	<entity start="192" end="196" type="DATE">
+		<string>1945</string>
+	</entity>
+	<entity start="256" end="260" type="DATE">
+		<string>1951</string>
+	</entity>
+	<entity start="264" end="268" type="DATE">
+		<string>1955</string>
+	</entity>
+	<entity start="332" end="344" type="DATE">
+		<string>20th century</string>
+	</entity>
+	<entity start="346" end="355" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="383" end="395" type="ORGANIZATION">
+		<string>British Army</string>
+	</entity>
+	<entity start="584" end="597" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="599" end="608" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="654" end="674" type="ORGANIZATION">
+		<string>Dukes of Marlborough</string>
+	</entity>
+	<entity start="692" end="706" type="ORGANIZATION">
+		<string>Spencer family</string>
+	</entity>
+	<entity start="725" end="743" type="PERSON">
+		<string>Randolph Churchill</string>
+	</entity>
+	<entity start="829" end="842" type="PERSON">
+		<string>Jennie Jerome</string>
+	</entity>
+	<entity start="913" end="926" type="LOCATION">
+		<string>British India</string>
+	</entity>
+	<entity start="932" end="937" type="LOCATION">
+		<string>Sudan</string>
+	</entity>
+	<entity start="1189" end="1203" type="ORGANIZATION">
+		<string>Board of Trade</string>
+	</entity>
+	<entity start="1205" end="1219" type="ORGANIZATION">
+		<string>Home Secretary</string>
+	</entity>
+	<entity start="1243" end="1252" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="1268" end="1294" type="ORGANIZATION">
+		<string>Asquith Liberal government</string>
+	</entity>
+	<entity start="1346" end="1355" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="1485" end="1498" type="LOCATION">
+		<string>Western Front</string>
+	</entity>
+	<entity start="1519" end="1561" type="ORGANIZATION">
+		<string>6th Battalion of the Royal Scots Fusiliers</string>
+	</entity>
+	<entity start="1690" end="1699" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="1745" end="1778" type="ORGANIZATION">
+		<string>Conservative (Baldwin) government</string>
+	</entity>
+	<entity start="1782" end="1786" type="DATE">
+		<string>1924</string>
+	</entity>
+	<entity start="1787" end="1789" type="DATE">
+		<string>29</string>
+	</entity>
+	<entity start="1839" end="1843" type="DATE">
+		<string>1925</string>
+	</entity>
+	<entity start="1948" end="1950" type="ORGANIZATION">
+		<string>UK</string>
+	</entity>
+	<entity start="2025" end="2030" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="2057" end="2061" type="DATE">
+		<string>1936</string>
+	</entity>
+	<entity start="2076" end="2087" type="PERSON">
+		<string>Edward VIII</string>
+	</entity>
+	<entity start="2150" end="2155" type="DATE">
+		<string>1930s</string>
+	</entity>
+	<entity start="2157" end="2166" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="2198" end="2210" type="ORGANIZATION">
+		<string>Nazi Germany</string>
+	</entity>
+	<entity start="2328" end="2337" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="2368" end="2387" type="PERSON">
+		<string>Neville Chamberlain</string>
+	</entity>
+	<entity start="2391" end="2402" type="DATE">
+		<string>10 May 1940</string>
+	</entity>
+	<entity start="2404" end="2413" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="2527" end="2545" type="ORGANIZATION">
+		<string>British resistance</string>
+	</entity>
+	<entity start="2606" end="2613" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="2679" end="2691" type="PERSON">
+		<string>Adolf Hitler</string>
+	</entity>
+	<entity start="2693" end="2702" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="2790" end="2804" type="ORGANIZATION">
+		<string>British people</string>
+	</entity>
+	<entity start="2813" end="2820" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="2858" end="2870" type="ORGANIZATION">
+		<string>Nazi Germany</string>
+	</entity>
+	<entity start="2899" end="2917" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="2927" end="2931" type="DATE">
+		<string>1945</string>
+	</entity>
+	<entity start="2966" end="2976" type="ORGANIZATION">
+		<string>Opposition</string>
+	</entity>
+	<entity start="2984" end="3010" type="ORGANIZATION">
+		<string>Labour (Attlee) government</string>
+	</entity>
+	<entity start="3030" end="3034" type="DATE">
+		<string>1951</string>
+	</entity>
+	<entity start="3096" end="3100" type="DATE">
+		<string>1955</string>
+	</entity>
+	<entity start="3118" end="3130" type="PERSON">
+		<string>Elizabeth II</string>
+	</entity>
+	<entity start="3288" end="3292" type="DATE">
+		<string>2002</string>
+	</entity>
+	<entity start="3299" end="3308" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="3460" end="3474" type="ORGANIZATION">
+		<string>United Kingdom</string>
+	</entity>
+	<entity start="3505" end="3518" type="PERSON">
+		<string>Jennie Jerome</string>
+	</entity>
+	<entity start="3525" end="3543" type="PERSON">
+		<string>Randolph Churchill</string>
+	</entity>
+	<entity start="3555" end="3572" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="3615" end="3635" type="ORGANIZATION">
+		<string>Dukes of Marlborough</string>
+	</entity>
+	<entity start="3659" end="3673" type="ORGANIZATION">
+		<string>Spencer family</string>
+	</entity>
+	<entity start="3675" end="3708" type="PERSON">
+		<string>Winston Leonard Spencer-Churchill</string>
+	</entity>
+	<entity start="3745" end="3754" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="3785" end="3799" type="PERSON">
+		<string>George Spencer</string>
+	</entity>
+	<entity start="3827" end="3844" type="PERSON">
+		<string>Spencer-Churchill</string>
+	</entity>
+	<entity start="3848" end="3852" type="DATE">
+		<string>1817</string>
+	</entity>
+	<entity start="3876" end="3887" type="PERSON">
+		<string>Marlborough</string>
+	</entity>
+	<entity start="3919" end="3933" type="PERSON">
+		<string>John Churchill</string>
+	</entity>
+	<entity start="3947" end="3958" type="PERSON">
+		<string>Marlborough</string>
+	</entity>
+	<entity start="3960" end="3969" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="3985" end="4003" type="PERSON">
+		<string>Randolph Churchill</string>
+	</entity>
+	<entity start="4022" end="4044" type="PERSON">
+		<string>John Spencer-Churchill</string>
+	</entity>
+	<entity start="4058" end="4069" type="PERSON">
+		<string>Marlborough</string>
+	</entity>
+	<entity start="4110" end="4128" type="PERSON">
+		<string>Randolph Churchill</string>
+	</entity>
+	<entity start="4134" end="4147" type="PERSON">
+		<string>Jennie Jerome</string>
+	</entity>
+	<entity start="4190" end="4204" type="PERSON">
+		<string>Leonard Jerome</string>
+	</entity>
+	<entity start="4206" end="4215" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="4228" end="4244" type="DATE">
+		<string>30 November 1874</string>
+	</entity>
+	<entity start="4286" end="4301" type="LOCATION">
+		<string>Blenheim Palace</string>
+	</entity>
+	<entity start="4303" end="4312" type="LOCATION">
+		<string>Woodstock</string>
+	</entity>
+	<entity start="4314" end="4325" type="LOCATION">
+		<string>Oxfordshire</string>
+	</entity>
+	<entity start="4360" end="4366" type="LOCATION">
+		<string>Dublin</string>
+	</entity>
+	<entity start="4430" end="4439" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="4475" end="4484" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="4496" end="4526" type="PERSON">
+		<string>John Strange Spencer-Churchill</string>
+	</entity>
+	<entity start="4557" end="4564" type="LOCATION">
+		<string>Ireland</string>
+	</entity>
+	<entity start="4601" end="4610" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="4708" end="4724" type="LOCATION">
+		<string>Vice Regal Lodge</string>
+	</entity>
+	<entity start="4730" end="4748" type="LOCATION">
+		<string>Áras an Uachtaráin</string>
+	</entity>
+	<entity start="4793" end="4800" type="ORGANIZATION">
+		<string>Ireland</string>
+	</entity>
+	<entity start="4803" end="4812" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="4829" end="4833" type="DATE">
+		<string>1881</string>
+	</entity>
+	<entity start="4835" end="4844" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="4890" end="4896" type="LOCATION">
+		<string>Dublin</string>
+	</entity>
+	<entity start="5068" end="5077" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="5116" end="5138" type="PERSON">
+		<string>Elizabeth Anne Everest</string>
+	</entity>
+	<entity start="5156" end="5164" type="PERSON">
+		<string>Old Woom</string>
+	</entity>
+	<entity start="5269" end="5281" type="LOCATION">
+		<string>Phoenix Park</string>
+	</entity>
+	<entity start="5321" end="5330" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="5452" end="5471" type="ORGANIZATION">
+		<string>St. George's School</string>
+	</entity>
+	<entity start="5473" end="5478" type="LOCATION">
+		<string>Ascot</string>
+	</entity>
+	<entity start="5480" end="5489" type="LOCATION">
+		<string>Berkshire</string>
+	</entity>
+	<entity start="5491" end="5507" type="ORGANIZATION">
+		<string>Brunswick School</string>
+	</entity>
+	<entity start="5511" end="5515" type="LOCATION">
+		<string>Hove</string>
+	</entity>
+	<entity start="5522" end="5530" type="LOCATION">
+		<string>Brighton</string>
+	</entity>
+	<entity start="5566" end="5588" type="ORGANIZATION">
+		<string>Stoke Brunswick School</string>
+	</entity>
+	<entity start="5606" end="5618" type="LOCATION">
+		<string>Ashurst Wood</string>
+	</entity>
+	<entity start="5622" end="5633" type="LOCATION">
+		<string>West Sussex</string>
+	</entity>
+	<entity start="5643" end="5656" type="ORGANIZATION">
+		<string>Harrow School</string>
+	</entity>
+	<entity start="5662" end="5675" type="DATE">
+		<string>17 April 1888</string>
+	</entity>
+	<entity start="5708" end="5714" type="LOCATION">
+		<string>Harrow</string>
+	</entity>
+	<entity start="5716" end="5725" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="5741" end="5759" type="ORGANIZATION">
+		<string>Harrow Rifle Corps</string>
+	</entity>
+	<entity start="5761" end="5776" type="LOCATION">
+		<string>Blenheim Palace</string>
+	</entity>
+	<entity start="5782" end="5798" type="ORGANIZATION">
+		<string>Churchill family</string>
+	</entity>
+	<entity start="5805" end="5814" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="6059" end="6074" type="DATE">
+		<string>24 January 1895</string>
+	</entity>
+	<entity start="6093" end="6102" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="6229" end="6238" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="6371" end="6376" type="DATE">
+		<string>1920s</string>
+	</entity>
+	<entity start="6381" end="6386" type="DATE">
+		<string>1930s</string>
+	</entity>
+	<entity start="6441" end="6450" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="6525" end="6534" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="6618" end="6645" type="ORGANIZATION">
+		<string>Churchill Centre and Museum</string>
+	</entity>
+	<entity start="6713" end="6722" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="7018" end="7035" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="7048" end="7065" type="PERSON">
+		<string>Clementine Hozier</string>
+	</entity>
+	<entity start="7099" end="7103" type="DATE">
+		<string>1908</string>
+	</entity>
+	<entity start="7105" end="7114" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="7136" end="7153" type="PERSON">
+		<string>Clementine Hozier</string>
+	</entity>
+	<entity start="7158" end="7162" type="DATE">
+		<string>1904</string>
+	</entity>
+	<entity start="7176" end="7187" type="LOCATION">
+		<string>Crewe House</string>
+	</entity>
+	<entity start="7201" end="7214" type="PERSON">
+		<string>Earl of Crewe</string>
+	</entity>
+	<entity start="7219" end="7224" type="PERSON">
+		<string>Crewe</string>
+	</entity>
+	<entity start="7232" end="7249" type="PERSON">
+		<string>Margaret Primrose</string>
+	</entity>
+	<entity start="7263" end="7281" type="PERSON">
+		<string>Archibald Primrose</string>
+	</entity>
+	<entity start="7287" end="7303" type="PERSON">
+		<string>Earl of Rosebery</string>
+	</entity>
+	<entity start="7308" end="7325" type="PERSON">
+		<string>Hannah Rothschild</string>
+	</entity>
+	<entity start="7331" end="7335" type="DATE">
+		<string>1908</string>
+	</entity>
+	<entity start="7380" end="7391" type="ORGANIZATION">
+		<string>Susan Jeune</string>
+	</entity>
+	<entity start="7402" end="7411" type="PERSON">
+		<string>St Helier</string>
+	</entity>
+	<entity start="7413" end="7422" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="7451" end="7461" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="7518" end="7528" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="7553" end="7568" type="LOCATION">
+		<string>Blenheim Palace</string>
+	</entity>
+	<entity start="7572" end="7586" type="DATE">
+		<string>10 August 1908</string>
+	</entity>
+	<entity start="7599" end="7614" type="LOCATION">
+		<string>Temple of Diana</string>
+	</entity>
+	<entity start="7619" end="7636" type="DATE">
+		<string>12 September 1908</string>
+	</entity>
+	<entity start="7645" end="7655" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="7672" end="7684" type="LOCATION">
+		<string>St. Margaret</string>
+	</entity>
+	<entity start="7688" end="7699" type="LOCATION">
+		<string>Westminster</string>
+	</entity>
+	<entity start="7738" end="7746" type="ORGANIZATION">
+		<string>St Asaph</string>
+	</entity>
+	<entity start="7806" end="7821" type="LOCATION">
+		<string>Highgrove House</string>
+	</entity>
+	<entity start="7825" end="7833" type="LOCATION">
+		<string>Eastcote</string>
+	</entity>
+	<entity start="7838" end="7848" type="DATE">
+		<string>March 1909</string>
+	</entity>
+	<entity start="7884" end="7900" type="LOCATION">
+		<string>Eccleston Square</string>
+	</entity>
+	<entity start="7921" end="7926" type="PERSON">
+		<string>Diana</string>
+	</entity>
+	<entity start="7940" end="7946" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="7950" end="7962" type="DATE">
+		<string>11 July 1909</string>
+	</entity>
+	<entity start="7985" end="7995" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="8005" end="8011" type="LOCATION">
+		<string>Sussex</string>
+	</entity>
+	<entity start="8030" end="8035" type="PERSON">
+		<string>Diana</string>
+	</entity>
+	<entity start="8046" end="8052" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="8072" end="8083" type="DATE">
+		<string>28 May 1911</string>
+	</entity>
+	<entity start="8105" end="8113" type="PERSON">
+		<string>Randolph</string>
+	</entity>
+	<entity start="8130" end="8146" type="LOCATION">
+		<string>Eccleston Square</string>
+	</entity>
+	<entity start="8167" end="8172" type="PERSON">
+		<string>Sarah</string>
+	</entity>
+	<entity start="8186" end="8200" type="DATE">
+		<string>7 October 1914</string>
+	</entity>
+	<entity start="8204" end="8219" type="LOCATION">
+		<string>Admiralty House</string>
+	</entity>
+	<entity start="8259" end="8269" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="8274" end="8283" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="8301" end="8308" type="LOCATION">
+		<string>Antwerp</string>
+	</entity>
+	<entity start="8316" end="8323" type="ORGANIZATION">
+		<string>Cabinet</string>
+	</entity>
+	<entity start="8396" end="8404" type="ORGANIZATION">
+		<string>Belgians</string>
+	</entity>
+	<entity start="8437" end="8447" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="8480" end="8506" type="PERSON">
+		<string>Marigold Frances Churchill</string>
+	</entity>
+	<entity start="8511" end="8527" type="DATE">
+		<string>15 November 1918</string>
+	</entity>
+	<entity start="8607" end="8618" type="DATE">
+		<string>August 1921</string>
+	</entity>
+	<entity start="8624" end="8644" type="ORGANIZATION">
+		<string>Churchills' children</string>
+	</entity>
+	<entity start="8693" end="8697" type="LOCATION">
+		<string>Kent</string>
+	</entity>
+	<entity start="8710" end="8714" type="PERSON">
+		<string>Rose</string>
+	</entity>
+	<entity start="8716" end="8726" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="8752" end="8762" type="LOCATION">
+		<string>Eaton Hall</string>
+	</entity>
+	<entity start="8783" end="8797" type="PERSON">
+		<string>Hugh Grosvenor</string>
+	</entity>
+	<entity start="8803" end="8822" type="PERSON">
+		<string>Duke of Westminster</string>
+	</entity>
+	<entity start="8875" end="8879" type="PERSON">
+		<string>Rose</string>
+	</entity>
+	<entity start="8881" end="8889" type="PERSON">
+		<string>Marigold</string>
+	</entity>
+	<entity start="9067" end="9071" type="PERSON">
+		<string>Rose</string>
+	</entity>
+	<entity start="9081" end="9091" type="PERSON">
+		<string>Clementine</string>
+	</entity>
+	<entity start="9129" end="9143" type="DATE">
+		<string>23 August 1921</string>
+	</entity>
+	<entity start="9149" end="9157" type="PERSON">
+		<string>Marigold</string>
+	</entity>
+	<entity start="9176" end="9197" type="LOCATION">
+		<string>Kensal Green Cemetery</string>
+	</entity>
+	<entity start="9219" end="9236" type="DATE">
+		<string>15 September 1922</string>
+	</entity>
+	<entity start="9242" end="9252" type="ORGANIZATION">
+		<string>Churchills</string>
+	</entity>
+	<entity start="9266" end="9270" type="PERSON">
+		<string>Mary</string>
+	</entity>
+	<entity start="9304" end="9314" type="ORGANIZATION">
+		<string>Churchills</string>
+	</entity>
+	<entity start="9322" end="9331" type="LOCATION">
+		<string>Chartwell</string>
+	</entity>
+	<entity start="9365" end="9372" type="PERSON">
+		<string>Winston</string>
+	</entity>
+	<entity start="9384" end="9388" type="DATE">
+		<string>1965</string>
+	</entity>
+	<entity start="9414" end="9423" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="9445" end="9449" type="DATE">
+		<string>1895</string>
+	</entity>
+	<entity start="9457" end="9466" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="9472" end="9478" type="LOCATION">
+		<string>Harrow</string>
+	</entity>
+	<entity start="9482" end="9486" type="DATE">
+		<string>1893</string>
+	</entity>
+	<entity start="9513" end="9535" type="ORGANIZATION">
+		<string>Royal Military College</string>
+	</entity>
+	<entity start="9537" end="9546" type="LOCATION">
+		<string>Sandhurst</string>
+	</entity>
+	<entity start="9797" end="9810" type="DATE">
+		<string>December 1894</string>
+	</entity>
+	<entity start="9998" end="10021" type="ORGANIZATION">
+		<string>4th Queen's Own Hussars</string>
+	</entity>
+	<entity start="10025" end="10041" type="DATE">
+		<string>20 February 1895</string>
+	</entity>
+	<entity start="10046" end="10050" type="DATE">
+		<string>1941</string>
+	</entity>
+	<entity start="10120" end="10131" type="ORGANIZATION">
+		<string>4th Hussars</string>
+	</entity>
+	<entity start="10275" end="10284" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="10321" end="10332" type="ORGANIZATION">
+		<string>4th Hussars</string>
+	</entity>
+	<entity start="10439" end="10443" type="DATE">
+		<string>2012</string>
+	</entity>
+	<entity start="10637" end="10648" type="PERSON">
+		<string>Roy Jenkins</string>
+	</entity>
+	<entity start="11107" end="11113" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="11170" end="11174" type="LOCATION">
+		<string>Cuba</string>
+	</entity>
+	<entity start="11179" end="11183" type="DATE">
+		<string>1895</string>
+	</entity>
+	<entity start="11185" end="11194" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="11215" end="11230" type="PERSON">
+		<string>Reginald Barnes</string>
+	</entity>
+	<entity start="11245" end="11249" type="LOCATION">
+		<string>Cuba</string>
+	</entity>
+	<entity start="11265" end="11272" type="ORGANIZATION">
+		<string>Spanish</string>
+	</entity>
+	<entity start="11283" end="11299" type="ORGANIZATION">
+		<string>Cuban guerrillas</string>
+	</entity>
+	<entity start="11367" end="11380" type="ORGANIZATION">
+		<string>Daily Graphic</string>
+	</entity>
+	<entity start="11408" end="11429" type="DATE">
+		<string>twenty-first birthday</string>
+	</entity>
+	<entity start="11484" end="11491" type="ORGANIZATION">
+		<string>Spanish</string>
+	</entity>
+	<entity start="11521" end="11530" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="11552" end="11556" type="LOCATION">
+		<string>Cuba</string>
+	</entity>
+	<entity start="11642" end="11648" type="LOCATION">
+		<string>Havana</string>
+	</entity>
+	<entity start="11713" end="11721" type="LOCATION">
+		<string>New York</string>
+	</entity>
+	<entity start="11748" end="11762" type="PERSON">
+		<string>Bourke Cockran</string>
+	</entity>
+	<entity start="11790" end="11796" type="PERSON">
+		<string>Bourke</string>
+	</entity>
+	<entity start="11857" end="11881" type="ORGANIZATION">
+		<string>House of Representatives</string>
+	</entity>
+	<entity start="11905" end="11914" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="11988" end="11995" type="ORGANIZATION">
+		<string>America</string>
+	</entity>
+	<entity start="12039" end="12046" type="PERSON">
+		<string>Everest</string>
+	</entity>
+	<entity start="12079" end="12086" type="LOCATION">
+		<string>England</string>
+	</entity>
+	<entity start="12319" end="12324" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="12335" end="12347" type="DATE">
+		<string>October 1896</string>
+	</entity>
+	<entity start="12371" end="12377" type="LOCATION">
+		<string>Bombay</string>
+	</entity>
+	<entity start="12379" end="12392" type="LOCATION">
+		<string>British India</string>
+	</entity>
+	<entity start="12524" end="12541" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="12567" end="12580" type="LOCATION">
+		<string>United States</string>
+	</entity>
+	<entity start="12584" end="12588" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="12593" end="12597" type="DATE">
+		<string>1897</string>
+	</entity>
+	<entity start="12599" end="12608" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="12793" end="12800" type="LOCATION">
+		<string>England</string>
+	</entity>
+	<entity start="12838" end="12850" type="ORGANIZATION">
+		<string>British Army</string>
+	</entity>
+	<entity start="12881" end="12894" type="ORGANIZATION">
+		<string>Pashtun tribe</string>
+	</entity>
+	<entity start="12902" end="12921" type="LOCATION">
+		<string>North West Frontier</string>
+	</entity>
+	<entity start="12925" end="12930" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="13032" end="13039" type="PERSON">
+		<string>Jeffery</string>
+	</entity>
+	<entity start="13090" end="13098" type="LOCATION">
+		<string>Malakand</string>
+	</entity>
+	<entity start="13107" end="13122" type="LOCATION">
+		<string>Frontier region</string>
+	</entity>
+	<entity start="13126" end="13139" type="LOCATION">
+		<string>British India</string>
+	</entity>
+	<entity start="13141" end="13148" type="PERSON">
+		<string>Jeffery</string>
+	</entity>
+	<entity start="13193" end="13206" type="LOCATION">
+		<string>Mamund Valley</string>
+	</entity>
+	<entity start="13365" end="13375" type="ORGANIZATION">
+		<string>35th Sikhs</string>
+	</entity>
+	<entity start="13437" end="13442" type="ORGANIZATION">
+		<string>Sikhs</string>
+	</entity>
+	<entity start="13727" end="13736" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="13869" end="13874" type="ORGANIZATION">
+		<string>Sikhs</string>
+	</entity>
+	<entity start="13941" end="13950" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="14414" end="14427" type="DATE">
+		<string>December 1900</string>
+	</entity>
+	<entity start="14567" end="14578" type="ORGANIZATION">
+		<string>The Pioneer</string>
+	</entity>
+	<entity start="14583" end="14602" type="ORGANIZATION">
+		<string>The Daily Telegraph</string>
+	</entity>
+	<entity start="14711" end="14730" type="ORGANIZATION">
+		<string>The Daily Telegraph</string>
+	</entity>
+	<entity start="14732" end="14737" type="LOCATION">
+		<string>Sudan</string>
+	</entity>
+	<entity start="14742" end="14748" type="LOCATION">
+		<string>Oldham</string>
+	</entity>
+	<entity start="14781" end="14785" type="DATE">
+		<string>1899</string>
+	</entity>
+	<entity start="14787" end="14796" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="14816" end="14821" type="LOCATION">
+		<string>Egypt</string>
+	</entity>
+	<entity start="14825" end="14829" type="DATE">
+		<string>1898</string>
+	</entity>
+	<entity start="14842" end="14847" type="LOCATION">
+		<string>Luxor</string>
+	</entity>
+	<entity start="14884" end="14896" type="ORGANIZATION">
+		<string>21st Lancers</string>
+	</entity>
+	<entity start="14912" end="14917" type="LOCATION">
+		<string>Sudan</string>
+	</entity>
+	<entity start="14947" end="14964" type="PERSON">
+		<string>Herbert Kitchener</string>
+	</entity>
+	<entity start="15072" end="15084" type="PERSON">
+		<string>Douglas Haig</string>
+	</entity>
+	<entity start="15106" end="15118" type="PERSON">
+		<string>David Beatty</string>
+	</entity>
+	<entity start="15160" end="15165" type="LOCATION">
+		<string>Sudan</string>
+	</entity>
+	<entity start="15286" end="15300" type="DATE">
+		<string>September 1898</string>
+	</entity>
+	<entity start="15348" end="15360" type="ORGANIZATION">
+		<string>Morning Post</string>
+	</entity>
+	<entity start="15365" end="15377" type="DATE">
+		<string>October 1898</string>
+	</entity>
+	<entity start="15398" end="15405" type="LOCATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="15488" end="15493" type="LOCATION">
+		<string>Sudan</string>
+	</entity>
+	<entity start="15534" end="15543" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="15562" end="15574" type="ORGANIZATION">
+		<string>British Army</string>
+	</entity>
+	<entity start="15590" end="15600" type="DATE">
+		<string>5 May 1899</string>
+	</entity>
+	<entity start="15647" end="15660" type="ORGANIZATION">
+		<string>Parliamentary</string>
+	</entity>
+	<entity start="15692" end="15706" type="PERSON">
+		<string>Robert Ascroft</string>
+	</entity>
+	<entity start="15724" end="15742" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="15756" end="15763" type="PERSON">
+		<string>Ascroft</string>
+	</entity>
+	<entity start="15766" end="15785" type="ORGANIZATION">
+		<string>Oldham constituency</string>
+	</entity>
+	<entity start="15787" end="15794" type="PERSON">
+		<string>Ascroft</string>
+	</entity>
+	<entity start="15842" end="15851" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="15924" end="15937" type="ORGANIZATION">
+		<string>Conservatives</string>
+	</entity>
+	<entity start="15969" end="15978" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="16018" end="16030" type="LOCATION">
+		<string>South Africa</string>
+	</entity>
+	<entity start="16049" end="16055" type="LOCATION">
+		<string>Oldham</string>
+	</entity>
+	<entity start="16057" end="16066" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="16133" end="16148" type="DATE">
+		<string>12 October 1899</string>
+	</entity>
+	<entity start="16178" end="16185" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="16194" end="16208" type="ORGANIZATION">
+		<string>Boer Republics</string>
+	</entity>
+	<entity start="16280" end="16296" type="ORGANIZATION">
+		<string>The Morning Post</string>
+	</entity>
+	<entity start="16411" end="16425" type="PERSON">
+		<string>Redvers Buller</string>
+	</entity>
+	<entity start="16578" end="16586" type="LOCATION">
+		<string>Pretoria</string>
+	</entity>
+	<entity start="16618" end="16648" type="ORGANIZATION">
+		<string>Pretoria High School for Girls</string>
+	</entity>
+	<entity start="16758" end="16765" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="16988" end="17004" type="LOCATION">
+		<string>Lourenço Marques</string>
+	</entity>
+	<entity start="17008" end="17019" type="LOCATION">
+		<string>Delagoa Bay</string>
+	</entity>
+	<entity start="17125" end="17132" type="LOCATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="17180" end="17201" type="ORGANIZATION">
+		<string>General Buller's army</string>
+	</entity>
+	<entity start="17230" end="17237" type="ORGANIZATION">
+		<string>British</string>
+	</entity>
+	<entity start="17273" end="17281" type="LOCATION">
+		<string>Pretoria</string>
+	</entity>
+	<entity start="17368" end="17393" type="ORGANIZATION">
+		<string>South African Light Horse</string>
+	</entity>
+	<entity start="17418" end="17432" type="ORGANIZATION">
+		<string>British troops</string>
+	</entity>
+	<entity start="17438" end="17447" type="LOCATION">
+		<string>Ladysmith</string>
+	</entity>
+	<entity start="17452" end="17460" type="LOCATION">
+		<string>Pretoria</string>
+	</entity>
+	<entity start="17485" end="17504" type="PERSON">
+		<string>Duke of Marlborough</string>
+	</entity>
+	<entity start="17558" end="17566" type="LOCATION">
+		<string>Pretoria</string>
+	</entity>
+	<entity start="17621" end="17644" type="ORGANIZATION">
+		<string>Boer prison camp guards</string>
+	</entity>
+	<entity start="17681" end="17700" type="LOCATION">
+		<string>RMS Dunottar Castle</string>
+	</entity>
+	<entity start="17702" end="17711" type="DATE">
+		<string>July 1900</string>
+	</entity>
+	<entity start="17731" end="17745" type="PERSON">
+		<string>Byron Leighton</string>
+	</entity>
+	<entity start="17747" end="17760" type="PERSON">
+		<string>Claud Grenfel</string>
+	</entity>
+	<entity start="17768" end="17793" type="PERSON">
+		<string>Frederick Russell Burnham</string>
+	</entity>
+	<entity start="17803" end="17816" type="PERSON">
+		<string>Gordon Forbes</string>
+	</entity>
+	<entity start="17818" end="17828" type="PERSON">
+		<string>Abe Bailey</string>
+	</entity>
+	<entity start="17838" end="17842" type="PERSON">
+		<string>John</string>
+	</entity>
+	<entity start="17855" end="17870" type="PERSON">
+		<string>Diana Churchill</string>
+	</entity>
+	<entity start="17874" end="17878" type="DATE">
+		<string>1932</string>
+	</entity>
+	<entity start="17909" end="17927" type="PERSON">
+		<string>John Weston Brooke</string>
+	</entity>
+	<entity start="17947" end="17958" type="PERSON">
+		<string>Bobby White</string>
+	</entity>
+	<entity start="17960" end="17970" type="PERSON">
+		<string>Lord Downe</string>
+	</entity>
+	<entity start="17984" end="18005" type="PERSON">
+		<string>Henry Edward Colville</string>
+	</entity>
+	<entity start="18020" end="18029" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="18084" end="18096" type="LOCATION">
+		<string>South Africa</string>
+	</entity>
+	<entity start="18105" end="18116" type="PERSON">
+		<string>Harry White</string>
+	</entity>
+	<entity start="18124" end="18135" type="PERSON">
+		<string>Joe Laycock</string>
+	</entity>
+	<entity start="18137" end="18154" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="18160" end="18176" type="PERSON">
+		<string>Charles Bentinck</string>
+	</entity>
+	<entity start="18210" end="18225" type="PERSON">
+		<string>Maurice Gifford</string>
+	</entity>
+	<entity start="18230" end="18234" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="18236" end="18245" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="18258" end="18265" type="LOCATION">
+		<string>England</string>
+	</entity>
+	<entity start="18273" end="18292" type="LOCATION">
+		<string>RMS Dunottar Castle</string>
+	</entity>
+	<entity start="18337" end="18349" type="LOCATION">
+		<string>South Africa</string>
+	</entity>
+	<entity start="18455" end="18467" type="PERSON">
+		<string>Ian Hamilton</string>
+	</entity>
+	<entity start="18470" end="18475" type="ORGANIZATION">
+		<string>March</string>
+	</entity>
+	<entity start="18477" end="18486" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="18517" end="18523" type="ORGANIZATION">
+		<string>Oldham</string>
+	</entity>
+	<entity start="18551" end="18555" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="18569" end="18581" type="ORGANIZATION">
+		<string>Conservative</string>
+	</entity>
+	<entity start="18593" end="18598" type="PERSON">
+		<string>Crisp</string>
+	</entity>
+	<entity start="18654" end="18658" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="18711" end="18718" type="LOCATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="18745" end="18758" type="LOCATION">
+		<string>United States</string>
+	</entity>
+	<entity start="18763" end="18769" type="LOCATION">
+		<string>Canada</string>
+	</entity>
+	<entity start="18841" end="18845" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="18887" end="18891" type="DATE">
+		<string>1902</string>
+	</entity>
+	<entity start="18903" end="18920" type="ORGANIZATION">
+		<string>Imperial Yeomanry</string>
+	</entity>
+	<entity start="18968" end="18999" type="ORGANIZATION">
+		<string>Queen's Own Oxfordshire Hussars</string>
+	</entity>
+	<entity start="19003" end="19017" type="DATE">
+		<string>4 January 1902</string>
+	</entity>
+	<entity start="19075" end="19090" type="LOCATION">
+		<string>Studholme Lodge</string>
+	</entity>
+	<entity start="19098" end="19104" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="19140" end="19153" type="DATE">
+		<string>25 March 1902</string>
+	</entity>
+	<entity start="19158" end="19168" type="DATE">
+		<string>April 1905</string>
+	</entity>
+	<entity start="19227" end="19242" type="ORGANIZATION">
+		<string>Henley Squadron</string>
+	</entity>
+	<entity start="19250" end="19281" type="ORGANIZATION">
+		<string>Queen's Own Oxfordshire Hussars</string>
+	</entity>
+	<entity start="19286" end="19300" type="DATE">
+		<string>September 1916</string>
+	</entity>
+	<entity start="19394" end="19398" type="DATE">
+		<string>1924</string>
+	</entity>
+	<entity start="19439" end="19448" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="19453" end="19465" type="DATE">
+		<string>October 1911</string>
+	</entity>
+	<entity start="19467" end="19476" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="19509" end="19518" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="19658" end="19673" type="PERSON">
+		<string>Bertram Dickson</string>
+	</entity>
+	<entity start="19899" end="19908" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="20033" end="20042" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="20062" end="20078" type="ORGANIZATION">
+		<string>Royal Commission</string>
+	</entity>
+	<entity start="20102" end="20113" type="PERSON">
+		<string>John Fisher</string>
+	</entity>
+	<entity start="20343" end="20355" type="LOCATION">
+		<string>Persian Gulf</string>
+	</entity>
+	<entity start="20393" end="20402" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="20440" end="20465" type="ORGANIZATION">
+		<string>Anglo-Persian Oil Company</string>
+	</entity>
+	<entity start="20549" end="20558" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="20599" end="20608" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="20669" end="20677" type="DATE">
+		<string>May 1915</string>
+	</entity>
+	<entity start="20678" end="20687" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="20709" end="20718" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="20798" end="20805" type="ORGANIZATION">
+		<string>Cabinet</string>
+	</entity>
+	<entity start="20842" end="20860" type="ORGANIZATION">
+		<string>Duchy of Lancaster</string>
+	</entity>
+	<entity start="20927" end="20940" type="LOCATION">
+		<string>Western Front</string>
+	</entity>
+	<entity start="20942" end="20959" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="20975" end="20988" type="ORGANIZATION">
+		<string>6th Battalion</string>
+	</entity>
+	<entity start="20994" end="21015" type="ORGANIZATION">
+		<string>Royal Scots Fusiliers</string>
+	</entity>
+	<entity start="21017" end="21021" type="DATE">
+		<string>1916</string>
+	</entity>
+	<entity start="21046" end="21055" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="21069" end="21081" type="ORGANIZATION">
+		<string>British Army</string>
+	</entity>
+	<entity start="21227" end="21240" type="ORGANIZATION">
+		<string>2nd Battalion</string>
+	</entity>
+	<entity start="21242" end="21258" type="ORGANIZATION">
+		<string>Grenadier Guards</string>
+	</entity>
+	<entity start="21312" end="21325" type="ORGANIZATION">
+		<string>6th Battalion</string>
+	</entity>
+	<entity start="21327" end="21348" type="ORGANIZATION">
+		<string>Royal Scots Fusiliers</string>
+	</entity>
+	<entity start="21362" end="21385" type="ORGANIZATION">
+		<string>9th (Scottish) Division</string>
+	</entity>
+	<entity start="21391" end="21405" type="DATE">
+		<string>1 January 1916</string>
+	</entity>
+	<entity start="21767" end="21780" type="LOCATION">
+		<string>Western Front</string>
+	</entity>
+	<entity start="21790" end="21801" type="PERSON">
+		<string>Lord Deedes</string>
+	</entity>
+	<entity start="21831" end="21855" type="ORGANIZATION">
+		<string>Royal Historical Society</string>
+	</entity>
+	<entity start="21859" end="21863" type="DATE">
+		<string>2001</string>
+	</entity>
+	<entity start="21868" end="21877" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="21915" end="21931" type="ORGANIZATION">
+		<string>Grenadier Guards</string>
+	</entity>
+	<entity start="22047" end="22054" type="PERSON">
+		<string>Winston</string>
+	</entity>
+	<entity start="22404" end="22413" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="22549" end="22559" type="ORGANIZATION">
+		<string>Parliament</string>
+	</entity>
+	<entity start="22561" end="22570" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="22599" end="22605" type="ORGANIZATION">
+		<string>Oldham</string>
+	</entity>
+	<entity start="22613" end="22617" type="DATE">
+		<string>1900</string>
+	</entity>
+	<entity start="22698" end="22705" type="LOCATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="22714" end="22727" type="LOCATION">
+		<string>United States</string>
+	</entity>
+	<entity start="22786" end="22796" type="ORGANIZATION">
+		<string>Parliament</string>
+	</entity>
+	<entity start="22841" end="22859" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="22872" end="22882" type="PERSON">
+		<string>Hugh Cecil</string>
+	</entity>
+	<entity start="22884" end="22898" type="ORGANIZATION">
+		<string>the Hughligans</string>
+	</entity>
+	<entity start="22993" end="23011" type="PERSON">
+		<string>Joseph Chamberlain</string>
+	</entity>
+	<entity start="23076" end="23083" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="23188" end="23194" type="ORGANIZATION">
+		<string>Oldham</string>
+	</entity>
+	<entity start="23238" end="23245" type="LOCATION">
+		<string>Whitsun</string>
+	</entity>
+	<entity start="23256" end="23260" type="DATE">
+		<string>1904</string>
+	</entity>
+	<entity start="23309" end="23322" type="ORGANIZATION">
+		<string>Liberal Party</string>
+	</entity>
+	<entity start="23329" end="23336" type="ORGANIZATION">
+		<string>Liberal</string>
+	</entity>
+	<entity start="23388" end="23396" type="ORGANIZATION">
+		<string>Liberals</string>
+	</entity>
+	<entity start="23414" end="23438" type="PERSON">
+		<string>Henry Campbell-Bannerman</string>
+	</entity>
+	<entity start="23461" end="23474" type="DATE">
+		<string>December 1905</string>
+	</entity>
+	<entity start="23476" end="23485" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="23556" end="23568" type="PERSON">
+		<string>South Africa</string>
+	</entity>
+	<entity start="23594" end="23598" type="DATE">
+		<string>1903</string>
+	</entity>
+	<entity start="23605" end="23609" type="DATE">
+		<string>1905</string>
+	</entity>
+	<entity start="23611" end="23620" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="23654" end="23672" type="PERSON">
+		<string>Randolph Churchill</string>
+	</entity>
+	<entity start="23734" end="23738" type="DATE">
+		<string>1906</string>
+	</entity>
+	<entity start="23816" end="23822" type="ORGANIZATION">
+		<string>Oldham</string>
+	</entity>
+	<entity start="23824" end="23833" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="23859" end="23880" type="ORGANIZATION">
+		<string>Manchester North West</string>
+	</entity>
+	<entity start="23905" end="23909" type="DATE">
+		<string>1906</string>
+	</entity>
+	<entity start="23999" end="24003" type="DATE">
+		<string>1908</string>
+	</entity>
+	<entity start="24010" end="24028" type="PERSON">
+		<string>Campbell-Bannerman</string>
+	</entity>
+	<entity start="24046" end="24067" type="PERSON">
+		<string>Herbert Henry Asquith</string>
+	</entity>
+	<entity start="24071" end="24075" type="DATE">
+		<string>1908</string>
+	</entity>
+	<entity start="24077" end="24086" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="24107" end="24114" type="ORGANIZATION">
+		<string>Cabinet</string>
+	</entity>
+	<entity start="24135" end="24149" type="ORGANIZATION">
+		<string>Board of Trade</string>
+	</entity>
+	<entity start="24263" end="24272" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="24321" end="24340" type="ORGANIZATION">
+		<string>Dundee constituency</string>
+	</entity>
+	<entity start="24362" end="24376" type="ORGANIZATION">
+		<string>Board of Trade</string>
+	</entity>
+	<entity start="24414" end="24426" type="PERSON">
+		<string>Lloyd George</string>
+	</entity>
+	<entity start="24457" end="24466" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="24467" end="24483" type="PERSON">
+		<string>Reginald McKenna</string>
+	</entity>
+	<entity start="24536" end="24540" type="ORGANIZATION">
+		<string>Navy</string>
+	</entity>
+	<entity start="24605" end="24609" type="DATE">
+		<string>1908</string>
+	</entity>
+	<entity start="24685" end="24692" type="LOCATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="24697" end="24701" type="DATE">
+		<string>1909</string>
+	</entity>
+	<entity start="24857" end="24861" type="DATE">
+		<string>1911</string>
+	</entity>
+	<entity start="24952" end="24956" type="DATE">
+		<string>1913</string>
+	</entity>
+	<entity start="25123" end="25132" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="25136" end="25140" type="DATE">
+		<string>1904</string>
+	</entity>
+	<entity start="25142" end="25151" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="25224" end="25237" type="ORGANIZATION">
+		<string>Budget League</string>
+	</entity>
+	<entity start="25295" end="25316" type="ORGANIZATION">
+		<string>Budget Protest League</string>
+	</entity>
+	<entity start="25484" end="25491" type="ORGANIZATION">
+		<string>Commons</string>
+	</entity>
+	<entity start="25495" end="25499" type="DATE">
+		<string>1909</string>
+	</entity>
+	<entity start="25521" end="25535" type="ORGANIZATION">
+		<string>House of Lords</string>
+	</entity>
+	<entity start="25541" end="25549" type="ORGANIZATION">
+		<string>Liberals</string>
+	</entity>
+	<entity start="25595" end="25602" type="DATE">
+		<string>January</string>
+	</entity>
+	<entity start="25607" end="25620" type="DATE">
+		<string>December 1910</string>
+	</entity>
+	<entity start="25771" end="25780" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="25813" end="25817" type="DATE">
+		<string>1910</string>
+	</entity>
+	<entity start="25908" end="25930" type="ORGANIZATION">
+		<string>Siege of Sidney Street</string>
+	</entity>
+	<entity start="25954" end="25971" type="ORGANIZATION">
+		<string>Cambrian Colliery</string>
+	</entity>
+	<entity start="25976" end="25992" type="ORGANIZATION">
+		<string>the suffragettes</string>
+	</entity>
+	<entity start="25997" end="26001" type="DATE">
+		<string>1910</string>
+	</entity>
+	<entity start="26034" end="26048" type="LOCATION">
+		<string>Rhondda Valley</string>
+	</entity>
+	<entity start="26127" end="26136" type="ORGANIZATION">
+		<string>Glamorgan</string>
+	</entity>
+	<entity start="26199" end="26208" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="26289" end="26296" type="LOCATION">
+		<string>Swindon</string>
+	</entity>
+	<entity start="26301" end="26308" type="LOCATION">
+		<string>Cardiff</string>
+	</entity>
+	<entity start="26343" end="26353" type="DATE">
+		<string>9 November</string>
+	</entity>
+	<entity start="26359" end="26364" type="ORGANIZATION">
+		<string>Times</string>
+	</entity>
+	<entity start="26434" end="26443" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="26496" end="26501" type="LOCATION">
+		<string>Wales</string>
+	</entity>
+	<entity start="26509" end="26515" type="ORGANIZATION">
+		<string>Labour</string>
+	</entity>
+	<entity start="26541" end="26558" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="26576" end="26589" type="LOCATION">
+		<string>Sidney Street</string>
+	</entity>
+	<entity start="26591" end="26605" type="DATE">
+		<string>3 January 1911</string>
+	</entity>
+	<entity start="26610" end="26628" type="DATE">
+		<string>early January 1911</string>
+	</entity>
+	<entity start="26630" end="26639" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="26674" end="26696" type="ORGANIZATION">
+		<string>Siege of Sidney Street</string>
+	</entity>
+	<entity start="26700" end="26706" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="26852" end="26866" type="PERSON">
+		<string>Arthur Balfour</string>
+	</entity>
+	<entity start="26882" end="26891" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="27058" end="27069" type="PERSON">
+		<string>Roy Jenkins</string>
+	</entity>
+	<entity start="27246" end="27264" type="ORGANIZATION">
+		<string>Latvian anarchists</string>
+	</entity>
+	<entity start="27310" end="27319" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="27334" end="27346" type="ORGANIZATION">
+		<string>Scots Guards</string>
+	</entity>
+	<entity start="27356" end="27371" type="LOCATION">
+		<string>Tower of London</string>
+	</entity>
+	<entity start="27475" end="27484" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="27705" end="27714" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="27821" end="27842" type="PERSON">
+		<string>Herbert Henry Asquith</string>
+	</entity>
+	<entity start="27920" end="27924" type="DATE">
+		<string>1911</string>
+	</entity>
+	<entity start="27926" end="27935" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="27987" end="27996" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="28271" end="28281" type="ORGANIZATION">
+		<string>Royal Navy</string>
+	</entity>
+	<entity start="28330" end="28344" type="DATE">
+		<string>5 October 1914</string>
+	</entity>
+	<entity start="28346" end="28355" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="28364" end="28371" type="LOCATION">
+		<string>Antwerp</string>
+	</entity>
+	<entity start="28383" end="28401" type="ORGANIZATION">
+		<string>Belgian government</string>
+	</entity>
+	<entity start="28428" end="28448" type="ORGANIZATION">
+		<string>Royal Marine Brigade</string>
+	</entity>
+	<entity start="28466" end="28475" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="28490" end="28493" type="ORGANIZATION">
+		<string>1st</string>
+	</entity>
+	<entity start="28498" end="28516" type="ORGANIZATION">
+		<string>2nd Naval Brigades</string>
+	</entity>
+	<entity start="28538" end="28545" type="LOCATION">
+		<string>Antwerp</string>
+	</entity>
+	<entity start="28554" end="28564" type="DATE">
+		<string>10 October</string>
+	</entity>
+	<entity start="28718" end="28725" type="ORGANIZATION">
+		<string>Belgium</string>
+	</entity>
+	<entity start="28752" end="28759" type="LOCATION">
+		<string>Antwerp</string>
+	</entity>
+	<entity start="28763" end="28772" type="DATE">
+		<string>3 October</string>
+	</entity>
+	<entity start="28799" end="28805" type="LOCATION">
+		<string>Calais</string>
+	</entity>
+	<entity start="28810" end="28817" type="LOCATION">
+		<string>Dunkirk</string>
+	</entity>
+	<entity start="28819" end="28828" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="28941" end="28960" type="ORGANIZATION">
+		<string>Landships Committee</string>
+	</entity>
+	<entity start="29171" end="29175" type="DATE">
+		<string>1915</string>
+	</entity>
+	<entity start="29272" end="29283" type="LOCATION">
+		<string>Dardanelles</string>
+	</entity>
+	<entity start="29378" end="29385" type="PERSON">
+		<string>Asquith</string>
+	</entity>
+	<entity start="29432" end="29445" type="ORGANIZATION">
+		<string>Conservatives</string>
+	</entity>
+	<entity start="29511" end="29520" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="29565" end="29583" type="ORGANIZATION">
+		<string>Duchy of Lancaster</string>
+	</entity>
+	<entity start="29596" end="29612" type="DATE">
+		<string>15 November 1915</string>
+	</entity>
+	<entity start="29749" end="29762" type="LOCATION">
+		<string>Western Front</string>
+	</entity>
+	<entity start="29778" end="29820" type="ORGANIZATION">
+		<string>6th Battalion of the Royal Scots Fusiliers</string>
+	</entity>
+	<entity start="29957" end="29968" type="LOCATION">
+		<string>Ploegsteert</string>
+	</entity>
+	<entity start="30003" end="30013" type="DATE">
+		<string>March 1916</string>
+	</entity>
+	<entity start="30015" end="30024" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="30037" end="30044" type="LOCATION">
+		<string>England</string>
+	</entity>
+	<entity start="30077" end="30083" type="LOCATION">
+		<string>France</string>
+	</entity>
+	<entity start="30117" end="30133" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="30163" end="30175" type="PERSON">
+		<string>Lloyd George</string>
+	</entity>
+	<entity start="30442" end="30451" type="DATE">
+		<string>July 1917</string>
+	</entity>
+	<entity start="30453" end="30462" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="30507" end="30519" type="DATE">
+		<string>January 1919</string>
+	</entity>
+	<entity start="30657" end="30665" type="ORGANIZATION">
+		<string>Treasury</string>
+	</entity>
+	<entity start="30872" end="30882" type="ORGANIZATION">
+		<string>War Office</string>
+	</entity>
+	<entity start="30937" end="30946" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="31105" end="31112" type="ORGANIZATION">
+		<string>Cabinet</string>
+	</entity>
+	<entity start="31214" end="31224" type="ORGANIZATION">
+		<string>Parliament</string>
+	</entity>
+	<entity start="31282" end="31288" type="ORGANIZATION">
+		<string>Labour</string>
+	</entity>
+	<entity start="31293" end="31297" type="DATE">
+		<string>1920</string>
+	</entity>
+	<entity start="31314" end="31328" type="ORGANIZATION">
+		<string>British forces</string>
+	</entity>
+	<entity start="31349" end="31358" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="31403" end="31408" type="ORGANIZATION">
+		<string>Poles</string>
+	</entity>
+	<entity start="31427" end="31434" type="LOCATION">
+		<string>Ukraine</string>
+	</entity>
+	<entity start="31608" end="31612" type="DATE">
+		<string>1921</string>
+	</entity>
+	<entity start="31662" end="31666" type="DATE">
+		<string>1921</string>
+	</entity>
+	<entity start="31690" end="31706" type="ORGANIZATION">
+		<string>Irish Free State</string>
+	</entity>
+	<entity start="31708" end="31717" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="31843" end="31859" type="ORGANIZATION">
+		<string>Irish Free State</string>
+	</entity>
+	<entity start="31900" end="31910" type="LOCATION">
+		<string>Queenstown</string>
+	</entity>
+	<entity start="31912" end="31916" type="LOCATION">
+		<string>Cobh</string>
+	</entity>
+	<entity start="31919" end="31928" type="LOCATION">
+		<string>Berehaven</string>
+	</entity>
+	<entity start="31933" end="31945" type="LOCATION">
+		<string>Lough Swilly</string>
+	</entity>
+	<entity start="31991" end="32001" type="ORGANIZATION">
+		<string>Royal Navy</string>
+	</entity>
+	<entity start="32006" end="32010" type="DATE">
+		<string>1938</string>
+	</entity>
+	<entity start="32126" end="32142" type="ORGANIZATION">
+		<string>Irish Free State</string>
+	</entity>
+	<entity start="32147" end="32151" type="DATE">
+		<string>1919</string>
+	</entity>
+	<entity start="32153" end="32162" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="32197" end="32214" type="ORGANIZATION">
+		<string>Kurdish tribesmen</string>
+	</entity>
+	<entity start="32218" end="32222" type="LOCATION">
+		<string>Iraq</string>
+	</entity>
+	<entity start="32235" end="32242" type="ORGANIZATION">
+		<string>British</string>
+	</entity>
+	<entity start="32395" end="32399" type="DATE">
+		<string>1923</string>
+	</entity>
+	<entity start="32401" end="32410" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="32442" end="32452" type="ORGANIZATION">
+		<string>Burmah Oil</string>
+	</entity>
+	<entity start="32458" end="32460" type="ORGANIZATION">
+		<string>BP</string>
+	</entity>
+	<entity start="32479" end="32497" type="ORGANIZATION">
+		<string>British government</string>
+	</entity>
+	<entity start="32507" end="32513" type="LOCATION">
+		<string>Burmah</string>
+	</entity>
+	<entity start="32622" end="32640" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="32673" end="32682" type="DATE">
+		<string>September</string>
+	</entity>
+	<entity start="32688" end="32706" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="32725" end="32745" type="ORGANIZATION">
+		<string>Coalition government</string>
+	</entity>
+	<entity start="32873" end="32885" type="DATE">
+		<string>October 1922</string>
+	</entity>
+	<entity start="32904" end="32913" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="33100" end="33113" type="ORGANIZATION">
+		<string>Liberal Party</string>
+	</entity>
+	<entity start="33146" end="33152" type="ORGANIZATION">
+		<string>Dundee</string>
+	</entity>
+	<entity start="33179" end="33195" type="PERSON">
+		<string>Edwin Scrymgeour</string>
+	</entity>
+	<entity start="33197" end="33206" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="33234" end="33240" type="LOCATION">
+		<string>Dundee</string>
+	</entity>
+	<entity start="33336" end="33344" type="ORGANIZATION">
+		<string>Liberals</string>
+	</entity>
+	<entity start="33358" end="33362" type="DATE">
+		<string>1923</string>
+	</entity>
+	<entity start="33391" end="33400" type="LOCATION">
+		<string>Leicester</string>
+	</entity>
+	<entity start="33476" end="33506" type="ORGANIZATION">
+		<string>Westminster Abbey constituency</string>
+	</entity>
+	<entity start="33557" end="33561" type="DATE">
+		<string>1924</string>
+	</entity>
+	<entity start="33566" end="33572" type="ORGANIZATION">
+		<string>Epping</string>
+	</entity>
+	<entity start="33619" end="33637" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="33724" end="33733" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="33779" end="33783" type="DATE">
+		<string>1924</string>
+	</entity>
+	<entity start="33790" end="33805" type="PERSON">
+		<string>Stanley Baldwin</string>
+	</entity>
+	<entity start="33818" end="33825" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="33968" end="33972" type="DATE">
+		<string>1926</string>
+	</entity>
+	<entity start="34005" end="34009" type="DATE">
+		<string>1924</string>
+	</entity>
+	<entity start="34081" end="34100" type="PERSON">
+		<string>John Maynard Keynes</string>
+	</entity>
+	<entity start="34133" end="34141" type="ORGANIZATION">
+		<string>Treasury</string>
+	</entity>
+	<entity start="34147" end="34160" type="PERSON">
+		<string>Otto Niemeyer</string>
+	</entity>
+	<entity start="34182" end="34197" type="ORGANIZATION">
+		<string>Bank of England</string>
+	</entity>
+	<entity start="34222" end="34228" type="PERSON">
+		<string>Keynes</string>
+	</entity>
+	<entity start="34271" end="34280" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="34352" end="34356" type="DATE">
+		<string>1925</string>
+	</entity>
+	<entity start="34503" end="34519" type="PERSON">
+		<string>Lord Beaverbrook</string>
+	</entity>
+	<entity start="34528" end="34560" type="ORGANIZATION">
+		<string>Federation of British Industries</string>
+	</entity>
+	<entity start="34562" end="34571" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="34687" end="34694" type="PERSON">
+		<string>McKenna</string>
+	</entity>
+	<entity start="34696" end="34705" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="35298" end="35316" type="ORGANIZATION">
+		<string>British industries</string>
+	</entity>
+	<entity start="35471" end="35480" type="DATE">
+		<string>July 1925</string>
+	</entity>
+	<entity start="35484" end="35505" type="ORGANIZATION">
+		<string>Commission of Inquiry</string>
+	</entity>
+	<entity start="35585" end="35592" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="35599" end="35608" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="35662" end="35678" type="ORGANIZATION">
+		<string>Royal Commission</string>
+	</entity>
+	<entity start="35711" end="35721" type="ORGANIZATION">
+		<string>Commission</string>
+	</entity>
+	<entity start="35790" end="35794" type="DATE">
+		<string>1926</string>
+	</entity>
+	<entity start="35796" end="35805" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="35887" end="35896" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="35908" end="35918" type="ORGANIZATION">
+		<string>Government</string>
+	</entity>
+	<entity start="35936" end="35951" type="ORGANIZATION">
+		<string>British Gazette</string>
+	</entity>
+	<entity start="36117" end="36133" type="PERSON">
+		<string>Benito Mussolini</string>
+	</entity>
+	<entity start="36338" end="36347" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="36371" end="36380" type="PERSON">
+		<string>Mussolini</string>
+	</entity>
+	<entity start="36502" end="36511" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="36632" end="36641" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="36848" end="36860" type="ORGANIZATION">
+		<string>Armed Forces</string>
+	</entity>
+	<entity start="36895" end="36904" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="36939" end="36953" type="PERSON">
+		<string>John Churchill</string>
+	</entity>
+	<entity start="36959" end="36978" type="PERSON">
+		<string>Duke of Marlborough</string>
+	</entity>
+	<entity start="36986" end="36995" type="DATE">
+		<string>mid-1930s</string>
+	</entity>
+	<entity start="37001" end="37024" type="ORGANIZATION">
+		<string>Conservative government</string>
+	</entity>
+	<entity start="37045" end="37049" type="DATE">
+		<string>1929</string>
+	</entity>
+	<entity start="37068" end="37077" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="37107" end="37138" type="ORGANIZATION">
+		<string>Conservative Business Committee</string>
+	</entity>
+	<entity start="37171" end="37187" type="ORGANIZATION">
+		<string>Conservative MPs</string>
+	</entity>
+	<entity start="37214" end="37223" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="37246" end="37258" type="ORGANIZATION">
+		<string>Conservative</string>
+	</entity>
+	<entity start="37461" end="37477" type="PERSON">
+		<string>Ramsay MacDonald</string>
+	</entity>
+	<entity start="37489" end="37508" type="ORGANIZATION">
+		<string>National Government</string>
+	</entity>
+	<entity start="37512" end="37516" type="DATE">
+		<string>1931</string>
+	</entity>
+	<entity start="37518" end="37527" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="37556" end="37563" type="ORGANIZATION">
+		<string>Cabinet</string>
+	</entity>
+	<entity start="37791" end="37805" type="PERSON">
+		<string>John Churchill</string>
+	</entity>
+	<entity start="37811" end="37830" type="PERSON">
+		<string>Duke of Marlborough</string>
+	</entity>
+	<entity start="38119" end="38123" type="DATE">
+		<string>1930</string>
+	</entity>
+	<entity start="38224" end="38228" type="DATE">
+		<string>1932</string>
+	</entity>
+	<entity start="38462" end="38471" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="38480" end="38486" type="PERSON">
+		<string>Gandhi</string>
+	</entity>
+	<entity start="38526" end="38554" type="ORGANIZATION">
+		<string>Indian Independence movement</string>
+	</entity>
+	<entity start="38562" end="38567" type="DATE">
+		<string>1930s</string>
+	</entity>
+	<entity start="38665" end="38674" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="38692" end="38698" type="PERSON">
+		<string>Gandhi</string>
+	</entity>
+	<entity start="38763" end="38768" type="DATE">
+		<string>1930s</string>
+	</entity>
+	<entity start="38770" end="38779" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="38843" end="38848" type="ORGANIZATION">
+		<string>India</string>
+	</entity>
+	<entity start="38874" end="38894" type="ORGANIZATION">
+		<string>India Defence League</string>
+	</entity>
+	<entity start="38954" end="38959" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="38961" end="38970" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="39026" end="39030" type="DATE">
+		<string>1930</string>
+	</entity>
+	<entity start="39208" end="39215" type="LOCATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="39236" end="39241" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="39286" end="39296" type="PERSON">
+		<string>Lord Irwin</string>
+	</entity>
+	<entity start="39334" end="39357" type="ORGANIZATION">
+		<string>Conservative Government</string>
+	</entity>
+	<entity start="39400" end="39410" type="DATE">
+		<string>early 1931</string>
+	</entity>
+	<entity start="39434" end="39444" type="ORGANIZATION">
+		<string>Government</string>
+	</entity>
+	<entity start="39459" end="39464" type="ORGANIZATION">
+		<string>India</string>
+	</entity>
+	<entity start="39512" end="39522" type="ORGANIZATION">
+		<string>Government</string>
+	</entity>
+	<entity start="39544" end="39557" type="ORGANIZATION">
+		<string>Liberal Party</string>
+	</entity>
+	<entity start="39591" end="39609" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="39611" end="39620" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="39679" end="39714" type="ORGANIZATION">
+		<string>West Essex Conservative Association</string>
+	</entity>
+	<entity start="39743" end="39752" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="39835" end="39841" type="PERSON">
+		<string>Gandhi</string>
+	</entity>
+	<entity start="39927" end="39931" type="LOCATION">
+		<string>East</string>
+	</entity>
+	<entity start="40079" end="40103" type="ORGANIZATION">
+		<string>Indian National Congress</string>
+	</entity>
+	<entity start="40200" end="40209" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="40242" end="40260" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="40311" end="40323" type="ORGANIZATION">
+		<string>Conservative</string>
+	</entity>
+	<entity start="40380" end="40389" type="ORGANIZATION">
+		<string>St George</string>
+	</entity>
+	<entity start="40405" end="40415" type="DATE">
+		<string>April 1931</string>
+	</entity>
+	<entity start="40429" end="40441" type="ORGANIZATION">
+		<string>Conservative</string>
+	</entity>
+	<entity start="40461" end="40473" type="ORGANIZATION">
+		<string>Conservative</string>
+	</entity>
+	<entity start="40484" end="40495" type="PERSON">
+		<string>Duff Cooper</string>
+	</entity>
+	<entity start="40526" end="40538" type="ORGANIZATION">
+		<string>Conservative</string>
+	</entity>
+	<entity start="40578" end="40588" type="PERSON">
+		<string>Rothermere</string>
+	</entity>
+	<entity start="40595" end="40606" type="PERSON">
+		<string>Beaverbrook</string>
+	</entity>
+	<entity start="40690" end="40699" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="40810" end="40817" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="40819" end="40826" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="40860" end="40871" type="PERSON">
+		<string>Duff Cooper</string>
+	</entity>
+	<entity start="40921" end="40926" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="40994" end="41003" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="41013" end="41025" type="PERSON">
+		<string>Samuel Hoare</string>
+	</entity>
+	<entity start="41030" end="41040" type="PERSON">
+		<string>Lord Derby</string>
+	</entity>
+	<entity start="41059" end="41089" type="ORGANIZATION">
+		<string>Manchester Chamber of Commerce</string>
+	</entity>
+	<entity start="41129" end="41151" type="ORGANIZATION">
+		<string>Joint Select Committee</string>
+	</entity>
+	<entity start="41282" end="41298" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="41299" end="41318" type="ORGANIZATION">
+		<string>Privilege Committee</string>
+	</entity>
+	<entity start="41356" end="41365" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="41397" end="41402" type="ORGANIZATION">
+		<string>House</string>
+	</entity>
+	<entity start="41460" end="41467" type="DATE">
+		<string>13 June</string>
+	</entity>
+	<entity start="41469" end="41478" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="41524" end="41529" type="ORGANIZATION">
+		<string>House</string>
+	</entity>
+	<entity start="41571" end="41580" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="41604" end="41619" type="PERSON">
+		<string>Stanley Baldwin</string>
+	</entity>
+	<entity start="41683" end="41690" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="41753" end="41758" type="ORGANIZATION">
+		<string>India</string>
+	</entity>
+	<entity start="41803" end="41807" type="DATE">
+		<string>1930</string>
+	</entity>
+	<entity start="41846" end="41855" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="41986" end="41990" type="DATE">
+		<string>1943</string>
+	</entity>
+	<entity start="42039" end="42048" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="42260" end="42273" type="PERSON">
+		<string>Arthur Herman</string>
+	</entity>
+	<entity start="42349" end="42354" type="LOCATION">
+		<string>Burma</string>
+	</entity>
+	<entity start="42362" end="42370" type="ORGANIZATION">
+		<string>Japanese</string>
+	</entity>
+	<entity start="42386" end="42391" type="ORGANIZATION">
+		<string>India</string>
+	</entity>
+	<entity start="42482" end="42491" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="42562" end="42567" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="42674" end="42679" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="42681" end="42690" type="ORGANIZATION">
+		<string>Leo Amery</string>
+	</entity>
+	<entity start="42707" end="42712" type="ORGANIZATION">
+		<string>India</string>
+	</entity>
+	<entity start="42714" end="42720" type="PERSON">
+		<string>Wavell</string>
+	</entity>
+	<entity start="42749" end="42754" type="LOCATION">
+		<string>India</string>
+	</entity>
+	<entity start="42756" end="42765" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="42795" end="42801" type="PERSON">
+		<string>Wavell</string>
+	</entity>
+	<entity start="42838" end="42844" type="PERSON">
+		<string>Gandhi</string>
+	</entity>
+	<entity start="42866" end="42875" type="DATE">
+		<string>July 1940</string>
+	</entity>
+	<entity start="42951" end="42964" type="ORGANIZATION">
+		<string>Muslim League</string>
+	</entity>
+	<entity start="42973" end="42988" type="ORGANIZATION">
+		<string>Indian Congress</string>
+	</entity>
+	<entity start="43065" end="43071" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="43073" end="43077" type="LOCATION">
+		<string>Asia</string>
+	</entity>
+	<entity start="43082" end="43088" type="LOCATION">
+		<string>Africa</string>
+	</entity>
+	<entity start="43102" end="43111" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="43115" end="43129" type="PERSON">
+		<string>Ambrose McEvoy</string>
+	</entity>
+	<entity start="43144" end="43148" type="DATE">
+		<string>1932</string>
+	</entity>
+	<entity start="43193" end="43200" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="43235" end="43241" type="ORGANIZATION">
+		<string>France</string>
+	</entity>
+	<entity start="43243" end="43252" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="43283" end="43290" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="43415" end="43422" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="43475" end="43482" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="43492" end="43502" type="PERSON">
+		<string>Lord Lloyd</string>
+	</entity>
+	<entity start="43535" end="43539" type="DATE">
+		<string>1932</string>
+	</entity>
+	<entity start="43540" end="43549" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="43595" end="43619" type="ORGANIZATION">
+		<string>New Commonwealth Society</string>
+	</entity>
+	<entity start="43664" end="43668" type="DATE">
+		<string>1937</string>
+	</entity>
+	<entity start="43807" end="43816" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="43905" end="43912" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="44019" end="44028" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="44046" end="44061" type="DATE">
+		<string>4 February 1920</string>
+	</entity>
+	<entity start="44113" end="44123" type="ORGANIZATION">
+		<string>Bolsheviks</string>
+	</entity>
+	<entity start="44243" end="44247" type="ORGANIZATION">
+		<string>Jews</string>
+	</entity>
+	<entity start="44455" end="44459" type="DATE">
+		<string>1931</string>
+	</entity>
+	<entity start="44483" end="44500" type="ORGANIZATION">
+		<string>League of Nations</string>
+	</entity>
+	<entity start="44514" end="44522" type="ORGANIZATION">
+		<string>Japanese</string>
+	</entity>
+	<entity start="44526" end="44535" type="LOCATION">
+		<string>Manchuria</string>
+	</entity>
+	<entity start="44560" end="44567" type="LOCATION">
+		<string>England</string>
+	</entity>
+	<entity start="44598" end="44603" type="ORGANIZATION">
+		<string>Japan</string>
+	</entity>
+	<entity start="44671" end="44684" type="ORGANIZATION">
+		<string>Soviet Russia</string>
+	</entity>
+	<entity start="44712" end="44717" type="ORGANIZATION">
+		<string>China</string>
+	</entity>
+	<entity start="44847" end="44876" type="ORGANIZATION">
+		<string>Spanish Republican government</string>
+	</entity>
+	<entity start="44903" end="44916" type="ORGANIZATION">
+		<string>Franco's army</string>
+	</entity>
+	<entity start="44925" end="44942" type="ORGANIZATION">
+		<string>Anti-red movement</string>
+	</entity>
+	<entity start="45002" end="45006" type="DATE">
+		<string>1937</string>
+	</entity>
+	<entity start="45017" end="45033" type="PERSON">
+		<string>Benito Mussolini</string>
+	</entity>
+	<entity start="45051" end="45067" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="45071" end="45075" type="DATE">
+		<string>1937</string>
+	</entity>
+	<entity start="45077" end="45086" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="45199" end="45203" type="DATE">
+		<string>1935</string>
+	</entity>
+	<entity start="45271" end="45275" type="DATE">
+		<string>1937</string>
+	</entity>
+	<entity start="45303" end="45312" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="45335" end="45341" type="PERSON">
+		<string>Hitler</string>
+	</entity>
+	<entity start="45529" end="45544" type="ORGANIZATION">
+		<string>Germanic nation</string>
+	</entity>
+	<entity start="45641" end="45650" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="45686" end="45701" type="DATE">
+		<string>7 February 1934</string>
+	</entity>
+	<entity start="45735" end="45750" type="ORGANIZATION">
+		<string>Royal Air Force</string>
+	</entity>
+	<entity start="45767" end="45786" type="ORGANIZATION">
+		<string>Ministry of Defence</string>
+	</entity>
+	<entity start="45803" end="45810" type="DATE">
+		<string>13 July</string>
+	</entity>
+	<entity start="45840" end="45857" type="ORGANIZATION">
+		<string>League of Nations</string>
+	</entity>
+	<entity start="45904" end="45914" type="DATE">
+		<string>early 1936</string>
+	</entity>
+	<entity start="45919" end="45923" type="DATE">
+		<string>1935</string>
+	</entity>
+	<entity start="45963" end="45972" type="ORGANIZATION">
+		<string>The Focus</string>
+	</entity>
+	<entity start="46118" end="46127" type="ORGANIZATION">
+		<string>The Focus</string>
+	</entity>
+	<entity start="46201" end="46205" type="DATE">
+		<string>1936</string>
+	</entity>
+	<entity start="46207" end="46216" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="46232" end="46237" type="LOCATION">
+		<string>Spain</string>
+	</entity>
+	<entity start="46247" end="46254" type="ORGANIZATION">
+		<string>Germans</string>
+	</entity>
+	<entity start="46270" end="46279" type="LOCATION">
+		<string>Rhineland</string>
+	</entity>
+	<entity start="46283" end="46296" type="DATE">
+		<string>February 1936</string>
+	</entity>
+	<entity start="46320" end="46327" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="46333" end="46339" type="ORGANIZATION">
+		<string>Labour</string>
+	</entity>
+	<entity start="46393" end="46412" type="ORGANIZATION">
+		<string>National Government</string>
+	</entity>
+	<entity start="46540" end="46547" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="46551" end="46557" type="ORGANIZATION">
+		<string>France</string>
+	</entity>
+	<entity start="46594" end="46603" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="46616" end="46623" type="DATE">
+		<string>9 March</string>
+	</entity>
+	<entity start="46653" end="46672" type="PERSON">
+		<string>Neville Chamberlain</string>
+	</entity>
+	<entity start="46707" end="46716" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="46821" end="46834" type="PERSON">
+		<string>Thomas Inskip</string>
+	</entity>
+	<entity start="46836" end="46847" type="PERSON">
+		<string>Alan Taylor</string>
+	</entity>
+	<entity start="46926" end="46934" type="PERSON">
+		<string>Caligula</string>
+	</entity>
+	<entity start="46964" end="46973" type="DATE">
+		<string>June 1936</string>
+	</entity>
+	<entity start="46975" end="46984" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="47011" end="47031" type="ORGANIZATION">
+		<string>senior Conservatives</string>
+	</entity>
+	<entity start="47062" end="47069" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="47071" end="47082" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="47087" end="47094" type="PERSON">
+		<string>Halifax</string>
+	</entity>
+	<entity start="47194" end="47200" type="ORGANIZATION">
+		<string>Labour</string>
+	</entity>
+	<entity start="47205" end="47212" type="ORGANIZATION">
+		<string>Liberal</string>
+	</entity>
+	<entity start="47369" end="47376" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="47394" end="47404" type="ORGANIZATION">
+		<string>Government</string>
+	</entity>
+	<entity start="47478" end="47489" type="DATE">
+		<string>12 November</string>
+	</entity>
+	<entity start="47491" end="47500" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="47605" end="47612" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="47646" end="47656" type="ORGANIZATION">
+		<string>Government</string>
+	</entity>
+	<entity start="48000" end="48007" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="48034" end="48044" type="PERSON">
+		<string>R.R. James</string>
+	</entity>
+	<entity start="48064" end="48073" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="48120" end="48127" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="48169" end="48174" type="ORGANIZATION">
+		<string>House</string>
+	</entity>
+	<entity start="48219" end="48249" type="ORGANIZATION">
+		<string>Arms and the Covenant Movement</string>
+	</entity>
+	<entity start="48273" end="48282" type="DATE">
+		<string>June 1936</string>
+	</entity>
+	<entity start="48284" end="48299" type="PERSON">
+		<string>Walter Monckton</string>
+	</entity>
+	<entity start="48305" end="48314" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="48342" end="48353" type="PERSON">
+		<string>Edward VIII</string>
+	</entity>
+	<entity start="48376" end="48390" type="PERSON">
+		<string>Wallis Simpson</string>
+	</entity>
+	<entity start="48402" end="48411" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="48471" end="48478" type="PERSON">
+		<string>Simpson</string>
+	</entity>
+	<entity start="48520" end="48528" type="DATE">
+		<string>November</string>
+	</entity>
+	<entity start="48542" end="48556" type="PERSON">
+		<string>Lord Salisbury</string>
+	</entity>
+	<entity start="48607" end="48632" type="ORGANIZATION">
+		<string>Conservative backbenchers</string>
+	</entity>
+	<entity start="48646" end="48653" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="48680" end="48691" type="DATE">
+		<string>25 November</string>
+	</entity>
+	<entity start="48696" end="48702" type="PERSON">
+		<string>Attlee</string>
+	</entity>
+	<entity start="48707" end="48714" type="ORGANIZATION">
+		<string>Liberal</string>
+	</entity>
+	<entity start="48722" end="48740" type="PERSON">
+		<string>Archibald Sinclair</string>
+	</entity>
+	<entity start="48750" end="48757" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="48787" end="48791" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="48860" end="48867" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="48876" end="48895" type="ORGANIZATION">
+		<string>National Government</string>
+	</entity>
+	<entity start="48916" end="48920" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="48934" end="48942" type="ORGANIZATION">
+		<string>Ministry</string>
+	</entity>
+	<entity start="48958" end="48964" type="PERSON">
+		<string>Attlee</string>
+	</entity>
+	<entity start="48969" end="48977" type="PERSON">
+		<string>Sinclair</string>
+	</entity>
+	<entity start="49031" end="49040" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="49211" end="49224" type="DATE">
+		<string>December 1936</string>
+	</entity>
+	<entity start="49240" end="49249" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="49283" end="49287" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="49321" end="49351" type="ORGANIZATION">
+		<string>Arms and the Covenant Movement</string>
+	</entity>
+	<entity start="49359" end="49369" type="DATE">
+		<string>3 December</string>
+	</entity>
+	<entity start="49371" end="49380" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="49567" end="49571" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="49579" end="49586" type="ORGANIZATION">
+		<string>Cabinet</string>
+	</entity>
+	<entity start="49605" end="49614" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="49636" end="49640" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="49686" end="49697" type="PERSON">
+		<string>Beaverbrook</string>
+	</entity>
+	<entity start="49736" end="49746" type="DATE">
+		<string>4 December</string>
+	</entity>
+	<entity start="49764" end="49768" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="49828" end="49838" type="DATE">
+		<string>5 December</string>
+	</entity>
+	<entity start="49888" end="49896" type="ORGANIZATION">
+		<string>Ministry</string>
+	</entity>
+	<entity start="49943" end="49947" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="49990" end="50000" type="DATE">
+		<string>7 December</string>
+	</entity>
+	<entity start="50026" end="50033" type="ORGANIZATION">
+		<string>Commons</string>
+	</entity>
+	<entity start="50147" end="50156" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="50173" end="50183" type="ORGANIZATION">
+		<string>Parliament</string>
+	</entity>
+	<entity start="50188" end="50195" type="LOCATION">
+		<string>England</string>
+	</entity>
+	<entity start="50239" end="50253" type="PERSON">
+		<string>Alistair Cooke</string>
+	</entity>
+	<entity start="50283" end="50295" type="ORGANIZATION">
+		<string>King's Party</string>
+	</entity>
+	<entity start="50309" end="50325" type="PERSON">
+		<string>Harold Macmillan</string>
+	</entity>
+	<entity start="50354" end="50363" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="50382" end="50386" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="50403" end="50433" type="ORGANIZATION">
+		<string>Arms and the Covenant Movement</string>
+	</entity>
+	<entity start="50435" end="50444" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="50618" end="50627" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="50657" end="50668" type="PERSON">
+		<string>Edward VIII</string>
+	</entity>
+	<entity start="50683" end="50696" type="PERSON">
+		<string>A.J.P. Taylor</string>
+	</entity>
+	<entity start="50784" end="50794" type="PERSON">
+		<string>R.R. James</string>
+	</entity>
+	<entity start="50799" end="50808" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="50889" end="50893" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="50914" end="50931" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="50962" end="50973" type="DATE">
+		<string>20 May 1940</string>
+	</entity>
+	<entity start="50995" end="51004" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="51028" end="51041" type="ORGANIZATION">
+		<string>German troops</string>
+	</entity>
+	<entity start="51054" end="51069" type="LOCATION">
+		<string>English Channel</string>
+	</entity>
+	<entity start="51071" end="51080" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="51188" end="51195" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="51251" end="51267" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="51287" end="51292" type="DATE">
+		<string>1930s</string>
+	</entity>
+	<entity start="51358" end="51368" type="ORGANIZATION">
+		<string>Government</string>
+	</entity>
+	<entity start="51420" end="51432" type="ORGANIZATION">
+		<string>War Ministry</string>
+	</entity>
+	<entity start="51439" end="51454" type="ORGANIZATION">
+		<string>Churchill group</string>
+	</entity>
+	<entity start="51516" end="51529" type="PERSON">
+		<string>Duncan Sandys</string>
+	</entity>
+	<entity start="51534" end="51549" type="PERSON">
+		<string>Brendan Bracken</string>
+	</entity>
+	<entity start="51607" end="51625" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="51703" end="51726" type="ORGANIZATION">
+		<string>anti-Chamberlain forces</string>
+	</entity>
+	<entity start="51740" end="51749" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="51809" end="51818" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="51924" end="51928" type="DATE">
+		<string>1932</string>
+	</entity>
+	<entity start="51930" end="51939" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="51959" end="51973" type="PERSON">
+		<string>Desmond Morton</string>
+	</entity>
+	<entity start="51979" end="51995" type="PERSON">
+		<string>Ramsay MacDonald</string>
+	</entity>
+	<entity start="52013" end="52022" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="52061" end="52065" type="DATE">
+		<string>1930</string>
+	</entity>
+	<entity start="52074" end="52080" type="PERSON">
+		<string>Morton</string>
+	</entity>
+	<entity start="52108" end="52137" type="ORGANIZATION">
+		<string>Committee of Imperial Defence</string>
+	</entity>
+	<entity start="52206" end="52218" type="PERSON">
+		<string>Lord Swinton</string>
+	</entity>
+	<entity start="52259" end="52266" type="PERSON">
+		<string>Baldwin</string>
+	</entity>
+	<entity start="52282" end="52286" type="DATE">
+		<string>1934</string>
+	</entity>
+	<entity start="52292" end="52301" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="52355" end="52362" type="PERSON">
+		<string>Swinton</string>
+	</entity>
+	<entity start="52379" end="52388" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="52519" end="52528" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="52552" end="52571" type="PERSON">
+		<string>Neville Chamberlain</string>
+	</entity>
+	<entity start="52589" end="52601" type="PERSON">
+		<string>Adolf Hitler</string>
+	</entity>
+	<entity start="52625" end="52641" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="52817" end="52824" type="PERSON">
+		<string>Winston</string>
+	</entity>
+	<entity start="52881" end="52897" type="DATE">
+		<string>3 September 1939</string>
+	</entity>
+	<entity start="52907" end="52914" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="52931" end="52938" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="52940" end="52949" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="52982" end="52991" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="53012" end="53023" type="ORGANIZATION">
+		<string>War Cabinet</string>
+	</entity>
+	<entity start="53115" end="53137" type="ORGANIZATION">
+		<string>Board of the Admiralty</string>
+	</entity>
+	<entity start="53159" end="53164" type="ORGANIZATION">
+		<string>Fleet</string>
+	</entity>
+	<entity start="53167" end="53174" type="PERSON">
+		<string>Winston</string>
+	</entity>
+	<entity start="53335" end="53344" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="53424" end="53430" type="LOCATION">
+		<string>Narvik</string>
+	</entity>
+	<entity start="53453" end="53459" type="LOCATION">
+		<string>Kiruna</string>
+	</entity>
+	<entity start="53461" end="53467" type="LOCATION">
+		<string>Sweden</string>
+	</entity>
+	<entity start="53496" end="53507" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="53528" end="53539" type="ORGANIZATION">
+		<string>War Cabinet</string>
+	</entity>
+	<entity start="53621" end="53627" type="LOCATION">
+		<string>Norway</string>
+	</entity>
+	<entity start="53657" end="53666" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="53737" end="53741" type="DATE">
+		<string>1940</string>
+	</entity>
+	<entity start="53746" end="53757" type="DATE">
+		<string>10 May 1940</string>
+	</entity>
+	<entity start="53795" end="53801" type="LOCATION">
+		<string>France</string>
+	</entity>
+	<entity start="53837" end="53850" type="LOCATION">
+		<string>Low Countries</string>
+	</entity>
+	<entity start="53895" end="53901" type="LOCATION">
+		<string>Norway</string>
+	</entity>
+	<entity start="53936" end="53947" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="53980" end="53991" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="54054" end="54066" type="PERSON">
+		<string>Lord Halifax</string>
+	</entity>
+	<entity start="54177" end="54191" type="ORGANIZATION">
+		<string>House of Lords</string>
+	</entity>
+	<entity start="54207" end="54223" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="54287" end="54291" type="PERSON">
+		<string>King</string>
+	</entity>
+	<entity start="54319" end="54330" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="54410" end="54426" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="54446" end="54457" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="54459" end="54466" type="PERSON">
+		<string>Halifax</string>
+	</entity>
+	<entity start="54468" end="54477" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="54482" end="54497" type="PERSON">
+		<string>David Margesson</string>
+	</entity>
+	<entity start="54555" end="54564" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="54598" end="54607" type="PERSON">
+		<string>George VI</string>
+	</entity>
+	<entity start="54614" end="54623" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="54646" end="54655" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="54684" end="54695" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="54726" end="54735" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="54776" end="54785" type="DATE">
+		<string>June 1941</string>
+	</entity>
+	<entity start="54833" end="54842" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="54868" end="54886" type="PERSON">
+		<string>Walter H. Thompson</string>
+	</entity>
+	<entity start="54888" end="54897" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="54929" end="54942" type="ORGANIZATION">
+		<string>Conservatives</string>
+	</entity>
+	<entity start="54992" end="55003" type="PERSON">
+		<string>Chamberlain</string>
+	</entity>
+	<entity start="55068" end="55076" type="DATE">
+		<string>November</string>
+	</entity>
+	<entity start="55078" end="55087" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="55166" end="55182" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="55192" end="55206" type="ORGANIZATION">
+		<string>House of Lords</string>
+	</entity>
+	<entity start="55302" end="55306" type="DATE">
+		<string>1940</string>
+	</entity>
+	<entity start="55334" end="55340" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="55357" end="55366" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="55453" end="55460" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="55682" end="55689" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="55789" end="55796" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="55809" end="55816" type="PERSON">
+		<string>Halifax</string>
+	</entity>
+	<entity start="55843" end="55852" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="55934" end="55941" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="55964" end="55973" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="55979" end="55993" type="PERSON">
+		<string>Hastings Ismay</string>
+	</entity>
+	<entity start="55997" end="56009" type="DATE">
+		<string>12 June 1940</string>
+	</entity>
+	<entity start="56155" end="56162" type="ORGANIZATION">
+		<string>British</string>
+	</entity>
+	<entity start="56229" end="56238" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="56281" end="56297" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="56301" end="56308" type="DATE">
+		<string>18 June</string>
+	</entity>
+	<entity start="56397" end="56404" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="56406" end="56415" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="56445" end="56459" type="ORGANIZATION">
+		<string>British Empire</string>
+	</entity>
+	<entity start="56522" end="56526" type="DATE">
+		<string>1942</string>
+	</entity>
+	<entity start="56527" end="56529" type="DATE">
+		<string>45</string>
+	</entity>
+	<entity start="56536" end="56543" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="56584" end="56596" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="56619" end="56633" type="LOCATION">
+		<string>Western Europe</string>
+	</entity>
+	<entity start="56755" end="56764" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="56981" end="56997" type="PERSON">
+		<string>Lord Beaverbrook</string>
+	</entity>
+	<entity start="57040" end="57051" type="PERSON">
+		<string>Beaverbrook</string>
+	</entity>
+	<entity start="57083" end="57090" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="57196" end="57213" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="57241" end="57259" type="LOCATION">
+		<string>Coventry Cathedral</string>
+	</entity>
+	<entity start="57261" end="57265" type="DATE">
+		<string>1941</string>
+	</entity>
+	<entity start="57285" end="57294" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="57380" end="57384" type="DATE">
+		<string>1941</string>
+	</entity>
+	<entity start="57759" end="57768" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="57822" end="57829" type="ORGANIZATION">
+		<string>British</string>
+	</entity>
+	<entity start="57981" end="57991" type="ORGANIZATION">
+		<string>Parliament</string>
+	</entity>
+	<entity start="58015" end="58031" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="58064" end="58069" type="DATE">
+		<string>1930s</string>
+	</entity>
+	<entity start="58105" end="58114" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="58261" end="58267" type="LOCATION">
+		<string>France</string>
+	</entity>
+	<entity start="58705" end="58719" type="ORGANIZATION">
+		<string>British Empire</string>
+	</entity>
+	<entity start="58728" end="58740" type="ORGANIZATION">
+		<string>Commonwealth</string>
+	</entity>
+	<entity start="58819" end="58828" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="58848" end="58859" type="PERSON">
+		<string>Alan Brooke</string>
+	</entity>
+	<entity start="58885" end="58903" type="PERSON">
+		<string>Bernard Montgomery</string>
+	</entity>
+	<entity start="58905" end="58909" type="DATE">
+		<string>1944</string>
+	</entity>
+	<entity start="59148" end="59151" type="ORGANIZATION">
+		<string>RAF</string>
+	</entity>
+	<entity start="59269" end="59272" type="ORGANIZATION">
+		<string>RAF</string>
+	</entity>
+	<entity start="59273" end="59281" type="LOCATION">
+		<string>Uxbridge</string>
+	</entity>
+	<entity start="59328" end="59342" type="DATE">
+		<string>16 August 1940</string>
+	</entity>
+	<entity start="59391" end="59407" type="DATE">
+		<string>10 November 1942</string>
+	</entity>
+	<entity start="59440" end="59453" type="LOCATION">
+		<string>Mansion House</string>
+	</entity>
+	<entity start="59457" end="59463" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="59523" end="59533" type="LOCATION">
+		<string>El Alamein</string>
+	</entity>
+	<entity start="59535" end="59544" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="59735" end="59749" type="ORGANIZATION">
+		<string>British people</string>
+	</entity>
+	<entity start="59851" end="59860" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="59968" end="59982" type="PERSON">
+		<string>Robert Menzies</string>
+	</entity>
+	<entity start="60002" end="60011" type="ORGANIZATION">
+		<string>Australia</string>
+	</entity>
+	<entity start="60055" end="60064" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="60456" end="60473" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="60569" end="60574" type="PERSON">
+		<string>Moran</string>
+	</entity>
+	<entity start="60576" end="60590" type="PERSON">
+		<string>Charles Wilson</string>
+	</entity>
+	<entity start="60596" end="60607" type="PERSON">
+		<string>Baron Moran</string>
+	</entity>
+	<entity start="60654" end="60661" type="PERSON">
+		<string>Winston</string>
+	</entity>
+	<entity start="60959" end="60970" type="LOCATION">
+		<string>White House</string>
+	</entity>
+	<entity start="60977" end="60986" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="61012" end="61018" type="LOCATION">
+		<string>Tobruk</string>
+	</entity>
+	<entity start="61061" end="61063" type="ORGANIZATION">
+		<string>US</string>
+	</entity>
+	<entity start="61095" end="61104" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="61192" end="61201" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="61370" end="61392" type="ORGANIZATION">
+		<string>Imperial General Staff</string>
+	</entity>
+	<entity start="61394" end="61398" type="ORGANIZATION">
+		<string>CIGS</string>
+	</entity>
+	<entity start="61405" end="61418" type="DATE">
+		<string>December 1941</string>
+	</entity>
+	<entity start="61438" end="61449" type="PERSON">
+		<string>Alan Brooke</string>
+	</entity>
+	<entity start="61487" end="61494" type="ORGANIZATION">
+		<string>Phoenix</string>
+	</entity>
+	<entity start="61497" end="61501" type="DATE">
+		<string>2001</string>
+	</entity>
+	<entity start="61519" end="61536" type="DATE">
+		<string>10 September 1944</string>
+	</entity>
+	<entity start="61651" end="61660" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="61708" end="61719" type="PERSON">
+		<string>Marlborough</string>
+	</entity>
+	<entity start="61948" end="61955" type="ORGANIZATION">
+		<string>England</string>
+	</entity>
+	<entity start="61991" end="61998" type="ORGANIZATION">
+		<string>England</string>
+	</entity>
+	<entity start="62223" end="62236" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="62252" end="62267" type="PERSON">
+		<string>Chiang Kai-shek</string>
+	</entity>
+	<entity start="62279" end="62300" type="PERSON">
+		<string>Franklin D. Roosevelt</string>
+	</entity>
+	<entity start="62306" end="62315" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="62343" end="62347" type="DATE">
+		<string>1943</string>
+	</entity>
+	<entity start="62349" end="62358" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="62384" end="62397" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="62408" end="62429" type="PERSON">
+		<string>Franklin D. Roosevelt</string>
+	</entity>
+	<entity start="62438" end="62442" type="DATE">
+		<string>1939</string>
+	</entity>
+	<entity start="62447" end="62451" type="DATE">
+		<string>1945</string>
+	</entity>
+	<entity start="62527" end="62536" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="62648" end="62662" type="LOCATION">
+		<string>North Atlantic</string>
+	</entity>
+	<entity start="62708" end="62717" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="62736" end="62745" type="PERSON">
+		<string>Roosevelt</string>
+	</entity>
+	<entity start="62764" end="62768" type="DATE">
+		<string>1940</string>
+	</entity>
+	<entity start="62788" end="62797" type="PERSON">
+		<string>Roosevelt</string>
+	</entity>
+	<entity start="62893" end="62900" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="62952" end="62961" type="PERSON">
+		<string>Roosevelt</string>
+	</entity>
+	<entity start="62972" end="62980" type="ORGANIZATION">
+		<string>Congress</string>
+	</entity>
+	<entity start="63067" end="63069" type="ORGANIZATION">
+		<string>US</string>
+	</entity>
+	<entity start="63099" end="63108" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="63143" end="63152" type="PERSON">
+		<string>Roosevelt</string>
+	</entity>
+	<entity start="63189" end="63195" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="63235" end="63249" type="ORGANIZATION">
+		<string>United Nations</string>
+	</entity>
+	<entity start="63280" end="63292" type="LOCATION">
+		<string>Pearl Harbor</string>
+	</entity>
+	<entity start="63307" end="63316" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="63352" end="63354" type="ORGANIZATION">
+		<string>US</string>
+	</entity>
+	<entity start="63391" end="63407" type="DATE">
+		<string>26 December 1941</string>
+	</entity>
+	<entity start="63409" end="63418" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="63452" end="63463" type="ORGANIZATION">
+		<string>US Congress</string>
+	</entity>
+	<entity start="63475" end="63482" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="63487" end="63492" type="ORGANIZATION">
+		<string>Japan</string>
+	</entity>
+	<entity start="63538" end="63547" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="63562" end="63590" type="ORGANIZATION">
+		<string>Special Operations Executive</string>
+	</entity>
+	<entity start="63592" end="63595" type="ORGANIZATION">
+		<string>SOE</string>
+	</entity>
+	<entity start="63603" end="63614" type="PERSON">
+		<string>Hugh Dalton</string>
+	</entity>
+	<entity start="63617" end="63645" type="ORGANIZATION">
+		<string>Ministry of Economic Warfare</string>
+	</entity>
+	<entity start="63791" end="63800" type="ORGANIZATION">
+		<string>Commandos</string>
+	</entity>
+	<entity start="63863" end="63877" type="ORGANIZATION">
+		<string>Special Forces</string>
+	</entity>
+	<entity start="63934" end="63943" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="63956" end="63979" type="PERSON">
+		<string>John Cecil Kelly-Rogers</string>
+	</entity>
+	<entity start="63987" end="63993" type="ORGANIZATION">
+		<string>Boeing</string>
+	</entity>
+	<entity start="64010" end="64017" type="LOCATION">
+		<string>Berwick</string>
+	</entity>
+	<entity start="64032" end="64039" type="LOCATION">
+		<string>England</string>
+	</entity>
+	<entity start="64049" end="64062" type="LOCATION">
+		<string>United States</string>
+	</entity>
+	<entity start="64064" end="64076" type="DATE">
+		<string>January 1942</string>
+	</entity>
+	<entity start="64084" end="64093" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="64154" end="64165" type="ORGANIZATION">
+		<string>US Congress</string>
+	</entity>
+	<entity start="64167" end="64176" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="64246" end="64259" type="DATE">
+		<string>December 1941</string>
+	</entity>
+	<entity start="64267" end="64278" type="LOCATION">
+		<string>White House</string>
+	</entity>
+	<entity start="64291" end="64304" type="DATE">
+		<string>December 1943</string>
+	</entity>
+	<entity start="64506" end="64512" type="PERSON">
+		<string>Warden</string>
+	</entity>
+	<entity start="64514" end="64523" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="64650" end="64654" type="DATE">
+		<string>1943</string>
+	</entity>
+	<entity start="64691" end="64695" type="DATE">
+		<string>1944</string>
+	</entity>
+	<entity start="64726" end="64735" type="PERSON">
+		<string>Roosevelt</string>
+	</entity>
+	<entity start="64831" end="64838" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="65023" end="65038" type="PERSON">
+		<string>Harry S. Truman</string>
+	</entity>
+	<entity start="65040" end="65049" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="65055" end="65068" type="PERSON">
+		<string>Joseph Stalin</string>
+	</entity>
+	<entity start="65072" end="65079" type="LOCATION">
+		<string>Potsdam</string>
+	</entity>
+	<entity start="65081" end="65090" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="65118" end="65130" type="PERSON">
+		<string>Harry Truman</string>
+	</entity>
+	<entity start="65253" end="65262" type="PERSON">
+		<string>Roosevelt</string>
+	</entity>
+	<entity start="65264" end="65273" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="65303" end="65309" type="PERSON">
+		<string>Truman</string>
+	</entity>
+	<entity start="65433" end="65445" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="65447" end="65456" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="65516" end="65535" type="PERSON">
+		<string>William Vanderkloot</string>
+	</entity>
+	<entity start="65548" end="65554" type="LOCATION">
+		<string>Moscow</string>
+	</entity>
+	<entity start="65563" end="65576" type="PERSON">
+		<string>Joseph Stalin</string>
+	</entity>
+	<entity start="65578" end="65589" type="DATE">
+		<string>August 1942</string>
+	</entity>
+	<entity start="65627" end="65639" type="DATE">
+		<string>January 1943</string>
+	</entity>
+	<entity start="65646" end="65652" type="PERSON">
+		<string>Hitler</string>
+	</entity>
+	<entity start="65665" end="65677" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="65679" end="65696" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="65745" end="65751" type="PERSON">
+		<string>Hitler</string>
+	</entity>
+	<entity start="65818" end="65823" type="PERSON">
+		<string>Devil</string>
+	</entity>
+	<entity start="65831" end="65847" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="65878" end="65884" type="PERSON">
+		<string>Stalin</string>
+	</entity>
+	<entity start="65944" end="65956" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="65998" end="66011" type="ORGANIZATION">
+		<string>Allied powers</string>
+	</entity>
+	<entity start="66020" end="66030" type="LOCATION">
+		<string>Casablanca</string>
+	</entity>
+	<entity start="66032" end="66039" type="LOCATION">
+		<string>Morocco</string>
+	</entity>
+	<entity start="66044" end="66054" type="DATE">
+		<string>14 January</string>
+	</entity>
+	<entity start="66063" end="66078" type="DATE">
+		<string>23 January 1943</string>
+	</entity>
+	<entity start="66162" end="66171" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="66173" end="66191" type="PERSON">
+		<string>Franklin Roosevelt</string>
+	</entity>
+	<entity start="66196" end="66213" type="PERSON">
+		<string>Charles de Gaulle</string>
+	</entity>
+	<entity start="66215" end="66228" type="PERSON">
+		<string>Joseph Stalin</string>
+	</entity>
+	<entity start="66284" end="66296" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="66343" end="66353" type="LOCATION">
+		<string>Casablanca</string>
+	</entity>
+	<entity start="66363" end="66369" type="ORGANIZATION">
+		<string>Allies</string>
+	</entity>
+	<entity start="66464" end="66475" type="ORGANIZATION">
+		<string>Axis powers</string>
+	</entity>
+	<entity start="66498" end="66507" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="66610" end="66628" type="PERSON">
+		<string>Franklin Roosevelt</string>
+	</entity>
+	<entity start="66719" end="66725" type="ORGANIZATION">
+		<string>Poland</string>
+	</entity>
+	<entity start="66757" end="66763" type="ORGANIZATION">
+		<string>Poland</string>
+	</entity>
+	<entity start="66772" end="66784" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="66797" end="66804" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="66809" end="66815" type="ORGANIZATION">
+		<string>Poland</string>
+	</entity>
+	<entity start="66845" end="66851" type="ORGANIZATION">
+		<string>Poland</string>
+	</entity>
+	<entity start="66926" end="66943" type="ORGANIZATION">
+		<string>Polish government</string>
+	</entity>
+	<entity start="66961" end="66978" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="67002" end="67013" type="PERSON">
+		<string>Mikołajczyk</string>
+	</entity>
+	<entity start="67045" end="67071" type="ORGANIZATION">
+		<string>Polish government in exile</string>
+	</entity>
+	<entity start="67083" end="67089" type="PERSON">
+		<string>Stalin</string>
+	</entity>
+	<entity start="67104" end="67115" type="PERSON">
+		<string>Mikołajczyk</string>
+	</entity>
+	<entity start="67125" end="67134" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="67299" end="67315" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="67319" end="67335" type="DATE">
+		<string>15 December 1944</string>
+	</entity>
+	<entity start="67669" end="67676" type="ORGANIZATION">
+		<string>Germans</string>
+	</entity>
+	<entity start="67755" end="67759" type="DATE">
+		<string>1966</string>
+	</entity>
+	<entity start="67774" end="67828" type="ORGANIZATION">
+		<string>West German Ministry of Refugees and Displaced Persons</string>
+	</entity>
+	<entity start="67861" end="67870" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="67907" end="67913" type="ORGANIZATION">
+		<string>Poland</string>
+	</entity>
+	<entity start="67921" end="67933" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="68028" end="68045" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="68076" end="68085" type="PERSON">
+		<string>Roosevelt</string>
+	</entity>
+	<entity start="68090" end="68096" type="PERSON">
+		<string>Stalin</string>
+	</entity>
+	<entity start="68116" end="68128" type="DATE">
+		<string>October 1944</string>
+	</entity>
+	<entity start="68137" end="68141" type="PERSON">
+		<string>Eden</string>
+	</entity>
+	<entity start="68150" end="68156" type="LOCATION">
+		<string>Moscow</string>
+	</entity>
+	<entity start="68174" end="68192" type="ORGANIZATION">
+		<string>Russian leadership</string>
+	</entity>
+	<entity start="68209" end="68223" type="ORGANIZATION">
+		<string>Russian forces</string>
+	</entity>
+	<entity start="68263" end="68289" type="LOCATION">
+		<string>eastern European countries</string>
+	</entity>
+	<entity start="68291" end="68300" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="68542" end="68556" type="DATE">
+		<string>9 October 1944</string>
+	</entity>
+	<entity start="68564" end="68571" type="LOCATION">
+		<string>Kremlin</string>
+	</entity>
+	<entity start="68580" end="68589" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="68594" end="68600" type="PERSON">
+		<string>Stalin</string>
+	</entity>
+	<entity start="68622" end="68628" type="ORGANIZATION">
+		<string>Poland</string>
+	</entity>
+	<entity start="68669" end="68678" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="68684" end="68690" type="PERSON">
+		<string>Stalin</string>
+	</entity>
+	<entity start="68732" end="68739" type="LOCATION">
+		<string>Balkans</string>
+	</entity>
+	<entity start="68760" end="68767" type="LOCATION">
+		<string>Rumania</string>
+	</entity>
+	<entity start="68772" end="68780" type="LOCATION">
+		<string>Bulgaria</string>
+	</entity>
+	<entity start="68889" end="68896" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="68901" end="68907" type="ORGANIZATION">
+		<string>Russia</string>
+	</entity>
+	<entity start="68987" end="68994" type="LOCATION">
+		<string>Rumania</string>
+	</entity>
+	<entity start="69041" end="69047" type="LOCATION">
+		<string>Greece</string>
+	</entity>
+	<entity start="69074" end="69084" type="LOCATION">
+		<string>Yugoslavia</string>
+	</entity>
+	<entity start="69088" end="69094" type="PERSON">
+		<string>Stalin</string>
+	</entity>
+	<entity start="69190" end="69194" type="DATE">
+		<string>1958</string>
+	</entity>
+	<entity start="69301" end="69313" type="ORGANIZATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="69326" end="69332" type="PERSON">
+		<string>Stalin</string>
+	</entity>
+	<entity start="69430" end="69436" type="ORGANIZATION">
+		<string>Allies</string>
+	</entity>
+	<entity start="69454" end="69469" type="ORGANIZATION">
+		<string>Soviet citizens</string>
+	</entity>
+	<entity start="69499" end="69510" type="LOCATION">
+		<string>Allied zone</string>
+	</entity>
+	<entity start="69518" end="69530" type="LOCATION">
+		<string>Soviet Union</string>
+	</entity>
+	<entity start="69562" end="69585" type="ORGANIZATION">
+		<string>Soviet prisoners of war</string>
+	</entity>
+	<entity start="69603" end="69609" type="ORGANIZATION">
+		<string>Allies</string>
+	</entity>
+	<entity start="69640" end="69665" type="ORGANIZATION">
+		<string>Eastern European refugees</string>
+	</entity>
+	<entity start="69667" end="69689" type="PERSON">
+		<string>Aleksandr Solzhenitsyn</string>
+	</entity>
+	<entity start="69701" end="69719" type="ORGANIZATION">
+		<string>Operation Keelhaul</string>
+	</entity>
+	<entity start="69833" end="69847" type="LOCATION">
+		<string>eastern Europe</string>
+	</entity>
+	<entity start="69849" end="69856" type="LOCATION">
+		<string>Dresden</string>
+	</entity>
+	<entity start="69887" end="69889" type="DATE">
+		<string>13</string>
+	</entity>
+	<entity start="69890" end="69906" type="DATE">
+		<string>15 February 1945</string>
+	</entity>
+	<entity start="69959" end="69966" type="LOCATION">
+		<string>Dresden</string>
+	</entity>
+	<entity start="69991" end="70018" type="ORGANIZATION">
+		<string>German wounded and refugees</string>
+	</entity>
+	<entity start="70064" end="70071" type="LOCATION">
+		<string>Dresden</string>
+	</entity>
+	<entity start="70087" end="70104" type="PERSON">
+		<string>Matthias Neutzner</string>
+	</entity>
+	<entity start="70106" end="70120" type="PERSON">
+		<string>Götz Bergander</string>
+	</entity>
+	<entity start="70125" end="70141" type="PERSON">
+		<string>Frederick Taylor</string>
+	</entity>
+	<entity start="70552" end="70561" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="70668" end="70681" type="LOCATION">
+		<string>German cities</string>
+	</entity>
+	<entity start="71036" end="71051" type="ORGANIZATION">
+		<string>Chiefs of Staff</string>
+	</entity>
+	<entity start="71098" end="71112" type="PERSON">
+		<string>Charles Portal</string>
+	</entity>
+	<entity start="71127" end="71136" type="ORGANIZATION">
+		<string>Air Staff</string>
+	</entity>
+	<entity start="71146" end="71159" type="PERSON">
+		<string>Arthur Harris</string>
+	</entity>
+	<entity start="71173" end="71191" type="ORGANIZATION">
+		<string>RAF Bomber Command</string>
+	</entity>
+	<entity start="71208" end="71217" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="71302" end="71314" type="DATE">
+		<string>1 April 1945</string>
+	</entity>
+	<entity start="71418" end="71431" type="LOCATION">
+		<string>German cities</string>
+	</entity>
+	<entity start="71821" end="71830" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="71921" end="71935" type="PERSON">
+		<string>Jörg Friedrich</string>
+	</entity>
+	<entity start="71948" end="71957" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="72002" end="72006" type="DATE">
+		<string>2006</string>
+	</entity>
+	<entity start="72023" end="72037" type="PERSON">
+		<string>A. C. Grayling</string>
+	</entity>
+	<entity start="72093" end="72096" type="ORGANIZATION">
+		<string>RAF</string>
+	</entity>
+	<entity start="72200" end="72206" type="ORGANIZATION">
+		<string>Allies</string>
+	</entity>
+	<entity start="72298" end="72307" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="72340" end="72347" type="LOCATION">
+		<string>Dresden</string>
+	</entity>
+	<entity start="72435" end="72442" type="LOCATION">
+		<string>Dresden</string>
+	</entity>
+	<entity start="72498" end="72505" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="72535" end="72547" type="PERSON">
+		<string>Max Hastings</string>
+	</entity>
+	<entity start="72759" end="72764" type="ORGANIZATION">
+		<string>Nazis</string>
+	</entity>
+	<entity start="72837" end="72844" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="72883" end="72899" type="PERSON">
+		<string>Frederick Taylor</string>
+	</entity>
+	<entity start="73075" end="73081" type="ORGANIZATION">
+		<string>Russia</string>
+	</entity>
+	<entity start="73126" end="73141" type="ORGANIZATION">
+		<string>German citizens</string>
+	</entity>
+	<entity start="73199" end="73208" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="73228" end="73237" type="LOCATION">
+		<string>Whitehall</string>
+	</entity>
+	<entity start="73294" end="73301" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="73316" end="73326" type="DATE">
+		<string>8 May 1945</string>
+	</entity>
+	<entity start="73331" end="73340" type="DATE">
+		<string>June 1944</string>
+	</entity>
+	<entity start="73346" end="73359" type="ORGANIZATION">
+		<string>Allied Forces</string>
+	</entity>
+	<entity start="73368" end="73376" type="LOCATION">
+		<string>Normandy</string>
+	</entity>
+	<entity start="73392" end="73403" type="ORGANIZATION">
+		<string>Nazi forces</string>
+	</entity>
+	<entity start="73414" end="73421" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="73505" end="73511" type="ORGANIZATION">
+		<string>Allies</string>
+	</entity>
+	<entity start="73554" end="73577" type="ORGANIZATION">
+		<string>Operation Market Garden</string>
+	</entity>
+	<entity start="73642" end="73649" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="73678" end="73688" type="DATE">
+		<string>7 May 1945</string>
+	</entity>
+	<entity start="73696" end="73714" type="LOCATION">
+		<string>SHAEF headquarters</string>
+	</entity>
+	<entity start="73718" end="73724" type="LOCATION">
+		<string>Rheims</string>
+	</entity>
+	<entity start="73729" end="73735" type="ORGANIZATION">
+		<string>Allies</string>
+	</entity>
+	<entity start="73745" end="73752" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="73787" end="73795" type="ORGANIZATION">
+		<string>BBC news</string>
+	</entity>
+	<entity start="73802" end="73813" type="PERSON">
+		<string>John Snagge</string>
+	</entity>
+	<entity start="73829" end="73834" type="DATE">
+		<string>8 May</string>
+	</entity>
+	<entity start="73855" end="73861" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="73881" end="73887" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="73893" end="73902" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="73932" end="73939" type="ORGANIZATION">
+		<string>Germany</string>
+	</entity>
+	<entity start="74001" end="74007" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="74083" end="74092" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="74114" end="74123" type="LOCATION">
+		<string>Whitehall</string>
+	</entity>
+	<entity start="74192" end="74201" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="74343" end="74348" type="ORGANIZATION">
+		<string>Japan</string>
+	</entity>
+	<entity start="74375" end="74383" type="ORGANIZATION">
+		<string>Japanese</string>
+	</entity>
+	<entity start="74405" end="74419" type="DATE">
+		<string>15 August 1945</string>
+	</entity>
+	<entity start="74424" end="74430" type="ORGANIZATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="74480" end="74489" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="74605" end="74607" type="ORGANIZATION">
+		<string>UK</string>
+	</entity>
+	<entity start="74616" end="74618" type="ORGANIZATION">
+		<string>US</string>
+	</entity>
+	<entity start="74639" end="74647" type="ORGANIZATION">
+		<string>Red Army</string>
+	</entity>
+	<entity start="74703" end="74709" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="74739" end="74745" type="ORGANIZATION">
+		<string>Russia</string>
+	</entity>
+	<entity start="74762" end="74775" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="74784" end="74798" type="ORGANIZATION">
+		<string>British Empire</string>
+	</entity>
+	<entity start="74856" end="74865" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="74887" end="74907" type="ORGANIZATION">
+		<string>British Armed Forces</string>
+	</entity>
+	<entity start="74951" end="74962" type="DATE">
+		<string>1 July 1945</string>
+	</entity>
+	<entity start="75003" end="75016" type="ORGANIZATION">
+		<string>Soviet troops</string>
+	</entity>
+	<entity start="75047" end="75080" type="ORGANIZATION">
+		<string>British Chiefs of Staff Committee</string>
+	</entity>
+	<entity start="75139" end="75148" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="75152" end="75159" type="LOCATION">
+		<string>Potsdam</string>
+	</entity>
+	<entity start="75161" end="75170" type="DATE">
+		<string>July 1945</string>
+	</entity>
+	<entity start="75181" end="75190" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="75269" end="75287" type="ORGANIZATION">
+		<string>British population</string>
+	</entity>
+	<entity start="75312" end="75316" type="DATE">
+		<string>1945</string>
+	</entity>
+	<entity start="75488" end="75495" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="75580" end="75589" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="75638" end="75650" type="PERSON">
+		<string>Anthony Eden</string>
+	</entity>
+	<entity start="75705" end="75714" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="75793" end="75797" type="PERSON">
+		<string>Eden</string>
+	</entity>
+	<entity start="75875" end="75884" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="75920" end="75924" type="PERSON">
+		<string>Eden</string>
+	</entity>
+	<entity start="75926" end="75935" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="75958" end="75978" type="PERSON">
+		<string>Dwight D. Eisenhower</string>
+	</entity>
+	<entity start="75997" end="76019" type="PERSON">
+		<string>Bernard Law Montgomery</string>
+	</entity>
+	<entity start="76036" end="76040" type="ORGANIZATION">
+		<string>NATO</string>
+	</entity>
+	<entity start="76044" end="76056" type="DATE">
+		<string>October 1951</string>
+	</entity>
+	<entity start="76073" end="76082" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="76182" end="76192" type="ORGANIZATION">
+		<string>Opposition</string>
+	</entity>
+	<entity start="76213" end="76222" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="76280" end="76284" type="DATE">
+		<string>1946</string>
+	</entity>
+	<entity start="76297" end="76310" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="76312" end="76321" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="76372" end="76384" type="PERSON">
+		<string>Harry Truman</string>
+	</entity>
+	<entity start="76543" end="76547" type="ORGANIZATION">
+		<string>USSR</string>
+	</entity>
+	<entity start="76572" end="76584" type="ORGANIZATION">
+		<string>Eastern Bloc</string>
+	</entity>
+	<entity start="76598" end="76610" type="DATE">
+		<string>5 March 1946</string>
+	</entity>
+	<entity start="76614" end="76633" type="ORGANIZATION">
+		<string>Westminster College</string>
+	</entity>
+	<entity start="76637" end="76643" type="LOCATION">
+		<string>Fulton</string>
+	</entity>
+	<entity start="76645" end="76653" type="LOCATION">
+		<string>Missouri</string>
+	</entity>
+	<entity start="76674" end="76681" type="LOCATION">
+		<string>Stettin</string>
+	</entity>
+	<entity start="76689" end="76695" type="LOCATION">
+		<string>Baltic</string>
+	</entity>
+	<entity start="76699" end="76706" type="LOCATION">
+		<string>Trieste</string>
+	</entity>
+	<entity start="76714" end="76722" type="LOCATION">
+		<string>Adriatic</string>
+	</entity>
+	<entity start="76839" end="76846" type="LOCATION">
+		<string>Central</string>
+	</entity>
+	<entity start="76851" end="76865" type="LOCATION">
+		<string>Eastern Europe</string>
+	</entity>
+	<entity start="76867" end="76873" type="LOCATION">
+		<string>Warsaw</string>
+	</entity>
+	<entity start="76875" end="76881" type="LOCATION">
+		<string>Berlin</string>
+	</entity>
+	<entity start="76883" end="76889" type="LOCATION">
+		<string>Prague</string>
+	</entity>
+	<entity start="76891" end="76897" type="LOCATION">
+		<string>Vienna</string>
+	</entity>
+	<entity start="76899" end="76907" type="LOCATION">
+		<string>Budapest</string>
+	</entity>
+	<entity start="76909" end="76917" type="LOCATION">
+		<string>Belgrade</string>
+	</entity>
+	<entity start="76919" end="76928" type="LOCATION">
+		<string>Bucharest</string>
+	</entity>
+	<entity start="76933" end="76938" type="LOCATION">
+		<string>Sofia</string>
+	</entity>
+	<entity start="77024" end="77037" type="ORGANIZATION">
+		<string>Soviet sphere</string>
+	</entity>
+	<entity start="77041" end="77050" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="77106" end="77139" type="ORGANIZATION">
+		<string>European Coal and Steel Community</string>
+	</entity>
+	<entity start="77189" end="77196" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="77281" end="77293" type="ORGANIZATION">
+		<string>Commonwealth</string>
+	</entity>
+	<entity start="77302" end="77308" type="ORGANIZATION">
+		<string>Empire</string>
+	</entity>
+	<entity start="77323" end="77336" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="77352" end="77363" type="ORGANIZATION">
+		<string>Anglosphere</string>
+	</entity>
+	<entity start="77446" end="77460" type="ORGANIZATION">
+		<string>British Empire</string>
+	</entity>
+	<entity start="77492" end="77496" type="DATE">
+		<string>1951</string>
+	</entity>
+	<entity start="77498" end="77507" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="77561" end="77573" type="DATE">
+		<string>October 1951</string>
+	</entity>
+	<entity start="77578" end="77590" type="DATE">
+		<string>January 1952</string>
+	</entity>
+	<entity start="77625" end="77637" type="DATE">
+		<string>October 1951</string>
+	</entity>
+	<entity start="77740" end="77744" type="DATE">
+		<string>1945</string>
+	</entity>
+	<entity start="77777" end="77787" type="DATE">
+		<string>April 1955</string>
+	</entity>
+	<entity start="77880" end="77884" type="DATE">
+		<string>1954</string>
+	</entity>
+	<entity start="77925" end="77929" type="DATE">
+		<string>1955</string>
+	</entity>
+	<entity start="78481" end="78494" type="ORGANIZATION">
+		<string>Conservatives</string>
+	</entity>
+	<entity start="78552" end="78572" type="ORGANIZATION">
+		<string>Churchill government</string>
+	</entity>
+	<entity start="78586" end="78591" type="DATE">
+		<string>1950s</string>
+	</entity>
+	<entity start="78598" end="78614" type="PERSON">
+		<string>Harold Macmillan</string>
+	</entity>
+	<entity start="78727" end="78748" type="ORGANIZATION">
+		<string>Attlee administration</string>
+	</entity>
+	<entity start="78818" end="78831" type="PERSON">
+		<string>Aneurin Bevan</string>
+	</entity>
+	<entity start="78898" end="78921" type="ORGANIZATION">
+		<string>National Health Service</string>
+	</entity>
+	<entity start="78924" end="78933" type="PERSON">
+		<string>Macmillan</string>
+	</entity>
+	<entity start="78947" end="78956" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="79101" end="79110" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="79269" end="79285" type="ORGANIZATION">
+		<string>British military</string>
+	</entity>
+	<entity start="79347" end="79354" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="79382" end="79391" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="79474" end="79488" type="ORGANIZATION">
+		<string>British troops</string>
+	</entity>
+	<entity start="79492" end="79497" type="LOCATION">
+		<string>Kenya</string>
+	</entity>
+	<entity start="79572" end="79578" type="ORGANIZATION">
+		<string>Empire</string>
+	</entity>
+	<entity start="79652" end="79658" type="LOCATION">
+		<string>Malaya</string>
+	</entity>
+	<entity start="79736" end="79742" type="LOCATION">
+		<string>Malaya</string>
+	</entity>
+	<entity start="79804" end="79808" type="DATE">
+		<string>1948</string>
+	</entity>
+	<entity start="79822" end="79831" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="79869" end="79878" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="80097" end="80104" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="80151" end="80164" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="80166" end="80175" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="80258" end="80267" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="80304" end="80324" type="PERSON">
+		<string>Dwight D. Eisenhower</string>
+	</entity>
+	<entity start="80326" end="80335" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="80392" end="80405" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="80453" end="80460" type="LOCATION">
+		<string>America</string>
+	</entity>
+	<entity start="80526" end="80535" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="80587" end="80602" type="LOCATION">
+		<string>south of France</string>
+	</entity>
+	<entity start="80610" end="80624" type="DATE">
+		<string>summer of 1949</string>
+	</entity>
+	<entity start="80629" end="80638" type="DATE">
+		<string>June 1953</string>
+	</entity>
+	<entity start="80656" end="80665" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="80702" end="80716" type="LOCATION">
+		<string>Downing Street</string>
+	</entity>
+	<entity start="80765" end="80775" type="ORGANIZATION">
+		<string>Parliament</string>
+	</entity>
+	<entity start="80796" end="80805" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="80866" end="80875" type="LOCATION">
+		<string>Chartwell</string>
+	</entity>
+	<entity start="81003" end="81010" type="DATE">
+		<string>October</string>
+	</entity>
+	<entity start="81033" end="81051" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="81066" end="81073" type="LOCATION">
+		<string>Margate</string>
+	</entity>
+	<entity start="81145" end="81154" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="81184" end="81188" type="DATE">
+		<string>1955</string>
+	</entity>
+	<entity start="81210" end="81222" type="PERSON">
+		<string>Anthony Eden</string>
+	</entity>
+	<entity start="81259" end="81272" type="DATE">
+		<string>December 1956</string>
+	</entity>
+	<entity start="81302" end="81314" type="PERSON">
+		<string>Elizabeth II</string>
+	</entity>
+	<entity start="81333" end="81342" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="81343" end="81357" type="PERSON">
+		<string>Duke of London</string>
+	</entity>
+	<entity start="81414" end="81422" type="PERSON">
+		<string>Randolph</string>
+	</entity>
+	<entity start="81522" end="81535" type="PERSON">
+		<string>Garter Knight</string>
+	</entity>
+	<entity start="81568" end="81577" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="81597" end="81607" type="ORGANIZATION">
+		<string>parliament</string>
+	</entity>
+	<entity start="81635" end="81639" type="DATE">
+		<string>1964</string>
+	</entity>
+	<entity start="81685" end="81694" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="81727" end="81736" type="LOCATION">
+		<string>Chartwell</string>
+	</entity>
+	<entity start="81756" end="81770" type="LOCATION">
+		<string>Hyde Park Gate</string>
+	</entity>
+	<entity start="81775" end="81781" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="81827" end="81841" type="LOCATION">
+		<string>French Riviera</string>
+	</entity>
+	<entity start="81850" end="81854" type="DATE">
+		<string>1959</string>
+	</entity>
+	<entity start="81872" end="81881" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="82023" end="82039" type="ORGANIZATION">
+		<string>House of Commons</string>
+	</entity>
+	<entity start="82223" end="82232" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="82392" end="82396" type="DATE">
+		<string>1963</string>
+	</entity>
+	<entity start="82398" end="82400" type="ORGANIZATION">
+		<string>US</string>
+	</entity>
+	<entity start="82411" end="82426" type="PERSON">
+		<string>John F. Kennedy</string>
+	</entity>
+	<entity start="82476" end="82484" type="ORGANIZATION">
+		<string>Congress</string>
+	</entity>
+	<entity start="82528" end="82541" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="82575" end="82586" type="LOCATION">
+		<string>White House</string>
+	</entity>
+	<entity start="82618" end="82627" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="82680" end="82700" type="DATE">
+		<string>St George's Day 1964</string>
+	</entity>
+	<entity start="82769" end="82773" type="DATE">
+		<string>1918</string>
+	</entity>
+	<entity start="82774" end="82788" type="ORGANIZATION">
+		<string>Zeebrugge Raid</string>
+	</entity>
+	<entity start="82838" end="82842" type="LOCATION">
+		<string>Deal</string>
+	</entity>
+	<entity start="82844" end="82848" type="LOCATION">
+		<string>Kent</string>
+	</entity>
+	<entity start="82902" end="82924" type="LOCATION">
+		<string>Hamilton Road Cemetery</string>
+	</entity>
+	<entity start="82929" end="82944" type="DATE">
+		<string>15 January 1965</string>
+	</entity>
+	<entity start="82946" end="82955" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="83023" end="83029" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="83081" end="83103" type="DATE">
+		<string>Sunday 24 January 1965</string>
+	</entity>
+	<entity start="83160" end="83169" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="83181" end="83199" type="LOCATION">
+		<string>St Martin's Church</string>
+	</entity>
+	<entity start="83201" end="83207" type="LOCATION">
+		<string>Bladon</string>
+	</entity>
+	<entity start="83209" end="83218" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="83346" end="83351" type="ORGANIZATION">
+		<string>China</string>
+	</entity>
+	<entity start="83383" end="83390" type="ORGANIZATION">
+		<string>Ireland</string>
+	</entity>
+	<entity start="83443" end="83449" type="LOCATION">
+		<string>Europe</string>
+	</entity>
+	<entity start="83509" end="83516" type="ORGANIZATION">
+		<string>Britain</string>
+	</entity>
+	<entity start="83535" end="83540" type="PERSON">
+		<string>Queen</string>
+	</entity>
+	<entity start="83567" end="83583" type="LOCATION">
+		<string>Westminster Hall</string>
+	</entity>
+	<entity start="83639" end="83658" type="LOCATION">
+		<string>St Paul's Cathedral</string>
+	</entity>
+	<entity start="83662" end="83677" type="DATE">
+		<string>30 January 1965</string>
+	</entity>
+	<entity start="83781" end="83786" type="PERSON">
+		<string>Queen</string>
+	</entity>
+	<entity start="83812" end="83821" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="83856" end="83868" type="LOCATION">
+		<string>River Thames</string>
+	</entity>
+	<entity start="83874" end="83884" type="LOCATION">
+		<string>Tower Pier</string>
+	</entity>
+	<entity start="83888" end="83901" type="LOCATION">
+		<string>Festival Pier</string>
+	</entity>
+	<entity start="83909" end="83921" type="LOCATION">
+		<string>MV Havengore</string>
+	</entity>
+	<entity start="83973" end="83988" type="ORGANIZATION">
+		<string>Royal Artillery</string>
+	</entity>
+	<entity start="84047" end="84050" type="ORGANIZATION">
+		<string>RAF</string>
+	</entity>
+	<entity start="84078" end="84104" type="ORGANIZATION">
+		<string>English Electric Lightning</string>
+	</entity>
+	<entity start="84163" end="84179" type="LOCATION">
+		<string>Waterloo station</string>
+	</entity>
+	<entity start="84300" end="84311" type="LOCATION">
+		<string>Handborough</string>
+	</entity>
+	<entity start="84339" end="84345" type="LOCATION">
+		<string>Oxford</string>
+	</entity>
+	<entity start="84351" end="84368" type="ORGANIZATION">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="84393" end="84409" type="LOCATION">
+		<string>Clapham Junction</string>
+	</entity>
+	<entity start="84432" end="84439" type="ORGANIZATION">
+		<string>Pullman</string>
+	</entity>
+	<entity start="84542" end="84559" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="84702" end="84711" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="84759" end="84777" type="LOCATION">
+		<string>St Martin's Church</string>
+	</entity>
+	<entity start="84779" end="84785" type="LOCATION">
+		<string>Bladon</string>
+	</entity>
+	<entity start="84792" end="84801" type="LOCATION">
+		<string>Woodstock</string>
+	</entity>
+	<entity start="84834" end="84849" type="LOCATION">
+		<string>Blenheim Palace</string>
+	</entity>
+	<entity start="84851" end="84860" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="84882" end="84898" type="ORGANIZATION">
+		<string>Southern Railway</string>
+	</entity>
+	<entity start="84957" end="84972" type="ORGANIZATION">
+		<string>Swanage Railway</string>
+	</entity>
+	<entity start="85005" end="85007" type="ORGANIZATION">
+		<string>UK</string>
+	</entity>
+	<entity start="85011" end="85015" type="DATE">
+		<string>2007</string>
+	</entity>
+	<entity start="85025" end="85027" type="ORGANIZATION">
+		<string>US</string>
+	</entity>
+	<entity start="85062" end="85066" type="DATE">
+		<string>1965</string>
+	</entity>
+	<entity start="85077" end="85081" type="DATE">
+		<string>1965</string>
+	</entity>
+	<entity start="85096" end="85105" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="85127" end="85141" type="PERSON">
+		<string>Reynolds Stone</string>
+	</entity>
+	<entity start="85157" end="85174" type="LOCATION">
+		<string>Westminster Abbey</string>
+	</entity>
+	<entity start="85182" end="85191" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="85234" end="85238" type="DATE">
+		<string>1995</string>
+	</entity>
+	<entity start="85243" end="85262" type="PERSON">
+		<string>Lawrence Holofcener</string>
+	</entity>
+	<entity start="85293" end="85314" type="PERSON">
+		<string>Franklin D. Roosevelt</string>
+	</entity>
+	<entity start="85319" end="85328" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="85332" end="85347" type="LOCATION">
+		<string>New Bond Street</string>
+	</entity>
+	<entity start="85349" end="85355" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="85357" end="85374" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="85493" end="85502" type="ORGANIZATION">
+		<string>Admiralty</string>
+	</entity>
+	<entity start="85506" end="85510" type="DATE">
+		<string>1915</string>
+	</entity>
+	<entity start="85615" end="85632" type="PERSON">
+		<string>William Rees-Mogg</string>
+	</entity>
+	<entity start="85778" end="85787" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="85844" end="85853" type="PERSON">
+		<string>Paul Maze</string>
+	</entity>
+	<entity start="85895" end="85899" type="PERSON">
+		<string>Maze</string>
+	</entity>
+	<entity start="85925" end="85934" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="85988" end="85997" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="86106" end="86121" type="LOCATION">
+		<string>South of France</string>
+	</entity>
+	<entity start="86123" end="86128" type="LOCATION">
+		<string>Egypt</string>
+	</entity>
+	<entity start="86132" end="86139" type="LOCATION">
+		<string>Morocco</string>
+	</entity>
+	<entity start="86162" end="86175" type="PERSON">
+		<string>Charles Morin</string>
+	</entity>
+	<entity start="86299" end="86308" type="PERSON">
+		<string>Chartwell</string>
+	</entity>
+	<entity start="86463" end="86467" type="DATE">
+		<string>1925</string>
+	</entity>
+	<entity start="86473" end="86479" type="PERSON">
+		<string>Duveen</string>
+	</entity>
+	<entity start="86481" end="86494" type="PERSON">
+		<string>Kenneth Clark</string>
+	</entity>
+	<entity start="86500" end="86513" type="PERSON">
+		<string>Oswald Birley</string>
+	</entity>
+	<entity start="86640" end="86649" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="86755" end="86767" type="LOCATION">
+		<string>Villa Taylor</string>
+	</entity>
+	<entity start="86771" end="86780" type="LOCATION">
+		<string>Marrakesh</string>
+	</entity>
+	<entity start="86829" end="86861" type="ORGANIZATION">
+		<string>Wendy and Emery Reves Collection</string>
+	</entity>
+	<entity start="86869" end="86889" type="ORGANIZATION">
+		<string>Dallas Museum of Art</string>
+	</entity>
+	<entity start="86891" end="86902" type="PERSON">
+		<string>Emery Reves</string>
+	</entity>
+	<entity start="86907" end="86916" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="86919" end="86937" type="ORGANIZATION">
+		<string>American publisher</string>
+	</entity>
+	<entity start="86969" end="86978" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="86993" end="86998" type="PERSON">
+		<string>Emery</string>
+	</entity>
+	<entity start="87028" end="87036" type="LOCATION">
+		<string>La Pausa</string>
+	</entity>
+	<entity start="87045" end="87060" type="LOCATION">
+		<string>South of France</string>
+	</entity>
+	<entity start="87097" end="87101" type="DATE">
+		<string>1927</string>
+	</entity>
+	<entity start="87106" end="87129" type="PERSON">
+		<string>Gabrielle "Coco" Chanel</string>
+	</entity>
+	<entity start="87143" end="87149" type="PERSON">
+		<string>Bendor</string>
+	</entity>
+	<entity start="87155" end="87174" type="PERSON">
+		<string>Duke of Westminster</string>
+	</entity>
+	<entity start="87219" end="87223" type="DATE">
+		<string>1985</string>
+	</entity>
+	<entity start="87242" end="87251" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="87330" end="87339" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="87442" end="87446" type="DATE">
+		<string>1946</string>
+	</entity>
+	<entity start="87533" end="87543" type="ORGANIZATION">
+		<string>Parliament</string>
+	</entity>
+	<entity start="87548" end="87552" type="DATE">
+		<string>1911</string>
+	</entity>
+	<entity start="87640" end="87644" type="DATE">
+		<string>1898</string>
+	</entity>
+	<entity start="87687" end="87696" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="87872" end="87888" type="ORGANIZATION">
+		<string>Evening Standard</string>
+	</entity>
+	<entity start="87894" end="87898" type="DATE">
+		<string>1936</string>
+	</entity>
+	<entity start="87922" end="87928" type="PERSON">
+		<string>Hitler</string>
+	</entity>
+	<entity start="87974" end="87983" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="88195" end="88199" type="DATE">
+		<string>1953</string>
+	</entity>
+	<entity start="88617" end="88622" type="DATE">
+		<string>55 BC</string>
+	</entity>
+	<entity start="88665" end="88669" type="DATE">
+		<string>1914</string>
+	</entity>
+	<entity start="88672" end="88681" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="88773" end="88782" type="LOCATION">
+		<string>Chartwell</string>
+	</entity>
+	<entity start="88838" end="88847" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="88859" end="88902" type="ORGANIZATION">
+		<string>Amalgamated Union of Building Trade Workers</string>
+	</entity>
+	<entity start="88954" end="88972" type="ORGANIZATION">
+		<string>Conservative Party</string>
+	</entity>
+	<entity start="89003" end="89012" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="89014" end="89018" type="DATE">
+		<string>1973</string>
+	</entity>
+	<entity start="89023" end="89041" type="PERSON">
+		<string>Ivor Roberts-Jones</string>
+	</entity>
+	<entity start="89045" end="89062" type="LOCATION">
+		<string>Parliament Square</string>
+	</entity>
+	<entity start="89064" end="89070" type="LOCATION">
+		<string>London</string>
+	</entity>
+	<entity start="89087" end="89104" type="PERSON">
+		<string>Winston Churchill</string>
+	</entity>
+	<entity start="89152" end="89161" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="89287" end="89300" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="89305" end="89309" type="DATE">
+		<string>1945</string>
+	</entity>
+	<entity start="89317" end="89326" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="89344" end="89356" type="PERSON">
+		<string>Halvdan Koht</string>
+	</entity>
+	<entity start="89449" end="89461" type="PERSON">
+		<string>Cordell Hull</string>
+	</entity>
+	<entity start="89463" end="89472" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="89515" end="89519" type="DATE">
+		<string>1953</string>
+	</entity>
+	<entity start="89611" end="89615" type="DATE">
+		<string>2002</string>
+	</entity>
+	<entity start="89616" end="89619" type="ORGANIZATION">
+		<string>BBC</string>
+	</entity>
+	<entity start="89745" end="89756" type="ORGANIZATION">
+		<string>BBC viewers</string>
+	</entity>
+	<entity start="89758" end="89767" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="89836" end="89840" type="ORGANIZATION">
+		<string>TIME</string>
+	</entity>
+	<entity start="89842" end="89859" type="ORGANIZATION">
+		<string>Churchill College</string>
+	</entity>
+	<entity start="89861" end="89870" type="LOCATION">
+		<string>Cambridge</string>
+	</entity>
+	<entity start="89886" end="89890" type="DATE">
+		<string>1958</string>
+	</entity>
+	<entity start="89914" end="89930" type="DATE">
+		<string>29 November 1995</string>
+	</entity>
+	<entity start="89954" end="89968" type="ORGANIZATION">
+		<string>United Kingdom</string>
+	</entity>
+	<entity start="89980" end="89992" type="PERSON">
+		<string>Bill Clinton</string>
+	</entity>
+	<entity start="90000" end="90013" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="90032" end="90052" type="ORGANIZATION">
+		<string>Houses of Parliament</string>
+	</entity>
+	<entity start="90110" end="90134" type="LOCATION">
+		<string>USS Winston S. Churchill</string>
+	</entity>
+	<entity start="90164" end="90177" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="90225" end="90238" type="ORGANIZATION">
+		<string>United States</string>
+	</entity>
+	<entity start="90245" end="90249" type="DATE">
+		<string>1975</string>
+	</entity>
+	<entity start="90269" end="90292" type="ORGANIZATION">
+		<string>University of Rochester</string>
+	</entity>
+	<entity start="90302" end="90306" type="DATE">
+		<string>1941</string>
+	</entity>
+	<entity start="90308" end="90326" type="ORGANIZATION">
+		<string>Harvard University</string>
+	</entity>
+	<entity start="90330" end="90339" type="LOCATION">
+		<string>Cambridge</string>
+	</entity>
+	<entity start="90341" end="90354" type="LOCATION">
+		<string>Massachusetts</string>
+	</entity>
+	<entity start="90364" end="90368" type="DATE">
+		<string>1943</string>
+	</entity>
+	<entity start="90370" end="90387" type="ORGANIZATION">
+		<string>McGill University</string>
+	</entity>
+	<entity start="90391" end="90399" type="LOCATION">
+		<string>Montreal</string>
+	</entity>
+	<entity start="90401" end="90407" type="LOCATION">
+		<string>Canada</string>
+	</entity>
+	<entity start="90417" end="90421" type="DATE">
+		<string>1944</string>
+	</entity>
+	<entity start="90423" end="90442" type="ORGANIZATION">
+		<string>Westminster College</string>
+	</entity>
+	<entity start="90446" end="90452" type="LOCATION">
+		<string>Fulton</string>
+	</entity>
+	<entity start="90454" end="90462" type="LOCATION">
+		<string>Missouri</string>
+	</entity>
+	<entity start="90463" end="90475" type="DATE">
+		<string>5 March 1946</string>
+	</entity>
+	<entity start="90477" end="90494" type="ORGANIZATION">
+		<string>Leiden University</string>
+	</entity>
+	<entity start="90498" end="90504" type="LOCATION">
+		<string>Leiden</string>
+	</entity>
+	<entity start="90506" end="90517" type="LOCATION">
+		<string>Netherlands</string>
+	</entity>
+	<entity start="90541" end="90545" type="DATE">
+		<string>1946</string>
+	</entity>
+	<entity start="90547" end="90566" type="ORGANIZATION">
+		<string>University of Miami</string>
+	</entity>
+	<entity start="90570" end="90575" type="LOCATION">
+		<string>Miami</string>
+	</entity>
+	<entity start="90577" end="90584" type="LOCATION">
+		<string>Florida</string>
+	</entity>
+	<entity start="90588" end="90592" type="DATE">
+		<string>1947</string>
+	</entity>
+	<entity start="90594" end="90618" type="ORGANIZATION">
+		<string>University of Copenhagen</string>
+	</entity>
+	<entity start="90622" end="90632" type="LOCATION">
+		<string>Copenhagen</string>
+	</entity>
+	<entity start="90634" end="90641" type="LOCATION">
+		<string>Denmark</string>
+	</entity>
+	<entity start="90651" end="90655" type="DATE">
+		<string>1950</string>
+	</entity>
+	<entity start="90739" end="90748" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="90828" end="90837" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="90846" end="90865" type="PERSON">
+		<string>Dudley Field Malone</string>
+	</entity>
+	<entity start="90889" end="90893" type="DATE">
+		<string>1951</string>
+	</entity>
+	<entity start="90896" end="90909" type="PERSON">
+		<string>Peter Sellers</string>
+	</entity>
+	<entity start="90934" end="90938" type="DATE">
+		<string>1956</string>
+	</entity>
+	<entity start="90941" end="90955" type="PERSON">
+		<string>Richard Burton</string>
+	</entity>
+	<entity start="90995" end="90999" type="DATE">
+		<string>1961</string>
+	</entity>
+	<entity start="91002" end="91012" type="PERSON">
+		<string>Simon Ward</string>
+	</entity>
+	<entity start="91029" end="91033" type="DATE">
+		<string>1972</string>
+	</entity>
+	<entity start="91036" end="91049" type="PERSON">
+		<string>Warren Clarke</string>
+	</entity>
+	<entity start="91073" end="91082" type="PERSON">
+		<string>Churchill</string>
+	</entity>
+	<entity start="91084" end="91088" type="DATE">
+		<string>1974</string>
+	</entity>
+	<entity start="91091" end="91105" type="PERSON">
+		<string>Wensley Pithey</string>
+	</entity>
+	<entity start="91131" end="91135" type="DATE">
+		<string>1978</string>
+	</entity>
+	<entity start="91138" end="91150" type="PERSON">
+		<string>Timothy West</string>
+	</entity>
+	<entity start="91180" end="91184" type="DATE">
+		<string>1979</string>
+	</entity>
+	<entity start="91197" end="91201" type="DATE">
+		<string>1995</string>
+	</entity>
+	<entity start="91204" end="91220" type="PERSON">
+		<string>William Hootkins</string>
+	</entity>
+	<entity start="91264" end="91268" type="DATE">
+		<string>1981</string>
+	</entity>
+	<entity start="91271" end="91283" type="PERSON">
+		<string>Robert Hardy</string>
+	</entity>
+	<entity start="91326" end="91330" type="DATE">
+		<string>1981</string>
+	</entity>
+	<entity start="91353" end="91357" type="DATE">
+		<string>1989</string>
+	</entity>
+	<entity start="91360" end="91371" type="PERSON">
+		<string>Bob Hoskins</string>
+	</entity>
+	<entity start="91405" end="91409" type="DATE">
+		<string>1994</string>
+	</entity>
+	<entity start="91412" end="91425" type="PERSON">
+		<string>Albert Finney</string>
+	</entity>
+	<entity start="91447" end="91451" type="DATE">
+		<string>2002</string>
+	</entity>
+	<entity start="91454" end="91462" type="PERSON">
+		<string>Ian Mune</string>
+	</entity>
+	<entity start="91489" end="91493" type="DATE">
+		<string>2004</string>
+	</entity>
+	<entity start="91496" end="91506" type="PERSON">
+		<string>Rod Taylor</string>
+	</entity>
+	<entity start="91530" end="91534" type="DATE">
+		<string>2009</string>
+	</entity>
+	<entity start="91537" end="91552" type="PERSON">
+		<string>Brendan Gleeson</string>
+	</entity>
+	<entity start="91570" end="91574" type="DATE">
+		<string>2009</string>
+	</entity>
+	<entity start="91577" end="91588" type="PERSON">
+		<string>Ian McNeice</string>
+	</entity>
+	<entity start="91675" end="91679" type="DATE">
+		<string>2010</string>
+	</entity>
+	<entity start="91684" end="91688" type="DATE">
+		<string>2011</string>
+	</entity>
+	<entity start="91691" end="91704" type="PERSON">
+		<string>Timothy Spall</string>
+	</entity>
+	<entity start="91725" end="91729" type="DATE">
+		<string>2010</string>
+	</entity>
+</entities>
+
