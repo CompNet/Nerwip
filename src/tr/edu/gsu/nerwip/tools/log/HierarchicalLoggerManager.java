@@ -45,8 +45,8 @@ public class HierarchicalLoggerManager
 	
 	/**
 	 * Fetches or creates a new 
-	 * anonymous logger (note only
-	 * one such logger can exist).
+	 * <i>anonymous</i> logger (note only
+	 * one such logger can exist at once).
 	 * 
 	 * @return
 	 * 		The anonymous logger.

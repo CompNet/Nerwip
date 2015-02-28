@@ -153,6 +153,35 @@ public class ArticleLists
 		return result;
 	}
 	
+	/**
+	 * Returns half the list of all articles in
+	 * the corpus.
+	 * 
+	 * @param first
+	 * 		If {@code true}, returns the first half,
+	 * 		otherwise the second half.
+	 * 
+	 * @return
+	 * 		A list of {@code File} objects.
+	 */
+	public static ArticleList getArticleHalfList(boolean first)
+	{	logger.log("Retrieving the list of articles");
+		
+		// get the full list
+		File folder = new File(FileNames.FO_OUTPUT);
+		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+		List<File> list = Arrays.asList(articles);
+		Collections.sort(list);
+		
+		// retain only half the list
+		ArticleList result;
+		if(first)
+			result = new ArticleList("half1", list.subList(0, list.size()/2+1));
+		else
+			result = new ArticleList("half2", list.subList(list.size()/2+1,list.size()));
+		return result;
+	}
+
 	/////////////////////////////////////////////////////////////////
 	// URL				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -164,7 +193,7 @@ public class ArticleLists
 	 * 		A list of URLs.
 	 */
 	public static List<URL> getArticleUrlList()
-	{	logger.log("Retrieving the list of articles url");
+	{	logger.log("Retrieving the list of article URLs");
 		File folder = new File(FileNames.FO_OUTPUT);
 		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
 		List<File> files = new ArrayList<File>(Arrays.asList(articles));

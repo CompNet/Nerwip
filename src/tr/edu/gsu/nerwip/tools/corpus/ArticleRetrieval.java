@@ -85,7 +85,7 @@ public class ArticleRetrieval
 	public static void main(String[] args) throws Exception
 	{	logger.setName("Article-Retrieval");
 		
-//		retrieveArticles();
+		retrieveArticles("article.list.s2.txt");
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -94,9 +94,17 @@ public class ArticleRetrieval
 	/** Common object used for logging */
 	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
+	/////////////////////////////////////////////////////////////////
+	// PROCESS		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	/**
 	 * Scans a list of (Wikipedia-normalized) person
 	 * names and retrieve the corresponding articles.
+	 * The list can alternatively contain directly
+	 * the full URLs.
+	 * 
+	 * @param fileName
+	 * 		Name of the file containing the list.
 	 * 
 	 * @throws ReaderException
 	 * 		Problem while accessing the list of names or an article.
@@ -107,11 +115,11 @@ public class ArticleRetrieval
 	 * @throws SAXException
 	 * 		Problem while accessing the list of names or an article.
 	 */
-	private static void retrieveArticles() throws ReaderException, IOException, ParseException, SAXException
+	public static void retrieveArticles(String fileName) throws ReaderException, IOException, ParseException, SAXException
 	{	logger.log("Adding new articles to our corpus");
 		logger.increaseOffset();
 		
-		File file = new File(FileNames.FO_OUTPUT + File.separator + "article.list.s2" + FileNames.EX_TXT);	
+		File file = new File(FileNames.FO_OUTPUT + File.separator + fileName);	
 		FileInputStream fis = new FileInputStream(file);
 		InputStreamReader isr = new InputStreamReader(fis);
 		Scanner scanner = new Scanner(isr);
@@ -121,20 +129,25 @@ public class ArticleRetrieval
 		retriever.setCacheEnabled(false);
 		
 		logger.increaseOffset();
-		boolean pass = true;	// used for degbugging purposes
+//		boolean pass = true;	// used for degbugging purposes
 		while(scanner.hasNextLine())
 		{	String name = scanner.nextLine().trim();
-			if(name.contains("Franco_Maria_Malfatti"))
-				pass = false;
-			if(!pass)
+//			if(name.contains("Franco_Maria_Malfatti"))
+//				pass = false;
+//			if(!pass)
 			{	logger.log("Processing '" + name + "'");
-				String urlStr = "http://en.wikipedia.org/wiki/"+name;
-				try
-				{	URL url = new URL(urlStr);
-					retriever.process(url);
-				}
-				catch (MalformedURLException e)
-				{	e.printStackTrace();
+				URL url; 
+				if(name.startsWith("http"))
+					url = new URL(name);
+				else
+				{	String urlStr = "http://en.wikipedia.org/wiki/"+name;
+					try
+					{	url = new URL(urlStr);
+						retriever.process(url);
+					}
+					catch (MalformedURLException e)
+					{	e.printStackTrace();
+					}
 				}
 			}
 		}

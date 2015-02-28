@@ -82,7 +82,7 @@ public abstract class AbstractTrainer<T>
 	protected boolean cache = true;
 	
 	/**
-	 * Changes the cache flag. If {code true}, the {@link #process(ArticleList) process}
+	 * Changes the cache flag. If {@code true}, the {@link #process(ArticleList) process}
 	 * method will first check if the input data already
 	 * exist as a file. In this case, they will be loaded
 	 * from this file. Otherwise, the process will be
