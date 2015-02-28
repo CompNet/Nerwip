@@ -79,7 +79,8 @@ public class ArticleRetriever
 	private boolean readerCache = true;
 	
 	/**
-	 * Switches the cache flag.
+	 * Switches the cache flag. If the cache
+	 * is on, then the text is stored locally.
 	 * 
 	 * @param enabled
 	 * 		{@code true} to enable caching.
@@ -90,7 +91,7 @@ public class ArticleRetriever
 
 	/**
 	 * Switches the cache flag for the
-	 * reader used by this ArticleRetriever,
+	 * reader used by this {@code ArticleRetriever},
 	 * which means: whether or not the HTML
 	 * source code should be cached (independtly 
 	 * from the textual content).

@@ -180,7 +180,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 		Locale.setDefault(Locale.ENGLISH);
 		EntityEditor viewer = new EntityEditor();
 		
-		// select specific NER tools
+		// restrict display only to certain NER tools
+		// (or all of them, if none selected below)
 		List<String> prefixes = Arrays.asList(new String[]
 		{	
 //			new DateExtractor().getFolder(),
@@ -433,8 +434,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 //			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE).getFolder(),
 //			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL).getFolder(),
 				
-			new FullCombiner(Combiner.SVM).getFolder(),
-			new FullCombiner(Combiner.VOTE).getFolder()
+//			new FullCombiner(Combiner.SVM).getFolder(),
+//			new FullCombiner(Combiner.VOTE).getFolder()
 		});
 		viewer.setPrefixes(prefixes);
 		
@@ -447,7 +448,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		// set up article by number
 		ArticleList articles = ArticleLists.getArticleList();
 //		File article = articles.get(250);
-		File article = articles.get(50);	// 33
+		File article = articles.get(0);
 		articleName = article.getName();
 		
 		String articlePath = FileNames.FO_OUTPUT + File.separator + articleName;
