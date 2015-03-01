@@ -24,14 +24,17 @@ package tr.edu.gsu.nerwip.tools.log;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
  * General manager to handle all
  * the created {@link HierarchicalLogger} objects.
  * 
- * @version 1.2
+ * @version 1.3
  * 
  * @author Vincent Labatut
  */
@@ -52,7 +55,8 @@ public class HierarchicalLoggerManager
 	 * 		The anonymous logger.
 	 */
 	public static synchronized HierarchicalLogger getHierarchicalLogger()
-	{	HierarchicalLogger result = getHierarchicalLogger(null);
+	{	checkFolder();
+		HierarchicalLogger result = getHierarchicalLogger(null);
 		return result;
 	}
 
@@ -67,7 +71,8 @@ public class HierarchicalLoggerManager
 	 * 		The retrieved or created logger.
 	 */
 	public static synchronized HierarchicalLogger getHierarchicalLogger(String name)
-	{	HierarchicalLogger result = loggers.get(name);
+	{	checkFolder();
+		HierarchicalLogger result = loggers.get(name);
 		if(result==null)
 		{	result = new HierarchicalLogger(name);
 			loggers.put(name,result);
@@ -75,9 +80,22 @@ public class HierarchicalLoggerManager
 		
 		return result;
 	}
+
+    /////////////////////////////////////////////////////////////////
+	// FOLDER		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Checks if the log folder exists,
+	 * otherwise: creates it.
+	 */
+	private static void checkFolder()
+	{	File folder = new File(FileNames.FO_LOG);
+		if(!folder.exists())
+			folder.mkdir();
+	}
 	
     /////////////////////////////////////////////////////////////////
-	// CLOS			/////////////////////////////////////////////////
+	// CLOSE		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Closes all existing loggers.
