@@ -2,10 +2,10 @@ Nerwip v4
 =======
 *Named Entity Extraction in Wikipedia Pages*
 
-* Copyright 2011 v1 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
-* Copyright 2012 v2 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
-* Copyright 2013 v3 Samet Atdağ & Vincent Labatut
-* Copyright 2014-15 v4 Vincent Labatut
+* Copyright 2011 (v1) Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
+* Copyright 2012 (v2) Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
+* Copyright 2013 (v3) Samet Atdağ & Vincent Labatut
+* Copyright 2014-15 (v4) Vincent Labatut
 
 Nerwip is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see `licence.txt`
 
