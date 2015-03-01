@@ -158,7 +158,8 @@ public enum LingPipeModelName
 				{	logger.log("Get the dictionary-based chunker with approximate matching");
 					TrieDictionary<String> dictionary = new TrieDictionary<String>();
 					for(EntityType type: HANDLED_TYPES)
-					{	String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + type.toString() + FileNames.EX_TXT;
+					{	String typeStr = type.toString().toLowerCase(Locale.ENGLISH);
+						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TXT;
 						File file = new File(filePath);
 						Scanner scanner = new Scanner(file);
 						while (scanner.hasNext())

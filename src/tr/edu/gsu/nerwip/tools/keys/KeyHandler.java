@@ -82,7 +82,7 @@ public class KeyHandler
 				String value = keyElt.getAttributeValue(XmlNames.ATT_VALUE);
 				// ignore empty keys or names
 				if(!name.isEmpty() && !value.isEmpty())
-					KEYS.put(name, value);
+					result.put(name, value);
 			}
 		}
 		catch (SAXException | IOException e)

@@ -361,7 +361,7 @@ public class Launch
 	 * 		Something went wrong... 
 	 */
 	private static Article getFirstArticle() throws Exception
-	{	ArticleList folders = getTrainingSet();
+	{	ArticleList folders = ArticleLists.getArticleList();
 		File folder = folders.get(0);
 		String name = folder.getName();
 		URL url = new URL("http://en.wikipedia.org/wiki/"+name); // fake url, enough for here
