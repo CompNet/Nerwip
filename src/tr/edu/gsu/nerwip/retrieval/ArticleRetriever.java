@@ -152,7 +152,7 @@ public class ArticleRetriever
 		logger.decreaseOffset();
 		
 		// determine if the page should be accessed
-		if(!cache || Article.isCached(name))
+		if(!cache || !Article.isCached(name))
 		{	logger.log("Article not cached, need to process the original web page ("+address+")");
 			logger.increaseOffset();
 			

@@ -345,7 +345,7 @@ public class Article
 		File linkedFile = new File(folderPath + File.separator + FileNames.FI_LINKED_TEXT);
 //		File propertiesFile = new File(folderPath + File.separator + FileNames.FI_PROPERTIES);
 		
-		boolean result = !rawFile.exists() || !linkedFile.exists() /*|| !originalFile.exists()*/;
+		boolean result = rawFile.exists() && linkedFile.exists() /*&& originalFile.exists()*/;
 		return result;
 	}
 	
