@@ -169,6 +169,8 @@ public class VoteTrainer
 				result.recordCategoryProportion(filePath);
 			}
 		}
+		else
+			logger.log("No training needed for vote weights");
 	}
 	
 	/////////////////////////////////////////////////////////////////
