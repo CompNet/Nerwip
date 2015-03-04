@@ -1,0 +1,1 @@
+Before applying certain NER tool, you must complete the keys.xml file, as explained in the README file.
