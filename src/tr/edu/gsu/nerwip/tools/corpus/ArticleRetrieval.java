@@ -126,7 +126,7 @@ public class ArticleRetrieval
 		logger.log("Reading file " + file);
 		
 		ArticleRetriever retriever = new ArticleRetriever();
-		retriever.setCacheEnabled(false);
+		retriever.setCacheEnabled(true);
 		
 		logger.increaseOffset();
 //		boolean pass = true;	// used for degbugging purposes
@@ -136,19 +136,19 @@ public class ArticleRetrieval
 //				pass = false;
 //			if(!pass)
 			{	logger.log("Processing '" + name + "'");
-				URL url; 
+				URL url = null; 
 				if(name.startsWith("http"))
 					url = new URL(name);
 				else
 				{	String urlStr = "http://en.wikipedia.org/wiki/"+name;
 					try
 					{	url = new URL(urlStr);
-						retriever.process(url);
 					}
 					catch (MalformedURLException e)
 					{	e.printStackTrace();
 					}
 				}
+				retriever.process(url);
 			}
 		}
 		logger.decreaseOffset();
