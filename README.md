@@ -13,8 +13,6 @@ Nerwip is free software: you can redistribute it and/or modify it under the term
 * GitHub repo: https://github.com/CompNet/nerwip
 * Contact: vlabatut@gsu.edu.tr
  
-**This is not a production version: please use the latest release.**
-
 -----------------------------------------------------------------------
 
 ## Description
