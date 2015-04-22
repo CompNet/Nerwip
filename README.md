@@ -1,4 +1,4 @@
-Nerwip v4
+Nerwip v4 [French edition]
 =======
 *Named Entity Extraction in Wikipedia Pages*
 
