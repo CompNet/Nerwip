@@ -40,10 +40,10 @@ public class FileNames
 	/** Log folder */
 	public final static String FO_LOG = "log";
 	/** Output folder */
-	public final static String FO_OUTPUT = "out";	//actual one
+//	public final static String FO_OUTPUT = "out";	//actual one
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
 //	public final static String FO_OUTPUT = "C:/Temp";
-//	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/Nerwip2/out";
+	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";

@@ -1,1 +1,0 @@
-Before applying a NER tool, you must perform the installation process, as explained in the README file.
