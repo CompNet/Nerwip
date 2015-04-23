@@ -25,6 +25,7 @@ package tr.edu.gsu.nerwip.retrieval;
  */
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 
@@ -40,6 +41,9 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 /**
  * Uses a reader to retrieve both versions of a text
  * (raw and linked). Then those are recorded in local files.
+ * <br>
+ * It also allows directly retrieving the text from a
+ * cached file, provided we are sure it was cached before.
  * 
  * @author Yasa Akbulut
  */
@@ -178,6 +182,50 @@ public class ArticleRetriever
 		
 		logger.decreaseOffset();
 		logger.log("Retrieval done for "+address);
+		return result;
+	}
+
+	/**
+	 * Returns the texts corresponding to the specified name.
+	 * <br/>
+	 * We suppose the corresponding article was previously cached,
+	 * other wise the method will fail, and you rather have to
+	 * use {@link #process(URL)}. 
+	 * 
+	 * @param name
+	 * 		Name of the folder containing the article.
+	 * @return
+	 * 		{@code Article} object containing all the relevant data.
+	 * 
+	 * @throws IOException
+	 * 		Problem while accessing the cache files. 
+	 * @throws ParseException 
+	 * 		Problem while reading the article locally. 
+	 * @throws SAXException 
+	 * 		Problem while reading the article locally. 
+	 * @throws ReaderException 
+	 * 		Problem while getting the article from the web.
+	 */
+	public Article process(String name) throws ParseException, SAXException, IOException, ReaderException
+	{	logger.log("Retrieving article named "+name);
+		logger.increaseOffset();
+		Article result = null;
+		
+		// check if the string is a url
+		try
+		{	URL url = new URL(name);
+			logger.log("This name seems to be a URL, trying to retrieve it");
+			result = process(url);
+		}
+		
+		// the string is not a URL, it's name
+		catch(MalformedURLException e)
+		{	logger.log("This name is not a URL, so trying to retrieve it directly from cache");
+			result = Article.read(name);
+		}
+		
+		logger.decreaseOffset();
+		logger.log("Retrieval done for article "+name);
 		return result;
 	}
 }

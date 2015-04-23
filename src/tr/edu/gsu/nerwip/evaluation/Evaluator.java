@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -229,9 +228,8 @@ public class Evaluator
 		// get article
 		logger.log("Retrieve the article");
 		String name = folder.getName();
-		URL url = new URL("http://en.wikipedia.org/wiki/"+name); // fake url, enough for the evaluation
 		ArticleRetriever retriever = new ArticleRetriever();
-		Article article = retriever.process(url);
+		Article article = retriever.process(name);
 		lastCategories = article.getCategories();
 		
 		// get reference entities

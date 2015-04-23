@@ -128,7 +128,7 @@ public class Test
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();

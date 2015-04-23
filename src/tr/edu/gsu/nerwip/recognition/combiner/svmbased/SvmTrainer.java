@@ -31,7 +31,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -208,9 +207,8 @@ public class SvmTrainer
 			for(File folder: folders)
 			{	// get article
 				String name = folder.getName();
-				URL url = new URL("http://en.wikipedia.org/wiki/"+name); // fake url, enough for here
 				ArticleRetriever retriever = new ArticleRetriever();
-				Article article = retriever.process(url);
+				Article article = retriever.process(name);
 					
 				Map<AbstractRecognizer,Entities> entities = new HashMap<AbstractRecognizer, Entities>();
 				

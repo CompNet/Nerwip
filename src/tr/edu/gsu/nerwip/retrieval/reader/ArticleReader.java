@@ -31,9 +31,9 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
- * This class corresponds to exceptions hapening
- * the level of article reading, i.e. when getting
- * articles from the web.
+ * All classes automatically getting articles
+ * from the Web using a starting name or URL 
+ * should inherit from this abstract class.
  * 
  * @author Vincent Labatut
  */

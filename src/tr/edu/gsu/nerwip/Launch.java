@@ -364,13 +364,12 @@ public class Launch
 	{	ArticleList folders = ArticleLists.getArticleList();
 		File folder = folders.get(0);
 		String name = folder.getName();
-		URL url = new URL("http://en.wikipedia.org/wiki/"+name); // fake url, enough for here
 		
 		// Here we ask the retriever to get an article
 		// which is actually arealdy cached (i.e. in the corpus)
 		// A bit convulated, I admit.
 		ArticleRetriever retriever = new ArticleRetriever();
-		Article result = retriever.process(url);
+		Article result = retriever.process(name);
 		
 		return result;
 	}

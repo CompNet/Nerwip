@@ -26,7 +26,6 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -156,9 +155,8 @@ public abstract class AbstractTrainer<T>
 			for(File folder: folders)
 			{	// get article
 				String name = folder.getName();
-				URL url = new URL("http://en.wikipedia.org/wiki/"+name); // fake url, enough for here
 				ArticleRetriever retriever = new ArticleRetriever();
-				Article article = retriever.process(url);
+				Article article = retriever.process(name);
 					
 				// get reference entities
 				Entities entities = article.getReferenceEntities();

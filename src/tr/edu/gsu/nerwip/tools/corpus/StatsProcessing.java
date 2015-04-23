@@ -136,8 +136,7 @@ public class StatsProcessing
 			logger.log("Retrieve text");
 			String name = folder.getName();
 			names.add(name);
-			URL url = new URL("http://en.wikipedia.org/wiki/"+name);
-			Article article = retriever.process(url);
+			Article article = retriever.process(name);
 			String text = article.getRawText();
 			// categories
 			List<ArticleCategory> cats = article.getCategories();

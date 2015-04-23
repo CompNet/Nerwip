@@ -29,7 +29,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -119,8 +118,7 @@ public class CategoryProportions extends HashMap<ArticleCategory,Float>
 			// get article
 			logger.log("Retrieve article");
 			String name = folder.getName();
-			URL url = new URL("http://en.wikipedia.org/wiki/"+name);
-			Article article = retriever.process(url);
+			Article article = retriever.process(name);
 			
 			// process categories
 			List<ArticleCategory> cats = article.getCategories();
