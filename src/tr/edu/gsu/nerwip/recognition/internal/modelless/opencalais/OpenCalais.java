@@ -46,6 +46,7 @@ import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
 import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
+import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class acts as an interface with the OpenCalais Web service.
@@ -123,6 +124,8 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	/////////////////////////////////////////////////////////////////
 	/** Key name for OpenCalais */
 	public static final String KEY_NAME = "OpenCalais";
+	/** Maximal request size */
+	private static final int MAX_SIZE = 10000;
 	
 	@Override
 	protected List<String> detectEntities(Article article) throws RecognizerException
@@ -135,20 +138,21 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 		if(key==null)
 			throw new NullPointerException("In order to use OpenCalais, you first need to set up your user key in file res/misc/keys.xml using the exact name \"OpenCalais\".");
 		
-		// we need to break text : OpenCalais can't handle more than 100000 chars at once
-		List<String> chunks = new ArrayList<String>();
-		while(text.length()>95000)
-		{	int index = text.indexOf("\n",90000) + 1;
-			String chunk = text.substring(0, index);
-			chunks.add(chunk);
-			text = text.substring(index);
-		}
-		chunks.add(text);
+		// we need to break down the text: OpenCalais can't handle more than 100000 chars at once
+//		List<String> parts = new ArrayList<String>();
+//		while(text.length()>95000)
+//		{	int index = text.indexOf("\n",90000) + 1;
+//			String chunk = text.substring(0, index);
+//			parts.add(chunk);
+//			text = text.substring(index);
+//		}
+//		parts.add(text);
+		List<String> parts = StringTools.splitText(text, MAX_SIZE);
 		
-		for(int i=0;i<chunks.size();i++)
-		{	logger.log("Processing OpenCalais chunk #"+(i+1)+"/"+chunks.size());
+		for(int i=0;i<parts.size();i++)
+		{	logger.log("Processing OpenCalais chunk #"+(i+1)+"/"+parts.size());
 			logger.increaseOffset();
-			String chunk = chunks.get(i);
+			String part = parts.get(i);
 			
 			try
 			{	// define HTTP message
@@ -157,7 +161,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 				method.setHeader("x-calais-licenseID", key);
 				method.setHeader("Content-Type", "text/raw; charset=UTF-8");
 				method.setHeader("Accept", "xml/rdf");
-				method.setEntity(new StringEntity(chunk, "UTF-8"));
+				method.setEntity(new StringEntity(part, "UTF-8"));
 				
 				// send to open calais
 				logger.log("Send message to OpenCalais");
@@ -179,7 +183,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 				logger.log("Lines read: "+nbr);
 				
 				String answer = builder.toString();
-				result.add(chunk);
+				result.add(part);
 				result.add(answer);
 			}
 			catch (UnsupportedEncodingException e)

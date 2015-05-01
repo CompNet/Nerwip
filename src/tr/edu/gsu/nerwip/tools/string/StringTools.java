@@ -24,6 +24,8 @@ package tr.edu.gsu.nerwip.tools.string;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,5 +118,82 @@ public class StringTools
 		Matcher m = r.matcher(string);
 		boolean result = !m.find();
 		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// SPLIT			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** 
+	 * Pattern used to detect sentences when splitting text 
+	 * (taken from Ruchira Gayan Ranaweera's answer from 
+	 * http://stackoverflow.com/questions/21430447/how-to-split-paragraphs-into-sentences) 
+	 */ 
+	private static final Pattern SENTENCE_PATTERN = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)", Pattern.MULTILINE);
+    
+	/**
+	 * Breaks down the specified text in chunks of {@code maxSize} characters.
+	 * <br/>
+	 * A sentence splitter is used to perform the split between two sentences.
+	 * It is a very simple one, we consider either the newline character,
+	 * or the presence of a dot followed by a space and not preceeded by an
+	 * uppercase letter. 
+	 * 
+	 * @param text
+	 * 		The text to split.
+	 * @param maxSize
+	 * 		The maximal size of the chunks to produce.
+	 * @return
+	 * 		A list of smaller chunks corresponding to a broken down version of 
+	 * 		the original text.
+	 */
+	public static List<String> splitText(String text, int maxSize)
+	{	List<String> result = new ArrayList<String>();
+		
+		// identify the sentences
+		Matcher matcher = SENTENCE_PATTERN.matcher(text);
+		
+		// build the chunks
+		int start = 0;
+		int prevEnd = 0;
+		while(matcher.find())
+		{	// for debug
+			String sentence = matcher.group();
+//			System.out.println(sentence);
+			
+			int curEnd = matcher.end();
+			if(curEnd-start > maxSize)
+			{	if(start==prevEnd)
+					// TODO we could force-split between words, it's better than nothing
+					throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+sentence.length()+" chars) is too long to be split using maxSize="+maxSize);
+				String chunk = text.substring(start, prevEnd);
+				result.add(chunk);
+				start = prevEnd;
+			}
+			
+			prevEnd = curEnd;
+		}
+		
+		if(start<text.length())
+			result.add(text.substring(start,text.length()));
+		
+		// for debug
+//		System.out.println("result:\n"+result);
+		
+		return result;
+	}
+	
+	/**
+	 * Tests the {@link #splitText(String, int)} method.
+	 * 
+	 * @param args
+	 * 		No need.
+	 */
+	public static void main(String[] args)
+	{	String text = "This is a first sentence. Cela semble marcher très bien."
+			+ "What if no space after dot? Or even other punctuation marks!\n"
+			+ "Et même plein de points !?! Ou... des nombres 12.32 et 12,65.\n"
+			+ "On pourrait aussi avoir des abréviations comme M.Dupont ou M. Dupont ; "
+			+ "enfin, there could be spaces and stuff in between sentences.   Like this.  End.";
+		splitText(text, 70);
 	}
 }

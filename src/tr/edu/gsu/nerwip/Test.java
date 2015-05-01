@@ -106,9 +106,10 @@ public class Test
 		
 //		URL url = new URL("http://en.wikipedia.org/wiki/John_Zorn");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Fleur_Pellerin");
-//		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
+		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
-		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
+//		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
+		String name = "Émilien_Brigault";
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
@@ -120,6 +121,7 @@ public class Test
 //		testIllinois(url);
 //		testLingPipe(url);
 //		testOpenCalais(url);
+		testOpenCalais(name);
 //		testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
@@ -325,7 +327,7 @@ public class Test
 	 * 		Something went wrong... 
 	 */
 	private static void testOpenCalais(URL url) throws Exception
-	{	logger.setName("Test-Stanford");
+	{	logger.setName("Test-OpenCalais");
 		logger.log("Start testing OpenCalais");
 		logger.increaseOffset();
 	
@@ -335,6 +337,33 @@ public class Test
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
 		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+		openCalais.setCacheEnabled(false);
+		openCalais.process(article);
+
+		logger.decreaseOffset();
+	}
+
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testOpenCalais(String name) throws Exception
+	{	logger.setName("Test-OpenCalais");
+		logger.log("Start testing OpenCalais");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+		openCalais.setOutputRawResults(true);
 		openCalais.setCacheEnabled(false);
 		openCalais.process(article);
 
