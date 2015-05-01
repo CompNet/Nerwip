@@ -47,30 +47,34 @@ import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 public class KeyHandler
 {	
 	/////////////////////////////////////////////////////////////////
-	// KEYS			/////////////////////////////////////////////////
+	// DATA			/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Map containing all the keys */
-	public static final Map<String,String> KEYS = loadKeys();
-
+	public static final Map<String,String> KEYS = new HashMap<String, String>();
+	/** Map containing the ids associated to certain keys */
+	public static final Map<String,String> IDS = new HashMap<String, String>();
+	
+	/** Loads the keys and ids */
+	static
+	{	loadData();
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// LOADING		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Loads the list of keys as set by the user in
-	 * the appropriate XML file.
-	 * 
-	 * @return
-	 * 		A map containing each named key.
+	 * the appropriate XML file, as well as the
+	 * ids possibly associated to certain keys.
 	 */
 	@SuppressWarnings("unchecked")
-	private static Map<String,String> loadKeys()
+	private static void loadData()
 	{	// set up file names
 		String dataFileName = FileNames.FO_MISC + File.separator + FileNames.FI_KEY_LIST;
 		File dataFile = new File(dataFileName);
 		String schemaFileName = FileNames.FO_SCHEMA + File.separator + FileNames.FI_KEY_SCHEMA;
 		File schemaFile = new File(schemaFileName);
 		
-		Map<String, String> result = new HashMap<String, String>();
 		try
 		{	// load XML file
 			Element keysElt = XmlTools.getRootFromFile(dataFile, schemaFile);
@@ -80,15 +84,19 @@ public class KeyHandler
 			for(Element keyElt: keyElts)
 			{	String name = keyElt.getAttributeValue(XmlNames.ATT_NAME);
 				String value = keyElt.getAttributeValue(XmlNames.ATT_VALUE);
+				String id = keyElt.getAttributeValue(XmlNames.ATT_KEYID);
+				
 				// ignore empty keys or names
 				if(!name.isEmpty() && !value.isEmpty())
-					result.put(name, value);
+				{	KEYS.put(name, value);
+					if(id!=null)
+						IDS.put(name, id);
+				}
 			}
+//			System.out.println("Test");
 		}
 		catch (SAXException | IOException e)
 		{	e.printStackTrace();
 		}
-		
-		return result;
 	}
 }

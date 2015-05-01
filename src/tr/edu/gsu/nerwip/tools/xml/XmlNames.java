@@ -38,6 +38,8 @@ public class XmlNames
 	public static final String ATT_DATE = "date";
 	/** Entity end position */
 	public static final String ATT_END = "end";
+	/** Id associated to some key */
+	public static final String ATT_KEYID = "id";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
 	/** NER tool used to detect the entity */
