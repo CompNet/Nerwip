@@ -387,8 +387,10 @@ public class Article
 		result.setRawText(rawText);
 
 		// raw text with hyperlinks
-		String linkedText = FileTools.readTextFile(result.linkedFile);
-		result.setLinkedText(linkedText);
+		if(result.linkedFile.exists())
+		{	String linkedText = FileTools.readTextFile(result.linkedFile);
+			result.setLinkedText(linkedText);
+		}
 		
 		return result;
 	}

@@ -300,7 +300,10 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 		int i = 0;
 		for(String str: intRes)
 		{	i++;
-			temp = temp + "\n>>> Chunk " + i + "/" + intRes.size() + " <<<\n" + str + "\n";
+			if(i%2==1)
+				temp = temp + "\n>>> Chunk " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
+			else
+				temp = temp + "\n>>> Chunk " + (i/2) + "/" + intRes.size() + " - OpenCalais Response <<<\n" + str + "\n";
 		}
 		writeRawResultsStr(article, temp);
 	}
