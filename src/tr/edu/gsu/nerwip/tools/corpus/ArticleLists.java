@@ -25,45 +25,20 @@ package tr.edu.gsu.nerwip.tools.corpus;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.xml.sax.SAXException;
-
-import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.article.ArticleCategory;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
-import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
-import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
-import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
-import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class contains various methods to handle lists of articles.

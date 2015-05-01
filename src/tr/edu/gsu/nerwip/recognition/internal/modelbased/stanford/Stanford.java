@@ -28,13 +28,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.nlp.ie.crf.CRFClassifier;
-import edu.stanford.nlp.ling.CoreLabel;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
+import edu.stanford.nlp.ling.CoreLabel;
 
 /**
  * This class acts as an interface with Stanford Named Entity Recognizer.

@@ -32,6 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
+import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.file.FileTools;
 import LBJ2.classify.TestDiscrete;
 import LBJ2.learn.BatchTrainer;
 import LBJ2.learn.SparseNetworkLearner;
@@ -44,22 +51,15 @@ import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.LearningCurveMultiDataset;
+import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.LearningCurveMultiDataset.SampleReader;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NETesterMultiDataset;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NEWord;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.ParametersForLbjCode;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.TextChunkRepresentationManager;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.LearningCurveMultiDataset.SampleReader;
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.PlainTextReader;
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.TaggedDataReader;
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.TaggedDataWriter;
-import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
-import tr.edu.gsu.nerwip.tools.file.FileNames;
-import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
  * This class trains the Illinois Named Entity Tagger

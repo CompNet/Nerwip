@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.corpus.archive.ArticleComparison;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;

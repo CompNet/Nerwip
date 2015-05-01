@@ -40,13 +40,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.xml.sax.SAXException;
-
 import libsvm.svm;
 import libsvm.svm_model;
 import libsvm.svm_node;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
+
+import org.xml.sax.SAXException;
+
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;

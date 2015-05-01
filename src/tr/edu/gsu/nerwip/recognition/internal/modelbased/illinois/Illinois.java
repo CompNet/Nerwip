@@ -28,6 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
 import LBJ2.learn.SparseNetworkLearner;
 import LBJ2.parse.LinkedVector;
 import edu.illinois.cs.cogcomp.LbjNer.ExpressiveFeatures.ExpressiveFeaturesAnnotator;
@@ -37,12 +42,6 @@ import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.PlainTextReader;
-import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisConverter;
 
 /**
  * This class acts as an interface with Illinois Named Entity Tagger.

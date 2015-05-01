@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import opennlp.tools.util.Span;
-
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;

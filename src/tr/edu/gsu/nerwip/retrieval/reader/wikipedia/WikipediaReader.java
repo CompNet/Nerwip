@@ -60,10 +60,8 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.retrieval.reader.ArticleReader;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
-import tr.edu.gsu.nerwip.tools.corpus.ArticleCleaning;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
-import tr.edu.gsu.nerwip.tools.freebase.FbCommonTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 

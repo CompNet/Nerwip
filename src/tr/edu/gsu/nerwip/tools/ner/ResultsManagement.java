@@ -25,66 +25,16 @@ package tr.edu.gsu.nerwip.tools.ner;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.xml.sax.SAXException;
-
-import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.article.ArticleCategory;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
-import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
-import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
-import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner;
-import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner.CombineMode;
-import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
-import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
-import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.Illinois;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipe;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeModelName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlp;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpModelName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelName;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
-import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
-import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
-import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
-import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class contains various methods to manage the files describing

@@ -78,7 +78,6 @@ import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
@@ -99,13 +98,13 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtrac
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
+import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.LinkTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
-import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
-import tr.edu.gsu.nerwip.tools.file.FileNames;
-import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
  * Window used to display and edit annotated texts,

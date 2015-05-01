@@ -29,13 +29,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.nlp.ie.crf.CRFClassifier;
-import edu.stanford.nlp.ling.CoreLabel;
-
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
+import edu.stanford.nlp.ling.CoreLabel;
 
 /**
  * Class representing the predefined

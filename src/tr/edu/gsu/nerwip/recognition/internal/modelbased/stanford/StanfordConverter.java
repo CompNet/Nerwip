@@ -29,13 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.OriginalTextAnnotation;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.CoreAnnotations.BeforeAnnotation;
-
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
@@ -44,6 +37,12 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreAnnotations.BeforeAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.OriginalTextAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
 
 /**
  * This class is the converter associated to Stanford.
