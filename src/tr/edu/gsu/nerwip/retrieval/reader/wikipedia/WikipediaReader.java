@@ -998,7 +998,7 @@ public class WikipediaReader extends ArticleReader
 	 * @param url
 	 * 		Address of the targetted text.
 	 * @return
-	 * 		An Article object representing the retrieved object.
+	 * 		An Article object representing the retrieved text.
 	 * 
 	 * @throws ReaderException
 	 * 		Problem while retrieving the text.
