@@ -90,16 +90,22 @@ public class XmlNames
 	public final static String ATT_ID = "id";
 	/** Html class attribute */
 	public final static String ATT_CLASS = "class";
+	/** Html datetime attribute */
+	public static final String ATT_DATETIME = "datetime";
 	/** Html href attribute */
 	public final static String ATT_HREF = "href";
 	/** Html title attribute */
 	public final static String ATT_TITLE = "title";
 
 	/////////////////////////////////////////////////////////////////
-	// HTML ELEMENT		/////////////////////////////////////////////
+	// HTML ELEMENTS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Html hyperlink tag */
 	public final static String ELT_A = "a";
+	/** Html body tag */
+	public final static String ELT_BODY = "body";
+	/** Html article tag */
+	public final static String ELT_ARTICLE = "article";
 	/** Html cite tag */
 	public final static String ELT_CITE = "cite";
 	/** Html division tag */
@@ -140,6 +146,8 @@ public class XmlNames
 	public final static String ELT_TABLE = "table";
 	/** Html ordered table body tag */
 	public final static String ELT_TBODY = "tbody";
+	/** Html time tag */
+	public final static String ELT_TIME = "time";
 	/** Html unordered list tag */
 	public final static String ELT_UL = "ul";
 }

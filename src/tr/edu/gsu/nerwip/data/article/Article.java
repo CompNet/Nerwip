@@ -414,38 +414,42 @@ public class Article
 		// load file
 		Element root = XmlTools.getRootFromFile(propertiesFile,schemaFile);
 		
-		// type of biography
-		Element titleElt = root.getChild(XmlNames.ELT_TITLE);
-		if(titleElt!=null)
-		{	String titleStr = titleElt.getTextTrim();
-			this.title = titleStr;
+		// article title
+		{	Element titleElt = root.getChild(XmlNames.ELT_TITLE);
+			if(titleElt!=null)
+			{	String titleStr = titleElt.getTextTrim();
+				this.title = titleStr;
+			}
 		}
 
 		// origine url
-		Element urlElt = root.getChild(XmlNames.ELT_URL);
-		if(urlElt!=null)
-		{	String urlStr = urlElt.getTextTrim();
-			URL url = new URL(urlStr);
-			this.url = url;
+		{	Element urlElt = root.getChild(XmlNames.ELT_URL);
+			if(urlElt!=null)
+			{	String urlStr = urlElt.getTextTrim();
+				URL url = new URL(urlStr);
+				this.url = url;
+			}
 		}
 		
 		// retrieval date
-		Element dateElt = root.getChild(XmlNames.ELT_DATE);
-		if(dateElt!=null)
-		{	String dateStr = dateElt.getTextTrim();
-			Date date = DATE_FORMAT.parse(dateStr);
-			this.date = date;
+		{	Element dateElt = root.getChild(XmlNames.ELT_DATE);
+			if(dateElt!=null)
+			{	String dateStr = dateElt.getTextTrim();
+				Date date = DATE_FORMAT.parse(dateStr);
+				this.date = date;
+			}
 		}
 		
 		// categories of biography
-		Element catElt = root.getChild(XmlNames.ELT_CATEGORY);
-		if(catElt!=null)
-		{	String catsStr = catElt.getTextTrim().toUpperCase(Locale.ENGLISH);
-			String temp[] = catsStr.split(" ");
-			categories.clear();
-			for(String catStr: temp)
-			{	ArticleCategory cat = ArticleCategory.valueOf(catStr);
-				categories.add(cat);
+		{	Element catElt = root.getChild(XmlNames.ELT_CATEGORY);
+			if(catElt!=null)
+			{	String catsStr = catElt.getTextTrim().toUpperCase(Locale.ENGLISH);
+				String temp[] = catsStr.split(" ");
+				categories.clear();
+				for(String catStr: temp)
+				{	ArticleCategory cat = ArticleCategory.valueOf(catStr);
+					categories.add(cat);
+				}
 			}
 		}
 	}
@@ -497,7 +501,7 @@ public class Article
 		// build xml document
 		Element root = new Element(XmlNames.ELT_PROPERTIES);
 
-		// title
+		// article title
 		if(title!=null)
 		{	Element titleElt = new Element(XmlNames.ELT_TITLE);
 			titleElt.setText(title);

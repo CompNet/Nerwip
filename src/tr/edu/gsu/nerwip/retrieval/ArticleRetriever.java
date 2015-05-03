@@ -110,9 +110,6 @@ public class ArticleRetriever
 	/////////////////////////////////////////////////////////////////
 	// RETRIEVE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Text allowing to detect wikipedia URL */
-	private static final String WIKIPEDIA_FORM = "wikipedia.org";
-	
 	/**
 	 * Returns the texts corresponding to the specified URL.
 	 * <br/>
@@ -148,8 +145,8 @@ public class ArticleRetriever
 		logger.increaseOffset();
 		ArticleReader reader = null;
 		String name = null;
-		if(address.contains(WIKIPEDIA_FORM))
-		{	logger.log(">> Wikipedia");
+		if(address.contains(WikipediaReader.DOMAIN))
+		{	logger.log(">> Wikipedia page");
 			reader = new WikipediaReader();
 			name = reader.getName(url);
 		}

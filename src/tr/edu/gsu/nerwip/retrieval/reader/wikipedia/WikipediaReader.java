@@ -331,6 +331,9 @@ public class WikipediaReader extends ArticleReader
 	/////////////////////////////////////////////////////////////////
 	// RETRIEVE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////	
+	/** Text allowing to detect wikipedia URL */
+	public static final String DOMAIN = "wikipedia.org";
+	
 	/** Id of the element containing the article content in the Wikipedia page */
 	private final static String ID_CONTENT = "mw-content-text";
 	/** Id of the element containing the article title in the Wikipedia page */
