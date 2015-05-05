@@ -30,5 +30,6 @@
 	<classpathentry kind="lib" path="lib/opennlp-tools-1.5.3.jar" sourcepath="lib/opennlp-tools-1.5.3-src.zip"/>
 	<classpathentry kind="lib" path="lib/jericho-html-3.1.jar" sourcepath="lib/jericho-html-3.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/jsoup-1.7.2.jar" sourcepath="lib/jsoup-1.7.2-sources.jar"/>
+	<classpathentry kind="lib" path="lib/heideltime-standalone-1.8.jar" sourcepath="lib/heideltime-standalone-1.8-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
