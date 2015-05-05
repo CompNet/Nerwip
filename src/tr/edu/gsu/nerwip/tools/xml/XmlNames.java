@@ -128,6 +128,8 @@ public class XmlNames
 	public final static String ELT_H5 = "h5";
 	/** Html section tag */
 	public final static String ELT_H6 = "h6";
+	/** Html header tag */
+	public final static String ELT_HEADER = "header";
 	/** Html list item tag */
 	public final static String ELT_LI = "li";
 	/** Html ordered list tag */

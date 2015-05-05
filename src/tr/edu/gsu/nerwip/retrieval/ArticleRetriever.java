@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.retrieval.reader.ArticleReader;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
-import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
@@ -46,6 +45,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * cached file, provided we are sure it was cached before.
  * 
  * @author Yasa Akbulut
+ * @author Vincent Labatut
  */
 public class ArticleRetriever
 {
@@ -143,13 +143,9 @@ public class ArticleRetriever
 		// choose the reader depending on the URL base
 		logger.log("Selecting reader: ");
 		logger.increaseOffset();
-		ArticleReader reader = null;
-		String name = null;
-		if(address.contains(WikipediaReader.DOMAIN))
-		{	logger.log(">> Wikipedia page");
-			reader = new WikipediaReader();
-			name = reader.getName(url);
-		}
+		ArticleReader reader = ArticleReader.buildReader(address);
+		String name = reader.getName(url);
+		logger.log("Detected domain: "+reader.getDomain());
 		logger.decreaseOffset();
 		
 		// determine if the page should be accessed

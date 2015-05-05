@@ -39,6 +39,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -53,6 +54,34 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  */
 public abstract class ArticleReader
 {
+	/////////////////////////////////////////////////////////////////
+	// FACTORY		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Builds the appropriate reader to handle the specified
+	 * Web address, then returns it.
+	 *  
+	 * @param url
+	 * 		The Web address to process. 
+	 * @return
+	 * 		An appropriate reader for the specified address.
+	 */
+	public static ArticleReader buildReader(String url)
+	{	ArticleReader result;
+		
+		if(url.contains(WikipediaReader.DOMAIN))
+			result = new WikipediaReader();
+//		else if(url.contains(LeMondeReader.DOMAIN))
+//			result = new LeMondeReader();
+//		else if(url.contains(LiberationReader.DOMAIN))
+//			result = new LiberationReader();
+		else
+//			result = new GenericReader();
+			result = null;
+		
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// LOGGER		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -88,6 +117,18 @@ public abstract class ArticleReader
 	 * 		Name of the article.
 	 */
 	public abstract String getName(URL url);
+	
+	/////////////////////////////////////////////////////////////////
+	// DOMAIN			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the Web domain handled
+	 * by this reader.
+	 * 
+	 * @return
+	 * 		A string representing the Web domain.
+	 */
+	public abstract String getDomain();
 	
 	/////////////////////////////////////////////////////////////////
 	// CLEANING			/////////////////////////////////////////////
