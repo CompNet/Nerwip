@@ -167,6 +167,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	/** List of languages this recognizer can treat */
 	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
 		ArticleLanguage.EN
+		//TODO could be extended to french provided the ressources are translated (demonyms, WP-related stuff...)
 	);
 
 	@Override
@@ -631,7 +632,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 				String name = FILE_IGNORED;
 				if(type!=null)
 					name = type.toString().toLowerCase();
-				String filePath = base + FILE_PREFIX + name + FileNames.EX_TXT;
+				String filePath = base + FILE_PREFIX + name + FileNames.EX_TEXT;
 				logger.log("Processing file "+filePath);
 				Scanner scanner = FileTools.openTextFileRead(filePath);
 				

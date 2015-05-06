@@ -111,7 +111,7 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 				
 				// possibly filter stop words and pronouns
 				logger.log("Possibly filter entities (pronouns, stop-words, etc.)");
-				filterNoise(result);
+				filterNoise(result,language);
 				
 				// filter overlapping entities
 				logger.log("Filter overlapping entities");

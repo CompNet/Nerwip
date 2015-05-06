@@ -606,7 +606,7 @@ public class LilleMeasure extends AbstractMeasure
 	// RECORD			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the XML file used to store results */
-	private static final String FILE_NAME = "lille" + FileNames.EX_TXT;
+	private static final String FILE_NAME = "lille" + FileNames.EX_TEXT;
 	
 	@Override
 	public String getFileName()

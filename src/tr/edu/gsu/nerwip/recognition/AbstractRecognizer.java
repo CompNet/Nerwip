@@ -24,16 +24,22 @@ package tr.edu.gsu.nerwip.recognition;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
@@ -191,16 +197,60 @@ public abstract class AbstractRecognizer
 	/** Whether or not numbers should be ignored */
 	protected boolean ignoreNumbers = true;
 	
-	/** List of forbidden words, used for filtering entities */	
-	private static final List<String> EXCLUSION_LIST = Arrays.asList(
-		"a", "an",
-		"i", "in",
-		"the"
-	);
+	/** Lists of forbidden words, used for filtering entities */	
+	private static final Map<ArticleLanguage,List<String>> EXCLUSION_LISTS = new HashMap<ArticleLanguage,List<String>>();
+	/** List of pronouns, used for filtering entities */	
+	private static final Map<ArticleLanguage,List<String>> PRONOUN_LISTS = new HashMap<ArticleLanguage,List<String>>();
 	
 	/**
-	 * Enables/disables the removal of stop words 
-	 * should be ignored.
+	 * Loads a set of language-dependant list of words.
+	 * 
+	 * @param prefix
+	 * 		Prefix of the filename (will be completed with language name).
+	 * @param map
+	 * 		Map to populate.
+	 */
+	private static void loadLanguageList(String prefix, Map<ArticleLanguage,List<String>> map)
+	{	for(ArticleLanguage language: ArticleLanguage.values())
+		{	logger.log("Treating language "+language);
+			// set up file path
+			String path = prefix + language.toString() + File.separator + FileNames.EX_TEXT;
+			File file = new File(path);
+			
+			// retrieve values
+			List<String> list = new ArrayList<String>();
+			map.put(language, list);
+			try
+			{	Scanner scanner = FileTools.openTextFileRead(file);
+				while(scanner.hasNextLine())
+				{	String line = scanner.nextLine().trim();
+					if(!line.isEmpty())
+						list.add(line);
+				}
+				scanner.close();
+			}
+			catch (FileNotFoundException e)
+			{	e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Loads the exclusion lists, i.e. the
+	 * lists of stop-words, for each language.
+	 */
+	private static void loadExclusionList()
+	{	logger.log("Loading exclusion lists");
+		logger.increaseOffset();
+		
+		loadLanguageList(FileNames.PRE_EXCLUDED, EXCLUSION_LISTS);
+		
+		logger.decreaseOffset();
+		logger.log("Loading complete");
+	}
+	
+	/**
+	 * Enables/disables the removal of stop words.
 	 * 
 	 * @param exclusionOn
 	 * 		If {@code true}, stop words are ignored.
@@ -210,8 +260,7 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Whether or not stop words 
-	 * should be ignored.
+	 * Whether or not stop words should be ignored.
 	 * 
 	 * @return
 	 * 		{@code true} iff stop words are ignored.
@@ -221,18 +270,23 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Determines if a string represents
-	 * a stop-word.
+	 * Determines if a string represents a stop-word.
 	 * 
 	 * @param text
 	 * 		String to check.
+	 * @param language
+	 * 		Language of the article currently processed. 
 	 * @return
 	 * 		{@code true} iff the string is a stop-word.
 	 */
-	private boolean isExcluded(String text)
+	private boolean isExcluded(String text, ArticleLanguage language)
 	{	boolean result = false;
-		Iterator<String> it = EXCLUSION_LIST.iterator();
 		
+		if(EXCLUSION_LISTS.isEmpty())
+			loadExclusionList();
+		
+		List<String> list = EXCLUSION_LISTS.get(language);
+		Iterator<String> it = list.iterator();
 		while(it.hasNext() && !result)
 		{	String word = it.next();
 			result = word.equalsIgnoreCase(text);
@@ -242,8 +296,20 @@ public abstract class AbstractRecognizer
 	}
 
 	/**
-	 * Enables/disables the removal of pronouns
-	 * should be ignored.
+	 * Loads the pronouns lists for each language.
+	 */
+	private static void loadPronounList()
+	{	logger.log("Loading pronoun lists");
+		logger.increaseOffset();
+		
+		loadLanguageList(FileNames.PRE_PRONOUNS, PRONOUN_LISTS);
+		
+		logger.decreaseOffset();
+		logger.log("Loading complete");
+	}
+	
+	/**
+	 * Enables/disables the removal of pronouns.
 	 * 
 	 * @param ignorePronouns
 	 * 		If {@code true}, pronouns are ignored.
@@ -253,8 +319,7 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Whether or not pronouns
-	 * should be ignored.
+	 * Whether or not pronouns should be ignored.
 	 * 
 	 * @return
 	 * 		{@code true} iff pronouns are ignored.
@@ -263,28 +328,25 @@ public abstract class AbstractRecognizer
 	{	return ignorePronouns;
 	}
 
-	/** List of pronouns, used for filtering entities */	
-	private static final List<String> PRONOUN_LIST = Arrays.asList(
-		"i", "me", "my", "mine",
-		"you", "your", "yours",
-		"he", "him", "himself", "his",
-		"she", "her", "herself", "hers", 
-		"it", "its",
-		"they", "them", "their"
-	);
-	
 	/**
 	 * Determines if a string represents
 	 * a pronoun.
 	 * 
 	 * @param text
 	 * 		String to check.
+	 * @param language
+	 * 		Language of the article currently processed. 
 	 * @return
 	 * 		{@code true} iff the string is a pronoun.
 	 */
-	private boolean isPronoun(String text)
+	private boolean isPronoun(String text, ArticleLanguage language)
 	{	boolean result = false;
-		Iterator<String> it = PRONOUN_LIST.iterator();
+	
+		if(PRONOUN_LISTS.isEmpty())
+			loadPronounList();
+	
+		List<String> list = PRONOUN_LISTS.get(language);
+		Iterator<String> it = list.iterator();
 		
 		while(it.hasNext() && !result)
 		{	String pronoun = it.next();
@@ -323,8 +385,10 @@ public abstract class AbstractRecognizer
 	 * 
 	 * @param entities
 	 * 		List to be filtered.
+	 * @param language
+	 * 		Language of the article currently processed. 
 	 */
-	protected void filterNoise(Entities entities)
+	protected void filterNoise(Entities entities, ArticleLanguage language)
 	{	logger.increaseOffset();
 	
 		List<AbstractEntity<?>> entityList = entities.getEntities();
@@ -334,13 +398,13 @@ public abstract class AbstractRecognizer
 			String entityStr = entity.getStringValue();
 			
 			// is it a stop-word?
-			if(exclusionOn && isExcluded(entityStr))
+			if(exclusionOn && isExcluded(entityStr,language))
 			{	logger.log("Entity '"+entityStr+"' is a stop-word >> filtered.)");
 				it.remove();
 			}
 			
 			// is it a pronoun?
-			else if(ignorePronouns && (entityStr.length()<=1 || isPronoun(entityStr)))
+			else if(ignorePronouns && (entityStr.length()<=1 || isPronoun(entityStr,language)))
 			{	logger.log("Entity '"+entityStr+"' is a pronoun >> filtered.)");
 				it.remove();
 			}
