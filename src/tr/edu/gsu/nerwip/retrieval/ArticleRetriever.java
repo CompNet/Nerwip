@@ -32,6 +32,7 @@ import java.text.ParseException;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.retrieval.reader.ArticleReader;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -108,6 +109,24 @@ public class ArticleRetriever
 	}
 	
 	/////////////////////////////////////////////////////////////////
+	// LANGUAGE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Language specified by the user for the retrieved articles (or {@code null} if it is unknown) */
+	private ArticleLanguage language = null;
+	
+	/**
+	 * Changes the language specified by
+	 * the user for the retrieved articles.
+	 * 
+	 * @param language
+	 * 		New language for the articles,
+	 * 		or {@code null} if the language is unknown.
+	 */
+	public void setLanguage(ArticleLanguage language)
+	{	this.language = language;
+	}
+
+	/////////////////////////////////////////////////////////////////
 	// RETRIEVE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
@@ -155,7 +174,7 @@ public class ArticleRetriever
 			
 			// use the reader to get the text
 			reader.setCacheEnabled(readerCache);
-			result = reader.read(url);
+			result = reader.read(url,language);
 			logger.decreaseOffset();
 			
 			// then record the contents

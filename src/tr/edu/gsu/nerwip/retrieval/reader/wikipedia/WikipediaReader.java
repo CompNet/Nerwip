@@ -58,6 +58,7 @@ import org.jsoup.select.Elements;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.retrieval.reader.ArticleReader;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleCleaning;
@@ -1003,19 +1004,8 @@ public class WikipediaReader extends ArticleReader
 		}
 	}
 	
-	/**
-	 * Pulls a text from a Wikipedia URL without images, tags, etc.
-	 * 
-	 * @param url
-	 * 		Address of the targetted text.
-	 * @return
-	 * 		An Article object representing the retrieved text.
-	 * 
-	 * @throws ReaderException
-	 * 		Problem while retrieving the text.
-	 */
 	@Override
-	public Article read(URL url) throws ReaderException
+	public Article read(URL url, ArticleLanguage language) throws ReaderException
 	{	Article result = null;
 		String name = getName(url);
 		
@@ -1134,6 +1124,7 @@ public class WikipediaReader extends ArticleReader
 			result.setTitle(title);
 			result.setUrl(url);
 			result.initDate();
+			result.setLanguage(language);
 			
 			// clean text
 			String rawText = rawStr.toString();

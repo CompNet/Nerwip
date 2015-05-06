@@ -39,6 +39,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
@@ -211,13 +212,15 @@ public abstract class ArticleReader
 	 * 
 	 * @param url
 	 * 		Article address.
+	 * @param language
+	 * 		Language of the retrieved article, or {@code null} if it is unknown.
 	 * @return
 	 * 		An Article object corresponding to the targetted URL.
 	 * 
 	 * @throws ReaderException
 	 * 		Problem while retrieving the article.
 	 */
-	public abstract Article read(URL url) throws ReaderException;
+	public abstract Article read(URL url, ArticleLanguage language) throws ReaderException;
 
 	/**
 	 * Loads the html source code from the cached file,
