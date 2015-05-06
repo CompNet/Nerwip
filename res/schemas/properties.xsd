@@ -28,10 +28,6 @@
 	<xsd:include schemaLocation="_categories.xsd"/>
 	<xsd:include schemaLocation="_languages.xsd"/>
 
-	<xsd:simpleType name="tCategoryList">
-		<xsd:list itemType="tCategory"/>
-	</xsd:simpleType>
-
 	<xsd:simpleType name="tLanguageList">
 		<xsd:list itemType="tLanguage"/>
 	</xsd:simpleType>
@@ -42,7 +38,7 @@
 			<xsd:element name="url" type="xsd:anyURI" minOccurs="0"/>
 			<xsd:element name="language" type="tLanguageList" minOccurs="0"/>
 			<xsd:element name="date" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="category" type="tCategoryList" minOccurs="0"/>
+			<xsd:element name="category" type="tCategory" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
