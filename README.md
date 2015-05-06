@@ -83,6 +83,7 @@ Here are the dependencies for Nerwip:
   * [Apache OpenNLP](https://opennlp.apache.org/)
   * [Stanford Named Entity Recognizer](http://nlp.stanford.edu/software/CRF-NER.shtml)
   * [Thomson Reuters OpenCalais](http://www.opencalais.com/)
+  * [HeidelTime](https://code.google.com/p/heideltime/)
 * Other libraries:
   * [Apache Commons Loggging](http://commons.apache.org/proper/commons-logging/)
   * [HTML Parser](http://htmlparser.sourceforge.net/)
@@ -92,6 +93,7 @@ Here are the dependencies for Nerwip:
   * [JSON Simple](https://code.google.com/p/json-simple/)
   * [Jsoup](http://jsoup.org/)
   * [LIBSVM](http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
+  * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)
 
 ## References
 * **[AL'13]** Atdağ, S. & Labatut, V. A Comparison of Named Entity Recognition Tools Applied to Biographical Texts, 2nd International Conference on Systems and Computer Science, 2013, 228-233. 

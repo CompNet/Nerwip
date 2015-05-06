@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp;
+package tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -41,7 +41,7 @@ import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
- * This class is the converter associated to OpenNLP.
+ * This class is the converter associated to HeidelTime.
  * It is able to convert the text outputed by this NER tool
  * into objects compatible with Nerwip.
  * <br/>
@@ -50,7 +50,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * 
  * @author Vincent Labatut
  */
-public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,List<Span>>>
+public class HeidelTimeConverter extends AbstractInternalConverter<Map<EntityType,List<Span>>>
 {	
 	/**
 	 * Builds a new converter using the specified info.
@@ -58,8 +58,8 @@ public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,L
 	 * @param nerFolder
 	 * 		Folder used to stored the results of the NER tool.
 	 */
-	public OpenNlpConverter(String nerFolder)
-	{	super(RecognizerName.OPENNLP, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	public HeidelTimeConverter(String nerFolder)
+	{	super(RecognizerName.HEIDELTIME, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////

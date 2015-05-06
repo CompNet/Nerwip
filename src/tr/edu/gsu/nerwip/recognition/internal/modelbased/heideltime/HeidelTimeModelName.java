@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp;
+package tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -45,15 +45,12 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
- * Class representing the predefined model used by OpenNLP for 
+ * Class representing the predefined model used by HeidelTime for 
  * detecting entities.
- * <br/>
- * For now, there is one original model, and one trained on
- * our own Wikipedia corpus.
  * 
  * @author Vincent Labatut
  */
-public enum OpenNlpModelName
+public enum HeidelTimeModelName
 {	
 	/** 
 	 * Original NLP model.
@@ -120,7 +117,7 @@ public enum OpenNlpModelName
 	 * @param modelFiles 
 	 * 		File names of OpenNLP NER models.
 	 */
-	OpenNlpModelName(String name, String sentenceDetectorFile, String tokenizerFile, Map<String,EntityType> modelFiles)
+	HeidelTimeModelName(String name, String sentenceDetectorFile, String tokenizerFile, Map<String,EntityType> modelFiles)
 	{	this.name = name;
 		this.sentenceDetectorFile = sentenceDetectorFile;
 		this.tokenizerFile = tokenizerFile;
