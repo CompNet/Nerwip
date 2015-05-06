@@ -73,6 +73,8 @@ public enum RecognizerName
 	SVMCOMBINER,
 	/** Combination of WikipediaDater for dates and another combiner for the other types */
 	FULLCOMBINER,
+	/** Combination of HeidelTime for dates and OpenCalais for the other types */
+	STRAIGHTCOMBINER,
 	
 	/////////////////////////////////////////////////////////////////
 	// MISC				/////////////////////////////////////////////
