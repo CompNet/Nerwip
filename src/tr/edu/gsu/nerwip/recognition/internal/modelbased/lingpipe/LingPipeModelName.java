@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -56,14 +57,51 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  */
 public enum LingPipeModelName
 {	/** Uses an already trained model */
-	PREDEFINED_MODEL("PredefinedModel","ne-en-news-muc6.AbstractCharLmRescoringChunker"),
-	/** Our own model, trained on our corpus */
-	NERWIP_MODEL("NerwipModel","ne-en-wp-nerwip.AbstractCharLmRescoringChunker"),
+	PREDEFINED_MODEL(
+		"PredefinedModel",
+		"ne-en-news-muc6.AbstractCharLmRescoringChunker",
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	),
+	
+	/** Our own model, trained on our own corpus */
+	NERWIP_MODEL(
+		"NerwipModel",
+		"ne-en-wp-nerwip.AbstractCharLmRescoringChunker",
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	),
 	
 	/** Uses dictionaries with exact match */
-	EXACT_DICTIONARY("ExactDictionary",null),
+	EXACT_DICTIONARY(
+		"ExactDictionary",
+		null,
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN) //TODO could be extended to French by translating the dictionaries
+	),
 	/** Uses dictionaries with approximate match */
-	APPROX_DICTIONARY("ApproxDictionary",null);
+	APPROX_DICTIONARY(
+		"ApproxDictionary",
+		null,
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN) //TODO could be extended to French by translating the dictionaries
+	);
 	
 	/**
 	 * Builds a new value representing
@@ -73,10 +111,16 @@ public enum LingPipeModelName
 	 * 		User-friendly name of the detection method.
 	 * @param modelFile
 	 * 		Name of the file containing the model.
+	 * @param types
+	 * 		List of the entity types handled by the model.
+	 * @param languages
+	 * 		List of the languages handled by the model.
 	 */
-	LingPipeModelName(String name, String modelFile)
+	LingPipeModelName(String name, String modelFile, List<EntityType> types, List<ArticleLanguage> languages)
 	{	this.name = name;
 		this.modelFile = modelFile;
+		this.types = types;
+		this.languages = languages;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -138,7 +182,7 @@ public enum LingPipeModelName
 			case EXACT_DICTIONARY:
 				{	logger.log("Get the dictionary-based chunker with exact matching");
 					MapDictionary<String> dictionary = new MapDictionary<String>();
-					for(EntityType type: HANDLED_TYPES)
+					for(EntityType type: types)
 					{	String typeStr = type.toString().toLowerCase(Locale.ENGLISH);
 						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TXT;
 						File file = new File(filePath);
@@ -157,7 +201,7 @@ public enum LingPipeModelName
 			case APPROX_DICTIONARY:
 				{	logger.log("Get the dictionary-based chunker with approximate matching");
 					TrieDictionary<String> dictionary = new TrieDictionary<String>();
-					for(EntityType type: HANDLED_TYPES)
+					for(EntityType type: types)
 					{	String typeStr = type.toString().toLowerCase(Locale.ENGLISH);
 						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TXT;
 						File file = new File(filePath);
@@ -181,12 +225,8 @@ public enum LingPipeModelName
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by LingPipe */
-	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
-		EntityType.LOCATION,
-		EntityType.ORGANIZATION,
-		EntityType.PERSON
-	);
+	/** List of entity types this model can treat */
+	private List<EntityType> types;
 	
 	/**
 	 * Returns the list of types
@@ -196,7 +236,26 @@ public enum LingPipeModelName
 	 * 		A list of supported {@link EntityType}.
 	 */
 	public List<EntityType> getHandledTypes()
-	{	return HANDLED_TYPES;
+	{	return types;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this model can treat */
+	private List<ArticleLanguage> languages;
+	
+	/**
+	 * Checks whether the specified language is supported by this  model.
+	 * 
+	 * @param language
+	 * 		The language to be checked.
+	 * @return 
+	 * 		{@code true} iff this model supports the specified language.
+	 */
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = languages.contains(language);
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////

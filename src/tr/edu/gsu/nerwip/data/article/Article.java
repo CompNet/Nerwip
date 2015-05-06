@@ -136,6 +136,32 @@ public class Article
 	}
 
 	/////////////////////////////////////////////////////////////////
+	// LANGUAGE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Language of the article (only one allowed) */
+	private ArticleLanguage language;
+	
+	/**
+	 * Returns the language of this article.
+	 * 
+	 * @return
+	 * 		Language of this article.
+	 */
+	public ArticleLanguage getLanguage()
+	{	return language;
+	}
+	
+	/**
+	 * Changes the language of this article.
+	 * 
+	 * @param language
+	 * 		New language for this article.
+	 */
+	public void setLanguage(ArticleLanguage language)
+	{	this.language = language;
+	}
+
+	/////////////////////////////////////////////////////////////////
 	// DATE RETRIEVED	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Date the page was last retrieved */
@@ -431,6 +457,15 @@ public class Article
 			}
 		}
 		
+		// language
+		{	Element languageElt = root.getChild(XmlNames.ELT_LANGUAGE);
+			if(languageElt!=null)
+			{	String languageStr = languageElt.getTextTrim().toUpperCase(Locale.ENGLISH);
+				ArticleLanguage language = ArticleLanguage.valueOf(languageStr);
+				this.language = language;
+			}
+		}
+		
 		// retrieval date
 		{	Element dateElt = root.getChild(XmlNames.ELT_DATE);
 			if(dateElt!=null)
@@ -514,6 +549,14 @@ public class Article
 			Element urlElt = new Element(XmlNames.ELT_URL);
 			urlElt.setText(urlStr);
 			root.addContent(urlElt);
+		}
+		
+		// language
+		if(language!=null)
+		{	String languageStr = language.toString();
+			Element languageElt = new Element(XmlNames.ELT_LANGUAGE);
+			languageElt.setText(languageStr);
+			root.addContent(languageElt);
 		}
 		
 		// retrieval date

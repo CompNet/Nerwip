@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 <!-- 
 	Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -14,7 +13,7 @@
 	redistribute it and/or modify it under the terms of the GNU General Public License 
 	as published by the Free Software Foundation, either version 2 of the License, or
 	(at your option) any later version.
-	
+	 
 	Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
 	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
 	of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
@@ -25,27 +24,13 @@
 	If not, see <http://www.gnu.org/licenses/>.
  -->
  
-	<xsd:include schemaLocation="_categories.xsd"/>
-	<xsd:include schemaLocation="_languages.xsd"/>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-	<xsd:simpleType name="tCategoryList">
-		<xsd:list itemType="tCategory"/>
+	<xsd:simpleType name="tLanguage">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="EN" />
+			<xsd:enumeration value="FR" />
+		</xsd:restriction>
 	</xsd:simpleType>
-
-	<xsd:simpleType name="tLanguageList">
-		<xsd:list itemType="tLanguage"/>
-	</xsd:simpleType>
-
-	<xsd:complexType name="tProperties">
-		<xsd:sequence>
-			<xsd:element name="title" type="xsd:string" />
-			<xsd:element name="url" type="xsd:anyURI" minOccurs="0"/>
-			<xsd:element name="language" type="tLanguageList" minOccurs="0"/>
-			<xsd:element name="date" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="category" type="tCategoryList" minOccurs="0"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:element name="properties" type="tProperties" />
 
 </xsd:schema>

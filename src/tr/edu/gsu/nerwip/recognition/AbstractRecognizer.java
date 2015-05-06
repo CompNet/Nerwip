@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -116,6 +117,21 @@ public abstract class AbstractRecognizer
 	 * 		A list of entity types.
 	 */
 	public abstract List<EntityType> getHandledEntityTypes();
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Checks whether the specified language is supported by this
+	 * recognizer, given its current settings (parameters, model...).
+	 * 
+	 * @param language
+	 * 		The language to be checked.
+	 * @return 
+	 * 		{@code true} iff this recognizer supports the specified
+	 * 		language, with its current parameters (model, etc.).
+	 */
+	public abstract boolean canHandleLanguage(ArticleLanguage language);
 	
 	/////////////////////////////////////////////////////////////////
 	// CACHING			/////////////////////////////////////////////

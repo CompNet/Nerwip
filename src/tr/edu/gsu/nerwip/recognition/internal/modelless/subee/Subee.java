@@ -53,6 +53,7 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
@@ -148,7 +149,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	/////////////////////////////////////////////////////////////////
 	// ENTITIES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by OpenCalais */
+	/** List of entities detected by this recognizer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 		EntityType.LOCATION,
 		EntityType.ORGANIZATION,
@@ -160,6 +161,20 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	{	return HANDLED_TYPES;
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this recognizer can treat */
+	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
+		ArticleLanguage.EN
+	);
+
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = HANDLED_LANGUAGES.contains(language);
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

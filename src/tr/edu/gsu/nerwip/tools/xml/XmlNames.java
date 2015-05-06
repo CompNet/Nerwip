@@ -68,6 +68,8 @@ public class XmlNames
 	public static final String ELT_ENTITY = "entity";
 	/** Some text key */
 	public static final String ELT_KEY = "key";
+	/** Language of an article */
+	public static final String ELT_LANGUAGE = "language";
 	/** Various properties of an article */
 	public static final String ELT_PROPERTIES = "properties";
 	/** Set of texts not to be associated to categories */
@@ -102,10 +104,10 @@ public class XmlNames
 	/////////////////////////////////////////////////////////////////
 	/** Html hyperlink tag */
 	public final static String ELT_A = "a";
-	/** Html body tag */
-	public final static String ELT_BODY = "body";
 	/** Html article tag */
 	public final static String ELT_ARTICLE = "article";
+	/** Html body tag */
+	public final static String ELT_BODY = "body";
 	/** Html cite tag */
 	public final static String ELT_CITE = "cite";
 	/** Html division tag */

@@ -25,13 +25,14 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois;
  */
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import LBJ2.learn.SparseNetworkLearner;
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Parameters;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -54,7 +55,17 @@ public enum IllinoisModelName
 	 * 	<li>Misc.</li>
 	 * </ul> 
 	 */ 
-	CONLL_MODEL("Conll","ner.conll.config","finalSystemBILOU.model"),
+	CONLL_MODEL(
+		"Conll",
+		"ner.conll.config",
+		"finalSystemBILOU.model",
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	),
 	
 	/** 
 	 * Ontonotes 18 entity types: 
@@ -79,7 +90,18 @@ public enum IllinoisModelName
 	 * 	<li>WorkOfArt</li>
 	 * </ul> 
 	 */
-	ONTONOTES_MODEL("Ontonotes","ner.ontonotes.config","Ontonotes.model"),
+	ONTONOTES_MODEL(
+		"Ontonotes",
+		"ner.ontonotes.config",
+		"Ontonotes.model",
+		Arrays.asList(
+			EntityType.DATE,
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	),
 	
 	/** 
 	 * Model trained on Nerwip corpus,
@@ -90,7 +112,17 @@ public enum IllinoisModelName
 	 * 	<li>Organization</li>
 	 * </ul> 
 	 */ 
-	NERWIP_MODEL("Nerwip","ner.nerwip.config","nerwip.model");
+	NERWIP_MODEL(
+		"Nerwip",
+		"ner.nerwip.config",
+		"nerwip.model",
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	);
 	
 	/**
 	 * Builds a new value representing
@@ -102,11 +134,17 @@ public enum IllinoisModelName
 	 * 		Name of the configuration file.
 	 * @param modelFile
 	 * 		Name of the files containing the model.
+	 * @param types
+	 * 		List of the entity types handled by the model.
+	 * @param languages
+	 * 		List of the languages handled by the model.
 	 */
-	IllinoisModelName(String name, String configFile, String modelFile)
+	IllinoisModelName(String name, String configFile, String modelFile, List<EntityType> types, List<ArticleLanguage> languages)
 	{	this.name = name;
 		this.configFile = configFile;
 		this.modelFile = modelFile;
+		this.types = types;
+		this.languages = languages;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -179,6 +217,9 @@ public enum IllinoisModelName
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** List of entity types this model can treat */
+	private List<EntityType> types;
+	
 	/**
 	 * Returns the list of types
 	 * supported by this predefined model.
@@ -187,27 +228,25 @@ public enum IllinoisModelName
 	 * 		A list of supported {@link EntityType}.
 	 */
 	public List<EntityType> getHandledTypes()
-	{	List<EntityType> result = new ArrayList<EntityType>();
-		
-		switch(this)
-		{	case CONLL_MODEL:
-        		result.add(EntityType.LOCATION);
-        		result.add(EntityType.ORGANIZATION);
-        		result.add(EntityType.PERSON);
-				break;
-			case ONTONOTES_MODEL:
-				result.add(EntityType.DATE);
-	    		result.add(EntityType.LOCATION);
-	    		result.add(EntityType.ORGANIZATION);
-	    		result.add(EntityType.PERSON);
-				break;
-			case NERWIP_MODEL:
-        		result.add(EntityType.LOCATION);
-        		result.add(EntityType.ORGANIZATION);
-        		result.add(EntityType.PERSON);
-				break;
-		}
-		
+	{	return types;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this model can treat */
+	private List<ArticleLanguage> languages;
+	
+	/**
+	 * Checks whether the specified language is supported by this  model.
+	 * 
+	 * @param language
+	 * 		The language to be checked.
+	 * @return 
+	 * 		{@code true} iff this model supports the specified language.
+	 */
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = languages.contains(language);
 		return result;
 	}
 	

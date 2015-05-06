@@ -31,6 +31,7 @@ import java.util.List;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -101,7 +102,7 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES TYPES	/////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
 	protected void updateHandledEntityTypes()
@@ -110,6 +111,15 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 		handledTypes.addAll(temp);
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = modelName.canHandleLanguage(language);
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// PREDEFINED MODEL 	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

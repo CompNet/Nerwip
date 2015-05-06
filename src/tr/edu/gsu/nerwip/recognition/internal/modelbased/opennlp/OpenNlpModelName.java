@@ -26,7 +26,7 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,7 @@ import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.InvalidFormatException;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -80,7 +81,14 @@ public enum OpenNlpModelName
 				put("en-ner-person.bin", EntityType.PERSON);
 				put("en-ner-time.bin", EntityType.DATE); //TODO hour? 
 			}
-		}
+		},
+		Arrays.asList(
+			EntityType.DATE,
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
 	),
 	
 	/** 
@@ -104,7 +112,13 @@ public enum OpenNlpModelName
 				put("en-wp-ner-organization.bin", EntityType.ORGANIZATION);
 				put("en-wp-ner-person.bin", EntityType.PERSON);
 			}
-		}
+		},
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
 	);
 	
 	/**
@@ -119,12 +133,18 @@ public enum OpenNlpModelName
 	 * 		Name of the file containing the tokenizer.
 	 * @param modelFiles 
 	 * 		File names of OpenNLP NER models.
+	 * @param types
+	 * 		List of the entity types handled by the model.
+	 * @param languages
+	 * 		List of the languages handled by the model.
 	 */
-	OpenNlpModelName(String name, String sentenceDetectorFile, String tokenizerFile, Map<String,EntityType> modelFiles)
+	OpenNlpModelName(String name, String sentenceDetectorFile, String tokenizerFile, Map<String,EntityType> modelFiles, List<EntityType> types, List<ArticleLanguage> languages)
 	{	this.name = name;
 		this.sentenceDetectorFile = sentenceDetectorFile;
 		this.tokenizerFile = tokenizerFile;
 		this.modelFiles = modelFiles;
+		this.types = types;
+		this.languages = languages;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -251,6 +271,9 @@ public enum OpenNlpModelName
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** List of entity types this model can treat */
+	private List<EntityType> types;
+	
 	/**
 	 * Returns the list of types
 	 * supported by this predefined model.
@@ -259,22 +282,25 @@ public enum OpenNlpModelName
 	 * 		A list of supported {@link EntityType}.
 	 */
 	public List<EntityType> getHandledTypes()
-	{	List<EntityType> result = new ArrayList<EntityType>();
-		
-		switch(this)
-		{	case NERWIP_MODEL:
-	    		result.add(EntityType.LOCATION);
-	    		result.add(EntityType.ORGANIZATION);
-	    		result.add(EntityType.PERSON);
-				break;
-			case ORIGINAL_MODEL:
-				result.add(EntityType.DATE);
-				result.add(EntityType.LOCATION);
-				result.add(EntityType.ORGANIZATION);
-				result.add(EntityType.PERSON);
-			break;				
-		}
-		
+	{	return types;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this model can treat */
+	private List<ArticleLanguage> languages;
+	
+	/**
+	 * Checks whether the specified language is supported by this  model.
+	 * 
+	 * @param language
+	 * 		The language to be checked.
+	 * @return 
+	 * 		{@code true} iff this model supports the specified language.
+	 */
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = languages.contains(language);
 		return result;
 	}
 	
