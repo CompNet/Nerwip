@@ -154,12 +154,14 @@ public class FileNames
 	/////////////////////////////////////////////////////////////////
 	// EXTENSIONS	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** HTML file extension */
-	public final static String EX_WEB = ".html";
+	/** PDF file extension */
+	public final static String EX_PDF = ".pdf";
 	/** XML Schema file extension */
 	public final static String EX_SCHEMA = ".xsd";
 	/** Text file extension */
 	public final static String EX_TEXT = ".txt";
+	/** HTML file extension */
+	public final static String EX_WEB = ".html";
 	/** XML file extension */
 	public final static String EX_XML = ".xml";
 }
