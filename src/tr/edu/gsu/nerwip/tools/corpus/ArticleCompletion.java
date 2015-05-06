@@ -50,6 +50,7 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -90,6 +91,7 @@ public class ArticleCompletion
 //		insertArticleCategories();
 //		completeArticleCategories();
 //		insertArticleTitles();
+//		insertArticleLanguages(ArticleLanguage.FR);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -269,5 +271,42 @@ public class ArticleCompletion
 		
 		logger.decreaseOffset();
 		logger.log("Titles set");
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGE		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * This methods allows setting the language of 
+	 * articles already retrieved and manually annotated
+	 * for evaluation.
+	 * 
+	 * @param language
+	 * 		The language to set in the articles. 
+	 * 
+	 * @throws ParseException
+	 * 		Problem while accessing the files.
+	 * @throws SAXException
+	 * 		Problem while accessing the files.
+	 * @throws IOException
+	 * 		Problem while accessing the files.
+	 */
+	private static void insertArticleLanguages(ArticleLanguage language) throws ParseException, SAXException, IOException
+	{	logger.log("Setting language to "+language+" in all articles");
+		logger.increaseOffset();
+		
+		logger.increaseOffset();
+		List<File> files = ArticleLists.getArticleList();
+		for(File file: files)
+		{	String name = file.getName();
+			Article article = Article.read(name);
+			logger.log("Processing article "+name);
+			article.setLanguage(language);
+			article.write();
+		}
+		logger.decreaseOffset();
+		
+		logger.decreaseOffset();
+		logger.log("Languages set");
 	}
 }
