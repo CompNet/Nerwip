@@ -338,7 +338,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * 		A String representing the path of the SVM model.
 	 */
 	protected String getSvmModelPath()
-	{	String result = getModelPath() + File.separator + getFolder() + ".svm" + FileNames.EX_TXT;
+	{	String result = getModelPath() + File.separator + getFolder() + ".svm" + FileNames.EX_TEXT;
 		return result;
 	}
 	

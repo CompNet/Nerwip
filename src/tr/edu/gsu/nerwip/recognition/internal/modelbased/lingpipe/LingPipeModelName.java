@@ -184,7 +184,7 @@ public enum LingPipeModelName
 					MapDictionary<String> dictionary = new MapDictionary<String>();
 					for(EntityType type: types)
 					{	String typeStr = type.toString().toLowerCase(Locale.ENGLISH);
-						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TXT;
+						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TEXT;
 						File file = new File(filePath);
 						Scanner scanner = new Scanner(file);
 						while(scanner.hasNext())
@@ -203,7 +203,7 @@ public enum LingPipeModelName
 					TrieDictionary<String> dictionary = new TrieDictionary<String>();
 					for(EntityType type: types)
 					{	String typeStr = type.toString().toLowerCase(Locale.ENGLISH);
-						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TXT;
+						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TEXT;
 						File file = new File(filePath);
 						Scanner scanner = new Scanner(file);
 						while (scanner.hasNext())

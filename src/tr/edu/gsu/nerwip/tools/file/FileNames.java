@@ -35,15 +35,24 @@ import java.io.File;
 public class FileNames
 {	
 	/////////////////////////////////////////////////////////////////
+	// PREFIXES		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Prefix for the lists of stop-words */
+	public final static String PRE_EXCLUDED = "excluded-";
+	/** Prefix for the lists of pronouns */
+	public final static String PRE_PRONOUNS = "pronouns-";
+	
+	/////////////////////////////////////////////////////////////////
 	// FOLDERS		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Log folder */
 	public final static String FO_LOG = "log";
 	/** Output folder */
-//	public final static String FO_OUTPUT = "out";	//actual one
+//	public final static String FO_OUTPUT = "out";	//actual folder
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
+	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
-	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
+//	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/Nerwip2/out";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
@@ -90,43 +99,43 @@ public class FileNames
 	// FILES		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** HTML file containing the "index" text */
-	public final static String FI_HELP_PAGE = "help.html";
+	public final static String FI_HELP_PAGE = "help" + FileNames.EX_WEB;
 	/** XML schema file used to store category maps */
-	public final static String FI_CATMAP_SCHEMA = "categorymaps.xsd";
+	public final static String FI_CATMAP_SCHEMA = "categorymaps" + FileNames.EX_SCHEMA;
 	/** XML schema file used to record entities  */
-	public final static String FI_ENTITY_SCHEMA = "entities.xsd";
+	public final static String FI_ENTITY_SCHEMA = "entities" + FileNames.EX_SCHEMA;
 	/** XML schema file used to store keys */
-	public final static String FI_KEY_SCHEMA = "keys.xsd";
+	public final static String FI_KEY_SCHEMA = "keys" + FileNames.EX_SCHEMA;
 	/** XML schema file used to record article properties  */
-	public final static String FI_PROPERTY_SCHEMA = "properties.xsd";
+	public final static String FI_PROPERTY_SCHEMA = "properties" + FileNames.EX_SCHEMA;
 	/** File containing the properties of the article */
-	public final static String FI_PROPERTIES = "properties.xml";
+	public final static String FI_PROPERTIES = "properties" + FileNames.EX_XML;
 	/** File containing original page */
-	public final static String FI_ORIGINAL_PAGE = "original.html";
+	public final static String FI_ORIGINAL_PAGE = "original" + FileNames.EX_WEB;
 	/** File containing the raw text */
-	public final static String FI_RAW_TEXT = "raw" + FileNames.EX_TXT;
+	public final static String FI_RAW_TEXT = "raw" + FileNames.EX_TEXT;
 	/** File containing the text with hyperlinks */
-	public final static String FI_LINKED_TEXT = "linked" + FileNames.EX_TXT;
+	public final static String FI_LINKED_TEXT = "linked" + FileNames.EX_TEXT;
 	/** File containing the reference entities */
-	public final static String FI_REFERENCE_TEXT = "reference" + FileNames.EX_TXT;
+	public final static String FI_REFERENCE_TEXT = "reference" + FileNames.EX_TEXT;
 	/** File containing the entities estimated by a NER tool, in a normalized format */
-	public final static String FI_ENTITY_LIST = "entities.xml";
+	public final static String FI_ENTITY_LIST = "entities" + FileNames.EX_XML;
 	/** XML schema file used to store keys */
-	public final static String FI_KEY_LIST = "keys.xml";
+	public final static String FI_KEY_LIST = "keys" + FileNames.EX_XML;
 	/** File containing the entities estimated by a NER tool, in a tool-specific format */
-	public final static String FI_OUTPUT_TEXT = "output" + FileNames.EX_TXT;
+	public final static String FI_OUTPUT_TEXT = "output" + FileNames.EX_TEXT;
 	/** File containing some statistics processed on the corpus */
-	public final static String FI_STATS_TEXT = "stats" + FileNames.EX_TXT;
+	public final static String FI_STATS_TEXT = "stats" + FileNames.EX_TEXT;
 	/** File used to cache all types retrieved from Freebase */
-	public final static String FI_ALL_TYPES = "types.all" + FileNames.EX_TXT;
+	public final static String FI_ALL_TYPES = "types.all" + FileNames.EX_TEXT;
 	/** File used to cache notable types retrieved from Freebase */
-	public final static String FI_NOTABLE_TYPES = "types.notable" + FileNames.EX_TXT;
+	public final static String FI_NOTABLE_TYPES = "types.notable" + FileNames.EX_TEXT;
 	/** File used to cache the mapping between Wikipedia article titles and Freebase ids  */
-	public final static String FI_IDS = "ids" + FileNames.EX_TXT;
+	public final static String FI_IDS = "ids" + FileNames.EX_TEXT;
 	/** File used to list the unknown Freebase types */
-	public final static String FI_UNKNOWN_TYPES = "fb.unknown" + FileNames.EX_TXT;
+	public final static String FI_UNKNOWN_TYPES = "fb.unknown" + FileNames.EX_TEXT;
 	/** List of location-related adjectives */
-	public final static String FI_DEMONYMS = "demonyms" + FileNames.EX_TXT;
+	public final static String FI_DEMONYMS = "demonyms" + FileNames.EX_TEXT;
 	
 //	/**
 //	 * Returns the filename used to store the
@@ -138,15 +147,19 @@ public class FileNames
 //	 * 		Associated filename.
 //	 */
 //	public static String getStatFilename(String stat)
-//	{	String result = FI_STATS_TEXT + stat + EX_TXT;
+//	{	String result = FI_STATS_TEXT + stat + EX_TEXT;
 //		return result;
 //	}
 	
 	/////////////////////////////////////////////////////////////////
 	// EXTENSIONS	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** HTML file extension */
+	public final static String EX_WEB = ".html";
+	/** XML Schema file extension */
+	public final static String EX_SCHEMA = ".xsd";
 	/** Text file extension */
-	public final static String EX_TXT = ".txt";
+	public final static String EX_TEXT = ".txt";
 	/** XML file extension */
 	public final static String EX_XML = ".xml";
 }

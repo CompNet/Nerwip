@@ -163,7 +163,7 @@ public class SvmTrainer
 	 */
 	private String getDataPath()
 	{	String base = combiner.getFolder();
-		String result = FileNames.FO_OUTPUT + File.separator + "svm.data." + base + FileNames.EX_TXT;
+		String result = FileNames.FO_OUTPUT + File.separator + "svm.data." + base + FileNames.EX_TEXT;
 		return result;
 	}
 	

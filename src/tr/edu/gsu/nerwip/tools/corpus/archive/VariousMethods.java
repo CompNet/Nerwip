@@ -131,7 +131,7 @@ public class VariousMethods
 				String newName = null;
 				if(fileName.equals(folderName))
 					newName = folderPath + File.separator + FileNames.FI_RAW_TEXT;
-				else if(fileName.equals(folderName+"_new_reference"+FileNames.EX_TXT))
+				else if(fileName.equals(folderName+"_new_reference"+FileNames.EX_TEXT))
 					newName = folderPath + File.separator + FileNames.FI_REFERENCE_TEXT;
 				else if(fileName.equals(folderName+"(withLinks)"))
 					newName = folderPath + File.separator + FileNames.FI_LINKED_TEXT;

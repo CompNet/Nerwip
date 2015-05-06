@@ -139,9 +139,9 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 				logger.log("Possibly clean entities.");
 				cleanEntities(result);
 				
-				// possibly filter stop words and pronouns
+				// possibly filter stop-words and pronouns
 				logger.log("Filter entities (pronouns, stop-words, etc.)");
-				filterNoise(result);
+				filterNoise(result,language);
 				
 				// filter overlapping entities
 				logger.log("Filter overlapping entities");

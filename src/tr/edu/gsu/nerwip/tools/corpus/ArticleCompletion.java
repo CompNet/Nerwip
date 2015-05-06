@@ -157,7 +157,7 @@ public class ArticleCompletion
 	{	logger.log("Setting categories in articles");
 		logger.increaseOffset();
 		
-		File file = new File(FileNames.FO_OUTPUT + File.separator + "cats" + FileNames.EX_TXT);	
+		File file = new File(FileNames.FO_OUTPUT + File.separator + "cats" + FileNames.EX_TEXT);	
 		FileInputStream fis = new FileInputStream(file);
 		InputStreamReader isr = new InputStreamReader(fis);
 		Scanner scanner = new Scanner(isr);

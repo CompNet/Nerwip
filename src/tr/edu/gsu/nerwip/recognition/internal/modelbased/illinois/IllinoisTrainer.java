@@ -91,7 +91,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 	// DATA				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the file containing the data */
-	private final static String DATA_FILENAME = FileNames.FO_OUTPUT + File.separator + "illinois.data" + FileNames.EX_TXT;
+	private final static String DATA_FILENAME = FileNames.FO_OUTPUT + File.separator + "illinois.data" + FileNames.EX_TEXT;
 	/** Map of EntityType to Illinois type conversion */
 	private final static Map<EntityType, String> CONVERSION_MAP = new HashMap<EntityType, String>();
 	
