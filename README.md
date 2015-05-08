@@ -1,4 +1,4 @@
-Nerwip v4 [French edition]
+Nerwip v4.1 [French edition]
 =======
 *Named Entity Extraction in Wikipedia Pages*
 
@@ -12,7 +12,7 @@ Nerwip is free software: you can redistribute it and/or modify it under the term
 * Lab site: http://lia.univ-avignon.fr/
 * GitHub repo: https://github.com/CompNet/nerwip
 * Contact: vincent.labatut@univ-avignon.fr
- 
+
 -----------------------------------------------------------------------
 
 ## Description
@@ -46,19 +46,24 @@ First, be sure to get the source code of a stable release by checking the [relea
 Most of the data files are too large to be compatible with GitHub constraints. For this reason, they are hosted on [FigShare](http://figshare.com/articles/Nerwip_Corpus/1289791). Before using Nerwip, you need to retrieve these archives and unzip them in the Eclipse project.
 
 1. Go to our FigShare page http://figshare.com/articles/Nerwip_Corpus/1289791
-2. This GitHub project contains only a small part of our corpus. If you want the whole dataset, then: 
+2. *Optional*: this GitHub project contains only a small part of our corpus. If you want the whole dataset, then: 
   * Download the v4 of the corpus as a Zip archive, 
   * Extract the `out` folder,
   * Put it in the Eclipse project in place of the existing `out` folder.
 3. You also need the data related to the different NER tools (models, dictionaries, etc.).
   * Download all 4 Zip files containing the NER data,
-  * Extract the `res`folder,  
+  * Extract the `res` folder,  
   * Put it in the Eclipse project, in place of the existing `res` folder. **Do not** remove the existing folder, just overwrite it (we need the existing folders and files).
+
+Certain NER tools require the installation of other programming languages than Java:
+* HeidelTime: it is based on **TreeTagger**, and this tool requires [Perl](https://www.perl.org/). Just install it normally, and do not forget to check the location to the Perl interpreter was added to the PATH system variable (see the official Perl documentation). If Perl is correctly installed and configured, then you should obtain its help page by opening a terminal and executing `perl -h`. Note that, for Linux systems, it is usually installed by default. For Windows systems, you could use the [ActiveState](http://www.activestate.com/activeperl/downloads) implementation of Perl.
 
 Finally, some of the NER tools integrated in Nerwip require some key or password to work. This is the case of:
 * Subee: our Wikipedia/Freebase-based NER tool requires a Freebase key to work correctly.
 * OpenCalais: this NER tool takes the form of a Web service.
-All keys are set up in the dedicated XML file `keys.xml`, which is located in `res/misc`.
+* Nero: also a Web service.
+
+All keys (and possibly their associated IDs) are set up in the dedicated XML file `keys.xml`, which is located in `res/misc`.
 
 ## Use
 The main objective of this project is the automatic annotation of entities. However, it also includes a tool allowing to easily perform the manual annotation of texts, in order to constitute a ground-truth used when evaluating the automatic tools.
@@ -93,7 +98,7 @@ Here are the dependencies for Nerwip:
   * [JSON Simple](https://code.google.com/p/json-simple/)
   * [Jsoup](http://jsoup.org/)
   * [LIBSVM](http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
-  * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/)
+  * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), needed by HeidelTime
 
 ## References
 * **[AL'13]** Atdağ, S. & Labatut, V. A Comparison of Named Entity Recognition Tools Applied to Biographical Texts, 2nd International Conference on Systems and Computer Science, 2013, 228-233. 
