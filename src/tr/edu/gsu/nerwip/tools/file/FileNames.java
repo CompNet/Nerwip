@@ -68,11 +68,13 @@ public class FileNames
 			public final static String FO_CUSTOM = FO_NER + File.separator + "custom";
 				/** Folder of custom lists */
 				public final static String FO_CUSTOM_LISTS = FO_CUSTOM + File.separator + "lists";
-			/** Folder of Illinois resources */
+			/** Folder of HeidelTime resources */
+			public final static String FO_HEIDELTIME = FO_NER + File.separator + "heideltime";
+			/** Folder of the Illinois tagger resources */
 			public final static String FO_ILLINOIS = FO_NER + File.separator + "illinois";
-				/** Folder of Illinois config files */
+				/** Folder of the Illinois tagger config files */
 				public final static String FO_ILLINOIS_CONFIGS = FO_ILLINOIS + File.separator + "configs";
-				/** Folder of Illinois models */
+				/** Folder of the Illinois tagger models */
 				public final static String FO_ILLINOIS_MODELS = FO_ILLINOIS + File.separator + "models";
 			/** Folder of LingPipe resources */
 			public final static String FO_LINGPIPE = FO_NER + File.separator + "lingpipe";
@@ -160,8 +162,8 @@ public class FileNames
 	public final static String EX_SCHEMA = ".xsd";
 	/** Text file extension */
 	public final static String EX_TEXT = ".txt";
-	/** HTML file extension */
-	public final static String EX_WEB = ".html";
 	/** XML file extension */
 	public final static String EX_XML = ".xml";
+	/** HTML file extension */
+	public final static String EX_WEB = ".html";
 }

@@ -110,6 +110,42 @@ public class Article
 	}
 
 	/////////////////////////////////////////////////////////////////
+	// AUTHORS			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Authors of this article */
+	private List<String> authors = new ArrayList<String>();
+	
+	/**
+	 * Returns the authors of this article.
+	 * 
+	 * @return
+	 * 		List of authors.
+	 */
+	public List<String> getAuthors()
+	{	return authors;
+	}
+	
+	/**
+	 * Adds an author to this article.
+	 * 
+	 * @param author
+	 * 		Author to add to this article.
+	 */
+	public void addAuthor(String author)
+	{	authors.add(author);
+	}
+
+	/**
+	 * Adds the listed authors to this article.
+	 * 
+	 * @param authors
+	 * 		AuthorS to add to this article.
+	 */
+	public void addAuthors(List<String> authors)
+	{	this.authors.addAll(authors);
+	}
+
+	/////////////////////////////////////////////////////////////////
 	// SOURCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Address of the source page */
@@ -162,12 +198,16 @@ public class Article
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// DATE RETRIEVED	/////////////////////////////////////////////
+	// DATES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Date the page was last retrieved */
-	private Date date = null;
 	/** Used to read/write dates */
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm",Locale.ENGLISH);
+	/** Date the page was last retrieved */
+	private Date retrievalDate = null;
+	/** Date the page was originally published */
+	private Date publishingDate = null;
+	/** Date the page was last edited */
+	private Date modificationDate = null;
 	
 	/**
 	 * Returns the retrieval date of this article.
@@ -175,28 +215,68 @@ public class Article
 	 * @return
 	 * 		Date of retrieval of this article.
 	 */
-	public Date getDate()
-	{	return date;
+	public Date getRetrievalDate()
+	{	return retrievalDate;
 	}
 
 	/**
 	 * Changes the date this article was retrieved.
 	 * 
-	 * @param date
+	 * @param retrievalDate
 	 * 		New date of retrieval.
 	 */
-	public void setDate(Date date)
-	{	this.date = date;
+	public void setRetrievalDate(Date retrievalDate)
+	{	this.retrievalDate = retrievalDate;
 	}
 
 	/**
-	 * Sets the date to the current date.
+	 * Sets the retrieval date to the current date.
 	 */
-	public void initDate()
+	public void initRetrievalDate()
 	{	Calendar calendar = Calendar.getInstance();
-		date = calendar.getTime();
+		retrievalDate = calendar.getTime();
 	}
 	
+	/**
+	 * Returns the publishing date of this article.
+	 * 
+	 * @return
+	 * 		Date of publishing of this article.
+	 */
+	public Date getPublishingDate()
+	{	return publishingDate;
+	}
+
+	/**
+	 * Changes the date this article was published.
+	 * 
+	 * @param publishingDate
+	 * 		New date of publishing.
+	 */
+	public void setPublishingDate(Date publishingDate)
+	{	this.publishingDate = publishingDate;
+	}
+
+	/**
+	 * Returns the date of last modification for this article.
+	 * 
+	 * @return
+	 * 		Date of modification of this article.
+	 */
+	public Date getModificationDate()
+	{	return modificationDate;
+	}
+
+	/**
+	 * Changes the date this article was last modified.
+	 * 
+	 * @param modificationDate
+	 * 		New date of modification.
+	 */
+	public void setModificationDate(Date modificationDate)
+	{	this.modificationDate = modificationDate;
+	}
+
 	/////////////////////////////////////////////////////////////////
 	// CATEGORIES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -432,6 +512,7 @@ public class Article
 	 * @throws IOException
 	 * 		Problem while accessing the file.
 	 */
+	@SuppressWarnings("unchecked")
 	private void readProperties() throws ParseException, SAXException, IOException
 	{	// schema file
 		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_PROPERTY_SCHEMA;
@@ -466,12 +547,29 @@ public class Article
 			}
 		}
 		
-		// retrieval date
-		{	Element dateElt = root.getChild(XmlNames.ELT_DATE);
-			if(dateElt!=null)
-			{	String dateStr = dateElt.getTextTrim();
-				Date date = DATE_FORMAT.parse(dateStr);
-				this.date = date;
+		// dates
+		{	Element datesElt = root.getChild(XmlNames.ELT_DATES);
+			// retrieval
+			{	Element retrievalDateElt = datesElt.getChild(XmlNames.ELT_RETRIEVAL_DATE);
+				String retrievalDateStr = retrievalDateElt.getTextTrim();
+				Date retrievalDate = DATE_FORMAT.parse(retrievalDateStr);
+				this.retrievalDate = retrievalDate;
+			}
+			// publishing
+			{	Element publishingDateElt = datesElt.getChild(XmlNames.ELT_PUBLISHING_DATE);
+				if(publishingDateElt!=null)
+				{	String publishingDateStr = publishingDateElt.getTextTrim();
+					Date publishingDate = DATE_FORMAT.parse(publishingDateStr);
+					this.publishingDate = publishingDate;
+				}
+			}
+			// modification
+			{	Element modificationDateElt = datesElt.getChild(XmlNames.ELT_MODIFICATION_DATE);
+				if(modificationDateElt!=null)
+				{	String modificationDateStr = modificationDateElt.getTextTrim();
+					Date modificationDate = DATE_FORMAT.parse(modificationDateStr);
+					this.modificationDate = modificationDate;
+				}
 			}
 		}
 		
@@ -484,6 +582,17 @@ public class Article
 				for(String catStr: temp)
 				{	ArticleCategory cat = ArticleCategory.valueOf(catStr);
 					categories.add(cat);
+				}
+			}
+		}
+		
+		// authors
+		{	Element authorsElt = root.getChild(XmlNames.ELT_AUTHORS);
+			if(authorsElt!=null)
+			{	List<Element> authorList = authorsElt.getChildren(XmlNames.ELT_AUTHOR);
+				for(Element authorElt: authorList)
+				{	String authorStr = authorElt.getTextTrim();
+					this.authors.add(authorStr);
 				}
 			}
 		}
@@ -559,12 +668,29 @@ public class Article
 			root.addContent(languageElt);
 		}
 		
-		// retrieval date
-		if(date!=null)
-		{	String dateStr = DATE_FORMAT.format(date);
-			Element dateElt = new Element(XmlNames.ELT_DATE);
-			dateElt.setText(dateStr);
-			root.addContent(dateElt);
+		// dates
+		{	Element datesElt = new Element(XmlNames.ELT_DATES);
+			root.addContent(datesElt);
+				// retrieval
+				{	String retrievalDateStr = DATE_FORMAT.format(retrievalDate);
+					Element retrievalDateElt = new Element(XmlNames.ELT_RETRIEVAL_DATE);
+					retrievalDateElt.setText(retrievalDateStr);
+					datesElt.addContent(retrievalDateElt);
+				}
+				// publishing
+				if(publishingDate!=null)
+				{	String publishingDateStr = DATE_FORMAT.format(publishingDate);
+					Element publishingDateElt = new Element(XmlNames.ELT_PUBLISHING_DATE);
+					publishingDateElt.setText(publishingDateStr);
+					datesElt.addContent(publishingDateElt);
+				}
+				// modification
+				if(modificationDate!=null)
+				{	String modificationDateStr = DATE_FORMAT.format(modificationDate);
+					Element modificationDateElt = new Element(XmlNames.ELT_MODIFICATION_DATE);
+					modificationDateElt.setText(modificationDateStr);
+					datesElt.addContent(modificationDateElt);
+				}
 		}
 		
 		// categories of biography
@@ -576,6 +702,17 @@ public class Article
 			Element catElt = new Element(XmlNames.ELT_CATEGORY);
 			catElt.setText(catStr);
 			root.addContent(catElt);
+		}
+		
+		// authors
+		if(!authors.isEmpty())
+		{	Element authorsElt = new Element(XmlNames.ELT_AUTHORS);
+			root.addContent(authorsElt);
+			for(String authorStr: authors)
+			{	Element authorElt = new Element(XmlNames.ELT_AUTHOR);
+				authorElt.setText(authorStr);
+				authorsElt.addContent(authorElt);
+			}
 		}
 		
 		// record file

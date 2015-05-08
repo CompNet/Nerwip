@@ -1123,7 +1123,7 @@ public class WikipediaReader extends ArticleReader
 			result = new Article(name);
 			result.setTitle(title);
 			result.setUrl(url);
-			result.initDate();
+			result.initRetrievalDate();
 			result.setLanguage(language);
 			
 			// clean text
