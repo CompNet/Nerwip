@@ -92,6 +92,7 @@ public class ArticleCompletion
 //		completeArticleCategories();
 //		insertArticleTitles();
 //		insertArticleLanguages(ArticleLanguage.FR);
+		reformatRetrievalDate();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -308,5 +309,37 @@ public class ArticleCompletion
 		
 		logger.decreaseOffset();
 		logger.log("Languages set");
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// DATES		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * This methods allows setting the date format of 
+	 * articles already retrieved, to the new format.
+	 * 
+	 * @throws ParseException
+	 * 		Problem while accessing the files.
+	 * @throws SAXException
+	 * 		Problem while accessing the files.
+	 * @throws IOException
+	 * 		Problem while accessing the files.
+	 */
+	private static void reformatRetrievalDate() throws ParseException, SAXException, IOException
+	{	logger.log("Reformatting retrieval dates in all articles");
+		logger.increaseOffset();
+		
+		logger.increaseOffset();
+		List<File> files = ArticleLists.getArticleList();
+		for(File file: files)
+		{	String name = file.getName();
+			Article article = Article.read(name);
+			logger.log("Processing article "+name);
+			article.write();
+		}
+		logger.decreaseOffset();
+		
+		logger.decreaseOffset();
+		logger.log("Dates formatted");
 	}
 }
