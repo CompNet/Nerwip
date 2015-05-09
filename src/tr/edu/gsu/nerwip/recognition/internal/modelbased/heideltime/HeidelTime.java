@@ -100,8 +100,8 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 		
 		result = result + "_" + "mainModel=" + modelName.toString();
 		result = result + "_" + "intervals=" + doIntervalTagging;
-		result = result + "_" + "ignPro=" + ignorePronouns;
-		result = result + "_" + "exclude=" + exclusionOn;
+//		result = result + "_" + "ignPro=" + ignorePronouns;
+//		result = result + "_" + "exclude=" + exclusionOn;
 		
 		return result;
 	}
