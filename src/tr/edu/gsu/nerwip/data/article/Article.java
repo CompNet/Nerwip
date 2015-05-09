@@ -492,7 +492,7 @@ public class Article
 		String rawText = FileTools.readTextFile(result.rawFile);
 		rawText = rawText.replaceAll("\u00A0"," "); // remove unbreakable spaces
 		result.setRawText(rawText);
-
+		
 		// raw text with hyperlinks
 		if(result.linkedFile.exists())
 		{	String linkedText = FileTools.readTextFile(result.linkedFile);
@@ -549,6 +549,17 @@ public class Article
 			}
 		}
 		
+		// authors
+		{	Element authorsElt = root.getChild(XmlNames.ELT_AUTHORS);
+			if(authorsElt!=null)
+			{	List<Element> authorList = authorsElt.getChildren(XmlNames.ELT_AUTHOR);
+				for(Element authorElt: authorList)
+				{	String authorStr = authorElt.getTextTrim();
+					this.authors.add(authorStr);
+				}
+			}
+		}
+		
 		// dates
 		{	Element datesElt = root.getChild(XmlNames.ELT_DATES);
 			// retrieval
@@ -584,17 +595,6 @@ public class Article
 				for(String catStr: temp)
 				{	ArticleCategory cat = ArticleCategory.valueOf(catStr);
 					categories.add(cat);
-				}
-			}
-		}
-		
-		// authors
-		{	Element authorsElt = root.getChild(XmlNames.ELT_AUTHORS);
-			if(authorsElt!=null)
-			{	List<Element> authorList = authorsElt.getChildren(XmlNames.ELT_AUTHOR);
-				for(Element authorElt: authorList)
-				{	String authorStr = authorElt.getTextTrim();
-					this.authors.add(authorStr);
 				}
 			}
 		}
@@ -670,6 +670,17 @@ public class Article
 			root.addContent(languageElt);
 		}
 		
+		// authors
+		if(!authors.isEmpty())
+		{	Element authorsElt = new Element(XmlNames.ELT_AUTHORS);
+			root.addContent(authorsElt);
+			for(String authorStr: authors)
+			{	Element authorElt = new Element(XmlNames.ELT_AUTHOR);
+				authorElt.setText(authorStr);
+				authorsElt.addContent(authorElt);
+			}
+		}
+		
 		// dates
 		{	Element datesElt = new Element(XmlNames.ELT_DATES);
 			root.addContent(datesElt);
@@ -704,17 +715,6 @@ public class Article
 			Element catElt = new Element(XmlNames.ELT_CATEGORY);
 			catElt.setText(catStr);
 			root.addContent(catElt);
-		}
-		
-		// authors
-		if(!authors.isEmpty())
-		{	Element authorsElt = new Element(XmlNames.ELT_AUTHORS);
-			root.addContent(authorsElt);
-			for(String authorStr: authors)
-			{	Element authorElt = new Element(XmlNames.ELT_AUTHOR);
-				authorElt.setText(authorStr);
-				authorsElt.addContent(authorElt);
-			}
 		}
 		
 		// record file
