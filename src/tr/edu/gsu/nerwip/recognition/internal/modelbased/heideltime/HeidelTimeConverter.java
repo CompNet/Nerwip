@@ -26,6 +26,8 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import org.jdom.Content;
@@ -96,6 +98,26 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	private static final String TYPE_DATE = "DATE";
 	/** Value of the TIMEX3 attribute "type" for a day time (and possibly date) */
 	private static final String TYPE_TIME = "TIME";
+	/** Separte time from date in certain TIMEX3 values */
+	private static final String TIME_SEPARATOR = "T";
+	/** Separte time from date in certain TIMEX3 values */
+	private static final String WEEK_CODE = "W";
+	/** Before Christ code */
+	private static final String BC_CODE = "BC";
+	/** List of strings not acceptable as year values */
+	private static final List<String> YEAR_BLACKLIST = Arrays.asList(
+		"PAST_REF","PRESENT_REF","FUTURE_REF",
+		"UNDEF"
+//		"XXXX"
+	);
+	/** List of strings not acceptable as month values */
+	private static final List<String> MONTH_BLACKLIST = Arrays.asList(
+		"H1","H2",				// half (=semester)
+		"Q1","Q2","Q3","Q4",	// quarters
+		"WI","SP","SU","FA"		// seasons
+	);
+	/** Begining of the value string when only the date is specified */
+	private static final String TIME_PREFIX = "XXXX-XX-XX";
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -108,12 +130,14 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 		Element root;
 		try
 		{	String xmlSource = data.replace("<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">", "");
+			xmlSource = xmlSource.replaceAll("&", "&amp;"); // needed to handle possible "&" chars (we suppose the original text does not contain any entity)
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(xmlSource));
 			root = doc.getRootElement();
 		}
 		catch (JDOMException e)
 		{	//e.printStackTrace();
+			System.err.println(data);
 			throw new ConverterException(e.getMessage());
 		}
 		catch (IOException e)
@@ -124,7 +148,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 		// process the xml document
 		logger.log("Processing the resulting XML document");
 		logger.increaseOffset();
-		int index = 0;
+		int index = -1; //-1 and not zero, because a new line is inserted at the beginning of the article in the XML file 
 		XMLOutputter xo = new XMLOutputter();
 		List<Content> children = root.getContent();
 		for(Content child: children)
@@ -144,10 +168,12 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 				int length = str.length();
 				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
 				EntityDate entity = convertElement(e, index);
-				result.addEntity(entity);
+				if(entity!=null)
+					result.addEntity(entity);
 				index = index + length;
 			}
 		}
+		logger.decreaseOffset();
 
 		logger.decreaseOffset();
 		return result;
@@ -162,7 +188,8 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	 * @param index
 	 * 		Current position in the original text (in characters).
 	 * @return
-	 * 		The created entity.
+	 * 		The created entity, or {@code null} if it was not
+	 * 		possible to create it due to a lack of information.
 	 */
 	@SuppressWarnings("unchecked")
 	private EntityDate convertElement(Element element, int index)
@@ -180,12 +207,12 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 			// we only focus on dates and date-times
 			if(txType.equals(TYPE_DATE) || txType.equals(TYPE_TIME))
 			{	String valueStr = element.getAttributeValue(XmlNames.ATT_VALUE);
-				Date date = parseTimex3Value(valueStr);
+				String text = element.getText();
+				Date date = parseTimex3Value(valueStr,text);
 				if(date==null)
-					logger.log("WARNING: Could not parse the date/time in element "+xo.outputString(element));
+					logger.log("Could not parse the date/time in element "+xo.outputString(element)); //TODO WARNING: 
 				else
-				{	String text = element.getText();
-					int length = text.length();
+				{	int length = text.length();
 					result = (EntityDate) AbstractEntity.build(EntityType.DATE, index, index+length, recognizerName, text);
 					result.setValue(date);
 				}
@@ -205,22 +232,93 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	 * 
 	 * @param value
 	 * 		A TIMEX3 value string supposed to contain a date.
+	 * @param text
+	 * 		The text associated to the TIMEX3 element (for debugging).
 	 * @return
-	 * 		A custom object representing contained same date.
+	 * 		A custom object representing contained same date,
+	 * 		or {@code null} if some critical information is missing.
 	 */
-	private Date parseTimex3Value(String value)
-	{	// 1977-02-24
-		String s[] = value.split("-");
-		int year = Integer.parseInt(s[0]);
+	private Date parseTimex3Value(String value, String text)
+	{	Date result = null;
+		int year = 0;
 		int month = 0;
-		if(s.length>1)
-			month = Integer.parseInt(s[1]);
 		int day = 0;
-		if(s.length>2)
-			day = Integer.parseInt(s[2]);
+	
+		// check if the string contains only a time
+		if(value.startsWith(TIME_PREFIX))
+			logger.log("There is only a time, not a precise date (original text: "+text+") >> discarding the whole date");
 		
-		// build date object
-		Date result = new Date(year,month,day);
+		// check if it's an AD year (by opposition to BC)
+		else if(value.startsWith(BC_CODE))
+			logger.log("The date contains a before-christ (BC) year (original text: "+text+") >> discarding the whole date");
+		
+		// relevant date
+		else
+		{	// break down the string
+			String s[] = value.split("-");	//UNDEF-REF-hour-PLUS-5 UNDEF-REF-week-WE-PLUS-1 XXXX-XX-XXT07:00
+			
+			// process the year
+			// check if the year is acceptable
+			if(YEAR_BLACKLIST.contains(s[0]))
+				logger.log("There is no precise year (original text: "+text+") >> the year is discarded, as well as the whole date");
+			else
+			{	try
+				{	year = Integer.parseInt(s[0]);
+					// for cases like "the 1950s", HeidelTime inexplicably returns the value 195
+					// we try to define a workaround for this case
+					if(year>99 && year <1000)
+					{	logger.log("The year should not be <1000: HeidelTime returned the value "+year+" for the string \""+text+"\" >> multiplying by 10"); 
+						year = year * 10;
+					}
+				}
+				catch(NumberFormatException e)
+				{	//e.printStackTrace();
+					logger.log("WARNING: could not parse the year in string \""+value+"\" (original text: "+text+") >> discarding the whole date");
+				}
+				
+				// process the month
+				if(year!=0 && s.length>1)
+				{	// check if the month is acceptable
+					if(MONTH_BLACKLIST.contains(s[1]))
+						logger.log("There is no precise month (original text: "+text+") >> the month is discarded, as well as the day");
+					else
+					{	// is the second date component actually a week number?
+						if(s[1].startsWith(WEEK_CODE))
+						{	String weekStr = s[1].substring(1);
+							int week = Integer.parseInt(weekStr);
+							Calendar cal = Calendar.getInstance();
+							cal.setWeekDate(year, week, Calendar.MONDAY);
+							logger.log("We got a week number \""+value+"\" (original text: "+text+") >> converted to a month: "+month+"");
+						}
+						else	
+						{	try
+							{	month = Integer.parseInt(s[1]);
+							}
+							catch(NumberFormatException e)
+							{	//e.printStackTrace();
+									logger.log("WARNING: could not parse the month string \""+value+"\" (original text: "+text+") >> discarding it, as well as the day");
+							}
+						}
+						
+						// process the day
+						if(month!=0 && s.length>2)
+						{	try
+							{	String s2[] = s[2].split(TIME_SEPARATOR); // ignore the possible time indicated after the date (separated by a T)
+								day = Integer.parseInt(s2[0]);
+							}
+							catch(NumberFormatException e)
+							{	//e.printStackTrace();
+								logger.log("WARNING: could not parse the day in string \""+value+"\" (original text: "+text+") >> discarding it"); 
+							}
+						}
+					}
+				}
+			}
+			
+			// build date object
+			if(year!=0)
+				result = new Date(year,month,day);
+		}
 		
 		return result;
 	}

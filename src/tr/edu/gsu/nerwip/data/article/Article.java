@@ -490,11 +490,13 @@ public class Article
 		
 		// raw text
 		String rawText = FileTools.readTextFile(result.rawFile);
+		rawText = rawText.replaceAll("\u00A0"," "); // remove unbreakable spaces
 		result.setRawText(rawText);
 
 		// raw text with hyperlinks
 		if(result.linkedFile.exists())
 		{	String linkedText = FileTools.readTextFile(result.linkedFile);
+			linkedText = linkedText.replaceAll("\u00A0"," "); // remove unbreakable spaces
 			result.setLinkedText(linkedText);
 		}
 		

@@ -68,17 +68,15 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 	 * 		recognizer, or only when necessary. 
 	 * @param doIntervalTagging
 	 * 		Whether intervals should be detected or ignored (?). 
-	 * @param ignorePronouns
-	 * 		Whether or not prnonouns should be excluded from the detection.
-	 * @param exclusionOn
-	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws RecognizerException 
 	 * 		Problem while loading the models or tokenizers.
 	 */
-	public HeidelTime(HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging, boolean ignorePronouns, boolean exclusionOn) throws RecognizerException
-	{	super(modelName,loadModelOnDemand,false,ignorePronouns,exclusionOn);
+	public HeidelTime(HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws RecognizerException
+	{	super(modelName,loadModelOnDemand,false,false,false);
 	
+		setIgnoreNumbers(false);
+
 		this.doIntervalTagging = doIntervalTagging; //TODO this is actually ignored when loadModelOnDemand is false
 		
 		// init converter

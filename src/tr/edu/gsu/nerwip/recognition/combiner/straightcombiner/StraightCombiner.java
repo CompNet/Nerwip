@@ -141,9 +141,7 @@ public class StraightCombiner extends AbstractCombiner
 			HeidelTimeModelName modelName = HeidelTimeModelName.FRENCH_NARRATIVES;
 			boolean loadModelOnDemand = true;
 			boolean doIntervalTagging = false;
-			boolean ignorePronouns = false;
-			boolean exclusionOn = false;
-			HeidelTime heidelTime = new HeidelTime(modelName, loadModelOnDemand, doIntervalTagging, ignorePronouns, exclusionOn);
+			HeidelTime heidelTime = new HeidelTime(modelName, loadModelOnDemand, doIntervalTagging);
 			recognizers.add(heidelTime);
 		}
 		
