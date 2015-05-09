@@ -499,6 +499,8 @@ public class Article
 			linkedText = linkedText.replaceAll("\u00A0"," "); // remove unbreakable spaces
 			result.setLinkedText(linkedText);
 		}
+		else
+			result.setLinkedText(rawText);
 		
 		return result;
 	}
