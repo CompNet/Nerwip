@@ -47,6 +47,10 @@ public enum RecognizerName
 	OPENNLP, 
 	/** Stanford Named Entity Recognizer */ 
 	STANFORD, 
+	/** NERO Web Service */
+	NERO,
+	/** OPENER Web Service */
+	OPENER,
 	
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL CUSTOM TOOLS	/////////////////////////////////////

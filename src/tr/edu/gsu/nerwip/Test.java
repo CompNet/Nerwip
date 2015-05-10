@@ -2,6 +2,7 @@ package tr.edu.gsu.nerwip;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
+
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
  * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
  * Copyright 2013 Samet Atdağ & Vincent Labatut
@@ -25,6 +26,7 @@ package tr.edu.gsu.nerwip;
  */
 
 import java.io.File;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +58,9 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.nero.Nero;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNER;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
@@ -99,6 +103,7 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		String name = "Émilien_Brigault";
+	
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
@@ -110,14 +115,18 @@ public class Test
 //		testIllinois(url);
 //		testLingPipe(url);
 //		testOpenCalais(url);
-		testOpenCalais(name);
-//		testOpenNlp(url);
+//		testOpenCalais(name);
+		
+//	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
 //		testWikipediaDater(url);
+		testNero(name);
+//		testOpeNER(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
+		
 		
 //		testEvaluator();
 //		testEditor();
@@ -355,6 +364,63 @@ public class Test
 		openCalais.setOutputRawResults(true);
 		openCalais.setCacheEnabled(false);
 		openCalais.process(article);
+
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	
+	private static void testNero(String name) throws Exception
+	{	logger.setName("Test-Nero");
+		logger.log("Start testing Nero");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		Nero nero = new Nero(ignorePronouns, exclusionOn);
+		nero.setOutputRawResults(true);
+		nero.setCacheEnabled(false);
+		nero.process(article);
+
+		logger.decreaseOffset();
+	}
+	
+	
+	
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testOpeNER(String name) throws Exception
+	{	logger.setName("Test-OpeNER");
+		logger.log("Start testing OpeNER");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		OpeNER opener = new OpeNER(ignorePronouns, exclusionOn);
+		opener.setOutputRawResults(true);
+		opener.setCacheEnabled(false);
+		opener.process(article);
 
 		logger.decreaseOffset();
 	}

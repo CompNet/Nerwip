@@ -190,4 +190,6 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
      * 		Problem while applying the NER tool.
      */
 	protected abstract U detectEntities(Article article) throws RecognizerException;
+
+	
 }

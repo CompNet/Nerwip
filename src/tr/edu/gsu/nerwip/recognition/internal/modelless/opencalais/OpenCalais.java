@@ -64,7 +64,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>,OpenCalaisConverter>
+public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>,OpenCalaisConverter>  
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -179,7 +179,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 				while((line = bufferedReader.readLine())!=null)
 				{	builder.append(line+"\n");
 					nbr++;
-				}
+					logger.log("Line:" +line);				}
 				logger.log("Lines read: "+nbr);
 				
 				String answer = builder.toString();

@@ -104,6 +104,10 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 			case PERSON:
 				result = new EntityPerson(startPos, endPos, source, valueStr, null);
 				break;
+			case FONCTION:
+				result = new EntityFonction(startPos, endPos, source, valueStr, null);
+				break;
+				
 		}
 		
 		return result;
