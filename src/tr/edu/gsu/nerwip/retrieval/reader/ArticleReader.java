@@ -225,6 +225,27 @@ public abstract class ArticleReader
 			linkedText = StringTools.replaceSpaces(linkedText);
 		article.setLinkedText(linkedText);
 	}
+	
+	/**
+	 * Removes the signs {@code <} and {@code >}
+	 * from the specified text.
+	 * <br/>
+	 * This method is meant to be used by article reader
+	 * to clean text by removing signs that could be
+	 * later mistaken for xml elements (and are <i>a
+	 * priori</i> not necessary for NER).
+	 * 
+	 * @param text
+	 * 		Original text.
+	 * @return
+	 * 		Same text without the signs.s
+	 */
+	protected String removeGtst(String text)
+	{	String result = text;
+		result = result.replace("<", "");
+		result = result.replace(">", "");
+		return result;
+	}
 
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////

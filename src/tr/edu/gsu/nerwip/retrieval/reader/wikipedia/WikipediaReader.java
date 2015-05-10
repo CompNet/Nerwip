@@ -554,7 +554,8 @@ public class WikipediaReader extends ArticleReader
 			// simple text
 			String str = element.text();
 			if(!str.isEmpty())
-			{	rawStr.append(str);
+			{	str = removeGtst(str);
+				rawStr.append(str);
 			
 //if(str.contains("Philadelphia, Pa."))	//debug stuff
 //	System.out.print("");
@@ -982,6 +983,7 @@ public class WikipediaReader extends ArticleReader
 				// other elements are considered as simple text
 				else
 				{	String text = element.text();
+					text = removeGtst(text);
 					rawStr.append(text);
 					linkedStr.append(text);
 				}
@@ -998,6 +1000,7 @@ public class WikipediaReader extends ArticleReader
 						&& text.startsWith(" "))
 					text = text.substring(1);
 				// complete string buffers
+				text = removeGtst(text);
 				rawStr.append(text);
 				linkedStr.append(text);
 			}
@@ -1023,6 +1026,7 @@ public class WikipediaReader extends ArticleReader
 			// get its title
 			Element firstHeadingElt = document.getElementsByAttributeValue(XmlNames.ATT_ID,ID_TITLE).get(0);
 			String title = firstHeadingElt.text();
+			title = removeGtst(title);
 			logger.log("Get title: "+title);
 			
 			// get raw and linked texts
