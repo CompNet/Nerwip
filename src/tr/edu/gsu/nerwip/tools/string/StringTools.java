@@ -102,6 +102,29 @@ public class StringTools
 		return result;
 	}
 
+	/**
+	 * Process the specified string in order to replace
+	 * non-standard whitespace characters. The number
+	 * of characters in the text is not modified
+	 * (unlike {@link #cleanSpaces(String)}).
+	 *  
+	 * @param string
+	 * 		The original string (not modified).
+	 * @return
+	 * 		Modified version of the input string.
+	 */
+	public static String replaceSpaces(String string)
+	{	String result = string;
+		
+		if(result!=null)
+		{	// replace all white spaces by regular spaces
+			// new line and tabs are not affected
+			result = result.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces then \s
+		}
+		
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// LETTERS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -189,11 +212,24 @@ public class StringTools
 	 * 		No need.
 	 */
 	public static void main(String[] args)
-	{	String text = "This is a first sentence. Cela semble marcher très bien."
-			+ "What if no space after dot? Or even other punctuation marks!\n"
-			+ "Et même plein de points !?! Ou... des nombres 12.32 et 12,65.\n"
-			+ "On pourrait aussi avoir des abréviations comme M.Dupont ou M. Dupont ; "
-			+ "enfin, there could be spaces and stuff in between sentences.   Like this.  End.";
-		splitText(text, 70);
+	{	
+		// test split
+//		String text = "This is a first sentence. Cela semble marcher très bien."
+//			+ "What if no space after dot? Or even other punctuation marks!\n"
+//			+ "Et même plein de points !?! Ou... des nombres 12.32 et 12,65.\n"
+//			+ "On pourrait aussi avoir des abréviations comme M.Dupont ou M. Dupont ; "
+//			+ "enfin, there could be spaces and stuff in between sentences.   Like this.  End.";
+//		splitText(text, 70);
+		
+		// test clean
+		String str = " abc\u00A0defg h\ni\rk\tl";
+		String res = replaceSpaces(str);
+		System.out.println("\""+str+"\" vs \""+res+"\"");
+		System.out.println((int)(str.charAt(0))+" vs "+(int)(res.charAt(0)));
+		System.out.println((int)(str.charAt(4))+" vs "+(int)(res.charAt(4)));
+		System.out.println((int)(str.charAt(9))+" vs "+(int)(res.charAt(9)));
+		System.out.println((int)(str.charAt(11))+" vs "+(int)(res.charAt(11)));
+		System.out.println((int)(str.charAt(13))+" vs "+(int)(res.charAt(13)));
+		System.out.println((int)(str.charAt(15))+" vs "+(int)(res.charAt(15)));
 	}
 }

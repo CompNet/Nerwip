@@ -44,6 +44,7 @@ import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
+import tr.edu.gsu.nerwip.tools.string.StringTools;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 
@@ -490,13 +491,13 @@ public class Article
 		
 		// raw text
 		String rawText = FileTools.readTextFile(result.rawFile);
-		rawText = rawText.replaceAll("\u00A0"," "); // remove unbreakable spaces
+		rawText = StringTools.replaceSpaces(rawText);
 		result.setRawText(rawText);
 		
 		// raw text with hyperlinks
 		if(result.linkedFile.exists())
 		{	String linkedText = FileTools.readTextFile(result.linkedFile);
-			linkedText = linkedText.replaceAll("\u00A0"," "); // remove unbreakable spaces
+			linkedText = StringTools.replaceSpaces(linkedText);
 			result.setLinkedText(linkedText);
 		}
 		else

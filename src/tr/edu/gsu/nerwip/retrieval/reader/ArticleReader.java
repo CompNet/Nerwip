@@ -45,6 +45,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
+import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * All classes automatically getting articles
@@ -202,10 +203,55 @@ public abstract class ArticleReader
 		
 		return output;
 	}
+	
+	/**
+	 * Cleans the specified article (both the raw and linked version)
+	 * by replacing non-breaking space by regular spaces, etc.
+	 *    
+	 * @param article
+	 * 		The article to process.
+	 */
+	protected void cleanArticle(Article article)
+	{	// raw text
+		String rawText = article.getRawText();
+		rawText = StringTools.replaceSpaces(rawText);
+		article.setRawText(rawText);
+		
+		// linked text
+		String linkedText = article.getLinkedText();
+		if(linkedText==null)
+			linkedText = rawText;
+		else
+			linkedText = StringTools.replaceSpaces(linkedText);
+		article.setLinkedText(linkedText);
+	}
 
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/**
+	 * Processes the specified URL to get the
+	 * targetted article. Also applies a cleaning step
+	 * (removing non-breaking space, and so on.
+	 * 
+	 * @param url
+	 * 		Article address.
+	 * @param language
+	 * 		Language of the retrieved article, or {@code null} if it is unknown.
+	 * @return
+	 * 		An Article object corresponding to the targetted URL.
+	 * 
+	 * @throws ReaderException
+	 * 		Problem while retrieving the article.
+	 */
+	public Article read(URL url, ArticleLanguage language) throws ReaderException
+	{	Article result = processUrl(url, language);
+		
+		cleanArticle(result);
+		
+		return result;
+	}
+
 	/**
 	 * Processes the specified URL to get the
 	 * targetted article.
@@ -220,7 +266,7 @@ public abstract class ArticleReader
 	 * @throws ReaderException
 	 * 		Problem while retrieving the article.
 	 */
-	public abstract Article read(URL url, ArticleLanguage language) throws ReaderException;
+	public abstract Article processUrl(URL url, ArticleLanguage language) throws ReaderException;
 
 	/**
 	 * Loads the html source code from the cached file,
