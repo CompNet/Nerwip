@@ -116,6 +116,8 @@ public class XmlNames
 	public final static String ELT_A = "a";
 	/** Html article tag */
 	public final static String ELT_ARTICLE = "article";
+	/** Html bold tag */
+	public final static String ELT_B = "b";
 	/** Html body tag */
 	public final static String ELT_BODY = "body";
 	/** Html cite tag */
@@ -142,6 +144,8 @@ public class XmlNames
 	public final static String ELT_H6 = "h6";
 	/** Html header tag */
 	public final static String ELT_HEADER = "header";
+	/** Html italic tag */
+	public final static String ELT_I = "i";
 	/** Html list item tag */
 	public final static String ELT_LI = "li";
 	/** Html ordered list tag */
@@ -150,6 +154,8 @@ public class XmlNames
 	public final static String ELT_P = "p";
 	/** Html quote tag */
 	public final static String ELT_BLOCKQUOTE = "blockquote";
+	/** Html section tag */
+	public final static String ELT_SECTION = "section";
 	/** Html small text tag */
 	public final static String ELT_SMALL = "small";
 	/** Html span tag */
