@@ -222,6 +222,24 @@ public class Entities
 	{	entities.remove(entity);
 	}
 
+	/**
+	 * Returns a sublist containing only the entities of
+	 * a certain type.
+	 * 
+	 * @param type
+	 * 		The desired entity type.
+	 * @return
+	 * 		List of entities of this type.
+	 */
+	public List<AbstractEntity<?>> getEntitiesByType(EntityType type)
+	{	List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		for(AbstractEntity<?> entity: entities)
+		{	EntityType t = entity.getType();
+			if(t==type)
+				result.add(entity);
+		}
+		return result;
+	}
 	
 	/**
 	 * Sorts the entities in the list
