@@ -125,7 +125,7 @@ public class DataProcessing
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * This method was used to build dictionaries using
-	 * the lists form the Illinois NER tool.
+	 * the lists from the Illinois NER tool.
 	 * 
 	 * @param filesStr
 	 * 		Several original files.

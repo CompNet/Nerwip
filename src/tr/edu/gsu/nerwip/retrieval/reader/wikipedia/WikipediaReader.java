@@ -58,6 +58,7 @@ import org.jsoup.select.Elements;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.retrieval.reader.ArticleReader;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -74,6 +75,17 @@ import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 @SuppressWarnings("unused")
 public class WikipediaReader extends ArticleReader
 {
+	/////////////////////////////////////////////////////////////////
+	// DOMAIN			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Text allowing to detect wikipedia URL */
+	public static final String DOMAIN = "wikipedia.org";
+	
+	@Override
+	public String getDomain()
+	{	return DOMAIN;
+	}
+
 	/////////////////////////////////////////////////////////////////
 	// MISC				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -327,7 +339,7 @@ public class WikipediaReader extends ArticleReader
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// RETREIVE			/////////////////////////////////////////////
+	// RETRIEVE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////	
 	/** Id of the element containing the article content in the Wikipedia page */
 	private final static String ID_CONTENT = "mw-content-text";
@@ -540,7 +552,8 @@ public class WikipediaReader extends ArticleReader
 			// simple text
 			String str = element.text();
 			if(!str.isEmpty())
-			{	rawStr.append(str);
+			{	str = removeGtst(str);
+				rawStr.append(str);
 			
 //if(str.contains("Philadelphia, Pa."))	//debug stuff
 //	System.out.print("");
@@ -968,6 +981,7 @@ public class WikipediaReader extends ArticleReader
 				// other elements are considered as simple text
 				else
 				{	String text = element.text();
+					text = removeGtst(text);
 					rawStr.append(text);
 					linkedStr.append(text);
 				}
@@ -984,25 +998,15 @@ public class WikipediaReader extends ArticleReader
 						&& text.startsWith(" "))
 					text = text.substring(1);
 				// complete string buffers
+				text = removeGtst(text);
 				rawStr.append(text);
 				linkedStr.append(text);
 			}
 		}
 	}
 	
-	/**
-	 * Pulls a text from a Wikipedia URL without images, tags, etc.
-	 * 
-	 * @param url
-	 * 		Address of the targetted text.
-	 * @return
-	 * 		An Article object representing the retrieved object.
-	 * 
-	 * @throws ReaderException
-	 * 		Problem while retrieving the text.
-	 */
 	@Override
-	public Article read(URL url) throws ReaderException
+	public Article processUrl(URL url, ArticleLanguage language) throws ReaderException
 	{	Article result = null;
 		String name = getName(url);
 		
@@ -1012,10 +1016,15 @@ public class WikipediaReader extends ArticleReader
 			logger.log("Retrieving page "+address);
 			long startTime = System.currentTimeMillis();
 			Document document  = retrieveSourceCode(name,url);
+			if(document==null)
+			{	logger.log("ERROR: Could not retrieve the document at URL "+url);
+				throw new ReaderException("Could not retrieve the document at URL "+url);
+			}
 					
 			// get its title
 			Element firstHeadingElt = document.getElementsByAttributeValue(XmlNames.ATT_ID,ID_TITLE).get(0);
 			String title = firstHeadingElt.text();
+			title = removeGtst(title);
 			logger.log("Get title: "+title);
 			
 			// get raw and linked texts
@@ -1116,7 +1125,8 @@ public class WikipediaReader extends ArticleReader
 			result = new Article(name);
 			result.setTitle(title);
 			result.setUrl(url);
-			result.initDate();
+			result.initRetrievalDate();
+			result.setLanguage(language);
 			
 			// clean text
 			String rawText = rawStr.toString();
@@ -1157,204 +1167,5 @@ public class WikipediaReader extends ArticleReader
 		}
 		
 		return result;
-	}
-
-	/**
-	 * Loads the html source code from the cached file,
-	 * or fetches it from the web server if needed.
-	 * 
-	 * @param name
-	 * 		Name of the concerned article.
-	 * @param url
-	 * 		URL of the concerned article.
-	 * @return
-	 * 		The DOM representation of the original page.
-	 * 
-	 * @throws IOException
-	 * 		Problem while accessing the cache or web page.
-	 */
-	private Document retrieveSourceCode(String name, URL url) throws IOException
-	{	Document result = null;
-		logger.increaseOffset();
-		logger.log("Retrieve HTML source code");
-		
-		// check if the cache can/must be used
-		String folderPath = FileNames.FO_OUTPUT + File.separator + name;
-		File originalFile = new File(folderPath + File.separator + FileNames.FI_ORIGINAL_PAGE);
-		if(cache && originalFile.exists())
-		{	logger.log("Cache enabled and HTML already retrieved >> we use the cached file ("+originalFile.getName()+")");
-			String sourceCode = FileTools.readTextFile(originalFile);
-			result = Jsoup.parse(sourceCode);
-		}
-		
-		// otherwise, load and cache the html file
-		else
-		{	logger.log("Cache disabled or HTML never retrieved before>> we get it from the web server");
-		
-			// use custom page loader
-//			String sourceCode = manuallyReadUrl(url);
-//			System.out.println(sourceCode.toString());
-//			result = new Source(sourceCode);
-			
-			// use jericho page loader
-			int timeOut = 5000;
-			result = Jsoup.parse(url,timeOut);
-			String sourceCode = result.toString();
-			
-			// cache html source code
-			FileTools.writeTextFile(originalFile, sourceCode);
-		}
-
-		//System.out.println(source.toString());
-		logger.decreaseOffset();
-		return result;
-	}
-	
-	/**
-	 * Reads the source code of the web page at the specified
-	 * URL.
-	 * 
-	 * @param url
-	 * 		Address of the web page to be read.
-	 * @return
-	 * 		String containing the read HTML source code.
-	 * 
-	 * @throws IOException
-	 * 		Problem while accessing the specified URL.
-	 */
-	private String manuallyReadUrl(URL url) throws IOException
-	{	boolean trad = false;
-		
-		BufferedReader br = null;
-		
-		// open page the traditional way
-		if(trad)
-		{	InputStream is = url.openStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			br = new BufferedReader(isr);
-		}
-		
-		// open with more options
-		else
-		{	// setup connection
-			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setDoOutput(true);
-            connection.setReadTimeout(2000);
-            connection.setChunkedStreamingMode(0);
-            connection.setRequestProperty("Content-Length", "0");
-//			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36");
-            connection.connect();
-            
-            // setup input stream
-            // part retrieved from http://stackoverflow.com/questions/538999/java-util-scanner-and-wikipedia
-            // original author: Marco Beggio
-            InputStream is = null;
-            String encoding = connection.getContentEncoding();
-            if(connection.getContentEncoding()!=null && encoding.equals("gzip"))
-            {	is = new GZIPInputStream(connection.getInputStream());
-            }
-            else if (encoding != null && encoding.equals("deflate"))
-            {	is = new InflaterInputStream(connection.getInputStream(), new Inflater(true));
-            }
-            else
-            {	is = connection.getInputStream();
-            }
-            
-// alternative to spot error details            
-//			InputStream is;
-//			if (connection.getResponseCode() != 200) 
-//				is = connection.getErrorStream();
-//			else 
-//				is = connection.getInputStream();
-            
-			InputStreamReader isr = new InputStreamReader(is);
-			br = new BufferedReader(isr);
-		}
-		
-		// read page
-		StringBuffer sourceCode = new StringBuffer();
-		String line = br.readLine();
-		while (line != null)
-		{	sourceCode.append(line+"\n");
-			line = br.readLine();
-		}
-		
-		String result = sourceCode.toString();
-		br.close();
-		return result;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// CLEANING			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Cleans the specified string, in order to remove characters
-	 * causing problems when detecting named entities.
-	 *    
-	 * @param input
-	 * 		The string to process?
-	 * @return
-	 * 		Cleaned string.
-	 */
-	protected String cleanText(String input)
-	{	String output = input.trim();
-		
-		String previous = output;
-		do
-		{	previous = output;
-		
-			// move punctuation out of hyperlinks
-			String punctuation = "[ \\n\\.,;]";
-			output = output.replaceAll("<a ([^>]*?)>("+punctuation+"*)([^<]*?)("+punctuation+"*)</a>","$2<a $1>$3</a>$4");
-			output = output.replaceAll("<a ([^>]*?)>(\\()([^<]*?)(\\))</a>","$2<a $1>$3</a>$4");
-			output = output.replaceAll("<a ([^>]*?)>(\\[)([^<]*?)(\\])</a>","$2<a $1>$3</a>$4");
-			
-			// replace multiple consecutive spaces by a single one 
-			output = output.replaceAll("( )+", " ");
-			
-			// replace multiple consecutive newlines by a single one 
-			output = output.replaceAll("(\\n)+", "\n");
-			
-			// replace multiple space-separated punctuations by single ones 
-//			output = output.replaceAll("; ;", ";");
-//			output = output.replaceAll(", ,", ",");
-//			output = output.replaceAll(": :", ":");
-//			output = output.replaceAll("\\. \\.", "\\.");
-			
-			// replace multiple consecutive punctuation marks by a single one 
-			output = output.replaceAll("([\\.,;:] )[\\.,;:]", "$1");
-	
-			// remove spaces before dots 
-			output = output.replaceAll(" \\.", ".");
-			
-			// remove space after opening parenthesis
-			output = output.replaceAll("\\( +", "(");
-			// remove space before closing parenthesis
-			output = output.replaceAll(" +\\)", ")");
-			
-			// remove various combinations of punctuation marks
-			output = output.replaceAll("\\(;", "(");
-	
-			// remove empty square brackets and parentheses
-			output = output.replaceAll("\\[\\]", "");
-			output = output.replaceAll("\\(\\)", "");
-			
-			// adds final dot when it is missing at the end of a sentence (itself detected thanks to the new line)
-			output = output.replaceAll("([^(\\.|\\-)])\\n", "$1.\n");
-			
-			// insert a space after coma, when missing
-			output = output.replaceAll(",([^ _])", ", $1");
-	
-			// insert a space after semi-column, when missing
-			output = output.replaceAll(";([^ _])", "; $1");
-			
-			// replace 2 single quotes by double quotes
-			output = output.replaceAll("''+", "\"");
-		}
-		while(!output.equals(previous));
-		
-		return output;
 	}
 }

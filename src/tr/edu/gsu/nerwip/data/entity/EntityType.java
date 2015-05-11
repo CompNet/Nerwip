@@ -41,8 +41,8 @@ public enum EntityType
 	ORGANIZATION(Color.CYAN),
 	/** Person entity */
 	PERSON(Color.YELLOW),
-	/** Fonction entity */
-	FONCTION(Color.GREEN); 
+	/** Function entity */
+	FUNCTION(Color.GREEN); 
 	
 	/**
 	 * Builds an entity type.

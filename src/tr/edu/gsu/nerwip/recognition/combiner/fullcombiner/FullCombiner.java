@@ -25,10 +25,12 @@ package tr.edu.gsu.nerwip.recognition.combiner.fullcombiner;
  */
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -43,8 +45,8 @@ import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 
 /**
- * This combiner is very basic: it first applies our very good
- * date detector to identify entities which are quasi-certainly
+ * This combiner is very basic: it first applies our date
+ * detector to identify entities which are quasi-certainly
  * dates, then uses one of the other combiners for the other
  * types of entities. There is no training for this combiner,
  * the training is performed at the level of the combiner
@@ -67,7 +69,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
 public class FullCombiner extends AbstractCombiner
 {	
 	/**
-	 * Builds a new overall combiner.
+	 * Builds a new full combiner.
 	 *
 	 * @param combiner
 	 * 		Combiner used to handle locations, organizations and persons
@@ -127,6 +129,21 @@ public class FullCombiner extends AbstractCombiner
 	{	return HANDLED_TYPES;
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of entities recognized by this combiner */
+	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
+		ArticleLanguage.EN
+//		ArticleLanguage.FR
+	);
+	
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = HANDLED_LANGUAGES.contains(language);
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// TOOLS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -216,14 +233,15 @@ public class FullCombiner extends AbstractCombiner
 	protected Entities combineEntities(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput) throws RecognizerException
 	{	logger.increaseOffset();
 		Entities result = new Entities(getName());
+		Iterator<AbstractRecognizer> it = recognizers.iterator();
 		
 		// first get the dates
-		AbstractRecognizer wikipediaDater = recognizers.get(0);
+		AbstractRecognizer wikipediaDater = it.next();
 		Entities dates = entities.get(wikipediaDater);
 		result.addEntities(dates);
 		
 		// then add the rest of the (non-overlapping) entities
-		AbstractRecognizer combiner = recognizers.get(1);
+		AbstractRecognizer combiner = it.next();
 		Entities ents = entities.get(combiner);
 		List<AbstractEntity<?>> entList = ents.getEntities();
 		for(AbstractEntity<?> entity: entList)

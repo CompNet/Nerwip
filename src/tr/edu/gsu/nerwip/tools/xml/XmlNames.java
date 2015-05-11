@@ -56,10 +56,14 @@ public class XmlNames
 	/////////////////////////////////////////////////////////////////
 	/** Set of texts to be associated to categories */
 	public static final String ELT_ACCEPT = "accept";
+	/** Author of an article */
+	public static final String ELT_AUTHOR = "author";
+	/** List of article authors */
+	public static final String ELT_AUTHORS = "authors";
 	/** Category of article (military, scientist, etc.) */
 	public static final String ELT_CATEGORY = "category";
-	/** Date of retrieval of an article */
-	public static final String ELT_DATE = "date";
+	/** Dates associated to an article */
+	public static final String ELT_DATES = "dates";
 	/** Text expressions which must be ignored because of how they end, when retreiving categories */
 	public static final String ELT_ENDS_WITH = "endsWith";
 	/** A list of entities */
@@ -68,10 +72,18 @@ public class XmlNames
 	public static final String ELT_ENTITY = "entity";
 	/** Some text key */
 	public static final String ELT_KEY = "key";
+	/** Language of an article */
+	public static final String ELT_LANGUAGE = "language";
+	/** Date of modification of an article */
+	public static final String ELT_MODIFICATION_DATE = "modification";
+	/** Date of publishing of an article */
+	public static final String ELT_PUBLISHING_DATE = "publishing";
 	/** Various properties of an article */
 	public static final String ELT_PROPERTIES = "properties";
 	/** Set of texts not to be associated to categories */
 	public static final String ELT_REJECT = "reject";
+	/** Date of retrieval of an article */
+	public static final String ELT_RETRIEVAL_DATE = "retrieval";
 	/** Text expressions which must be ignored because of how they start, when retreiving categories */
 	public static final String ELT_STARTS_WITH = "startsWith";
 	/** String describing an entity */
@@ -90,16 +102,22 @@ public class XmlNames
 	public final static String ATT_ID = "id";
 	/** Html class attribute */
 	public final static String ATT_CLASS = "class";
+	/** Html datetime attribute */
+	public static final String ATT_DATETIME = "datetime";
 	/** Html href attribute */
 	public final static String ATT_HREF = "href";
 	/** Html title attribute */
 	public final static String ATT_TITLE = "title";
 
 	/////////////////////////////////////////////////////////////////
-	// HTML ELEMENT		/////////////////////////////////////////////
+	// HTML ELEMENTS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Html hyperlink tag */
 	public final static String ELT_A = "a";
+	/** Html article tag */
+	public final static String ELT_ARTICLE = "article";
+	/** Html body tag */
+	public final static String ELT_BODY = "body";
 	/** Html cite tag */
 	public final static String ELT_CITE = "cite";
 	/** Html division tag */
@@ -122,6 +140,8 @@ public class XmlNames
 	public final static String ELT_H5 = "h5";
 	/** Html section tag */
 	public final static String ELT_H6 = "h6";
+	/** Html header tag */
+	public final static String ELT_HEADER = "header";
 	/** Html list item tag */
 	public final static String ELT_LI = "li";
 	/** Html ordered list tag */
@@ -140,6 +160,8 @@ public class XmlNames
 	public final static String ELT_TABLE = "table";
 	/** Html ordered table body tag */
 	public final static String ELT_TBODY = "tbody";
+	/** Html time tag */
+	public final static String ELT_TIME = "time";
 	/** Html unordered list tag */
 	public final static String ELT_UL = "ul";
 }

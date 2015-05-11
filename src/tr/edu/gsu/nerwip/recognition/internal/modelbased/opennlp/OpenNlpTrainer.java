@@ -218,7 +218,7 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 		Iterator<EntityType> it = types.iterator();
 		while(result && it.hasNext())
 		{	EntityType type = it.next();
-			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TXT;
+			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TEXT;
 			File file = new File(filePath);
 			result = file.exists();
 		}
@@ -236,7 +236,7 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 		logger.increaseOffset();
 		for(EntityType type: getHandledEntityTypes())
 		{	logger.log("Processing entity type "+type.toString());
-			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TXT;
+			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TEXT;
 			Scanner scanner = FileTools.openTextFileRead(filePath);
 			
 			List<String> list = new ArrayList<String>();
@@ -264,7 +264,7 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 		logger.increaseOffset();
 		for(EntityType type: data.keySet())
 		{	logger.log("Processing entity type "+type.toString());
-			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TXT;
+			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TEXT;
 			PrintWriter printWriter = FileTools.openTextFileWrite(filePath);
 			
 			List<String> text = data.get(type);

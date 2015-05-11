@@ -38,6 +38,7 @@ import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.Span;
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -105,7 +106,7 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
 	protected void updateHandledEntityTypes()
@@ -114,6 +115,15 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 		handledTypes.addAll(temp);
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = modelName.canHandleLanguage(language);
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// MODELS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

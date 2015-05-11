@@ -39,6 +39,7 @@ import java.util.Map;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -317,7 +318,14 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 			
 			// if needed, we process the text
 			if(!cache || processNeedeed)
-			{	// apply the NER tool
+			{	// check language
+				ArticleLanguage language = article.getLanguage();
+				if(language==null)
+					logger.log("WARNING: The article language is unknown >> it is possible this NER tool does not handle this language");
+				else if(!canHandleLanguage(language))
+					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
+				
+				// apply the NER tool
 				logger.log("Detect the entities");
 				result = applyRecognizers(article);
 				
@@ -382,7 +390,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * 		A String representing the path of the category proportions file.
 	 */
 	public String getCategoryProportionsPath()
-	{	String result = getModelPath() + File.separator + getFolder() + ".catprop" + FileNames.EX_TXT;
+	{	String result = getModelPath() + File.separator + getFolder() + ".catprop" + FileNames.EX_TEXT;
 		return result;
 	}
 	
@@ -438,7 +446,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * 		Path of the weights file.
 	 */
 	public String getVoteWeightsPath()
-	{	String result = getModelPath() + File.separator + getFolder() + ".weights" + FileNames.EX_TXT;
+	{	String result = getModelPath() + File.separator + getFolder() + ".weights" + FileNames.EX_TEXT;
 		return result;
 	}
 

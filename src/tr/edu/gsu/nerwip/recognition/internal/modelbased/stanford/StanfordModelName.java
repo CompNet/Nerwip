@@ -26,9 +26,13 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import edu.stanford.nlp.ie.crf.CRFClassifier;
+import edu.stanford.nlp.ling.CoreLabel;
+
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -53,7 +57,16 @@ public enum StanfordModelName
 	 * 		<li>Misc.</li>
 	 * </ul> 
 	 */
-	CONLL_MODEL("Conll","english.conll.4class.distsim.crf.ser.gz"), 
+	CONLL_MODEL(
+		"Conll",
+		"english.conll.4class.distsim.crf.ser.gz",
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	), 
 	/** 
 	 * MUC 7 entity types 
 	 * <ul>
@@ -66,7 +79,17 @@ public enum StanfordModelName
 	 * 		<li>Time</li>
 	 * </ul> 
 	 */
-	MUC_MODEL("Muc","english.muc.7class.distsim.crf.ser.gz"), 
+	MUC_MODEL(
+		"Muc",
+		"english.muc.7class.distsim.crf.ser.gz",
+		Arrays.asList(
+			EntityType.DATE,
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	), 
 	/** 
 	 * MUC & CoNLL 3 entity types 
 	 * <ul>
@@ -75,7 +98,16 @@ public enum StanfordModelName
 	 * 		<li>Organization</li>
 	 * </ul> 
 	 */
-	CONLLMUC_MODEL("ConllMuc","english.all.3class.distsim.crf.ser.gz"),
+	CONLLMUC_MODEL(
+		"ConllMuc",
+		"english.all.3class.distsim.crf.ser.gz",
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	),
 	/** 
 	 * Nerwip 3 entity types 
 	 * <ul>
@@ -84,7 +116,16 @@ public enum StanfordModelName
 	 * 		<li>Organization</li>
 	 * </ul> 
 	 */
-	NERWIP_MODEL("Nerwip","english.nerwip.3class.distsim.crf.ser.gz"); 
+	NERWIP_MODEL(
+		"Nerwip",
+		"english.nerwip.3class.distsim.crf.ser.gz",
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.EN)
+	); 
 	
 	/**
 	 * Builds a new value representing
@@ -94,10 +135,16 @@ public enum StanfordModelName
 	 * 		User-friendly name of the model.
 	 * @param fileName
 	 * 		Name of the file containing the model.
+	 * @param types
+	 * 		List of the entity types handled by the model.
+	 * @param languages
+	 * 		List of the languages handled by the model.
 	 */
-	StanfordModelName(String name, String fileName)
+	StanfordModelName(String name, String fileName, List<EntityType> types, List<ArticleLanguage> languages)
 	{	this.name = name;
 		this.fileName = fileName;
+		this.types = types;
+		this.languages = languages;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -154,6 +201,9 @@ public enum StanfordModelName
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** List of entity types this model can treat */
+	private List<EntityType> types;
+	
 	/**
 	 * Returns the list of types
 	 * supported by this predefined model.
@@ -162,32 +212,25 @@ public enum StanfordModelName
 	 * 		A list of supported {@link EntityType}.
 	 */
 	public List<EntityType> getHandledTypes()
-	{	List<EntityType> result = new ArrayList<EntityType>();
-		
-		switch(this)
-		{	case CONLL_MODEL:
-        		result.add(EntityType.LOCATION);
-        		result.add(EntityType.ORGANIZATION);
-        		result.add(EntityType.PERSON);
-				break;
-			case MUC_MODEL:
-				result.add(EntityType.DATE);
-	    		result.add(EntityType.LOCATION);
-	    		result.add(EntityType.ORGANIZATION);
-	    		result.add(EntityType.PERSON);
-				break;
-			case CONLLMUC_MODEL:
-	    		result.add(EntityType.LOCATION);
-	    		result.add(EntityType.ORGANIZATION);
-	    		result.add(EntityType.PERSON);
-				break;
-			case NERWIP_MODEL:
-	    		result.add(EntityType.LOCATION);
-	    		result.add(EntityType.ORGANIZATION);
-	    		result.add(EntityType.PERSON);
-				break;
-		}
-		
+	{	return types;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this model can treat */
+	private List<ArticleLanguage> languages;
+	
+	/**
+	 * Checks whether the specified language is supported by this  model.
+	 * 
+	 * @param language
+	 * 		The language to be checked.
+	 * @return 
+	 * 		{@code true} iff this model supports the specified language.
+	 */
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = languages.contains(language);
 		return result;
 	}
 	

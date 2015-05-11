@@ -32,9 +32,9 @@ import java.text.ParseException;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.retrieval.reader.ArticleReader;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
-import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
@@ -46,6 +46,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * cached file, provided we are sure it was cached before.
  * 
  * @author Yasa Akbulut
+ * @author Vincent Labatut
  */
 public class ArticleRetriever
 {
@@ -108,11 +109,26 @@ public class ArticleRetriever
 	}
 	
 	/////////////////////////////////////////////////////////////////
+	// LANGUAGE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Language specified by the user for the retrieved articles (or {@code null} if it is unknown) */
+	private ArticleLanguage language = null;
+	
+	/**
+	 * Changes the language specified by
+	 * the user for the retrieved articles.
+	 * 
+	 * @param language
+	 * 		New language for the articles,
+	 * 		or {@code null} if the language is unknown.
+	 */
+	public void setLanguage(ArticleLanguage language)
+	{	this.language = language;
+	}
+
+	/////////////////////////////////////////////////////////////////
 	// RETRIEVE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Text allowing to detect wikipedia URL */
-	private static final String WIKIPEDIA_FORM = "wikipedia.org";
-	
 	/**
 	 * Returns the texts corresponding to the specified URL.
 	 * <br/>
@@ -146,13 +162,9 @@ public class ArticleRetriever
 		// choose the reader depending on the URL base
 		logger.log("Selecting reader: ");
 		logger.increaseOffset();
-		ArticleReader reader = null;
-		String name = null;
-		if(address.contains(WIKIPEDIA_FORM))
-		{	logger.log(">> Wikipedia");
-			reader = new WikipediaReader();
-			name = reader.getName(url);
-		}
+		ArticleReader reader = ArticleReader.buildReader(address);
+		String name = reader.getName(url);
+		logger.log("Detected domain: "+reader.getDomain());
 		logger.decreaseOffset();
 		
 		// determine if the page should be accessed
@@ -162,7 +174,7 @@ public class ArticleRetriever
 			
 			// use the reader to get the text
 			reader.setCacheEnabled(readerCache);
-			result = reader.read(url);
+			result = reader.read(url,language);
 			logger.decreaseOffset();
 			
 			// then record the contents

@@ -407,7 +407,7 @@ public class MucMeasure extends AbstractMeasure
 	// RECORD			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the XML file used to store results */
-	private static final String FILE_NAME = "muc" + FileNames.EX_TXT;
+	private static final String FILE_NAME = "muc" + FileNames.EX_TEXT;
 	
 	@Override
 	public String getFileName()

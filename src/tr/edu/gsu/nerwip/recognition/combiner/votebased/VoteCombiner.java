@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -172,6 +173,21 @@ public class VoteCombiner extends AbstractCombiner
 	@Override
 	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of entities recognized by this combiner */
+	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
+		ArticleLanguage.EN
+//		ArticleLanguage.FR
+	);
+	
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = HANDLED_LANGUAGES.contains(language);
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////

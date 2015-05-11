@@ -44,6 +44,7 @@ import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
+import tr.edu.gsu.nerwip.tools.string.StringTools;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 
@@ -110,6 +111,42 @@ public class Article
 	}
 
 	/////////////////////////////////////////////////////////////////
+	// AUTHORS			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Authors of this article */
+	private List<String> authors = new ArrayList<String>();
+	
+	/**
+	 * Returns the authors of this article.
+	 * 
+	 * @return
+	 * 		List of authors.
+	 */
+	public List<String> getAuthors()
+	{	return authors;
+	}
+	
+	/**
+	 * Adds an author to this article.
+	 * 
+	 * @param author
+	 * 		Author to add to this article.
+	 */
+	public void addAuthor(String author)
+	{	authors.add(author);
+	}
+
+	/**
+	 * Adds the listed authors to this article.
+	 * 
+	 * @param authors
+	 * 		AuthorS to add to this article.
+	 */
+	public void addAuthors(List<String> authors)
+	{	this.authors.addAll(authors);
+	}
+
+	/////////////////////////////////////////////////////////////////
 	// SOURCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Address of the source page */
@@ -136,12 +173,42 @@ public class Article
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// DATE RETRIEVED	/////////////////////////////////////////////
+	// LANGUAGE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Date the page was last retrieved */
-	private Date date = null;
+	/** Language of the article (only one allowed) */
+	private ArticleLanguage language;
+	
+	/**
+	 * Returns the language of this article.
+	 * 
+	 * @return
+	 * 		Language of this article.
+	 */
+	public ArticleLanguage getLanguage()
+	{	return language;
+	}
+	
+	/**
+	 * Changes the language of this article.
+	 * 
+	 * @param language
+	 * 		New language for this article.
+	 */
+	public void setLanguage(ArticleLanguage language)
+	{	this.language = language;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// DATES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	/** Used to read/write dates */
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm",Locale.ENGLISH);
+	/** Date the page was last retrieved */
+	private Date retrievalDate = null;
+	/** Date the page was originally published */
+	private Date publishingDate = null;
+	/** Date the page was last edited */
+	private Date modificationDate = null;
 	
 	/**
 	 * Returns the retrieval date of this article.
@@ -149,28 +216,68 @@ public class Article
 	 * @return
 	 * 		Date of retrieval of this article.
 	 */
-	public Date getDate()
-	{	return date;
+	public Date getRetrievalDate()
+	{	return retrievalDate;
 	}
 
 	/**
 	 * Changes the date this article was retrieved.
 	 * 
-	 * @param date
+	 * @param retrievalDate
 	 * 		New date of retrieval.
 	 */
-	public void setDate(Date date)
-	{	this.date = date;
+	public void setRetrievalDate(Date retrievalDate)
+	{	this.retrievalDate = retrievalDate;
 	}
 
 	/**
-	 * Sets the date to the current date.
+	 * Sets the retrieval date to the current date.
 	 */
-	public void initDate()
+	public void initRetrievalDate()
 	{	Calendar calendar = Calendar.getInstance();
-		date = calendar.getTime();
+		retrievalDate = calendar.getTime();
 	}
 	
+	/**
+	 * Returns the publishing date of this article.
+	 * 
+	 * @return
+	 * 		Date of publishing of this article.
+	 */
+	public Date getPublishingDate()
+	{	return publishingDate;
+	}
+
+	/**
+	 * Changes the date this article was published.
+	 * 
+	 * @param publishingDate
+	 * 		New date of publishing.
+	 */
+	public void setPublishingDate(Date publishingDate)
+	{	this.publishingDate = publishingDate;
+	}
+
+	/**
+	 * Returns the date of last modification for this article.
+	 * 
+	 * @return
+	 * 		Date of modification of this article.
+	 */
+	public Date getModificationDate()
+	{	return modificationDate;
+	}
+
+	/**
+	 * Changes the date this article was last modified.
+	 * 
+	 * @param modificationDate
+	 * 		New date of modification.
+	 */
+	public void setModificationDate(Date modificationDate)
+	{	this.modificationDate = modificationDate;
+	}
+
 	/////////////////////////////////////////////////////////////////
 	// CATEGORIES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -384,13 +491,17 @@ public class Article
 		
 		// raw text
 		String rawText = FileTools.readTextFile(result.rawFile);
+		rawText = StringTools.replaceSpaces(rawText);
 		result.setRawText(rawText);
-
+		
 		// raw text with hyperlinks
 		if(result.linkedFile.exists())
 		{	String linkedText = FileTools.readTextFile(result.linkedFile);
+			linkedText = StringTools.replaceSpaces(linkedText);
 			result.setLinkedText(linkedText);
 		}
+		else
+			result.setLinkedText(rawText);
 		
 		return result;
 	}
@@ -406,6 +517,7 @@ public class Article
 	 * @throws IOException
 	 * 		Problem while accessing the file.
 	 */
+	@SuppressWarnings("unchecked")
 	private void readProperties() throws ParseException, SAXException, IOException
 	{	// schema file
 		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_PROPERTY_SCHEMA;
@@ -414,38 +526,79 @@ public class Article
 		// load file
 		Element root = XmlTools.getRootFromFile(propertiesFile,schemaFile);
 		
-		// type of biography
-		Element titleElt = root.getChild(XmlNames.ELT_TITLE);
-		if(titleElt!=null)
-		{	String titleStr = titleElt.getTextTrim();
-			this.title = titleStr;
+		// article title
+		{	Element titleElt = root.getChild(XmlNames.ELT_TITLE);
+			if(titleElt!=null)
+			{	String titleStr = titleElt.getTextTrim();
+				this.title = titleStr;
+			}
 		}
 
 		// origine url
-		Element urlElt = root.getChild(XmlNames.ELT_URL);
-		if(urlElt!=null)
-		{	String urlStr = urlElt.getTextTrim();
-			URL url = new URL(urlStr);
-			this.url = url;
+		{	Element urlElt = root.getChild(XmlNames.ELT_URL);
+			if(urlElt!=null)
+			{	String urlStr = urlElt.getTextTrim();
+				URL url = new URL(urlStr);
+				this.url = url;
+			}
 		}
 		
-		// retrieval date
-		Element dateElt = root.getChild(XmlNames.ELT_DATE);
-		if(dateElt!=null)
-		{	String dateStr = dateElt.getTextTrim();
-			Date date = DATE_FORMAT.parse(dateStr);
-			this.date = date;
+		// language
+		{	Element languageElt = root.getChild(XmlNames.ELT_LANGUAGE);
+			if(languageElt!=null)
+			{	String languageStr = languageElt.getTextTrim().toUpperCase(Locale.ENGLISH);
+				ArticleLanguage language = ArticleLanguage.valueOf(languageStr);
+				this.language = language;
+			}
+		}
+		
+		// authors
+		{	Element authorsElt = root.getChild(XmlNames.ELT_AUTHORS);
+			if(authorsElt!=null)
+			{	List<Element> authorList = authorsElt.getChildren(XmlNames.ELT_AUTHOR);
+				for(Element authorElt: authorList)
+				{	String authorStr = authorElt.getTextTrim();
+					this.authors.add(authorStr);
+				}
+			}
+		}
+		
+		// dates
+		{	Element datesElt = root.getChild(XmlNames.ELT_DATES);
+			// retrieval
+			{	Element retrievalDateElt = datesElt.getChild(XmlNames.ELT_RETRIEVAL_DATE);
+				String retrievalDateStr = retrievalDateElt.getTextTrim();
+				Date retrievalDate = DATE_FORMAT.parse(retrievalDateStr);
+				this.retrievalDate = retrievalDate;
+			}
+			// publishing
+			{	Element publishingDateElt = datesElt.getChild(XmlNames.ELT_PUBLISHING_DATE);
+				if(publishingDateElt!=null)
+				{	String publishingDateStr = publishingDateElt.getTextTrim();
+					Date publishingDate = DATE_FORMAT.parse(publishingDateStr);
+					this.publishingDate = publishingDate;
+				}
+			}
+			// modification
+			{	Element modificationDateElt = datesElt.getChild(XmlNames.ELT_MODIFICATION_DATE);
+				if(modificationDateElt!=null)
+				{	String modificationDateStr = modificationDateElt.getTextTrim();
+					Date modificationDate = DATE_FORMAT.parse(modificationDateStr);
+					this.modificationDate = modificationDate;
+				}
+			}
 		}
 		
 		// categories of biography
-		Element catElt = root.getChild(XmlNames.ELT_CATEGORY);
-		if(catElt!=null)
-		{	String catsStr = catElt.getTextTrim().toUpperCase(Locale.ENGLISH);
-			String temp[] = catsStr.split(" ");
-			categories.clear();
-			for(String catStr: temp)
-			{	ArticleCategory cat = ArticleCategory.valueOf(catStr);
-				categories.add(cat);
+		{	Element catElt = root.getChild(XmlNames.ELT_CATEGORY);
+			if(catElt!=null)
+			{	String catsStr = catElt.getTextTrim().toUpperCase(Locale.ENGLISH);
+				String temp[] = catsStr.split(" ");
+				categories.clear();
+				for(String catStr: temp)
+				{	ArticleCategory cat = ArticleCategory.valueOf(catStr);
+					categories.add(cat);
+				}
 			}
 		}
 	}
@@ -497,7 +650,7 @@ public class Article
 		// build xml document
 		Element root = new Element(XmlNames.ELT_PROPERTIES);
 
-		// title
+		// article title
 		if(title!=null)
 		{	Element titleElt = new Element(XmlNames.ELT_TITLE);
 			titleElt.setText(title);
@@ -512,12 +665,48 @@ public class Article
 			root.addContent(urlElt);
 		}
 		
-		// retrieval date
-		if(date!=null)
-		{	String dateStr = DATE_FORMAT.format(date);
-			Element dateElt = new Element(XmlNames.ELT_DATE);
-			dateElt.setText(dateStr);
-			root.addContent(dateElt);
+		// language
+		if(language!=null)
+		{	String languageStr = language.toString();
+			Element languageElt = new Element(XmlNames.ELT_LANGUAGE);
+			languageElt.setText(languageStr);
+			root.addContent(languageElt);
+		}
+		
+		// authors
+		if(!authors.isEmpty())
+		{	Element authorsElt = new Element(XmlNames.ELT_AUTHORS);
+			root.addContent(authorsElt);
+			for(String authorStr: authors)
+			{	Element authorElt = new Element(XmlNames.ELT_AUTHOR);
+				authorElt.setText(authorStr);
+				authorsElt.addContent(authorElt);
+			}
+		}
+		
+		// dates
+		{	Element datesElt = new Element(XmlNames.ELT_DATES);
+			root.addContent(datesElt);
+				// retrieval
+				{	String retrievalDateStr = DATE_FORMAT.format(retrievalDate);
+					Element retrievalDateElt = new Element(XmlNames.ELT_RETRIEVAL_DATE);
+					retrievalDateElt.setText(retrievalDateStr);
+					datesElt.addContent(retrievalDateElt);
+				}
+				// publishing
+				if(publishingDate!=null)
+				{	String publishingDateStr = DATE_FORMAT.format(publishingDate);
+					Element publishingDateElt = new Element(XmlNames.ELT_PUBLISHING_DATE);
+					publishingDateElt.setText(publishingDateStr);
+					datesElt.addContent(publishingDateElt);
+				}
+				// modification
+				if(modificationDate!=null)
+				{	String modificationDateStr = DATE_FORMAT.format(modificationDate);
+					Element modificationDateElt = new Element(XmlNames.ELT_MODIFICATION_DATE);
+					modificationDateElt.setText(modificationDateStr);
+					datesElt.addContent(modificationDateElt);
+				}
 		}
 		
 		// categories of biography

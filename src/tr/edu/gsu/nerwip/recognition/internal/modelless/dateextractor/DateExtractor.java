@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.EntityDate;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -94,7 +95,7 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 	/////////////////////////////////////////////////////////////////
 	// ENTITIES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by OpenCalais */
+	/** List of entities detected by this recognizer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 		EntityType.DATE
 	);
@@ -104,6 +105,20 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 	{	return HANDLED_TYPES;
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this recognizer can treat */
+	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
+		ArticleLanguage.EN
+	);
+
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = HANDLED_LANGUAGES.contains(language);
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// PATTERNS		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

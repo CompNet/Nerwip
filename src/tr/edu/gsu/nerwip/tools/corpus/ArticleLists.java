@@ -62,6 +62,9 @@ public class ArticleLists
 	public static void main(String[] args) throws Exception
 	{	logger.setName("Article-Lists");
 		
+//		generateArticleList();
+		
+		logger.close();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -188,5 +191,34 @@ public class ArticleLists
 		}
 		
 		return result;
+	}
+
+	/**
+	 * Creates a text file containing the list of all
+	 * article names from the corpus.
+	 *  
+	 * @throws FileNotFoundException
+	 * 		Problem while write the list file. 
+	 * @throws UnsupportedEncodingException 
+	 * 		Problem while write the list file. 
+	 */
+	public static void generateArticleList() throws UnsupportedEncodingException, FileNotFoundException
+	{	logger.log("Creating a file containing the list of articles");
+		logger.increaseOffset();
+		
+		ArticleList list = getArticleList();
+		Collections.sort(list);
+		
+		String filePath = FileNames.FO_OUTPUT + File.separator + "generated.list.txt";
+		PrintWriter pw = FileTools.openTextFileWrite(filePath);
+		
+		for(File file: list)
+		{	String name = file.getName();
+			pw.println(name);
+		}
+		
+		pw.close();
+		logger.decreaseOffset();
+		logger.log("List complete ("+list.size()+" articles)");
 	}
 }

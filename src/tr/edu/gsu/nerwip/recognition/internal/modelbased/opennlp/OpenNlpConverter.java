@@ -40,7 +40,7 @@ import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
- * This class is the converter associated to OpenCalais.
+ * This class is the converter associated to OpenNLP.
  * It is able to convert the text outputed by this NER tool
  * into objects compatible with Nerwip.
  * <br/>

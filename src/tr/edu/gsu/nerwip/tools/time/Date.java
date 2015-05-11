@@ -25,7 +25,9 @@ package tr.edu.gsu.nerwip.tools.time;
  */
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +39,7 @@ import java.util.regex.Pattern;
  * @author Burcu Küpelioğlu
  * @author Vincent Labatut
  */
-public class Date
+public class Date implements Comparable<Date>
 {	
 	/**
 	 * Builds a full date.
@@ -79,6 +81,21 @@ public class Date
 	{	this.day = 0;
 		this.month = 0;
 		this.year = year;
+	}
+	
+	/**
+	 * Builds a date from a standard Java
+	 * date instance.
+	 * 
+	 * @param date
+	 * 		A {@link java.util.Date} object.
+	 */
+	public Date(java.util.Date date)
+	{	Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+		cal.setTime(date);
+		this.day = cal.get(Calendar.DAY_OF_MONTH);
+		this.month = cal.get(Calendar.MONTH+1);
+		this.year = cal.get(Calendar.YEAR);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -298,6 +315,67 @@ public class Date
 		if(!Character.isDigit(yearStr.charAt(yearStr.length()-1)))
 			yearStr = yearStr.substring(0,yearStr.length()-1);
 		int result = Integer.parseInt(yearStr);
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// COMPARISON		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Tests whether this date is contained in the specified period.
+	 * 
+	 * @param start
+	 * 		Start date of the period.
+	 * @param end
+	 * 		End date of the period.
+	 * @return
+	 * 		{@code true} iff this date belongs to the period.
+	 */
+	public boolean isContained(Date start, Date end)
+	{	boolean result = this.compareTo(start)>=0 && this.compareTo(end)<=0;
+		return result;
+	}
+
+	@Override
+	public int compareTo(Date date)
+	{	int result;
+	
+		// year
+		if((year==0 && date.year!=0) || (year!=0 && date.year==0))
+			throw new IllegalArgumentException("The dates '"+this+"' and '"+date+"' cannot be compared, because the year is unknown for exactly one of them");
+		else
+		{	result = year - date.year;
+		
+			// month
+			if(result==0)
+			{	if((month==0 && date.month!=0) || (month!=0 && date.month==0))
+					throw new IllegalArgumentException("The dates '"+this+"' and '"+date+"' cannot be compared, because the month is unknown for exactly one of them");
+				else
+				{	result = month - date.month;
+				
+					// day
+					if(result==0)
+					{	if((day==0 && date.day!=0) || (day!=0 && date.day==0))
+							throw new IllegalArgumentException("The dates '"+this+"' and '"+date+"' cannot be compared, because the day is unknown for exactly one of them");
+						else
+						{	result = day - date.day;
+							
+						}
+					}
+				}
+			}
+			
+		}
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object object)
+	{	boolean result = false;
+		if(object instanceof Date)
+		{	Date date = (Date)object;
+			result = compareTo(date)==0;
+		}
 		return result;
 	}
 }

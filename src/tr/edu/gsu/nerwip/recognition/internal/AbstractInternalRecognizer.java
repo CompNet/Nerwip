@@ -31,6 +31,7 @@ import java.text.ParseException;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
@@ -103,7 +104,14 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 			
 			// if needed, we process the text
 			if(!cache || processNeedeed)
-			{	// apply the NER tool
+			{	// check language
+				ArticleLanguage language = article.getLanguage();
+				if(language==null)
+					logger.log("WARNING: The article language is unknown >> it is possible this NER tool does not handle this language");
+				else if(!canHandleLanguage(language))
+					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
+				
+				// apply the NER tool
 				logger.log("Detect the entities");
 				prepareRecognizer();
 				U intRes = detectEntities(article);
@@ -131,9 +139,9 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 				logger.log("Possibly clean entities.");
 				cleanEntities(result);
 				
-				// possibly filter stop words and pronouns
+				// possibly filter stop-words and pronouns
 				logger.log("Filter entities (pronouns, stop-words, etc.)");
-				filterNoise(result);
+				filterNoise(result,language);
 				
 				// filter overlapping entities
 				logger.log("Filter overlapping entities");

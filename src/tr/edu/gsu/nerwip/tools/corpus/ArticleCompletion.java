@@ -38,6 +38,15 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
+import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.evaluation.ArticleList;
+import tr.edu.gsu.nerwip.recognition.ConverterException;
+import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
+import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
+import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -68,6 +77,8 @@ public class ArticleCompletion
 //		insertArticleCategories();
 //		completeArticleCategories();
 //		insertArticleTitles();
+//		insertArticleLanguages(ArticleLanguage.FR);
+		reformatRetrievalDate();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -133,7 +144,7 @@ public class ArticleCompletion
 	{	logger.log("Setting categories in articles");
 		logger.increaseOffset();
 		
-		File file = new File(FileNames.FO_OUTPUT + File.separator + "cats" + FileNames.EX_TXT);	
+		File file = new File(FileNames.FO_OUTPUT + File.separator + "cats" + FileNames.EX_TEXT);	
 		FileInputStream fis = new FileInputStream(file);
 		InputStreamReader isr = new InputStreamReader(fis);
 		Scanner scanner = new Scanner(isr);
@@ -247,5 +258,74 @@ public class ArticleCompletion
 		
 		logger.decreaseOffset();
 		logger.log("Titles set");
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGE		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * This methods allows setting the language of 
+	 * articles already retrieved and manually annotated
+	 * for evaluation.
+	 * 
+	 * @param language
+	 * 		The language to set in the articles. 
+	 * 
+	 * @throws ParseException
+	 * 		Problem while accessing the files.
+	 * @throws SAXException
+	 * 		Problem while accessing the files.
+	 * @throws IOException
+	 * 		Problem while accessing the files.
+	 */
+	private static void insertArticleLanguages(ArticleLanguage language) throws ParseException, SAXException, IOException
+	{	logger.log("Setting language to "+language+" in all articles");
+		logger.increaseOffset();
+		
+		logger.increaseOffset();
+		List<File> files = ArticleLists.getArticleList();
+		for(File file: files)
+		{	String name = file.getName();
+			Article article = Article.read(name);
+			logger.log("Processing article "+name);
+			article.setLanguage(language);
+			article.write();
+		}
+		logger.decreaseOffset();
+		
+		logger.decreaseOffset();
+		logger.log("Languages set");
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// DATES		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * This methods allows setting the date format of 
+	 * articles already retrieved, to the new format.
+	 * 
+	 * @throws ParseException
+	 * 		Problem while accessing the files.
+	 * @throws SAXException
+	 * 		Problem while accessing the files.
+	 * @throws IOException
+	 * 		Problem while accessing the files.
+	 */
+	private static void reformatRetrievalDate() throws ParseException, SAXException, IOException
+	{	logger.log("Reformatting retrieval dates in all articles");
+		logger.increaseOffset();
+		
+		logger.increaseOffset();
+		List<File> files = ArticleLists.getArticleList();
+		for(File file: files)
+		{	String name = file.getName();
+			Article article = Article.read(name);
+			logger.log("Processing article "+name);
+			article.write();
+		}
+		logger.decreaseOffset();
+		
+		logger.decreaseOffset();
+		logger.log("Dates formatted");
 	}
 }
