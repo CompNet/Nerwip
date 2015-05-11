@@ -34,6 +34,7 @@ import com.sun.xml.internal.messaging.saaj.util.Base64;
 
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -47,7 +48,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 	/**
 	 * Builds and sets up an object representing
 	 *  NERO tool.
-	 * 
+	 *  
 	 * @param ignorePronouns
 	 * 		Whether or not prnonouns should be excluded from the detection.
 	 * @param exclusionOn
@@ -97,6 +98,21 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 		return HANDLED_TYPES;
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this recognizer can treat */
+	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
+		ArticleLanguage.EN,
+		ArticleLanguage.FR
+	);
+
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = HANDLED_LANGUAGES.contains(language);
+		return result;
+	}
+	
 	// ///////////////////////////////////////////////////////////////
 	// PROCESSING /////////////////////////////////////////
 	// ///////////////////////////////////////////////////////////////

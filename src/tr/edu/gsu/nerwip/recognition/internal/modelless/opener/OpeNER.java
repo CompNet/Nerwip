@@ -21,6 +21,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -32,117 +33,132 @@ public class OpeNER extends AbstractModellessInternalRecognizer<List<String>,Ope
 {
 	public OpeNER(boolean ignorePronouns, boolean exclusionOn)
 	{	super(false,ignorePronouns,exclusionOn);
-		
-		// init converter
-		converter = new OpeNERConverter(getFolder());
+
+	// init converter
+	converter = new OpeNERConverter(getFolder());
 	}
-	
-/////////////////////////////////////////////////////////////////
-// NAME				/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-@Override
-public RecognizerName getName()
-{	return RecognizerName.OPENER;
-}
 
-/////////////////////////////////////////////////////////////////
-// FOLDER			/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-@Override	
-public String getFolder()
-{	String result = getName().toString();
+	/////////////////////////////////////////////////////////////////
+	// NAME				/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public RecognizerName getName()
+	{	return RecognizerName.OPENER;
+	}
 
-result = result + "_" + "ignPro=" + ignorePronouns;
-result = result + "_" + "exclude=" + exclusionOn;
+	/////////////////////////////////////////////////////////////////
+	// FOLDER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override	
+	public String getFolder()
+	{	String result = getName().toString();
 
-return result;
-}
+	result = result + "_" + "ignPro=" + ignorePronouns;
+	result = result + "_" + "exclude=" + exclusionOn;
 
-/////////////////////////////////////////////////////////////////
-// ENTITIES			/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/** List of entities recognized by OpenCalais */
-private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
-EntityType.DATE,
-EntityType.LOCATION,
-EntityType.ORGANIZATION,
-EntityType.PERSON
-);
+	return result;
+	}
 
-@Override
-public List<EntityType> getHandledEntityTypes()
-{	return HANDLED_TYPES;
-}
+	/////////////////////////////////////////////////////////////////
+	// ENTITIES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of entities recognized by OpenCalais */
+	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
+			EntityType.DATE,
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+			);
 
-/////////////////////////////////////////////////////////////////
-// PROCESSING	 		/////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
+	@Override
+	public List<EntityType> getHandledEntityTypes()
+	{	return HANDLED_TYPES;
+	}
 
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this recognizer can treat */
+	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
+//			ArticleLanguage.EN,//TODO à compléter
+			ArticleLanguage.FR
+			);
 
-@Override
-protected List<String> detectEntities(Article article) throws RecognizerException
-{	logger.increaseOffset();
-//String result;
-List<String> result = new ArrayList<String>();
-String text = article.getRawText();
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = HANDLED_LANGUAGES.contains(language);
+		return result;
+	}
 
-
-try
-{	// define HTTP message
-logger.log("Build OpeNER http message");
-String url = "http://opener.olery.com/ner";
-HttpPost method = new HttpPost(url);
-//Request parameters 
-List<NameValuePair> params = new ArrayList<NameValuePair>();
-params.add(new BasicNameValuePair("input", text ));
-params.add(new BasicNameValuePair("language", "fr" ));
-method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+	/////////////////////////////////////////////////////////////////
+	// PROCESSING	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 
 
-// send to opener
-logger.log("Send message to OpeNER");
-HttpClient client = new DefaultHttpClient();
-HttpResponse response = client.execute(method);
-InputStream stream = response.getEntity().getContent();
-InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
-BufferedReader bufferedReader = new BufferedReader(streamReader);
-
-// read answer
-logger.log("Read OpeNER answer");
-StringBuilder builder = new StringBuilder();
-String line;
-int nbr = 0;
-while((line = bufferedReader.readLine())!=null)
-{	builder.append(line+"\n");
-nbr++;
-
- logger.log("Line:" +line);				}
- logger.log("Lines read: "+nbr);
- String answer = builder.toString();
- result.add(answer);
-
-}
+	@Override
+	protected List<String> detectEntities(Article article) throws RecognizerException
+	{	logger.increaseOffset();
+	//String result;
+	List<String> result = new ArrayList<String>();
+	String text = article.getRawText();
 
 
-
-catch (UnsupportedEncodingException e)
-{	e.printStackTrace();
-throw new RecognizerException(e.getMessage());
-}
-catch (ClientProtocolException e)
-{	e.printStackTrace();
-throw new RecognizerException(e.getMessage());
-}
-catch (IOException e)
-{	e.printStackTrace();
-throw new RecognizerException(e.getMessage());
-}
-
-logger.decreaseOffset();
+	try
+	{	// define HTTP message
+		logger.log("Build OpeNER http message");
+		String url = "http://opener.olery.com/ner";
+		HttpPost method = new HttpPost(url);
+		//Request parameters 
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("input", text ));
+		params.add(new BasicNameValuePair("language", "fr" ));
+		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
 
-// logger.decreaseOffset();
- return result;
-}
+		// send to opener
+		logger.log("Send message to OpeNER");
+		HttpClient client = new DefaultHttpClient();
+		HttpResponse response = client.execute(method);
+		InputStream stream = response.getEntity().getContent();
+		InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
+		BufferedReader bufferedReader = new BufferedReader(streamReader);
+
+		// read answer
+		logger.log("Read OpeNER answer");
+		StringBuilder builder = new StringBuilder();
+		String line;
+		int nbr = 0;
+		while((line = bufferedReader.readLine())!=null)
+		{	builder.append(line+"\n");
+		nbr++;
+
+		logger.log("Line:" +line);				}
+		logger.log("Lines read: "+nbr);
+		String answer = builder.toString();
+		result.add(answer);
+
+	}
+
+
+
+	catch (UnsupportedEncodingException e)
+	{	e.printStackTrace();
+	throw new RecognizerException(e.getMessage());
+	}
+	catch (ClientProtocolException e)
+	{	e.printStackTrace();
+	throw new RecognizerException(e.getMessage());
+	}
+	catch (IOException e)
+	{	e.printStackTrace();
+	throw new RecognizerException(e.getMessage());
+	}
+
+	logger.decreaseOffset();
+
+
+	// logger.decreaseOffset();
+	return result;
+	}
 }
 

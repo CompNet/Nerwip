@@ -47,7 +47,7 @@ public class NeroConverter extends AbstractInternalConverter<String>
 	{	CONVERSION_MAP.put("time", EntityType.DATE);
 		CONVERSION_MAP.put("loc", EntityType.LOCATION);
 		CONVERSION_MAP.put("org", EntityType.ORGANIZATION);
-		CONVERSION_MAP.put("fonc", EntityType.FONCTION);
+		CONVERSION_MAP.put("fonc", EntityType.FUNCTION);
 		CONVERSION_MAP.put("pers", EntityType.PERSON);
 	}
 		
