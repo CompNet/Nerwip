@@ -90,7 +90,7 @@ Here are the dependencies for Nerwip:
   * [Thomson Reuters OpenCalais](http://www.opencalais.com/)
   * [HeidelTime](https://code.google.com/p/heideltime/)
 * Other libraries:
-  * [Apache Commons Loggging](http://commons.apache.org/proper/commons-logging/)
+  * [Apache Commons](http://commons.apache.org/)
   * [HTML Parser](http://htmlparser.sourceforge.net/)
   * [Apache HttpComponents](https://hc.apache.org/downloads.cgi)
   * [JDOM](http://www.jdom.org/)
@@ -99,6 +99,12 @@ Here are the dependencies for Nerwip:
   * [Jsoup](http://jsoup.org/)
   * [LIBSVM](http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
   * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), needed by HeidelTime
+
+The project also makes use of several Web services:
+* [Reuters OpenCalais](http://new.opencalais.com/)
+* [Nero](https://nero.irisa.fr/)
+* [OpeNer](http://www.opener-project.eu/)
+
 
 ## References
 * **[AL'13]** Atdağ, S. & Labatut, V. A Comparison of Named Entity Recognition Tools Applied to Biographical Texts, 2nd International Conference on Systems and Computer Science, 2013, 228-233. 

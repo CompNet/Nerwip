@@ -188,7 +188,7 @@ public class NeroConverter extends AbstractInternalConverter<String>
  * @return
  * 		boolean result.
  */
-public boolean DiacriticalChar(char c)
+public boolean diacriticalChar(char c)
 {
 	char[] letters = new char[] { 'é', 'è', 'ê', 'ë', 'à', 'â', 'î', 'ï', 'ô', 'ù', 'û', 'ü', 'ÿ', 'æ', 'œ', 'ç' };
 	for (char x : letters) 
