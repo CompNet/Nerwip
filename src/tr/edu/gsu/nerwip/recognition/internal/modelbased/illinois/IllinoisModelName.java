@@ -38,10 +38,6 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-import LBJ2.learn.SparseNetworkLearner;
-import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
-import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Parameters;
 
 /**
  * Class representing the predefined
