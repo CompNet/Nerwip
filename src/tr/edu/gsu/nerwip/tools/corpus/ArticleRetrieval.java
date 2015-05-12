@@ -47,7 +47,6 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  *  
  * @author Vincent Labatut
  */
-@SuppressWarnings("unused")
 public class ArticleRetrieval
 {	
 	/**
