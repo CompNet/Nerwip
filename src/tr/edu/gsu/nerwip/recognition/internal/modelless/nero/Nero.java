@@ -126,7 +126,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 		
 	   // List<String> result = new ArrayList<String>();
 	    String text = article.getRawText();
-	   // String result = new String();
+	    String result = new String();
 		String res1 = new String();
 		// check if the id was set
 				String id = KeyHandler.IDS.get(KEY_NAME);
@@ -232,22 +232,24 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 				
 				
 			      logger.log("tester");
-			   //String NeroAnswer = new String();
-			      String originalText = "Né le 19 juillet 1876 au Mans (Sarthe), mort le 29 novembre 1926 à Paris";
-				  String NeroAnswer = "N <time> le dix-neuf juillet mille huit cent soixante-seize </time> au <loc> Mans </loc> (<loc>Sarthe </loc>), mort <time> le vingt-neuf novembre mille neuf cent vingt-six </time> à <loc> Paris </loc>";
-			   //String res1 = new String();
-		       // build DOM
-				/*  logger.log("Build DOM");
+			   
+			     // String originalText = "Né le 19 juillet 1876 au Mans (Sarthe), mort le 29 novembre 1926 à Paris";
+				 // String NeroAnswer = "N <time> le dix-neuf juillet mille huit cent soixante-seize </time> au <loc> Mans </loc> (<loc>Sarthe </loc>), mort <time> le vingt-neuf novembre mille neuf cent vingt-six </time> à <loc> Paris </loc>";
+			     //String res1 = new String();
+		         // build DOM
+				  logger.log("Build DOM");
+				  String NeroAnswer = new String();
+				  result = res.toString();
 				  sb = new SAXBuilder();
 			      doc = sb.build(new StringReader(result));
 				  root = doc.getRootElement();
-				  result = res.toString();
+				  
 				  Element resultElt = root.getChild("result");
 				  NeroAnswer = resultElt.getValue();
 				  logger.log (">>>>extracting result");
 				  logger.log (">>>>result = " + NeroAnswer);
 				  String originalText = article.getRawText();
-				  logger.log(">>>>originalText = " +  originalText); */
+				  logger.log(">>>>originalText = " +  originalText); 
 				  char co = originalText.charAt(0);
 				  int i1 = 0;
 				  char cr = NeroAnswer.charAt(0);
@@ -306,7 +308,9 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 					  j = j + word3.length() + 1;
 					  logger.log("res1 :" + res1 );
 					  }
-					  else logger.log("error2");
+					  else {logger.log("error2");
+					  System.exit(0);
+					  }
 					  logger.log("i1:" + i1);
 					  logger.log("j:" +j);
 					  

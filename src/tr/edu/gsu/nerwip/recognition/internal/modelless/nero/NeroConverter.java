@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -22,7 +23,7 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
-
+//import java.lang.object
 public class NeroConverter extends AbstractInternalConverter<String>
 {
 	/**
@@ -190,15 +191,21 @@ public class NeroConverter extends AbstractInternalConverter<String>
  */
 public boolean diacriticalChar(char c)
 {
-	char[] letters = new char[] { 'é', 'è', 'ê', 'ë', 'à', 'â', 'î', 'ï', 'ô', 'ù', 'û', 'ü', 'ÿ', 'æ', 'œ', 'ç' };
-	for (char x : letters) 
-	{
-		if (x == c) 
-		{
-        return true;
-        }
-		}
-	return false;
+//	char[] letters = new char[] { 'é', 'è', 'ê', 'ë', 'à', 'â', 'î', 'ï', 'ô', 'ù', 'û', 'ü', 'ÿ', 'æ', 'œ', 'ç' };
+//	for (char x : letters) 
+//	{
+//		if (x == c) 
+//		{
+//        return true;
+//        }
+//		}
+	String oldC = Character.toString(c);
+	//String newC = StringUtils.stripAccents(oldC);
+	String newC = StringUtils.stripAccents(oldC);
+	
+			
+	boolean result = oldC.equals(newC);
+	return result; //TODO
 	}
 
 
