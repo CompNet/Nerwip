@@ -8,7 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
+//import org.apache.commons.codec.binary.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -191,22 +193,11 @@ public class NeroConverter extends AbstractInternalConverter<String>
  */
 public boolean diacriticalChar(char c)
 {
-//	char[] letters = new char[] { 'é', 'è', 'ê', 'ë', 'à', 'â', 'î', 'ï', 'ô', 'ù', 'û', 'ü', 'ÿ', 'æ', 'œ', 'ç' };
-//	for (char x : letters) 
-//	{
-//		if (x == c) 
-//		{
-//        return true;
-//        }
-//		}
 	String oldC = Character.toString(c);
-	//String newC = StringUtils.stripAccents(oldC);
 	String newC = StringUtils.stripAccents(oldC);
-	
-			
 	boolean result = oldC.equals(newC);
 	return result; //TODO
-	}
+}
 
 
 public String funct(int i, String ch)

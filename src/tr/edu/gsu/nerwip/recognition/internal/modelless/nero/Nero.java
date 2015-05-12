@@ -1,5 +1,6 @@
 package tr.edu.gsu.nerwip.recognition.internal.modelless.nero;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 
 import java.io.BufferedReader;
@@ -265,7 +266,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 				      i1++;
 				      j++;
 				      }
-					  else if (DiacriticalChar(co)==true && cr==' ')
+					  else if (DiacriticalChar(co)==false && cr==' ')
 					  { logger.log("case 2");
 					  res1 = res1 + co;
 					  logger.log("res1 :" + res1 );
@@ -274,6 +275,8 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 						  if (NeroAnswer.charAt(i1+1)!='/')
 						  { logger.log("case 3");
 							  String word = funct(j, NeroAnswer);
+							  if (res1.charAt(res1.length() -1) == ' ')
+							  {res1 = res1.substring(0, res1.length() -1);}
 						  res1 = res1 + word + '>';
 						  logger.log("res1 :" + res1);
 						  j = j + word.length() + 1 ;
@@ -285,16 +288,24 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 						  }
 						  else if (NeroAnswer.charAt(j+1) =='/') 
 						  {
-							  if ( NeroAnswer.charAt(j-1) == ' ' )
+							  logger.log("case 5");
+							  if (res1.charAt(res1.length() -1) == ' ')
+							  {res1 = res1.substring(0, res1.length() -1);
+							  i1--; }
+							  String word1 = funct(j, NeroAnswer);
+							  res1 = res1 + word1 + '>';
+							  j = j + word1.length() + 1;
+							  logger.log("res1 :" + res1 );
+							  /*if ( NeroAnswer.charAt(j-1) == ' ' )
 							  { logger.log("case 5");
 							  i1--;
 							  String word1 = funct(j, NeroAnswer);
 							  res1 = res1 + word1 + '>';
 							  logger.log("res1 :" + res1 );
-							  }
+							  }*/
 							  }
 						  else logger.log ("error1");
-					  else if (DiacriticalChar(co)==false && cr==' ')
+					  else if (DiacriticalChar(co)==true && cr==' ')
 					  { logger.log("case 6");
 					  j++; 
 					  logger.log("res1 :" + res1 );
@@ -360,13 +371,10 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 	 */
 	public boolean DiacriticalChar(char c)
 	{ 
-	   char[] letters = new char[] { 'é', 'è', 'ê', 'ë', 'à', 'â', 'î', 'ï', 'ô', 'ù', 'û', 'ü', 'ÿ', 'æ', 'œ', 'ç' };
-		for (char x : letters) {
-			if (x == c) {
-	        return true;
-	        }
-		}
-		return false;
+		String oldC = Character.toString(c);
+		String newC = StringUtils.stripAccents(oldC);
+		boolean result = oldC.equals(newC);
+		return result; //TODO
 	}
 	
 	
