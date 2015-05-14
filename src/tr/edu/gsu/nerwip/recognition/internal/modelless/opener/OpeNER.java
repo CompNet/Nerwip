@@ -2,9 +2,12 @@ package tr.edu.gsu.nerwip.recognition.internal.modelless.opener;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +22,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
@@ -29,7 +36,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInterna
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalaisConverter;
 import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
 
-public class OpeNER extends AbstractModellessInternalRecognizer<List<String>,OpeNERConverter>
+public class OpeNER extends AbstractModellessInternalRecognizer<String,OpeNERConverter>
 {
 	public OpeNER(boolean ignorePronouns, boolean exclusionOn)
 	{	super(false,ignorePronouns,exclusionOn);
@@ -96,51 +103,217 @@ public class OpeNER extends AbstractModellessInternalRecognizer<List<String>,Ope
 
 
 	@Override
-	protected List<String> detectEntities(Article article) throws RecognizerException
+	protected String detectEntities(Article article) throws RecognizerException
 	{	logger.increaseOffset();
-	//String result;
-	List<String> result = new ArrayList<String>();
+	String test = new String();
+	test = "Barack Obama est né le 4 août 1961 à Honolulu (Hawaï)";
 	String text = article.getRawText();
-
-
+	String text1 = new String();
+	String text2 = new String();
+	String text3 = new String();
+	String openerAnswer = new String();
+	
+	String line = new String();
+	String sbresult = new String();
 	try
 	{	// define HTTP message
-		logger.log("Build OpeNER http message");
-		String url = "http://opener.olery.com/ner";
+		logger.log("Build tokenizer http message");
+		String url = "http://opener.olery.com/tokenizer";
 		HttpPost method = new HttpPost(url);
 		//Request parameters 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("input", text ));
+		params.add(new BasicNameValuePair("input", test));
 		params.add(new BasicNameValuePair("language", "fr" ));
+		params.add(new BasicNameValuePair("kaf", "false" ));
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-
-		// send to opener
-		logger.log("Send message to OpeNER");
+        // send to tokenizer
+		logger.log("Send message to tokenizer");
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response = client.execute(method);
-		InputStream stream = response.getEntity().getContent();
-		InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
-		BufferedReader bufferedReader = new BufferedReader(streamReader);
+		int responseCode = response.getStatusLine().getStatusCode();
+	    logger.log("Response Code : " + responseCode);
+	    if(responseCode!=200)
+	    {	
+			logger.log("WARNING: received an error code ("+responseCode+") >> trying again");
+	    }
+	    
+	    BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+	    StringBuffer res = new StringBuffer();
+	    // read answer
+	 	logger.log(">>>>>>>>>>>>>>>>>>>>>>>Read tokenizer answer");
+		while((line = rd.readLine()) != null)
+		{
+			//logger.log(line);
+			res.append(line);
+		}
+		text1 = res.toString();
+		//logger.log("text1>>>>>>>>>>>>>>>>>>>>>>>" + text1);
+		
+		try {
+			Thread.sleep(5000);
+			}
+		catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+		
+		
+		// define HTTP message
+				logger.log("Build pos_tagger http message");
+				String url1 = "http://opener.olery.com/pos-tagger";
+				HttpPost method1 = new HttpPost(url1);
+				//Request parameters 
+				List<NameValuePair> params1 = new ArrayList<NameValuePair>();
+				params1.add(new BasicNameValuePair("input", text1));
+				method1.setEntity(new UrlEncodedFormEntity(params1, "UTF-8"));
+				
+				// send to pos_tagger
+				logger.log("Send message to pos_tagger");
+			    client = new DefaultHttpClient();
+				response = client.execute(method1);
+				
+				
+				responseCode = response.getStatusLine().getStatusCode();
+			    logger.log("Response Code : " + responseCode);
+			    if(responseCode!=200)
+			    {	
+					logger.log("WARNING: received an error code ("+responseCode+") >> trying again");
+			    }
+			    
+			    rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+			    res = new StringBuffer();
+			    // read answer
+			 	logger.log(">>>>>>>>>>>>>>>>>>>Read pos_tagger answer");
+				while((line = rd.readLine()) != null)
+				{
+					//logger.log(line);
+					res.append(line);
+				}
+				text2 = res.toString();
+				//logger.log("text2>>>>>>>>>>>>>>>>>>>>>>>>>" + text2);
+				
+				
+				
+				try {
+					Thread.sleep(5000);
+					}
+				catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					}
+				
+				
+				// define HTTP message
+						logger.log("Build constituent_parser http message");
+						String url2 = "http://opener.olery.com/constituent-parser";
+						HttpPost method2 = new HttpPost(url2);
+						//Request parameters 
+						List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+						params2.add(new BasicNameValuePair("input", text2));
+						method2.setEntity(new UrlEncodedFormEntity(params2, "UTF-8"));
+						
+						// send to pos_tagger
+						logger.log("Send message to constituent_parser  ");
+					    client = new DefaultHttpClient();
+						response = client.execute(method2);
+						
+						
+						responseCode = response.getStatusLine().getStatusCode();
+					    logger.log("Response Code : " + responseCode);
+					    if(responseCode!=200)
+					    {	
+							logger.log("WARNING: received an error code ("+responseCode+") >> trying again");
+					    }
+					    
+					    rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+					    res = new StringBuffer();
+					    // read answer
+					 	logger.log(">>>>>>>>>>>>>>>>>>>Read pos_tagger answer");
+						while((line = rd.readLine()) != null)
+						{
+							//logger.log(line);
+							res.append(line);
+						}
+						text3 = res.toString();
+						//logger.log("text3>>>>>>>>>>>>>>>>>>>>>>>>>" + text3);
+						
+						
+						try {
+							Thread.sleep(5000);
+							}
+						catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							}
+						
+						
+						// define HTTP message
+								logger.log("Build ner http message");
+								String url3 = "http://opener.olery.com/ner";
+								HttpPost method3 = new HttpPost(url3);
+								//Request parameters 
+								List<NameValuePair> params3 = new ArrayList<NameValuePair>();
+								params3.add(new BasicNameValuePair("input", text3));
+								method3.setEntity(new UrlEncodedFormEntity(params3, "UTF-8"));
+								
+								// send to ner
+								logger.log("Send message to ner  ");
+							    client = new DefaultHttpClient();
+								response = client.execute(method3);
+								
+								
+								responseCode = response.getStatusLine().getStatusCode();
+							    logger.log("Response Code : " + responseCode);
+							    if(responseCode!=200)
+							    {	
+									logger.log("WARNING: received an error code ("+responseCode+") >> trying again");
+							    }
+							    
+							    rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+							    res = new StringBuffer();
+							    // read answer
+							 	logger.log(">>>>>>>>>>>>>>>>>>>>>>>>>> Read ner answer");
+								while((line = rd.readLine()) != null)
+								{
+									logger.log(line);
+									res.append(line);
+								}
+								openerAnswer = res.toString();
+								//logger.log("text3>>>>>>>>>>>>>>>>>>>>>>>>>" + text3);
+								
+								
+								logger.log("Build DOM");
+								  String entite = new String();
+								  
+								  SAXBuilder sb = new SAXBuilder();
+								  Document doc = sb.build(new StringReader(openerAnswer));
+								  Element root = doc.getRootElement();
+								  Element entityElt = root.getChild("entity");
+								  entite = entityElt.getValue();
+									logger.log(">>>>>>>>>>>>>>>>>>>entities =" + entite);
+						
+				
+		
+		
+		
+		
 
-		// read answer
-		logger.log("Read OpeNER answer");
-		StringBuilder builder = new StringBuilder();
-		String line;
-		int nbr = 0;
-		while((line = bufferedReader.readLine())!=null)
-		{	builder.append(line+"\n");
-		nbr++;
-
-		logger.log("Line:" +line);				}
-		logger.log("Lines read: "+nbr);
-		String answer = builder.toString();
-		result.add(answer);
-
+	
+	
+	
+	
 	}
 
 
 
+	
+	
+	
+	
+	
+	
+	
+	
 	catch (UnsupportedEncodingException e)
 	{	e.printStackTrace();
 	throw new RecognizerException(e.getMessage());
@@ -152,13 +325,16 @@ public class OpeNER extends AbstractModellessInternalRecognizer<List<String>,Ope
 	catch (IOException e)
 	{	e.printStackTrace();
 	throw new RecognizerException(e.getMessage());
+	} catch (JDOMException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
 
 	logger.decreaseOffset();
 
 
 	// logger.decreaseOffset();
-	return result;
+	return openerAnswer;
 	}
 }
 
