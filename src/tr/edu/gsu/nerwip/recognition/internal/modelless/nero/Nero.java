@@ -4,9 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
@@ -15,15 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.jdom.Document;
@@ -33,7 +27,6 @@ import org.jdom.input.SAXBuilder;
 
 import com.sun.xml.internal.messaging.saaj.util.Base64;
 
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -41,9 +34,22 @@ import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
 import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
-import tr.edu.gsu.nerwip.tools.string.StringTools;
 
-
+/**
+ * This class acts as an interface with the Nero Web service.
+ * <br/>
+ * Recommended parameter values:
+ * <ul>
+ * 		<li>{@code ignorePronouns}: {@code true}</li>
+ * 		<li>{@code exclusionOn}: {@code false}</li>
+ * </ul>
+ * Official Nero website: <a href="https://nero.irisa.fr/">https://nero.irisa.fr/</a>
+ * <br/>
+ * <b>Note:</b> if you use this tool, make sure you set up your email & password 
+ * authentification in the file res/misc/key.xml using the exaxct name "Nero".
+ * 
+ * @author Sabrine Ayachi
+ */
 public class Nero extends AbstractModellessInternalRecognizer<String, NeroConverter> {
 	
 	/**
@@ -85,13 +91,14 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 	}
 
 	// ///////////////////////////////////////////////////////////////
-	// ENTITIES /////////////////////////////////////////////
+	// ENTITY TYPES	 /////////////////////////////////////////////
 	// ///////////////////////////////////////////////////////////////
 	/** List of entities recognized by Nero */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 			EntityType.DATE, 
 			EntityType.LOCATION, 
 			EntityType.ORGANIZATION,
+			EntityType.FUNCTION,
 			EntityType.PERSON);
 
 	@Override
@@ -123,179 +130,169 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 	@Override
 	
 	protected String detectEntities(Article article) throws RecognizerException
-	{
-		
-	   // List<String> result = new ArrayList<String>();
-	    String text = article.getRawText();
+	{   String text = article.getRawText();
 	    String result = new String();
 		String res1 = new String();
 		// check if the id was set
-				String id = KeyHandler.IDS.get(KEY_NAME);
-				if (id == null)
-					throw new NullPointerException(
-							"In order to use Nero, you first need to set up your id in file res/misc/keys.xml using the exact name \"Nero\".");
+		String id = KeyHandler.IDS.get(KEY_NAME);
+		if (id == null)
+			throw new NullPointerException("In order to use Nero, you first need to set up your id in file res/misc/keys.xml using the exact name \"Nero\".");
 
 
 		// check if the key was set
 		String key = KeyHandler.KEYS.get(KEY_NAME);
 		if (key == null)
-			throw new NullPointerException(
-					"In order to use Nero, you first need to set up your user key in file res/misc/keys.xml using the exact name \"Nero\".");
-
-
-			try { // define HTTP message
-				byte[] encodedBytes = Base64.encode((id+":"+key).getBytes());
-				String encoding = new String(encodedBytes);
-				logger.log("Build Nero first request");
-	            String url = "https://nero.irisa.fr/texts.xml";
-                HttpPost httpPost = new HttpPost(url);
-                httpPost.setHeader("Authorization", "Basic " + encoding);
-                List<NameValuePair> Params = new ArrayList<NameValuePair>();
-           		Params.add(new BasicNameValuePair("text[content]", text));
-           		httpPost.setEntity(new UrlEncodedFormEntity(Params));
+			throw new NullPointerException("In order to use Nero, you first need to set up your user key in file res/misc/keys.xml using the exact name \"Nero\".");
+		try { // define HTTP message
+			byte[] encodedBytes = Base64.encode((id+":"+key).getBytes());
+			String encoding = new String(encodedBytes);
+			logger.log("Build Nero first request");
+	        String url = "https://nero.irisa.fr/texts.xml";
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setHeader("Authorization", "Basic " + encoding);
+            List<NameValuePair> Params = new ArrayList<NameValuePair>();
+           	Params.add(new BasicNameValuePair("text[content]", text));
+           	httpPost.setEntity(new UrlEncodedFormEntity(Params));
            		
-                 // send to nero
-				logger.log("Send first message to Nero");
-				HttpClient client = new DefaultHttpClient();		
-				HttpResponse response = client.execute(httpPost);
-				int responseCode = response.getStatusLine().getStatusCode();
+            // send to nero
+		    logger.log("Send first message to Nero");
+			HttpClient client = new DefaultHttpClient();		
+			HttpResponse response = client.execute(httpPost);
+			int responseCode = response.getStatusLine().getStatusCode();
 				
-				//read answer
-				//logger.log("Read Nero first answer");
-				logger.log("Response Code : " + responseCode);
-			    BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
-				StringBuffer res = new StringBuffer();
-				String line = "";
-				while ((line = rd.readLine()) != null)
-					{	logger.log(line);
-						res.append(line);
-					}
-				
-				SAXBuilder sb = new SAXBuilder();
-				Document doc = sb.build(new StringReader(res.toString()));
-				Element root = doc.getRootElement();
-				Element idElt = root.getChild("id");
-				String identifier = idElt.getValue();
+			//read answer
+			//logger.log("Read Nero first answer");
+			logger.log("Response Code : " + responseCode);
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+			StringBuffer res = new StringBuffer();
+			String line = "";
+			while ((line = rd.readLine()) != null)
+			{	logger.log(line);
+			res.append(line);
+			}
+			SAXBuilder sb = new SAXBuilder();
+			Document doc = sb.build(new StringReader(res.toString()));
+			Element root = doc.getRootElement();
+			Element idElt = root.getChild("id");
+			String identifier = idElt.getValue();
 				
 
-				// second request
-				int i = 1;
-				boolean again;
-				do
-				{
-					logger.log("\nRepetition "+i);
-					again = false;
-					try {
-						Thread.sleep(10000);
-						}
-					catch (InterruptedException e) {
+			// second request
+			int i = 1;
+			boolean again;
+			do
+			{
+				logger.log("\nRepetition "+i);
+				again = false;
+				try {
+					Thread.sleep(10000);
+					}
+				catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 						}
+				
+				
+				//logger.log("Send second message to Nero");
+				byte[] encodedBytes1 = Base64.encode((id+":"+key).getBytes());
+				String encoding1 = new String(encodedBytes1);
+				url = "https://nero.irisa.fr/texts/"+identifier+".xml";
+				logger.log("url="+url);
+				HttpGet httpGet = new HttpGet(url);
+				httpGet.setHeader("Authorization", "Basic " + encoding1);
 					
-			   //logger.log("Send second message to Nero");
-					
-					byte[] encodedBytes1 = Base64.encode((id+":"+key).getBytes());
-					String encoding1 = new String(encodedBytes1);
-					url = "https://nero.irisa.fr/texts/"+identifier+".xml";
-					logger.log("url="+url);
-					HttpGet httpGet = new HttpGet(url);
-					httpGet.setHeader("Authorization", "Basic " + encoding1);
-					
-					
-					client = new DefaultHttpClient();
-					response = client.execute(httpGet);
-				    responseCode = response.getStatusLine().getStatusCode();
-				    logger.log("Response Code : " + responseCode);
-				    if(responseCode!=200)
-				    {	again = true;
-						logger.log("WARNING: received an error code ("+responseCode+") >> trying again");
-				    }
-					rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
-					res = new StringBuffer();
-					while((line = rd.readLine()) != null)
+				client = new DefaultHttpClient();
+				response = client.execute(httpGet);
+				responseCode = response.getStatusLine().getStatusCode();
+				logger.log("Response Code : " + responseCode);
+				if(responseCode!=200)
+				{
+					again = true;
+					logger.log("WARNING: received an error code ("+responseCode+") >> trying again");
+					}
+				rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+				res = new StringBuffer();
+				while((line = rd.readLine()) != null)
+				{
+					logger.log(line);
+					res.append(line);
+					if(line.contains("<result nil=\"true\""))
 					{
-						logger.log(line);
-						res.append(line);
-						if(line.contains("<result nil=\"true\""))
-						{
-							again = true;
-							logger.log("WARNING: the result part was empty >> trying again");
-							}
+						again = true;
+						logger.log("WARNING: the result part was empty >> trying again");
 						}
-						
-						i++;
-						}
-				while (again);
-				
-				
-				//logger.log("extracting result");
-				
-				
-			      logger.log("tester");
+					}
+				i++;
+				}
+			while (again);
+			
+			
+			//logger.log("extracting result");
+			logger.log("tester");
 			   
-			     // String originalText = "Né le 19 juillet 1876 au Mans (Sarthe), mort le 29 novembre 1926 à Paris";
-				 // String NeroAnswer = "N <time> le dix-neuf juillet mille huit cent soixante-seize </time> au <loc> Mans </loc> (<loc>Sarthe </loc>), mort <time> le vingt-neuf novembre mille neuf cent vingt-six </time> à <loc> Paris </loc>";
-			     //String res1 = new String();
-		         // build DOM
-				  logger.log("Build DOM");
-				  String NeroAnswer = new String();
-				  result = res.toString();
-				  sb = new SAXBuilder();
-			      doc = sb.build(new StringReader(result));
-				  root = doc.getRootElement();
+			// String originalText = "Né le 19 juillet 1876 au Mans (Sarthe), mort le 29 novembre 1926 à Paris";
+		    // String NeroAnswer = "N <time> le dix-neuf juillet mille huit cent soixante-seize </time> au <loc> Mans </loc> (<loc>Sarthe </loc>), mort <time> le vingt-neuf novembre mille neuf cent vingt-six </time> à <loc> Paris </loc>";
+			//String res1 = new String();
+		    // build DOM
+		    logger.log("Build DOM");
+		    String NeroAnswer = new String();
+		    result = res.toString();
+			sb = new SAXBuilder();
+			doc = sb.build(new StringReader(result));
+		    root = doc.getRootElement();
 				  
-				  Element resultElt = root.getChild("result");
-				  NeroAnswer = resultElt.getValue();
-				  logger.log (">>>>extracting result");
-				  logger.log (">>>>result = " + NeroAnswer);
-				  String originalText = article.getRawText();
-				  logger.log(">>>>originalText = " +  originalText); 
-				  char co = originalText.charAt(0);
-				  int i1 = 0;
-				  char cr = NeroAnswer.charAt(0);
-				  int j = 0;
-				  
-				  do {
-					  co = originalText.charAt(i1);
-					  cr = NeroAnswer.charAt(j);
-					  if (co == cr)
-					  { logger.log("case 1");
-					  res1 = res1 + co ;
-					  logger.log("res1 :" + res1 );
-				      i1++;
-				      j++;
-				      }
-					  else if (DiacriticalChar(co)==false && cr==' ')
-					  { logger.log("case 2");
-					  res1 = res1 + co;
-					  logger.log("res1 :" + res1 );
-					  i1++;}
-					  else if (cr== '<')
-						  if (NeroAnswer.charAt(i1+1)!='/')
-						  { logger.log("case 3");
-							  String word = funct(j, NeroAnswer);
-							  if (res1.charAt(res1.length() -1) == ' ')
-							  {res1 = res1.substring(0, res1.length() -1);}
-						  res1 = res1 + word + '>';
-						  logger.log("res1 :" + res1);
-						  j = j + word.length() + 1 ;
-						  if ( NeroAnswer.charAt(j) == ' ') 
-						  { logger.log("case 4");
-						  j++ ;
-						  logger.log("res1 :" + res1 );
-						  }
-						  }
-						  else if (NeroAnswer.charAt(j+1) =='/') 
-						  {
-							  logger.log("case 5");
-							  if (res1.charAt(res1.length() -1) == ' ')
-							  {res1 = res1.substring(0, res1.length() -1);
-							  i1--; }
-							  String word1 = funct(j, NeroAnswer);
-							  res1 = res1 + word1 + '>';
-							  j = j + word1.length() + 1;
-							  logger.log("res1 :" + res1 );
+			Element resultElt = root.getChild("result");
+		    NeroAnswer = resultElt.getValue();
+		    logger.log (">>>>extracting result");
+			logger.log (">>>>result = " + NeroAnswer);
+			String originalText = article.getRawText();
+			logger.log(">>>>originalText = " +  originalText); 
+			char co = originalText.charAt(0);
+			int i1 = 0;
+			char cr = NeroAnswer.charAt(0);
+			int j = 0;
+			do {
+				co = originalText.charAt(i1);
+				cr = NeroAnswer.charAt(j);
+				if (co == cr)
+				{ logger.log("case 1");
+				  res1 = res1 + co ;
+				  logger.log("res1 :" + res1 );
+				  i1++;
+				  j++;
+				  }
+				else if (DiacriticalChar(co)==false && cr==' ')
+				{ logger.log("case 2");
+				  res1 = res1 + co;
+				  logger.log("res1 :" + res1 );
+				  i1++;
+				  }
+				else if (cr== '<')
+					if (NeroAnswer.charAt(i1+1)!='/')
+					{ logger.log("case 3");
+					  String word = funct(j, NeroAnswer);
+					  if (res1.charAt(res1.length() -1) == ' ')
+					  {res1 = res1.substring(0, res1.length() -1);}
+					  res1 = res1 + word + '>';
+					  logger.log("res1 :" + res1);
+					  j = j + word.length() + 1 ;
+					  if ( NeroAnswer.charAt(j) == ' ')
+					  { logger.log("case 4");
+						j++ ;
+						logger.log("res1 :" + res1 );
+						}
+					  }
+					else if (NeroAnswer.charAt(j+1) =='/') 
+					{
+						logger.log("case 5");
+						if (res1.charAt(res1.length() -1) == ' ')
+						{res1 = res1.substring(0, res1.length() -1);
+						 i1--; 
+						 }
+						String word1 = funct(j, NeroAnswer);
+						res1 = res1 + word1 + '>';
+						j = j + word1.length() + 1;
+						logger.log("res1 :" + res1 );
 							  /*if ( NeroAnswer.charAt(j-1) == ' ' )
 							  { logger.log("case 5");
 							  i1--;
@@ -304,38 +301,34 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 							  logger.log("res1 :" + res1 );
 							  }*/
 							  }
-						  else logger.log ("error1");
-					  else if (DiacriticalChar(co)==true && cr==' ')
-					  { logger.log("case 6");
-					  j++; 
-					  logger.log("res1 :" + res1 );
-					  }
-					  else if (IsNumber(co) == true) 
-					  { logger.log("case 7");
-					  String word2 = PassNumber(i1, originalText);
-					  res1 = res1 + word2;
-					  i1 = i1 + word2.length();
-					  String word3 = PassNumeric(j, NeroAnswer);
-					  j = j + word3.length() + 1;
-					  logger.log("res1 :" + res1 );
-					  }
-					  else {logger.log("error2");
-					  System.exit(0);
-					  }
-					  logger.log("i1:" + i1);
-					  logger.log("j:" +j);
-					  
-					  }
-				  while (i1 <= originalText.length());	
-				  
-				  
-				  //String regex = "<loc> | </loc> | <pers> | </pers> | <org> | </org> | <fonc> | </fonc> | <time> |</time>";
-				  String regex = "<(.*)>"; 
-				  res1.replaceAll(regex, " ");
-				  boolean equal = res1.equals(originalText);
-				  logger.log("equal : " + equal);
+					else logger.log ("error1");
+				else if (DiacriticalChar(co)==true && cr==' ')
+				{ logger.log("case 6");
+				  j++; 
+				  logger.log("res1 :" + res1 );
+				  }
+				else if (IsNumber(co) == true) 
+				{ logger.log("case 7");
+				  String word2 = PassNumber(i1, originalText);
+				  res1 = res1 + word2;
+				  i1 = i1 + word2.length();
+				  String word3 = PassNumeric(j, NeroAnswer);
+				  j = j + word3.length() + 1;
+				  logger.log("res1 :" + res1 );
+				  }
+				else {logger.log("error2");
+				System.exit(0);
+				}
+				logger.log("i1:" + i1);
+				logger.log("j:" +j);
+				}
+			while (i1 <= originalText.length());
 			
-			
+			//String regex = "<loc> | </loc> | <pers> | </pers> | <org> | </org> | <fonc> | </fonc> | <time> |</time>";
+		    String regex = "<(.*)>"; 
+		    res1.replaceAll(regex, " ");
+		    boolean equal = res1.equals(originalText);
+			logger.log("equal : " + equal);
 			}
 				
 			  
