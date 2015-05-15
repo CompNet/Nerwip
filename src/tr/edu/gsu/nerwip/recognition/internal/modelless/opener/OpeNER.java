@@ -124,8 +124,8 @@ public class OpeNER extends AbstractModellessInternalRecognizer<String,OpeNERCon
 	@Override
 	protected String detectEntities(Article article) throws RecognizerException
 	{	
-	//String test = new String();
-	//test = "Barack Obama est né le 4 août 1961 à Honolulu (Hawaï)";
+	String test = new String();
+	test = "Barack Obama est né le 4 août 1961 à Honolulu (Hawaï)";
 	String text = article.getRawText();
 	String text1 = new String();
 	String text2 = new String();
@@ -141,7 +141,7 @@ public class OpeNER extends AbstractModellessInternalRecognizer<String,OpeNERCon
 		HttpPost method = new HttpPost(url);
 		//Request parameters 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("input", text));
+		params.add(new BasicNameValuePair("input", test));
 		params.add(new BasicNameValuePair("language", "fr" ));
 		params.add(new BasicNameValuePair("kaf", "false" ));
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
@@ -285,7 +285,7 @@ public class OpeNER extends AbstractModellessInternalRecognizer<String,OpeNERCon
 	    logger.log("start extracting entities>>>>>>>>>>>>>>>>>>" );
 							    
 							    
-		Pattern pattern = Pattern.compile("(?<=<entities>).*.(?=</entities>)");
+		/*Pattern pattern = Pattern.compile("(?<=<entities>).*.(?=</entities>)");
 		Matcher matcher = pattern.matcher(openerAnswer1);
         String entities = new String();
 		boolean found = false;
@@ -300,7 +300,7 @@ public class OpeNER extends AbstractModellessInternalRecognizer<String,OpeNERCon
 			logger.log("ERROR: text not found");
 			}
 		openerAnswer = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + " " + "<entities>" + entities + "</entities>";
-		logger.log(">>>>>>>>>>>>>>openerAnswer:" + openerAnswer);
+		logger.log(">>>>>>>>>>>>>>openerAnswer:" + openerAnswer); */
 		}
 	
 	catch (UnsupportedEncodingException e)
@@ -315,7 +315,7 @@ public class OpeNER extends AbstractModellessInternalRecognizer<String,OpeNERCon
 	{	e.printStackTrace();
 	throw new RecognizerException(e.getMessage());
 	} 
-	return openerAnswer;
+	return openerAnswer1;
 	}
 	}
 

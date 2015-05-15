@@ -26,7 +26,6 @@ package tr.edu.gsu.nerwip;
  */
 
 import java.io.File;
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +47,7 @@ import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmTrainer;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeModelName;
@@ -102,8 +102,8 @@ public class Test
 		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
-//		String name = "Émilien_Brigault";
-		String name = "Albert_Chauly";
+		String name = "Émilien_Brigault";
+//		String name = "Albert_Chauly";
 		
 	
 		
@@ -123,8 +123,9 @@ public class Test
 //		testStanford(url);
 //		testSubee(url);
 //		testWikipediaDater(url);
-		testNero(name);
-//		testOpeNER(name);
+//		testNero(name);
+		testOpeNER(name);
+		
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
@@ -426,6 +427,9 @@ public class Test
 
 		logger.decreaseOffset();
 	}
+	
+	
+
 
 	/**
 	 * Tests the features related to NER. 

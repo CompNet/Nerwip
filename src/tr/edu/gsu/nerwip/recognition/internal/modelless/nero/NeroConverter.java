@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 
+
 import org.apache.commons.lang3.StringUtils;
 //import org.apache.commons.codec.binary.StringUtils;
 import org.jdom.Document;
@@ -25,7 +26,18 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
-//import java.lang.object
+
+/**
+ * This class is the converter associated to Nero.
+ * It is able to convert the text outputed by this NER tool
+ * into objects compatible with Nerwip.
+ * <br/>
+ * It can also read/write these results using raw text
+ * and our XML format.
+ * 
+ * @author Sabrine Ayachi
+ * 
+ */
 public class NeroConverter extends AbstractInternalConverter<String>
 {
 	/**
@@ -59,221 +71,114 @@ public class NeroConverter extends AbstractInternalConverter<String>
 /////////////////////////////////////////////////////////////////
 @SuppressWarnings("unchecked")
 @Override
-    public Entities convert(Article article, String text) throws ConverterException
-   {	
-        String NeroAnswer = new String();
-        String res = new String();
-       // Entities entities = new Entities(recognizerName);
-        try
-        {	// build DOM
-        	logger.log("Build DOM");
-        	SAXBuilder sb = new SAXBuilder();
-        	Document doc = sb.build(new StringReader(text));
-        	Element root = doc.getRootElement();
-        	Element resultElt = root.getChild("result");
-        	NeroAnswer = resultElt.getValue();
-        	logger.log (">>>>result = " + NeroAnswer);
-        	String originalText = article.getRawText();
-        	logger.log(">>>>originalText = " +  originalText);
-        	
-        /*	char co = originalText.charAt(0);
-        	int i = 0;
-        	char cr = NeroAnswer.charAt(0);
-        	int j = 0;
-        	do {
-        		co = originalText.charAt(i); 
-        		cr = NeroAnswer.charAt(j);
-        		if (co == cr)
-        		{ res = res + co ;
-        		i++;
-        		j++;
-        		}
-        		else if (DiacriticalChar(co)==true && cr==' ')
-        		{ res = res + co;
-        		i++;
-        		}
-        		else if (cr== '<')
-        			if (NeroAnswer.charAt(i+1)!='/')
-        			{String word = funct(i, NeroAnswer);
-        			res = res + word + '>';
-        			i = word.length() + 1 ;
-        			if ( NeroAnswer.charAt(i) == ' ')
-        			{ i++ ;
-        			}
-        			}
-        			else if (NeroAnswer.charAt(i+1) =='/')
-        			{
-        				if ( NeroAnswer.charAt(i-1) == ' ' )
-        				{ j-- ;
-        				String word1 = funct(i, NeroAnswer);
-        				res = res + word1 + '>';
-        				}
-        				}
-        			else logger.log ("error1");
-        		else if (DiacriticalChar(co)==false && cr==' ')
-        		{ j++;
-        		}
-        		else if (IsNumber(co) == true) 
-        		{ String word2 = PassNumber(i, NeroAnswer);
-        		res = res + word2;
-        		i = i + word2.length();
-        		String word3 = PassNumeric(j, NeroAnswer);
-        		j = j + word3.length() + 1;
-        		}
-        		else logger.log("error2");
-        		}
-        	while (i <= originalText.length()); 
-        	
-        	//String regex = "<loc> | </loc> | <pers> | </pers> | <org> | </org> | <fonc> | </fonc> | <time> |</time>";
-			  String regex = "<(.*)>"; 
-			  res1.replaceAll(regex, " ");
-			  boolean equal = res1.equals(originalText);
-			  logger.log("equal : " + equal); */
-        	
-        	  // 2ème algo
-        	char co = originalText.charAt(0);
-        	int k = 0;
-        	char cc = res1.charAt(0);
-        	int l = 0;
-        	Entities entities = new Entities(recognizerName);
-        	AbstractEntity<?> entity = null;
-        	do {
-        		co = originalText.charAt(k); 
-        		cc = res1.charAt(l);
-        		if (co == cr)
-        		{ k++;
-        		l++;
-        		}
-        		else { int start = k;
-        		//entityType type  = traiter cc (loc)
-        		String typeCode = Type(l, res1);
-        		EntityType type = CONVERSION_MAP.get(typeCode);
-        		l = l + typeCode.length() + 2;
-        		String name = " "; 
-        		do {//rouge}
-        			while ();
-        			do {
-        				name = name + originalText(k);
-        				k++;
-        				l++;
-        			}
-        			while(co = cr);
-        			if (res1.charAt(l) = '<' && res1.charAt(l+1) = '/')
-        			{ int end = k;
-        			entity = AbstractEntity.build(type, start, end, recognizerName, name);
-        			entities.addEntity(entity);
-        			String ch = Type(l, res1);
-        			l = l + ch.length() + 3;
-        			}
-        		}
-        		}
-        		}
-        	
+    public Entities convert(Article article, String data) throws ConverterException
+   {   Entities result = new Entities(recognizerName);
+       String originalText = article.getRawText();
+       AbstractEntity<?> entity = null;
+       // 2ème algo
+       char co = originalText.charAt(0);
+       int i = 0;
+       char cc = data.charAt(0);
+       int j = 0;
+       do {
+    	   co = originalText.charAt(i); 
+           cc = data.charAt(j);
+           if (co == cc)
+           { i++;
+             j++;
+             }
+           else 
+           {
+        	   int start = i;
+               String typeCode = type(j, data);
+               EntityType type = CONVERSION_MAP.get(typeCode);
+               j = j + typeCode.length() + 2; // check l value here
+        		
+               String name = " ";
+               while ( closeTag(j, data) == false );
+               {
+            	   do {
+            		   name = name + originalText.charAt(i);
+        			   i++;
+        			   j++;
+        			   }
+            	   while(co == cc);
+            	   if (data.charAt(j) == '<' && data.charAt(j+1) == '/')
+            	   { int end = i;
+        		     entity = AbstractEntity.build(type, start, end, recognizerName, name);
+        		     result.addEntity(entity);
+        		     String ch = type(j, data);
+        		     j = j + ch.length() + 3;
+        		     }
+            	   else {
+            		   Entities list = f(i, j, originalText, data);
+        			   result.addEntities(list);
+        			   }
+            	   }
+               }
+           }
+       while (i <= originalText.length());
+       return result;
+       }
+
+    public Entities f(int i, int j, String text1, String text2)
+    {   Entities entities = null;
+        Entities result = new Entities(recognizerName);
+        AbstractEntity<?> entity = null;
+        int start = i;
+        char co = text1.charAt(i); 
+        char cc = text2.charAt(j);
+        String typeCode = type(j, text2);
+        EntityType type = CONVERSION_MAP.get(typeCode);
+        j = j + typeCode.length() + 2; // check l value here
+	    String name = " ";
+	    while ( closeTag(j, text2) == false );
+	    {
+	    	do {
+	    		name = name + text1.charAt(i);
+	            i++;
+			    j++;}
+	    	while(co == cc);
+	    	if (text2.charAt(j) == '<' && text2.charAt(j+1) == '/')
+	    	{ 
+	    		int end = i;
+		        entity = AbstractEntity.build(type, start, end, recognizerName, name);
+		        result.addEntity(entity);
+		        String ch = type(j, text2);
+		        j = j + ch.length() + 3;
+		        }
+	    	else {
+	    		Entities list = f(i, j, text1, text2);
+			    result.addEntities(list);
+			    }
+	    	}
+	    return entities;
+	    }
+
+
+
+    public String type(int i, String ch) 
+    {   String type = new String();
+        i++;
+        do {
+        	type = type + ch.charAt(i);
+        	i++;
         	}
-        catch (JDOMException e)
-        {	e.printStackTrace();
-		}
-     catch (IOException e)
-		{	e.printStackTrace();
-		} 
-     return entities;
-     }
+        while ( ch.charAt(i) != '>');
+        return type;
+        }
 
-
-
-
-/**
- * Receives a character  and return
- * if it's a diacritical character 
- *  
- * @param c
- * 		character to process.
- * @return
- * 		boolean result.
- */
-public boolean diacriticalChar(char c)
-{
-	String oldC = Character.toString(c);
-	String newC = StringUtils.stripAccents(oldC);
-	boolean result = oldC.equals(newC);
-	return result; //TODO
-}
-
-
-public String funct(int i, String ch)
-{ String result = new String();
-do { result = result + ch.charAt(i);
-     i++;
-
-}
-while (ch.charAt(i)!= '>');
-return result;
-
-}
-
-/**
- * Receives a character  and return
- * if it's a number 
- *  
- * @param c
- * 		character to process.
- * @return
- * 		boolean result.
- */
-
-public boolean IsNumber(char c)
-{
-	char[] letters = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-	for (char x : letters) {
-		if (x == c) {
-			return true;
-			}
-		}
-	return false;
-	}
-
-
-////passer le nombre
-public String PassNumber(int i, String ch)
-{
-	String result = new String();
-	do { 
-		result = result + ch.charAt(i);
-		}
-	while (IsNumber(ch.charAt(i)) == true);
-	return result;
-	}
-
-
-/**
- * Receives a postion i  and a string
- * and return a string composed of the digital 
- * words existing from the i position. 
- *  
- * @param i
- * 		position of the character to start process with.
- * @return
- * 		the digital string.
- */
-
-public String PassNumeric(int i, String ch)
-{ String result = new String();
-do { result = result + ch.charAt(i); }
-while (ch.charAt(i) != '>');
-	return result;
-}
-
-public String Type(int i, string ch)
-{ String type = new String();
-i++;
-do {
-type = type + ch.charAt(i);
-i++;
-}
-while ( ch.charAt(i) != '>');
-return type;
-
-	}
+// necessary :algo 2 :to know if i pos is clos tag
+   public boolean closeTag(int i, String ch) 
+   {
+	   boolean close = false;
+	   if (ch.charAt(i) == '<')
+	   {
+		   if (ch.charAt(i+1) == '/')
+           close = true;
+		   }
+	   return close;
+	   }
 
 	
 
@@ -281,10 +186,8 @@ return type;
 // RAW				/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-protected void writeRawResults(Article article, String text) throws IOException
-{	logger.log("rawresultfinal");
-}
-	
-	
-
-}
+   protected void writeRawResults(Article article, String intRes) throws IOException
+   {   logger.log("rawresultfinal");
+	   writeRawResultsStr(article, intRes);
+	   }
+   }
