@@ -76,7 +76,7 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 	 * 		Whether or not the beginings and ends of entities should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
-	 * 		Whether or not prnonouns should be excluded from the detection.
+	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
