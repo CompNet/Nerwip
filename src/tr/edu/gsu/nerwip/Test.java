@@ -105,7 +105,6 @@ public class Test
 		String name = "Émilien_Brigault";
 //		String name = "Albert_Chauly";
 		
-	
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();

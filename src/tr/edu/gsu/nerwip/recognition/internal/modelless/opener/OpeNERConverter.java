@@ -3,6 +3,8 @@ package tr.edu.gsu.nerwip.recognition.internal.modelless.opener;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +14,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 
 import javax.xml.parsers.ParserConfigurationException;
+
+
+
+
+
+
+
 
 
 
@@ -41,6 +50,13 @@ import org.w3c.dom.Node;
 
 
 
+
+
+
+
+
+
+
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 //import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -62,7 +78,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * @author Sabrine Ayachi
  * 
  */
-public class OpeNERConverter extends AbstractInternalConverter<String>
+public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 {	
 	/**
 	 * Builds a new converter using the specified info.
@@ -82,10 +98,10 @@ public class OpeNERConverter extends AbstractInternalConverter<String>
 	
 	/** Initialization of the conversion map */
 	static
-	{	CONVERSION_MAP.put("Person", EntityType.PERSON);
-		CONVERSION_MAP.put("Place", EntityType.LOCATION);
-		CONVERSION_MAP.put("Organization", EntityType.ORGANIZATION);
-		CONVERSION_MAP.put("Date", EntityType.DATE);
+	{	CONVERSION_MAP.put("PERSON", EntityType.PERSON);
+		CONVERSION_MAP.put("PLACE", EntityType.LOCATION);
+		CONVERSION_MAP.put("ORGANIZATION", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put("DATE", EntityType.DATE);
 		
 	}
 	
@@ -93,104 +109,241 @@ public class OpeNERConverter extends AbstractInternalConverter<String>
 //	private final static Pattern DOC_PATTERN = Pattern.compile("\\n\\n");
 	
 	
+/////////////////////////////////////////////////////////////////
+// XML NAMES		/////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+	/** Element of the ner format */
+	private final static String ELT_ENTITY="entity";
+	/** Element of the ner format */
+	private final static String ELT_REFERENCES="references";
+	/** Element of the ner format */
+	private final static String ELT_WF="wf";
+	
+	/** Attribute of the OC format */
+	private final static String ATT_TYPE="type";
+	/** Attribute of the OC format */
+	private final static String ATT_WID="wid";
+	/** Attribute of the OC format */
+	private final static String ATT_OFFSET="offset";
+	/** Attribute of the OC format */
+	private final static String ATT_LENGTH="length";
+	
+	/** Item of the OC format */
+	private final static String ITEM_ID="id";
+	
+	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	//@SuppressWarnings("unchecked")
 	@Override
-	public Entities convert(Article article, String data) throws ConverterException
+	public Entities convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
 		Entities result = new Entities(recognizerName);
-		AbstractEntity<?> entity = null;
-		int startPos;
-		int endPos;
-		String valueStr = null;
-		EntityType typeStr = null;
+		
+		logger.log("Processing each chunk of data and the associated answer");
+		Iterator<String> it = data.iterator();
+		logger.increaseOffset();
+		int i = 0;
+		int prevSize = 0;
+		while(it.hasNext())
+		{	i++;
+			logger.log("Processing chunk "+i+"/"+data.size()/2);
+			String originalText = it.next();
+			String openerAnswer = it.next();
+			
+			// extracting entities part from opeNer result text
+			logger.log("extracting entities part from opener answer");
+			String openerEntities = extractEntities(openerAnswer);
+			
+			// extracting tokens part from opener result text
+			logger.log("extracting tokens part from opener answer");			
+			String tokens = extractTokenizedText(openerAnswer);
+			
+			try {
+				DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+				InputSource is = new InputSource();
+				is.setCharacterStream(new StringReader(openerEntities));
+	            Document doc = db.parse(is);
+				NodeList nodes = doc.getElementsByTagName(ELT_ENTITY);
+				NodeList nodes1 = doc.getElementsByTagName(ELT_REFERENCES);
+				String id = null;
+				//String idend = null;
+				String wid = null;
+				for (int m = 0; m < nodes.getLength(); m++)
+				{
+					Element element = (Element) nodes.item(m);
+				    Element element1 = (Element) nodes1.item(m);
+	                // parsing entities types
+				    String typeStr = element.getAttribute(ATT_TYPE);
+	                logger.log("type entity" + m + ": " +  typeStr);
+	                EntityType type = CONVERSION_MAP.get(typeStr);
+				    // parsing entities names
+	                NodeList name = element.getElementsByTagName(ELT_REFERENCES);
+				    Element line = (Element) name.item(0);
+				    String valueStr = getCharacterDataFromElement(line);
+				    logger.log("name entity" + m + ": "  + valueStr);
+				    
+				        
+				    // parsing entities ids
+		            Node lastChild = element1.getLastChild();
+		            Node child = lastChild.getFirstChild(); //target
+		            id = child.getAttributes().getNamedItem(ITEM_ID).getNodeValue();
+		            //logger.log("id:" + m + id);
+		                
+		            // extracting endPos & startPos
+		            id = id.replace(id.charAt(0), 'w');
+		            //idend = "w" + nbr;
+		            //logger.log("idend:" + idend);
+		            //logger.log("id:" + m + id); 
+		                
+		            DocumentBuilder db2 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+				    InputSource is2 = new InputSource();
+					is2.setCharacterStream(new StringReader(tokens));
+	                Document doc2 = db2.parse(is2);
+					NodeList nodes2 = doc2.getElementsByTagName(ELT_WF);
+					
+					int j = 0;
+					String offset = null;
+					String length = null;
+					do 
+					{
+						Element element2 = (Element) nodes2.item(j);
+						wid = element2.getAttribute(ATT_WID);
+						if (id.equals(wid)) {						
+							offset = element2.getAttribute(ATT_OFFSET);
+							//logger.log("offset: " + offset);
+							length = element2.getAttribute(ATT_LENGTH);
+							//logger.log("length: " + length);
+							int off = Integer.parseInt(offset);
+							int startPos = off;
+							logger.log("startPos entity" + m + ": " + startPos);
+
+							//logger.log("off: " + off);
+							int leng = Integer.parseInt(length);
+							//logger.log("leng: " + leng);				                         
+							int endPos = off + leng - 1;						
+							logger.log("endPos entity" + m + ": " + endPos);
+							//entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);	
+							//logger.log("entity value" + entity.getStringValue());
+							//boolean check = entity.checkText(article);												
+							//result.addEntity(entity);
+							
+							
+							
+							
+							
+						}
+						/*if (idend.equals(wid)) 
+						{offset = element2.getAttribute(ATT_OFFSET);
+						length = element2.getAttribute(ATT_LENGTH);
+						int off = Integer.parseInt(offset);
+						int leng = Integer.parseInt(length);
+						//logger.log("leng: " + leng);				                         
+						endPos = off + leng - 1;						
+						logger.log("endPos entity" + m + ": " + endPos);
+							
+						}*/
+					    //else {logger.log("ERROR" + m);}
+					    j++;
+					    //logger.log("j= " + j);
+					    
+					    //logger.log(">>>>wid =" + wid + " ||  id =" + id);
+					    //logger.log("id =" + id);
+					    
+					    }
+					while((id != wid) && (j < nodes2.getLength()) );
+					}
+				}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return result;
+	}
+			
+			
+			
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		// extracting entities part from opeNer result text
-	    String openerAnswer = null;
-	    logger.log(">>>>>>>>>>extracting entities from opener result");
-	    Pattern pattern = Pattern.compile("(?<=<entities>).*.(?=</entities>)");
-		Matcher matcher = pattern.matcher(data);
-        String xmlentities = new String();
-		boolean found = false;
-		while (matcher.find()) 
-		{
-			xmlentities = matcher.group().toString();
-	        logger.log(">>>>>>>>>>>xml entities: " + xmlentities);
-			found = true;
-			}
-		if (!found)
-		{
-			logger.log("ERROR: text not found");
-			}
-		openerAnswer =  "<entities>" + xmlentities + "</entities>";
-		openerAnswer = openerAnswer.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
-		logger.log(">>>>>>>>>>>>>>openerAnswer:" + openerAnswer); 
+		/*logger.log("extracting entities part from opener result");
+		String openerAnswer = null;
 		
+		openerAnswer = extractEntities(data);
 		
-		// extracting text part from opeNer result text
-		String extraText = null;
-	    logger.log(">>>>>>>>>>extracting text from opener result");
-	    Pattern pattern1 = Pattern.compile("(?<=<text>).*.(?=</text>)");
-		Matcher matcher1 = pattern1.matcher(data);
-        String text = new String();
-		boolean found1 = false;
-		while (matcher1.find()) 
-		{
-			extraText = matcher1.group().toString();
-	        //logger.log(">>>>>>>>>>>text: " + extraText);
-			found = true;
-			}
-		if (!found1) 
-		{
-			logger.log("ERROR: text not found");
-			}
-		text = "<text>" + extraText + "</text>";
-		text = text.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
-		logger.log(">>>>>>>>>>>>>>extracting text:" + text); 
-		
+		// extracting tokens part from opener result text
+		logger.log("extracting tokens part from opener result");
+		String tokens = null;
+		tokens = extractTokenizedText(data);*/
+	 
 		
 		// extracting entities				
-		try {
+		/*try {
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			InputSource is = new InputSource();
 			is.setCharacterStream(new StringReader(openerAnswer));
             Document doc = db.parse(is);
-			NodeList nodes = doc.getElementsByTagName("entity");
-			NodeList nodes1 = doc.getElementsByTagName("references");
+			NodeList nodes = doc.getElementsByTagName(ELT_ENTITY);
+			NodeList nodes1 = doc.getElementsByTagName(ELT_REFERENCES);
 			String id = null;
+			String idend = null;
 			String wid = null;
-			for (int i = 0; i < nodes.getLength(); i++)
+			for (int m = 0; m < nodes.getLength(); m++)
 			{
-				Element element = (Element) nodes.item(i);
-			    Element element1 = (Element) nodes1.item(i);
+				Element element = (Element) nodes.item(m);
+			    Element element1 = (Element) nodes1.item(m);
                 // parsing entities types
-			    String type = element.getAttribute("type");
-                logger.log("entities types:" + i + type);
-                typeStr = CONVERSION_MAP.get(type);
+			    String typeStr = element.getAttribute(ATT_TYPE);
+                logger.log("type entity" + m + ": " +  typeStr);
+                type = CONVERSION_MAP.get(typeStr);
 			    // parsing entities names
-                NodeList name = element.getElementsByTagName("references");
+                NodeList name = element.getElementsByTagName(ELT_REFERENCES);
 			    Element line = (Element) name.item(0);
 			    valueStr = getCharacterDataFromElement(line);
-			    logger.log("entities names: " + i + " " + valueStr);
+			    logger.log("name entity" + m + ": "  + valueStr);
+			    //int nbesp = valueStr.split(' '.toString());
+			    //int nbrsp = numberSpace(valueStr);
+			    //nbrsp++;
+			    //String nbr = String.valueOf(nbrsp);
 			    
 			        
 			    // parsing entities ids
 	            Node lastChild = element1.getLastChild();
 	            Node child = lastChild.getFirstChild(); //target
-	            id = child.getAttributes().getNamedItem("id").getNodeValue();
-	            //logger.log("id:" + i + id);
+	            id = child.getAttributes().getNamedItem(ITEM_ID).getNodeValue();
+	            //logger.log("id:" + m + id);
 	                
 	            // extracting endPos & startPos
 	            id = id.replace(id.charAt(0), 'w');
-	            logger.log("id:" + i + id); 
+	            //idend = "w" + nbr;
+	            //logger.log("idend:" + idend);
+	            //logger.log("id:" + m + id); 
 	                
 	            DocumentBuilder db2 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			    InputSource is2 = new InputSource();
-				is2.setCharacterStream(new StringReader(text));
+				is2.setCharacterStream(new StringReader(tokens));
                 Document doc2 = db2.parse(is2);
-				NodeList nodes2 = doc2.getElementsByTagName("wf");
+				NodeList nodes2 = doc2.getElementsByTagName(ELT_WF);
 				
 				int j = 0;
 				String offset = null;
@@ -198,38 +351,40 @@ public class OpeNERConverter extends AbstractInternalConverter<String>
 				do 
 				{
 					Element element2 = (Element) nodes2.item(j);
-					wid = element2.getAttribute("wid");				    
-					//logger.log("wid " + wid);
-					//logger.log("id " + id);
-					boolean egal = id.equals(wid);				         
-					logger.log("egal : " + egal);
-					if (id.equals(wid)) { 
-						logger.log("cas id == wid");
-						offset = element2.getAttribute("offset");
-						logger.log("offset: " + offset);
-						length = element2.getAttribute("length");
-						logger.log("length: " + length);
+					wid = element2.getAttribute(ATT_WID);
+					if (id.equals(wid)) {						
+						offset = element2.getAttribute(ATT_OFFSET);
+						//logger.log("offset: " + offset);
+						length = element2.getAttribute(ATT_LENGTH);
+						//logger.log("length: " + length);
 						int off = Integer.parseInt(offset);
 						startPos = off;
-						logger.log("startPos: " + startPos);
+						logger.log("startPos entity" + m + ": " + startPos);
 
-						logger.log("off: " + off);
+						//logger.log("off: " + off);
 						int leng = Integer.parseInt(length);
-						logger.log("leng: " + leng);				                         
+						//logger.log("leng: " + leng);				                         
 						endPos = off + leng - 1;						
-						logger.log("endPos: " + endPos);
-						entity = AbstractEntity.build(typeStr, startPos, endPos, recognizerName, valueStr);
-						logger.log("im here:"); 
-						result.addEntity(entity);
-						logger.log("im here:"); 
+						logger.log("endPos entity" + m + ": " + endPos);
+						//entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);	
+						logger.log("entity value" + entity.getStringValue());
+						//boolean check = entity.checkText(article);												
+						//result.addEntity(entity);
+						
+						
+						
+						
+						
 					}
-				    else logger.log("error" + i);
+					
 				    j++;
-				    logger.log("je suis là:");}
-				while(id != wid && j < nodes2.getLength() );
+				   
+				    
+				    }
+				while((id != wid) && (j < nodes2.getLength()) );
 				}
 			}
-		catch (IOException e) {
+		/*catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
@@ -238,14 +393,19 @@ public class OpeNERConverter extends AbstractInternalConverter<String>
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return result;
-		}
-	
-	
-	@SuppressWarnings("javadoc")
-	public static String getCharacterDataFromElement(Element e) 
-	{	Node child = e.getFirstChild();
+		}*/
+		
+	/**
+	 * Receives an element and get 
+	 * data from it.
+	 *  
+	 * @param element
+	 * 		Element to process.
+	 * @return
+	 * 		The part correspending to entities.
+	 */
+	public static String getCharacterDataFromElement(Element element) 
+	{	Node child = element.getFirstChild();
 	if (child instanceof CharacterData) 
 	{
 		CharacterData cd = (CharacterData) child;
@@ -254,13 +414,123 @@ public class OpeNERConverter extends AbstractInternalConverter<String>
 	return "";
 	}
 	
+	/**
+	 * Receives the result data of opener 
+	 * and extract from it the part correspending 
+	 * to entities.
+	 *  
+	 * @param data
+	 * 		String data to process.
+	 * @return
+	 * 		The part correspending to entities.
+	 */
+	
+	public String extractEntities (String data)
+	{
+		String openerAnswer = null;	    
+	    Pattern pattern = Pattern.compile("(?<=<entities>).*.(?=</entities>)");
+		Matcher matcher = pattern.matcher(data);
+        String xmlentities = new String();
+		boolean found = false;
+		while (matcher.find()) 
+		{
+			xmlentities = matcher.group().toString();
+	        //logger.log(">>>>>>>>>>>xml entities: " + xmlentities);
+			found = true;
+			}
+		if (!found)
+		{
+			logger.log("ERROR: text not found");
+			}
+		openerAnswer =  "<entities>" + xmlentities + "</entities>";
+		openerAnswer = openerAnswer.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
+		logger.log(">>>>>>>>>>>>>>entities:" + openerAnswer);
+		return openerAnswer;
+	}
+	
+	/**
+	 * Receives the result data of opener 
+	 * and extract from it the part correspending 
+	 * to tokenized text.
+	 *  
+	 * @param data
+	 * 		String data to process.
+	 * @return
+	 * 		The tokenized text.
+	 */
+	
+	
+	
+	
+	public String extractTokenizedText(String data)
+	{  String extraText = null;
+	   String tokens = null;    
+       Pattern pattern = Pattern.compile("(?<=<text>).*.(?=</text>)");
+	   Matcher matcher = pattern.matcher(data);
+    
+	   boolean found = false;
+	   while (matcher.find())
+	   {
+		extraText = matcher.group().toString();
+        //logger.log(">>>>>>>>>>>text: " + extraText);
+		found = true;
+		}
+	   if (!found)
+	   {
+		   logger.log("ERROR: text not found");
+		   }
+	   tokens = "<text>" + extraText + "</text>";
+	   tokens = tokens.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
+	   logger.log(">>>>>>>>>>>>>>tokens:" + tokens);
+	   return tokens;
+	   }
+	
+	/**
+	 * Receives the name of entity  
+	 * and returns the number of space  
+	 * in this string.
+	 *  
+	 * @param name
+	 * 		String name to process.
+	 * @return
+	 * 		String number of space.
+	 */
+	
+	public int numberSpace(String name)
+	{   int nbres = 0;
+		for (int i=0; i<name.length(); i++)
+		{char ch = name.charAt(i);
+		
+		if (ch == ' ')
+			nbres++ ;
+		}
+		
+		return nbres ;
+		}
+	
+
+	
+	
+ 	    
+ 	
+ 	
+	
 	
 /////////////////////////////////////////////////////////////////
 // RAW				/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 @Override
-protected void writeRawResults(Article article, String intRes) throws IOException
-{	writeRawResultsStr(article, intRes);
+protected void writeRawResults(Article article, List<String> intRes) throws IOException
+{	String temp = "";
+int i = 0;
+for(String str: intRes)
+{	i++;
+	if(i%2==1)
+		temp = temp + "\n>>> Chunk " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
+	else
+		temp = temp + "\n>>> Chunk " + (i/2) + "/" + intRes.size() + " - OpeNER Response <<<\n" + str + "\n";
+}
+writeRawResultsStr(article, temp);
 }
 
 }

@@ -46,7 +46,7 @@ import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
  * Official Nero website: <a href="https://nero.irisa.fr/">https://nero.irisa.fr/</a>
  * <br/>
  * <b>Note:</b> if you use this tool, make sure you set up your email & password 
- * authentification in the file res/misc/key.xml using the exaxct name "Nero".
+ * authentification in the file res/misc/key.xml using the exact name "Nero".
  * 
  * @author Sabrine Ayachi
  */
@@ -57,7 +57,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 	 *  NERO tool.
 	 *  
 	 * @param ignorePronouns
-	 * 		Whether or not prnonouns should be excluded from the detection.
+	 * 		Whether or not prnouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 */
@@ -372,7 +372,8 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 	
 	
 	
-    public String funct(int i, String ch)
+    @SuppressWarnings("javadoc")
+	public String funct(int i, String ch)
 	{ String result = new String();
 	do { result = result + ch.charAt(i);
 	     i++;
@@ -407,6 +408,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 
 
 	////passer le nombre
+	@SuppressWarnings("javadoc")
 	public String PassNumber(int i, String ch)
 	{ String result = new String();
 	do { result = result + ch.charAt(i);}
