@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.tools.xml;
+package tr.edu.gsu.nerwip.tools.html;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
