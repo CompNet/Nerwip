@@ -177,7 +177,7 @@ public class HtmlNames
 	/** Html inline frame tag */
 	public final static String ELT_IFRAME = "iframe";
 	/** Html image tag */
-	public final static String ELT_IMAGE = "image";
+	public final static String ELT_IMG = "img";
 	/** Html input control tag */
 	public final static String ELT_INPUT = "input";
 	/** Html inserted text tag */

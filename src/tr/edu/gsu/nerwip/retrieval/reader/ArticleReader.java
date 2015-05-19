@@ -1199,7 +1199,7 @@ public abstract class ArticleReader
 				}
 				
 				// image: ignored
-				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_IMAGE))
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_IMG))
 				{	// nothing to do
 				}
 				
