@@ -60,7 +60,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * Official OpenCalais website: <a href="http://www.opencalais.com/">http://www.opencalais.com/</a>
  * <br/>
  * <b>Note:</b> if you use this tool, make sure you set up your license key
- * in the file res/misc/key.xml using the exaxct name "OpenCalais".
+ * in the file res/misc/key.xml using the exact name "OpenCalais".
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
@@ -72,7 +72,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	 * an OpenCalais NER tool.
 	 * 
 	 * @param ignorePronouns
-	 * 		Whether or not prnonouns should be excluded from the detection.
+	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 */

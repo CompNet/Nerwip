@@ -421,7 +421,8 @@ public class WikipediaReader extends ArticleReader
 	 * @param linkedStr
 	 * 		Current text with hyperlinks.
 	 */
-	private void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	// possibly add a new line character first
 		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
 		{	rawStr.append("\n");
@@ -429,7 +430,7 @@ public class WikipediaReader extends ArticleReader
 		}
 		
 		// recursive processing
-		processTextElement(element,rawStr,linkedStr);
+		processAnyElement(element,rawStr,linkedStr);
 		
 		// possibly add a new line character
 		if(rawStr.charAt(rawStr.length()-1)!='\n')
@@ -451,7 +452,8 @@ public class WikipediaReader extends ArticleReader
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	private boolean processQuoteElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected boolean processQuoteElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	boolean result = true;
 		
 		// possibly modify the previous characters 
@@ -467,7 +469,7 @@ public class WikipediaReader extends ArticleReader
 		// recursive processing
 		int rawIdx = rawStr.length();
 		int linkedIdx = linkedStr.length();
-		processTextElement(element,rawStr,linkedStr);
+		processAnyElement(element,rawStr,linkedStr);
 
 		// possibly remove characters added after quote marks
 		while(rawStr.length()>rawIdx && 
@@ -505,7 +507,8 @@ public class WikipediaReader extends ArticleReader
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	private boolean processSpanElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected boolean processSpanElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	boolean result;
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
@@ -519,7 +522,7 @@ public class WikipediaReader extends ArticleReader
 			
 		{	result = true;
 			// otherwise, we process what's inside the span tag
-			processTextElement(element,rawStr,linkedStr);
+			processAnyElement(element,rawStr,linkedStr);
 		}
 		
 		else
@@ -544,7 +547,8 @@ public class WikipediaReader extends ArticleReader
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	private boolean processHyperlinkElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected boolean processHyperlinkElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	boolean result;
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
@@ -583,8 +587,11 @@ public class WikipediaReader extends ArticleReader
 	}
 	
 	/**
-	 * Retrieve the text located in 
-	 * a list (UL or OL) HTML element.
+	 * Retrieve the text located in  list (UL or OL) HTML element.
+	 * <br/>
+	 * We try to linearize the list, in order to make it look like
+	 * regular text. This is possible because list are used in a
+	 * more "regular" way in Wikipedia than in random Web pages.
 	 * 
 	 * @param element
 	 * 		Element to be processed.
@@ -595,7 +602,8 @@ public class WikipediaReader extends ArticleReader
 	 * @param ordered
 	 * 		Whether the list is numbered or not.
 	 */
-	private void processListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr, boolean ordered)
+	@Override
+	protected void processListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr, boolean ordered)
 	{	// possibly remove the last new line character
 		char c = rawStr.charAt(rawStr.length()-1);
 		if(c=='\n')
@@ -632,7 +640,7 @@ public class WikipediaReader extends ArticleReader
 			count++;
 			
 			// get text and links
-			processTextElement(listElt,rawStr,linkedStr);
+			processAnyElement(listElt,rawStr,linkedStr);
 			
 			// possibly remove the last new line character
 			c = rawStr.charAt(rawStr.length()-1);
@@ -662,8 +670,11 @@ public class WikipediaReader extends ArticleReader
 	}
 	
 	/**
-	 * Retrieve the text located in 
-	 * a description list (DL) HTML element.
+	 * Retrieve the text located in a description list (DL) HTML element.
+	 * <br/>
+	 * We try to linearize the list, in order to make it look like
+	 * regular text. This is possible because list are used in a
+	 * more "regular" way in Wikipedia than in random Web pages.
 	 * 
 	 * @param element
 	 * 		Element to be processed.
@@ -672,7 +683,8 @@ public class WikipediaReader extends ArticleReader
 	 * @param linkedStr
 	 * 		Current text with hyperlinks.
 	 */
-	private void processDescriptionListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected void processDescriptionListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	// possibly remove the last new line character
 		char c = rawStr.charAt(rawStr.length()-1);
 		if(c=='\n')
@@ -709,7 +721,7 @@ public class WikipediaReader extends ArticleReader
 			String tempName = tempElt.tagName();
 			if(tempName.equals(HtmlNames.ELT_DT))
 			{	// process term
-				processTextElement(tempElt,rawStr,linkedStr);
+				processAnyElement(tempElt,rawStr,linkedStr);
 				
 				// possibly remove the last new line character
 				c = rawStr.charAt(rawStr.length()-1);
@@ -743,7 +755,7 @@ public class WikipediaReader extends ArticleReader
 //			if(tempName.equals(HtmlNames.ELT_DD))
 			if(tempElt!=null)
 			{	// process term
-				processTextElement(tempElt,rawStr,linkedStr);
+				processAnyElement(tempElt,rawStr,linkedStr);
 				
 				// possibly remove the last new line character
 				c = rawStr.charAt(rawStr.length()-1);
@@ -805,7 +817,8 @@ public class WikipediaReader extends ArticleReader
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	private boolean processDivisionElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected boolean processDivisionElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	boolean result;
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
@@ -829,7 +842,7 @@ public class WikipediaReader extends ArticleReader
 			&& !eltClass.contains(CLASS_TOPICON)
 			))
 		{	result = true;
-			processTextElement(element, rawStr, linkedStr);
+			processAnyElement(element, rawStr, linkedStr);
 		}
 		
 		else
@@ -854,7 +867,8 @@ public class WikipediaReader extends ArticleReader
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	private boolean processTableElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected boolean processTableElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	boolean result;
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
@@ -876,7 +890,7 @@ public class WikipediaReader extends ArticleReader
 			for(Element rowElt: tbodyElt.children())
 			{	for(Element colElt: rowElt.children())
 				{	// process cell content
-					processTextElement(colElt, rawStr, linkedStr);
+					processAnyElement(colElt, rawStr, linkedStr);
 					
 					// possibly add final dot and space. 
 					if(rawStr.charAt(rawStr.length()-1)!=' ')
@@ -910,7 +924,8 @@ public class WikipediaReader extends ArticleReader
 	 * @param linkedStr
 	 * 		The StringBuffer to contain the text with hyperlinks.
 	 */
-	private void processTextElement(Element textElement, StringBuilder rawStr, StringBuilder linkedStr)
+	@Override
+	protected void processAnyElement(Element textElement, StringBuilder rawStr, StringBuilder linkedStr)
 	{	// we process each element contained in the specified text element
 		for(Node node: textElement.childNodes())
 		{	// element node
@@ -963,7 +978,7 @@ public class WikipediaReader extends ArticleReader
 				
 				// list item
 				else if(eltName.equals(HtmlNames.ELT_LI))
-				{	processTextElement(element,rawStr,linkedStr);
+				{	processAnyElement(element,rawStr,linkedStr);
 				}
 	
 				// divisions are just processed recursively
@@ -1132,12 +1147,12 @@ public class WikipediaReader extends ArticleReader
 			
 			// clean text
 			String rawText = rawStr.toString();
-			rawText = cleanText(rawText);
+//			rawText = cleanText(rawText);
 //			rawText = ArticleCleaning.replaceChars(rawText);
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");
 			String linkedText = linkedStr.toString();
-			linkedText = cleanText(linkedText);
+//			linkedText = cleanText(linkedText);
 //			linkedText = ArticleCleaning.replaceChars(linkedText);
 			result.setLinkedText(linkedText);
 			logger.log("Length of the linked text: "+linkedText.length()+" chars.");
