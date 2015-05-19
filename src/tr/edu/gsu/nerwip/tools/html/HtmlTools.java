@@ -65,12 +65,14 @@ public class HtmlTools
 			}
 		
 			// textual content
-			else
+			else if(node instanceof TextNode)
 			{	TextNode txt = (TextNode)node;
 				String txtStr = txt.text();
 				tempLength = txtStr.length();
 				
 			}
+			
+			// update result
 			if(tempLength>result)
 				result = tempLength;
 		}
