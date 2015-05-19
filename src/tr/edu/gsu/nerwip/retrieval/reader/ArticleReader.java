@@ -30,14 +30,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
 
+import tr.edu.gsu.nerwip.tools.xml.HtmlNames;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
@@ -163,6 +178,9 @@ public abstract class ArticleReader
 			// replace multiple consecutive newlines by a single one 
 			output = output.replaceAll("(\\n)+", "\n");
 			
+			// remove spaces at the end of lines 
+			output = output.replaceAll(" \\n", "\n");
+			
 			// replace multiple space-separated punctuations by single ones 
 //			output = output.replaceAll("; ;", ";");
 //			output = output.replaceAll(", ,", ",");
@@ -188,13 +206,13 @@ public abstract class ArticleReader
 			output = output.replaceAll("\\(\\)", "");
 			
 			// adds final dot when it is missing at the end of a sentence (itself detected thanks to the new line)
-			output = output.replaceAll("([^(\\.|\\-)])\\n", "$1.\n");
+//			output = output.replaceAll("([^(\\.|\\-)])\\n", "$1.\n");
 			
 			// insert a space after coma, when missing
-			output = output.replaceAll(",([^ _])", ", $1");
+//			output = output.replaceAll(",([^ _])", ", $1");
 	
 			// insert a space after semi-column, when missing
-			output = output.replaceAll(";([^ _])", "; $1");
+//			output = output.replaceAll(";([^ _])", "; $1");
 			
 			// replace 2 single quotes by double quotes
 			output = output.replaceAll("''+", "\"");
@@ -215,6 +233,7 @@ public abstract class ArticleReader
 	{	// raw text
 		String rawText = article.getRawText();
 		rawText = StringTools.replaceSpaces(rawText);
+		rawText = cleanText(rawText);
 		article.setRawText(rawText);
 		
 		// linked text
@@ -222,7 +241,9 @@ public abstract class ArticleReader
 		if(linkedText==null)
 			linkedText = rawText;
 		else
-			linkedText = StringTools.replaceSpaces(linkedText);
+		{	linkedText = StringTools.replaceSpaces(linkedText);
+			linkedText = cleanText(linkedText);
+		}
 		article.setLinkedText(linkedText);
 	}
 	
@@ -246,7 +267,7 @@ public abstract class ArticleReader
 		result = result.replace(">", "");
 		return result;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -319,8 +340,9 @@ public abstract class ArticleReader
 		
 		// otherwise, load and cache the html file
 		else
-		{	logger.log("Cache disabled or HTML never retrieved before>> we get it from the web server");
-		
+		{	logger.log("Cache disabled or HTML never retrieved before>> we get it from the Web server");
+			logger.increaseOffset();
+			
 			// use custom page loader
 //			String sourceCode = manuallyReadUrl(url);
 //			System.out.println(sourceCode.toString());
@@ -328,11 +350,41 @@ public abstract class ArticleReader
 			
 			// use jericho page loader
 			int timeOut = 5000;
-			result = Jsoup.parse(url,timeOut);
-			String sourceCode = result.toString();
+			boolean again;
+			do
+			{	again = false;
+				try
+				{	logger.log("Trying to download the Web page");
+					result = Jsoup.parse(url,timeOut);
+				}
+				catch(SocketTimeoutException e)
+				{	logger.log("Could not download the page (timeout="+timeOut+" ms) >> trying again");
+					timeOut = timeOut + 5000;
+					again = true;
+				}
+				catch(UnsupportedMimeTypeException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Could not download the page, the MIME format is not supported.",
+						"Error message: "+e.getMessage()
+					));
+				}
+				catch(HttpStatusException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Could not download the page, the server returned an error "+e.getStatusCode()+" .",
+						"Error message: "+e.getMessage()
+					));
+				}
+			}
+			while(again);
+			logger.decreaseOffset();
 			
-			// cache html source code
-			FileTools.writeTextFile(originalFile, sourceCode);
+			if(result!=null)
+			{	logger.log("Page downloaded");
+				String sourceCode = result.toString();
+				
+				// cache html source code
+				FileTools.writeTextFile(originalFile, sourceCode);
+			}
 		}
 
 		//System.out.println(source.toString());
@@ -341,7 +393,7 @@ public abstract class ArticleReader
 	}
 	
 	/**
-	 * Reads the source code of the web page at the specified
+	 * Reads the source code of the Web page at the specified
 	 * URL.
 	 * 
 	 * @param url
@@ -414,5 +466,1081 @@ public abstract class ArticleReader
 		String result = sourceCode.toString();
 		br.close();
 		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// TIME				/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Extract a date from the specified TIME html element.
+	 *  
+	 * @param timeElt
+	 * 		HTML element.
+	 * @param dateFormat 
+	 * 		Format used to parse the date.
+	 * @return
+	 * 		The corresponding date.
+	 */
+	public Date getDateFromTimeElt(Element timeElt, DateFormat dateFormat)
+	{	Date result = null;
+	
+		String valueStr = timeElt.attr(HtmlNames.ATT_DATETIME);
+		try
+		{	result = dateFormat.parse(valueStr);
+		}
+		catch (ParseException e)
+		{	e.printStackTrace();
+		}
+	
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// ELEMENTS			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Retrieve the text located in a paragraph (P) HTML element.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 */
+	protected void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	// possibly add a new line character first (if the last one is not already a newline)
+		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
+		{	rawStr.append("\n");
+			linkedStr.append("\n");
+		}
+		
+		// recursive processing
+		processAnyElement(element,rawStr,linkedStr);
+		
+		// possibly add a new line character (if the last one is not already a newline)
+		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
+		{	rawStr.append("\n");
+			linkedStr.append("\n");
+		}
+	}
+
+	/**
+	 * Retrieve the text located in a offline quote (BLOCKQUOTE) HTML element.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	protected boolean processQuoteElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+		
+		// possibly modify the previous characters 
+		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)=='\n')
+		{	rawStr.deleteCharAt(rawStr.length()-1);
+			linkedStr.deleteCharAt(linkedStr.length()-1);
+		}
+		
+		// insert quotes
+		rawStr.append(" \"");
+		linkedStr.append(" \"");
+		
+		// recursive processing
+		int rawIdx = rawStr.length();
+		int linkedIdx = linkedStr.length();
+		processAnyElement(element,rawStr,linkedStr);
+
+		// possibly remove characters added after quote marks
+		while(rawStr.length()>rawIdx && 
+			(rawStr.charAt(rawIdx)=='\n' || rawStr.charAt(rawIdx)==' '))
+		{	rawStr.deleteCharAt(rawIdx);
+			linkedStr.deleteCharAt(linkedIdx);
+		}
+		
+		// possibly modify the ending characters 
+		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)=='\n')
+		{	rawStr.deleteCharAt(rawStr.length()-1);
+			linkedStr.deleteCharAt(linkedStr.length()-1);
+		}
+
+		// insert quotes
+		rawStr.append("\"");
+		linkedStr.append("\"");
+		
+		return result;
+	}
+	
+	/**
+	 * Retrieve the text located in a span (SPAN) HTML element.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	protected boolean processSpanElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+		
+		processAnyElement(element,rawStr,linkedStr);
+		
+		return result;
+	}
+	
+	/**
+	 * Retrieve the text located in a hyperlink (A) HTML element.
+	 * <br/>
+	 * We ignore links containing no text.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	protected boolean processHyperlinkElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+			
+		// simple text
+		String str = element.text();
+		if(!str.isEmpty())
+		{	str = removeGtst(str);
+			rawStr.append(str);
+		}
+		
+		// hyperlink
+		String href = element.attr(HtmlNames.ATT_HREF);
+		String code = "<" + HtmlNames.ELT_A + " " +HtmlNames.ATT_HREF + "=\"" + href + "\">" + str + "</" + HtmlNames.ELT_A + ">";
+		linkedStr.append(code);
+		
+		return result;
+	}
+	
+	/**
+	 * Retrieve the text located in an abbreviation (ABBR) HTML element.
+	 * It is put between parenthesis.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	protected boolean processAbbreviationElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+	
+		// get the title element if it exists
+		String title = element.attr(HtmlNames.ATT_TITLE);
+		title = removeGtst(title);
+		
+		// get the text content (we suppose there's no complex content)
+		String str = element.text();
+		str = removeGtst(str);
+		
+		// complete the result texts
+		if(str.isEmpty())
+		{	if(title!=null)
+			{	rawStr.append(title);
+				linkedStr.append(title);
+			}
+		}
+		else
+		{	rawStr.append(str);
+			linkedStr.append(str);
+			if(title!=null)
+			{	rawStr.append(" ("+title+")");
+				linkedStr.append(" ("+title+")");
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Just inserts a space.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	@SuppressWarnings("unused")
+	protected boolean processSpacerElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+	
+		rawStr.append(" ");
+		linkedStr.append(" ");
+		
+		return result;
+	}
+	
+	/**
+	 * Retrieve the text located in a list (UL or OL) HTML element.
+	 * Note that if several levels of list exist, these are lost
+	 * in the produced text.  
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @param ordered
+	 * 		Whether the list is numbered or not.
+	 */
+	protected void processListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr, boolean ordered)
+	{	// possibly add a new line character right before
+		if(rawStr.length()>0)
+		{	char c = rawStr.charAt(rawStr.length()-1);
+			if(c!='\n')
+			{	rawStr.append("\n");
+				linkedStr.append("\n");
+			}
+		}
+		
+		// process each list element
+		int count = 1;
+		for(Element listElt: element.getElementsByTag(HtmlNames.ELT_LI))
+		{	// add leading marker
+			if(ordered)
+			{	rawStr.append(count+") ");
+				linkedStr.append(count+") ");
+			}
+			else
+			{	rawStr.append("- ");
+				linkedStr.append("- ");
+			}
+			count++;
+			
+			// get text and links
+			processAnyElement(listElt,rawStr,linkedStr);
+			
+			// possibly add a new line character
+			if(rawStr.length()>0)
+			{	char c = rawStr.charAt(rawStr.length()-1);
+				if(c!='\n')
+				{	rawStr.append("\n");
+					linkedStr.append("\n");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Retrieve the text located in a description list (DL) HTML element.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 */
+	protected void processDescriptionListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	// possibly add a new line character right before
+		if(rawStr.length()>0)
+		{	char c = rawStr.charAt(rawStr.length()-1);
+			if(c!='\n')
+			{	rawStr.append("\n");
+				linkedStr.append("\n");
+			}
+		}
+		
+		// process each list element
+		Elements elements = element.children();
+		Iterator<Element> it = elements.iterator();
+		Element tempElt = null;
+		if(it.hasNext())
+			tempElt = it.next();
+		while(tempElt!=null)
+		{	// add leading mark
+			rawStr.append("- ");
+			linkedStr.append("- ");
+			
+			// get term
+			String tempName = tempElt.tagName();
+			if(tempName.equalsIgnoreCase(HtmlNames.ELT_DT))
+			{	// process term
+				processAnyElement(tempElt,rawStr,linkedStr);
+				
+				// possibly add a column and space
+				if(rawStr.length()>0)
+				{	char c = rawStr.charAt(rawStr.length()-1);
+					if(c!='.' && c!=':' && c!=';')
+					{	rawStr.append(": ");
+						linkedStr.append(": ");
+					}
+				}
+				
+				// go to next element
+				if(it.hasNext())
+					tempElt = it.next();
+				else
+					tempElt = null;
+			}
+			
+			// get definition
+			if(tempElt!=null)
+			{	// process term
+				processAnyElement(tempElt,rawStr,linkedStr);
+				
+				// possibly add a new line character
+				if(rawStr.length()>0)
+				{	char c = rawStr.charAt(rawStr.length()-1);
+					if(c!='\n')
+					{	rawStr.append("\n");
+						linkedStr.append("\n");
+					}
+				}
+				
+				// go to next element
+				if(it.hasNext())
+					tempElt = it.next();
+				else
+					tempElt = null;
+			}
+		}
+	}
+	
+	/**
+	 * Retrieve the text located in a division (DIV) HTML element.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	protected boolean processDivisionElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+		
+		processParagraphElement(element, rawStr, linkedStr);
+		
+		return result;
+	}
+	
+	/**
+	 * Just inserts a line break in both raw and linked texts.
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	@SuppressWarnings("unused")
+	protected boolean processLinebreakElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+		
+		rawStr.append("\n");
+		linkedStr.append("\n");
+		
+		return result;
+	}
+	
+	/**
+	 * Retrieve the text located in a table (TABLE) HTML element.
+	 * <br/>
+	 * We process each cell in the table as a text element. 
+	 * 
+	 * @param element
+	 * 		Element to be processed.
+	 * @param rawStr
+	 * 		Current raw text string.
+	 * @param linkedStr
+	 * 		Current text with hyperlinks.
+	 * @return
+	 * 		{@code true} iff the element was processed.
+	 */
+	protected boolean processTableElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	{	boolean result = true;
+		
+		// extract the list of rows (we don't need the rest)
+		Elements children = element.children();
+		List<Element> rowElts = new ArrayList<Element>(); 
+		for(Element child: children)
+		{	String name = child.tagName();
+			
+			// if there's a caption, put it first
+			if(name.equalsIgnoreCase(HtmlNames.ELT_CAPTION))
+			{	processAnyElement(child, rawStr, linkedStr);
+			}
+			
+			// if the table has a header/body/footer, extract the rows
+			else if(name.equalsIgnoreCase(HtmlNames.ELT_THEAD)
+				|| name.equalsIgnoreCase(HtmlNames.ELT_TBODY)
+				|| name.equalsIgnoreCase(HtmlNames.ELT_TFOOT))
+			{	Elements children2 = child.children();
+				rowElts.addAll(children2);
+			}
+			
+			// otherwise, just get the rows
+			else if(name.equalsIgnoreCase(HtmlNames.ELT_TR))
+				rowElts.add(child);
+		}
+		
+		// extract the text from each row
+		for(Element rowElt: rowElts)
+		{	// process each column
+			for(Element colElt: rowElt.children())
+			{	// process cell content
+				processAnyElement(colElt, rawStr, linkedStr);
+				
+				// possibly add final dot and space. 
+				if(rawStr.charAt(rawStr.length()-1)!=' ')
+				{	if(rawStr.charAt(rawStr.length()-1)=='.')
+					{	rawStr.append(" ");
+						linkedStr.append(" ");
+					}
+					else
+					{	rawStr.append(". ");
+						linkedStr.append(". ");
+					}
+				}
+			}
+			
+			// add new line
+			rawStr.append("\n");
+			linkedStr.append("\n");
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Generic method designed to process any HTML element.
+	 * 
+	 * @param textElement
+	 * 		The element to be processed.
+	 * @param rawStr
+	 * 		The StringBuffer to contain the raw text.
+	 * @param linkedStr
+	 * 		The StringBuffer to contain the text with hyperlinks.
+	 */
+	protected void processAnyElement(Element textElement, StringBuilder rawStr, StringBuilder linkedStr)
+	{	// we process each element contained in the specified text element
+		for(Node node: textElement.childNodes())
+		{	// element node
+			if(node instanceof Element)
+			{	Element element = (Element) node;
+				String eltName = element.tag().getName();
+				
+				// hyperlinks: must be included in the linked version of the article
+				if(eltName.equalsIgnoreCase(HtmlNames.ELT_A))
+				{	processHyperlinkElement(element,rawStr,linkedStr);
+				}
+				
+				// abbreviations and acronyms: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ABBR) || eltName.equalsIgnoreCase(HtmlNames.ELT_ACRONYM))
+				{	processAbbreviationElement(element,rawStr,linkedStr);
+				}
+				
+				// author's address: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ADDRESS))
+				{	// we could try to use that to retrieve the authors' names
+					// but this seems too troublesome, because the content is not structured at all
+				}
+				
+				// applet: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_APPLET))
+				{	// nothing to do here
+				}
+				
+				// image zone: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_AREA))
+				{	// nothing to do here
+				}
+				
+				// article: considered as a div
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ARTICLE))
+				{	processDivisionElement(element, rawStr, linkedStr);
+				}
+				
+				// aside: should be ignored, since it is secondary content
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ASIDE))
+				{	// nothing to do here
+				}
+				
+				// audio: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_AUDIO))
+				{	// nothing to do here
+				}
+				
+				// bold: just some text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_B)) //TODO 10
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// base: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BASE))
+				{	// nothing to do here
+				}
+				
+				// basefont: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BASEFONT))
+				{	// nothing to do here
+				}
+				
+				// text orientation: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BDI) || eltName.equalsIgnoreCase(HtmlNames.ELT_BDO))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// big: just some text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BIG))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// blinking text: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BLINK))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// quotes: processed recursively
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BLOCKQUOTE) || eltName.equalsIgnoreCase(HtmlNames.ELT_QUOTE) || eltName.equalsIgnoreCase(HtmlNames.ELT_Q))
+				{	processQuoteElement(element,rawStr,linkedStr);
+				}
+				
+				// document body: considered as a div
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BODY)) //TODO 20
+				{	processDivisionElement(element, rawStr, linkedStr);
+				}
+				
+				// line break: insert a newline
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BR))
+				{	processLinebreakElement(element, rawStr, linkedStr);
+				}
+				
+				// form button: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BUTTON))
+				{	// nothing to do
+				}
+				
+				// graphic canvas: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CANVAS))
+				{	// nothing to do
+				}
+
+				// table caption: like a paragraph
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CAPTION))
+				{	processParagraphElement(element, rawStr, linkedStr);
+				}
+
+				// center: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CENTER))
+				{	// nothing to do
+				}
+				
+				// citation or title of a work: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CITE))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// source code: we don't want that here
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CODE))
+				{	// nothing to do
+				}
+				
+				// column properties: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_COL) || eltName.equalsIgnoreCase(HtmlNames.ELT_COLGROUP))
+				{	// nothing to do
+				}
+				
+				// Web component content: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CONTENT)) //TODO 30
+				{	// nothing to do
+				}
+				
+				// structured data: just get the text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DATA))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// input options: no use for us
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DATALIST))
+				{	// nothing to do
+				}
+				
+				// definition in a definition list: already processed in DL
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DD))
+				{	// nothing to do
+				}
+				
+				// Web component decorator: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DECORATOR))
+				{	// nothing to do
+				}
+				
+				// deleted text: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DEL))
+				{	// nothing to do
+				}
+				
+				// details (hide/show): just get the text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DETAILS))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// term definition: like an abbreviation
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DFN))
+				{	processAbbreviationElement(element, rawStr, linkedStr);
+				}
+				
+				// dialog box: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DIALOG))
+				{	// nothing to do
+				}
+				
+				// directory list: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DIR))
+				{	// nothing to do
+				}
+				
+				// division: processed recursively
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DIV)) //TODO 40
+				{	processDivisionElement(element,rawStr,linkedStr);
+				}
+				
+				// definition list: process each item
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DL))
+				{	processDescriptionListElement(element,rawStr,linkedStr);
+				}
+				
+				// term in a definition list: already processed in DL
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DT))
+				{	// nothing to do
+				}
+				
+				// emphasis: just some text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_EM))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// element: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ELEMENT))
+				{	// nothing to do
+				}
+				
+				// embedded application: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_EMBED))
+				{	// nothing to do
+				}
+				
+				// form groups: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FIELDSET))
+				{	// nothing to do
+				}
+				
+				// figure caption: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FIGCAPTION))
+				{	// nothing to do
+				}
+				
+				// figure: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FIGURE))
+				{	// nothing to do
+				}
+				
+				// font: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FONT))
+				{	// nothing to do
+				}
+				
+				// footer: treated like a div
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FOOTER)) //TODO 50
+				{	processDivisionElement(element, rawStr, linkedStr);
+					//TODO or maybe should be ignored...
+				}
+				
+				// form: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FORM))
+				{	// nothing to do
+				}
+				
+				// frame/frameset: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FRAME) || eltName.equalsIgnoreCase(HtmlNames.ELT_FRAMESET))
+				{	// nothing to do
+				}
+				
+				// section headers: treated like paragraphs
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_H1) || eltName.equalsIgnoreCase(HtmlNames.ELT_H2) || eltName.equalsIgnoreCase(HtmlNames.ELT_H3)
+					|| eltName.equalsIgnoreCase(HtmlNames.ELT_H4) || eltName.equalsIgnoreCase(HtmlNames.ELT_H5) || eltName.equalsIgnoreCase(HtmlNames.ELT_H6))
+				{	processParagraphElement(element,rawStr,linkedStr);
+				}
+				
+				// head: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HEAD)) //TODO 60
+				{	// nothing to do
+				}
+				
+				// section header: treated like a div
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HEADER))
+				{	processDivisionElement(element, rawStr, linkedStr);
+					//TODO or maybe should be ignored...
+				}
+				
+				// title group: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HGROUP))
+				{	// nothing to do
+				}
+				
+				// thematic break: insert a newline
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HR))
+				{	processLinebreakElement(element, rawStr, linkedStr);
+				}
+				
+				// document: treat like a div
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HTML))
+				{	processDivisionElement(element, rawStr, linkedStr);
+				}
+
+				// italic: just some text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_I))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+
+				// inline frame: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_IFRAME))
+				{	// nothing to do
+				}
+				
+				// image: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_IMAGE))
+				{	// nothing to do
+				}
+				
+				// input control: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_INPUT))
+				{	// nothing to do
+				}
+				
+				// inserted text: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_INS))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// input text: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ISINDEX)) //TODO 70
+				{	// nothing to do
+				}
+				
+				// keyboard input: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_KBD))
+				{	// nothing to do
+				}
+				
+				// keygen form field: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_KEYGEN))
+				{	// nothing to do
+				}
+				
+				// input label: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_LABEL))
+				{	// nothing to do
+				}
+				
+				// fieldset legend: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_LEGEND))
+				{	// nothing to do
+				}
+				
+				// list item: already processed in OL/UL
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_LI))
+				{	// nothing to do
+				}
+	
+				// stylesheet link: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_LINK))
+				{	// nothing to do
+				}
+				
+				// listing: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_LISTING))
+				{	// nothing to do
+				}
+				
+				// main content: treat like a div
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_MAIN))
+				{	processDivisionElement(element, rawStr, linkedStr);
+				}
+				
+				// image map: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_MAP))
+				{	// nothing to do
+				}
+				
+				// marked text: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_MARK)) //TODO 80
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// menu & menuitem: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_MENU) || eltName.equalsIgnoreCase(HtmlNames.ELT_MENUITEM))
+				{	// nothing to do
+				}
+				
+				// document metadata: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_META))
+				{	// nothing to do
+				}
+				
+				// form meter: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_METER))
+				{	// nothing to do
+				}
+				
+				// navigation links: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_NAV))
+				{	// nothing to do
+				}
+				
+				// no frames alternative: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_NOFRAMES))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// no embed alternative: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_NOEMBED))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// no script alternative: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_NOSCRIPT))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// multimedia objects: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_OBJECT))
+				{	// nothing to do
+				}
+				
+				// various list types
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_OL)) //TODO 90
+				{	processListElement(element,rawStr,linkedStr,true);
+				}
+
+				// form options: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_OPTGROUP) || eltName.equalsIgnoreCase(HtmlNames.ELT_OPTION))
+				{	// nothing to do
+				}
+				
+				// output: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_OUTPUT))
+				{	// nothing to do
+				}
+				
+				// paragraph: processed recursively
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_P))
+				{	processParagraphElement(element,rawStr,linkedStr);
+				}
+				
+				// object parameter: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_PARAM))
+				{	// nothing to do
+				}
+				
+				// plain text: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_PLAINTEXT) || eltName.equalsIgnoreCase(HtmlNames.ELT_PRE))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// progress bar: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_PROGRESS))
+				{	// nothing to do
+				}
+				
+				// ruby stuff: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_RP) || eltName.equalsIgnoreCase(HtmlNames.ELT_RT)  //TODO 100
+					|| eltName.equalsIgnoreCase(HtmlNames.ELT_RTC) || eltName.equalsIgnoreCase(HtmlNames.ELT_RUBY))
+				{	// nothing to do
+				}
+				
+				// strikethrough: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_S) || eltName.equalsIgnoreCase(HtmlNames.ELT_STRIKE))
+				{	// nothing to do
+				}
+				
+				// sample output of computer program: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SAMP))
+				{	// nothing to do
+				}
+				
+				// script: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SCRIPT))
+				{	// nothing to do
+				}
+				
+				// section: treated as a div
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SECTION))
+				{	processDivisionElement(element, rawStr, linkedStr);
+				}
+				
+				// form drop-down list: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SELECT))
+				{	// nothing to do
+				}
+				
+				// small: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SMALL))
+				{	processAbbreviationElement(element, rawStr, linkedStr);
+				}
+				
+				// audio source: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SOURCE)) //TODO 110
+				{	// nothing to do
+				}
+				
+				// spacer: just put a space
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SPACER))
+				{	processSpacerElement(element, rawStr, linkedStr);
+				}
+				
+				// span: processed recursively
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SPAN))
+				{	processSpanElement(element,rawStr,linkedStr);
+				}
+				
+				// strong: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_STRONG))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// document style: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_STYLE))
+				{	// nothing to do
+				}
+				
+				// sub/superscripts: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SUB) || eltName.equalsIgnoreCase(HtmlNames.ELT_SUP))
+				{	// nothing to do here
+				}
+				
+				// details summary: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SUMMARY))
+				{	// nothing to do
+				}
+				
+				// table: approximately represented as text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TABLE))
+				{	processTableElement(element, rawStr, linkedStr);
+				}
+				
+				// table-related elements: already processed in the table method
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_THEAD) || eltName.equalsIgnoreCase(HtmlNames.ELT_TBODY) || eltName.equalsIgnoreCase(HtmlNames.ELT_TFOOT) //TODO 121
+					|| eltName.equalsIgnoreCase(HtmlNames.ELT_TH)|| eltName.equalsIgnoreCase(HtmlNames.ELT_TR)|| eltName.equalsIgnoreCase(HtmlNames.ELT_TD))
+				{	// nothing to do
+				}
+				
+				// template: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TEMPLATE))
+				{	// nothing to do
+				}
+				
+				// input text area: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TEXTAREA))
+				{	// nothing to do
+				}
+				
+				// time/date: text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TIME))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// title: treated like a pargraph
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TITLE))
+				{	processParagraphElement(element, rawStr, linkedStr);
+				}
+				
+				// media track: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TITLE))
+				{	// nothing to do
+				}
+				
+				// teletype text: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TT)) //TODO 130
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// special formatting: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_U))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// unordered list: each item is processed
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_UL))
+				{	processListElement(element,rawStr,linkedStr,false);
+				}
+				
+				// variable definition: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_VAR))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// video: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_VIDEO))
+				{	// nothing to do
+				}
+				
+				// word break opportuinies: just text
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_WBR))
+				{	processAnyElement(element, rawStr, linkedStr);
+				}
+				
+				// xmp: ignored
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_XMP)) //TODO 136
+				{	// nothing to do
+				}
+				
+				// no other elements should be encountered 
+				else
+				{	throw new IllegalArgumentException("Unexpected HTML element <"+eltName+">");
+				}
+			}
+			
+			// text node
+			else if(node instanceof TextNode)
+			{	// get the text
+				TextNode textNode = (TextNode) node;
+				String text = textNode.text();
+				text = removeGtst(text);
+				
+				// the text but must non-empty, and contains something else than spaces
+				if(!text.trim().isEmpty())
+				{	// if at the begining of a new line, or already preceeded by a space, remove leading spaces
+					while(rawStr.length()>0 
+							&& (rawStr.charAt(rawStr.length()-1)=='\n' || rawStr.charAt(rawStr.length()-1)==' ') 
+							&& text.startsWith(" "))
+						text = text.substring(1);
+					
+					// complete string buffers
+					rawStr.append(text);
+					linkedStr.append(text);
+				}
+			}
+		}
 	}
 }

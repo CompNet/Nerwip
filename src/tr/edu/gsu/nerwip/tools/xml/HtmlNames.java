@@ -52,31 +52,33 @@ public class HtmlNames
 	public final static String ELT_A = "a";
 	/** Html abbreviation tag */
 	public final static String ELT_ABBR = "abbr";
-	/** Html acronym tag */
+	/** Html acronym tag (deprecated) */
 	public final static String ELT_ACRONYM = "acronym";
 	/** Html address tag */
 	public final static String ELT_ADDRESS = "address";
-	/** Html applet tag */
+	/** Html applet tag (deprecated) */
 	public final static String ELT_APPLET = "applet";
-	/** Html area tag */
+	/** Html image zone defintion tag */
 	public final static String ELT_AREA = "area";
 	/** Html article tag */
 	public final static String ELT_ARTICLE = "article";
+	/** Html content aside from the main content tag */
+	public final static String ELT_ASIDE = "aside";
 	/** Html audio tag */
 	public final static String ELT_AUDIO = "audio";
 	/** Html bold tag */
 	public final static String ELT_B = "b";
 	/** Html base tag */
 	public final static String ELT_BASE = "base";
-	/** Html base font tag */
+	/** Html base font tag (deprecated) */
 	public final static String ELT_BASEFONT = "basefont";
 	/** Html bdi tag */
 	public final static String ELT_BDI = "bdi";
 	/** Html bdo tag */
 	public final static String ELT_BDO = "bdo";
-	/** Html big tag */
+	/** Html big tag (deprecated) */
 	public final static String ELT_BIG = "big";
-	/** Html blink tag */
+	/** Html blink tag (deprecated) */
 	public final static String ELT_BLINK = "blink";
 	/** Html offline quote tag */
 	public final static String ELT_BLOCKQUOTE = "blockquote";
@@ -88,7 +90,7 @@ public class HtmlNames
 	public final static String ELT_BUTTON = "button";
 	/** Html canvas tag */
 	public final static String ELT_CANVAS = "canvas";
-	/** Html caption tag */
+	/** Html table caption tag */
 	public final static String ELT_CAPTION = "caption";
 	/** Html center tag */
 	public final static String ELT_CENTER = "center";
@@ -96,32 +98,32 @@ public class HtmlNames
 	public final static String ELT_CITE = "cite";
 	/** Html code tag */
 	public final static String ELT_CODE = "code";
-	/** Html column tag */
+	/** Html column properties tag */
 	public final static String ELT_COL = "col";
 	/** Html column group tag */
 	public final static String ELT_COLGROUP = "colgroup";
-	/** Html content tag */
+	/** Html Web component content tag */
 	public final static String ELT_CONTENT = "content";
 	/** Html data tag */
 	public final static String ELT_DATA = "data";
-	/** Html datalist tag */
+	/** Html input options tag */
 	public final static String ELT_DATALIST = "datalist";
 	/** Html description definition tag */
 	public final static String ELT_DD = "dd";
-	/** Html decorator tag */
+	/** Html Web component decorator tag */
 	public final static String ELT_DECORATOR = "decorator";
-	/** Html del tag */
+	/** Html deleted text tag */
 	public final static String ELT_DEL = "del";
+	/** Html details tag */
+	public final static String ELT_DETAILS = "details";
 	/** Html definition tag */
 	public final static String ELT_DFN = "dfn";
 	/** Html dialog tag */
 	public final static String ELT_DIALOG = "dialog";
-	/** Html dir tag */
+	/** Html directory list tag (deprecated) */
 	public final static String ELT_DIR = "dir";
 	/** Html division tag */
 	public final static String ELT_DIV = "div";
-	/** Html details tag */
-	public final static String ELT_DETAILS = "details";
 	/** Html description list tag */
 	public final static String ELT_DL = "dl";
 	/** Html description term tag */
@@ -130,7 +132,7 @@ public class HtmlNames
 	public final static String ELT_ELEMENT = "element";
 	/** Html em tag */
 	public final static String ELT_EM = "em";
-	/** Html embed tag */
+	/** Html embed application tag */
 	public final static String ELT_EMBED = "embed";
 	/** Html fieldset tag */
 	public final static String ELT_FIELDSET = "fieldset";
@@ -138,13 +140,15 @@ public class HtmlNames
 	public final static String ELT_FIGCAPTION = "figcaption";
 	/** Html figure tag */
 	public final static String ELT_FIGURE = "figure";
+	/** Html font tag (deprecated) */
+	public final static String ELT_FONT = "font";
 	/** Html footer tag */
 	public final static String ELT_FOOTER = "footer";
 	/** Html form tag */
 	public final static String ELT_FORM = "form";
-	/** Html frame tag */
+	/** Html frame tag (deprecated) */
 	public final static String ELT_FRAME = "frame";
-	/** Html frame set tag */
+	/** Html frame set tag (deprecated) */
 	public final static String ELT_FRAMESET = "frameset";
 	/** Html section tag */
 	public final static String ELT_H1 = "h1";
@@ -158,81 +162,85 @@ public class HtmlNames
 	public final static String ELT_H5 = "h5";
 	/** Html section tag */
 	public final static String ELT_H6 = "h6";
-	/** Html head tag */
+	/** Html document head tag */
 	public final static String ELT_HEAD = "head";
-	/** Html header tag */
+	/** Html section header tag */
 	public final static String ELT_HEADER = "header";
-	/** Html hgroup tag */
+	/** Html hgroup tag (deprecated) */
 	public final static String ELT_HGROUP = "hgroup";
-	/** Html hr tag */
+	/** Html thematic break tag */
 	public final static String ELT_HR = "hr";
+	/** Html document tag */
+	public final static String ELT_HTML = "html";
 	/** Html italic tag */
 	public final static String ELT_I = "i";
-	/** Html iframe tag */
+	/** Html inline frame tag */
 	public final static String ELT_IFRAME = "iframe";
 	/** Html image tag */
 	public final static String ELT_IMAGE = "image";
-	/** Html input tag */
+	/** Html input control tag */
 	public final static String ELT_INPUT = "input";
-	/** Html ins tag */
+	/** Html inserted text tag */
 	public final static String ELT_INS = "ins";
-	/** Html is index tag */
+	/** Html input text tag */
 	public final static String ELT_ISINDEX = "isindex";
-	/** Html kbd tag */
+	/** Html keyboard input tag */
 	public final static String ELT_KBD = "kbd";
-	/** Html keygen tag */
+	/** Html keygen form field tag */
 	public final static String ELT_KEYGEN = "keygen";
-	/** Html label tag */
+	/** Html input label tag */
 	public final static String ELT_LABEL = "label";
-	/** Html legend tag */
+	/** Html fieldset legend tag */
 	public final static String ELT_LEGEND = "legend";
 	/** Html list item tag */
 	public final static String ELT_LI = "li";
-	/** Html link tag */
+	/** Html stylesheet link tag */
 	public final static String ELT_LINK = "link";
 	/** Html listing tag */
 	public final static String ELT_LISTING = "listing";
-	/** Html main tag */
+	/** Html main content tag */
 	public final static String ELT_MAIN = "main";
-	/** Html map tag */
+	/** Html image map tag */
 	public final static String ELT_MAP = "map";
-	/** Html mark tag */
+	/** Html marked text tag */
 	public final static String ELT_MARK = "mark";
 	/** Html menu tag */
 	public final static String ELT_MENU = "menu";
 	/** Html menu item tag */
 	public final static String ELT_MENUITEM = "menuitem";
-	/** Html meta tag */
+	/** Html document metadata tag */
 	public final static String ELT_META = "meta";
-	/** Html meter tag */
+	/** Html form meter tag */
 	public final static String ELT_METER = "meter";
-	/** Html nav tag */
+	/** Html navigation links tag */
 	public final static String ELT_NAV = "nav";
-	/** Html noembed tag */
+	/** Html no frames alternative tag (deprecated) */
+	public final static String ELT_NOFRAMES = "noframes";
+	/** Html no embed alternative tag */
 	public final static String ELT_NOEMBED = "noembed";
-	/** Html noscript tag */
+	/** Html no script alternative tag */
 	public final static String ELT_NOSCRIPT = "noscript";
 	/** Html object tag */
 	public final static String ELT_OBJECT = "object";
 	/** Html ordered list tag */
 	public final static String ELT_OL = "ol";
-	/** Html option group tag */
+	/** Html form option group tag */
 	public final static String ELT_OPTGROUP = "optgroup";
-	/** Html option tag */
+	/** Html form option tag */
 	public final static String ELT_OPTION = "option";
 	/** Html output tag */
 	public final static String ELT_OUTPUT = "output";
 	/** Html paragraph tag */
 	public final static String ELT_P = "p";
-	/** Html param tag */
+	/** Html object parameter tag */
 	public final static String ELT_PARAM = "param";
 	/** Html plaintext tag */
 	public final static String ELT_PLAINTEXT = "plaintext";
+	/** Html plain text tag */
+	public final static String ELT_PRE = "pre";
 	/** Html progress tag */
 	public final static String ELT_PROGRESS = "progress";
-	/** Html pre tag */
-	public final static String ELT_PRE = "pre";
-	/** Html q tag */
+	/** Html short quote tag */
 	public final static String ELT_Q = "q";
 	/** Html inline quote tag */
 	public final static String ELT_QUOTE = "quote";
@@ -244,9 +252,9 @@ public class HtmlNames
 	public final static String ELT_RTC = "rtc";
 	/** Html ruby tag */
 	public final static String ELT_RUBY = "ruby";
-	/** Html s tag */
+	/** Html strikethrough tag */
 	public final static String ELT_S = "s";
-	/** Html samp tag */
+	/** Html sample tag */
 	public final static String ELT_SAMP = "samp";
 	/** Html script tag */
 	public final static String ELT_SCRIPT = "script";
@@ -258,21 +266,21 @@ public class HtmlNames
 	public final static String ELT_SELECT = "select";
 	/** Html small text tag */
 	public final static String ELT_SMALL = "small";
-	/** Html source tag */
+	/** Html audio source tag */
 	public final static String ELT_SOURCE = "source";
 	/** Html spacer tag */
 	public final static String ELT_SPACER = "spacer";
 	/** Html span tag */
 	public final static String ELT_SPAN = "span";
-	/** Html strike tag */
+	/** Html strikethrough tag */
 	public final static String ELT_STRIKE = "strike";
 	/** Html strong tag */
 	public final static String ELT_STRONG = "strong";
-	/** Html style tag */
+	/** Html document style tag */
 	public final static String ELT_STYLE = "style";
 	/** Html subscript tag */
 	public final static String ELT_SUB = "sub";
-	/** Html summary tag */
+	/** Html details summary tag */
 	public final static String ELT_SUMMARY = "summary";
 	/** Html superscript tag */
 	public final static String ELT_SUP = "sup";
@@ -280,37 +288,37 @@ public class HtmlNames
 	public final static String ELT_TABLE = "table";
 	/** Html table body tag */
 	public final static String ELT_TBODY = "tbody";
-	/** Html td tag */
+	/** Html table data column tag */
 	public final static String ELT_TD = "td";
 	/** Html template tag */
 	public final static String ELT_TEMPLATE = "template";
-	/** Html text area tag */
+	/** Html input text area tag */
 	public final static String ELT_TEXTAREA = "textarea";
 	/** Html tfoot tag */
 	public final static String ELT_TFOOT = "tfoot";
-	/** Html th tag */
+	/** Html table header column tag */
 	public final static String ELT_TH = "th";
-	/** Html thead tag */
+	/** Html table head tag */
 	public final static String ELT_THEAD = "thead";
 	/** Html time tag */
 	public final static String ELT_TIME = "time";
-	/** Html title tag */
+	/** Html document title tag */
 	public final static String ELT_TITLE = "title";
-	/** Html tr tag */
+	/** Html table row tag */
 	public final static String ELT_TR = "tr";
-	/** Html track tag */
+	/** Html media track tag */
 	public final static String ELT_TRACK = "track";
-	/** Html tt tag */
+	/** Html teletype text tag (deprecated) */
 	public final static String ELT_TT = "tt";
-	/** Html u tag */
+	/** Html special formatting tag */
 	public final static String ELT_U = "u";
 	/** Html unordered list tag */
 	public final static String ELT_UL = "ul";
-	/** Html var tag */
+	/** Html variable definition tag */
 	public final static String ELT_VAR = "var";
 	/** Html video tag */
 	public final static String ELT_VIDEO = "video";
-	/** Html wbr tag */
+	/** Html word-break opportunities tag */
 	public final static String ELT_WBR = "wbt";
 	/** Html xmp tag */
 	public final static String ELT_XMP = "xmp";
