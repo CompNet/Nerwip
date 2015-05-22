@@ -124,7 +124,7 @@ public class OpeNER extends AbstractModellessInternalRecognizer<List<String>,Ope
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	private static final int MAX_SIZE = 500;
+	private static final int MAX_SIZE = 1000;
 
 	@Override
 	protected List<String> detectEntities(Article article) throws RecognizerException
