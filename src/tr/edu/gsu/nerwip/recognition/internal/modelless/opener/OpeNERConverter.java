@@ -99,7 +99,7 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 	/** Initialization of the conversion map */
 	static
 	{	CONVERSION_MAP.put("PERSON", EntityType.PERSON);
-		CONVERSION_MAP.put("PLACE", EntityType.LOCATION);
+		CONVERSION_MAP.put("LOCATION", EntityType.LOCATION);
 		CONVERSION_MAP.put("ORGANIZATION", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("DATE", EntityType.DATE);
 		
@@ -119,16 +119,16 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 	/** Element of the ner format */
 	private final static String ELT_WF="wf";
 	
-	/** Attribute of the OC format */
+	/** Attribute of the ner format */
 	private final static String ATT_TYPE="type";
-	/** Attribute of the OC format */
+	/** Attribute of the ner format */
 	private final static String ATT_WID="wid";
-	/** Attribute of the OC format */
+	/** Attribute of the ner format */
 	private final static String ATT_OFFSET="offset";
-	/** Attribute of the OC format */
+	/** Attribute of the ner format */
 	private final static String ATT_LENGTH="length";
 	
-	/** Item of the OC format */
+	/** Item of the ner format */
 	private final static String ITEM_ID="id";
 	
 	
@@ -160,7 +160,8 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 			logger.log("extracting tokens part from opener answer");			
 			String tokens = extractTokenizedText(openerAnswer);
 			
-			try {
+			try
+			{
 				DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 				InputSource is = new InputSource();
 				is.setCharacterStream(new StringReader(openerEntities));
@@ -168,233 +169,133 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 				NodeList nodes = doc.getElementsByTagName(ELT_ENTITY);
 				NodeList nodes1 = doc.getElementsByTagName(ELT_REFERENCES);
 				String id = null;
-				//String idend = null;
+				String id1 = null;
 				String wid = null;
 				for (int m = 0; m < nodes.getLength(); m++)
 				{
 					Element element = (Element) nodes.item(m);
 				    Element element1 = (Element) nodes1.item(m);
-	                // parsing entities types
+	                
+				    // parsing entities types
 				    String typeStr = element.getAttribute(ATT_TYPE);
-	                logger.log("type entity" + m + ": " +  typeStr);
+	                logger.log("entity type" + m + "=" +  typeStr);
 	                EntityType type = CONVERSION_MAP.get(typeStr);
-				    // parsing entities names
+				    
+	                // parsing entities names
 	                NodeList name = element.getElementsByTagName(ELT_REFERENCES);
 				    Element line = (Element) name.item(0);
 				    String valueStr = getCharacterDataFromElement(line);
-				    logger.log("name entity" + m + ": "  + valueStr);
-				    
+				    logger.log("entity name" + m + "="  + valueStr);
+				   
 				        
 				    // parsing entities ids
 		            Node lastChild = element1.getLastChild();
+		            
 		            Node child = lastChild.getFirstChild(); //target
 		            id = child.getAttributes().getNamedItem(ITEM_ID).getNodeValue();
-		            //logger.log("id:" + m + id);
-		                
+		            
+		            Node child1 = lastChild.getLastChild();
+		            id1 = child1.getAttributes().getNamedItem(ITEM_ID).getNodeValue();
+		            
 		            // extracting endPos & startPos
 		            id = id.replace(id.charAt(0), 'w');
-		            //idend = "w" + nbr;
-		            //logger.log("idend:" + idend);
-		            //logger.log("id:" + m + id); 
-		                
+		            id1 = id1.replace(id1.charAt(0), 'w');
+		            
 		            DocumentBuilder db2 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 				    InputSource is2 = new InputSource();
 					is2.setCharacterStream(new StringReader(tokens));
 	                Document doc2 = db2.parse(is2);
 					NodeList nodes2 = doc2.getElementsByTagName(ELT_WF);
 					
-					int j = 0;
+					int j = 1;
+					int startPos=0;
+					int endPos=0;
+					int off = 0;
+					int leng = 0;
 					String offset = null;
 					String length = null;
-					do 
+					
+					do
 					{
 						Element element2 = (Element) nodes2.item(j);
-						wid = element2.getAttribute(ATT_WID);
-						if (id.equals(wid)) {						
-							offset = element2.getAttribute(ATT_OFFSET);
-							//logger.log("offset: " + offset);
-							length = element2.getAttribute(ATT_LENGTH);
-							//logger.log("length: " + length);
-							int off = Integer.parseInt(offset);
-							int startPos = off;
-							logger.log("startPos entity" + m + ": " + startPos);
+					    wid = element2.getAttribute(ATT_WID);
+					   
+			            if (id.equals(wid))
+			            {
+			            	Element element3 = (Element) nodes2.item(j);
+						    offset = element3.getAttribute(ATT_OFFSET);
+						    length = element3.getAttribute(ATT_LENGTH);						
+						    off = Integer.parseInt(offset) ;						    
+						    startPos = off + prevSize  ;
+						    logger.log("startPos entity" + m + "= " + startPos);
+						    
+			            }
+			            if (id1.equals(wid))
+			            {
+			            	if (numberSpace(valueStr) != 0)
+			            	{
+			            		Element element3 = (Element) nodes2.item(j);
+							    offset = element3.getAttribute(ATT_OFFSET);
+							    length = element3.getAttribute(ATT_LENGTH);
+							    off = Integer.parseInt(offset) ;
+							    leng = Integer.parseInt(length) ;
+	                            endPos = off + leng + prevSize ;
+							    logger.log("endPos entity" + m + "= " + endPos);
+							    
+			            	}
+			            	else 
+			            	{
+			            		leng = Integer.parseInt(length);
+							    endPos = startPos + leng  ;
+							    logger.log("endPos entity" + m + "=" + endPos);
+							    
+			            	}
+			            	}
+			            
+			            
+			            
+			            if((type!=null) & (startPos != 0) & (endPos != 0))
+			            {
+			            	AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
+							//boolean check = entity.checkText(article);	
+							//logger.log("check=" + check);
+						    if(entity!=null)
+						    {
+						    	result.addEntity(entity);
+						    	
+						    }
+						    
+			            }
+			            
+			            //else logger.log("error type");
 
-							//logger.log("off: " + off);
-							int leng = Integer.parseInt(length);
-							//logger.log("leng: " + leng);				                         
-							int endPos = off + leng - 1;						
-							logger.log("endPos entity" + m + ": " + endPos);
-							//entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);	
-							//logger.log("entity value" + entity.getStringValue());
-							//boolean check = entity.checkText(article);												
-							//result.addEntity(entity);
-							
-							
-							
-							
-							
-						}
-						/*if (idend.equals(wid)) 
-						{offset = element2.getAttribute(ATT_OFFSET);
-						length = element2.getAttribute(ATT_LENGTH);
-						int off = Integer.parseInt(offset);
-						int leng = Integer.parseInt(length);
-						//logger.log("leng: " + leng);				                         
-						endPos = off + leng - 1;						
-						logger.log("endPos entity" + m + ": " + endPos);
-							
-						}*/
-					    //else {logger.log("ERROR" + m);}
-					    j++;
-					    //logger.log("j= " + j);
-					    
-					    //logger.log(">>>>wid =" + wid + " ||  id =" + id);
-					    //logger.log("id =" + id);
-					    
-					    }
+			            j++;
+			            }
 					while((id != wid) && (j < nodes2.getLength()) );
 					}
+				// update size
+				prevSize = prevSize + originalText.length();
 				}
 			catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
+			}
+			catch (ParserConfigurationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (SAXException e) {
+			}
+			catch (SAXException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		}
+		
 		return result;
+		
 	}
 			
-			
-			
-			
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// extracting entities part from opeNer result text
-		/*logger.log("extracting entities part from opener result");
-		String openerAnswer = null;
-		
-		openerAnswer = extractEntities(data);
-		
-		// extracting tokens part from opener result text
-		logger.log("extracting tokens part from opener result");
-		String tokens = null;
-		tokens = extractTokenizedText(data);*/
-	 
-		
-		// extracting entities				
-		/*try {
-			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			InputSource is = new InputSource();
-			is.setCharacterStream(new StringReader(openerAnswer));
-            Document doc = db.parse(is);
-			NodeList nodes = doc.getElementsByTagName(ELT_ENTITY);
-			NodeList nodes1 = doc.getElementsByTagName(ELT_REFERENCES);
-			String id = null;
-			String idend = null;
-			String wid = null;
-			for (int m = 0; m < nodes.getLength(); m++)
-			{
-				Element element = (Element) nodes.item(m);
-			    Element element1 = (Element) nodes1.item(m);
-                // parsing entities types
-			    String typeStr = element.getAttribute(ATT_TYPE);
-                logger.log("type entity" + m + ": " +  typeStr);
-                type = CONVERSION_MAP.get(typeStr);
-			    // parsing entities names
-                NodeList name = element.getElementsByTagName(ELT_REFERENCES);
-			    Element line = (Element) name.item(0);
-			    valueStr = getCharacterDataFromElement(line);
-			    logger.log("name entity" + m + ": "  + valueStr);
-			    //int nbesp = valueStr.split(' '.toString());
-			    //int nbrsp = numberSpace(valueStr);
-			    //nbrsp++;
-			    //String nbr = String.valueOf(nbrsp);
-			    
-			        
-			    // parsing entities ids
-	            Node lastChild = element1.getLastChild();
-	            Node child = lastChild.getFirstChild(); //target
-	            id = child.getAttributes().getNamedItem(ITEM_ID).getNodeValue();
-	            //logger.log("id:" + m + id);
-	                
-	            // extracting endPos & startPos
-	            id = id.replace(id.charAt(0), 'w');
-	            //idend = "w" + nbr;
-	            //logger.log("idend:" + idend);
-	            //logger.log("id:" + m + id); 
-	                
-	            DocumentBuilder db2 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			    InputSource is2 = new InputSource();
-				is2.setCharacterStream(new StringReader(tokens));
-                Document doc2 = db2.parse(is2);
-				NodeList nodes2 = doc2.getElementsByTagName(ELT_WF);
-				
-				int j = 0;
-				String offset = null;
-				String length = null;
-				do 
-				{
-					Element element2 = (Element) nodes2.item(j);
-					wid = element2.getAttribute(ATT_WID);
-					if (id.equals(wid)) {						
-						offset = element2.getAttribute(ATT_OFFSET);
-						//logger.log("offset: " + offset);
-						length = element2.getAttribute(ATT_LENGTH);
-						//logger.log("length: " + length);
-						int off = Integer.parseInt(offset);
-						startPos = off;
-						logger.log("startPos entity" + m + ": " + startPos);
 
-						//logger.log("off: " + off);
-						int leng = Integer.parseInt(length);
-						//logger.log("leng: " + leng);				                         
-						endPos = off + leng - 1;						
-						logger.log("endPos entity" + m + ": " + endPos);
-						//entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);	
-						logger.log("entity value" + entity.getStringValue());
-						//boolean check = entity.checkText(article);												
-						//result.addEntity(entity);
-						
-						
-						
-						
-						
-					}
-					
-				    j++;
-				   
-				    
-				    }
-				while((id != wid) && (j < nodes2.getLength()) );
-				}
-			}
-		/*catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
 	/**
 	 * Receives an element and get 
 	 * data from it.
@@ -458,9 +359,7 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 	 * @return
 	 * 		The tokenized text.
 	 */
-	
-	
-	
+
 	
 	public String extractTokenizedText(String data)
 	{  String extraText = null;
@@ -483,7 +382,8 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 	   tokens = tokens.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
 	   logger.log(">>>>>>>>>>>>>>tokens:" + tokens);
 	   return tokens;
-	   }
+	   
+	}
 	
 	/**
 	 * Receives the name of entity  
@@ -506,31 +406,27 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 		}
 		
 		return nbres ;
-		}
+		
+	}
 	
 
-	
-	
- 	    
- 	
- 	
-	
-	
-/////////////////////////////////////////////////////////////////
-// RAW				/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-@Override
-protected void writeRawResults(Article article, List<String> intRes) throws IOException
-{	String temp = "";
-int i = 0;
-for(String str: intRes)
-{	i++;
-	if(i%2==1)
-		temp = temp + "\n>>> Chunk " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
-	else
-		temp = temp + "\n>>> Chunk " + (i/2) + "/" + intRes.size() + " - OpeNER Response <<<\n" + str + "\n";
-}
-writeRawResultsStr(article, temp);
-}
-
+    /////////////////////////////////////////////////////////////////
+    // RAW				/////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
+    @Override
+    protected void writeRawResults(Article article, List<String> intRes) throws IOException
+    {	String temp = "";
+        int i = 0;
+        for(String str: intRes)
+        {
+        	i++;
+        	if(i%2==1)
+        		temp = temp + "\n>>> Chunk " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
+        	else
+        		temp = temp + "\n>>> Chunk " + (i/2) + "/" + intRes.size() + " - OpeNER Response <<<\n" + str + "\n";
+        	}
+        writeRawResultsStr(article, temp);
+        
+    }
+    
 }
