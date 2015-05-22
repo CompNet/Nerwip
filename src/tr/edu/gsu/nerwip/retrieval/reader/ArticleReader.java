@@ -32,11 +32,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -52,12 +49,12 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
-import tr.edu.gsu.nerwip.tools.xml.HtmlNames;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
+import tr.edu.gsu.nerwip.tools.html.HtmlNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
@@ -465,33 +462,6 @@ public abstract class ArticleReader
 		
 		String result = sourceCode.toString();
 		br.close();
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// TIME				/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Extract a date from the specified TIME html element.
-	 *  
-	 * @param timeElt
-	 * 		HTML element.
-	 * @param dateFormat 
-	 * 		Format used to parse the date.
-	 * @return
-	 * 		The corresponding date.
-	 */
-	public Date getDateFromTimeElt(Element timeElt, DateFormat dateFormat)
-	{	Date result = null;
-	
-		String valueStr = timeElt.attr(HtmlNames.ATT_DATETIME);
-		try
-		{	result = dateFormat.parse(valueStr);
-		}
-		catch (ParseException e)
-		{	e.printStackTrace();
-		}
-	
 		return result;
 	}
 
@@ -1229,7 +1199,7 @@ public abstract class ArticleReader
 				}
 				
 				// image: ignored
-				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_IMAGE))
+				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_IMG))
 				{	// nothing to do
 				}
 				
