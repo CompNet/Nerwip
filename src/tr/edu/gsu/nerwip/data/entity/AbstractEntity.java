@@ -121,7 +121,7 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 	
 	/**
 	 * Returns the actual value of this entity.
-	 * For numeric entity, it should be the numerica value.
+	 * For numeric entity, it should be the numerical value.
 	 * For named entities, it should be a unique representation
 	 * of its semantics. For instance, an ontological concept,
 	 * or an id in Freebase.
