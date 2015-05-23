@@ -335,6 +335,37 @@ public class Date implements Comparable<Date>
 	{	boolean result = this.compareTo(start)>=0 && this.compareTo(end)<=0;
 		return result;
 	}
+	
+	/**
+	 * Checks if the specified date is compatible with this date,
+	 * i.e. if they match exactly when ignoring their missing parts.
+	 * 
+	 * @param date
+	 * 		The date to compare to this date.
+	 * @return
+	 * 		{@code true} iff they match exactly when ignoring their
+	 * 		missing parts.
+	 */
+	public boolean isCompatible(Date date)
+	{	Date d1 = new Date(day,month,year);
+		Date d2 = new Date(date.day,date.month,date.year);
+		
+		if(d1.year==0 && d2.year!=0)
+			d2.year = 0;
+		else if (d1.year!=0 && d2.year==0)
+			d1.year = 0;
+		if(d1.month==0 && d2.month!=0)
+			d2.month = 0;
+		else if (d1.month!=0 && d2.month==0)
+			d1.month = 0;
+		if(d1.day==0 && d2.day!=0)
+			d2.day = 0;
+		else if (d1.day!=0 && d2.day==0)
+			d1.day = 0;
+		
+		boolean result = d1.equals(d2);
+		return result;
+	}
 
 	@Override
 	public int compareTo(Date date)
