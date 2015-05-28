@@ -95,6 +95,9 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 		{	case DATE:
 				result = new EntityDate(startPos, endPos, source, valueStr, null);
 				break;
+			case FUNCTION:
+				result = new EntityFunction(startPos, endPos, source, valueStr, null);
+				break;
 			case LOCATION:
 				result = new EntityLocation(startPos, endPos, source, valueStr, null);
 				break;
@@ -104,10 +107,9 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 			case PERSON:
 				result = new EntityPerson(startPos, endPos, source, valueStr, null);
 				break;
-			case FUNCTION:
-				result = new EntityFunction(startPos, endPos, source, valueStr, null);
+			case PRODUCTION:
+				result = new EntityProduction(startPos, endPos, source, valueStr, null);
 				break;
-				
 		}
 		
 		return result;
@@ -514,6 +516,9 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 		{	case DATE:
 				result = EntityDate.importFromElement(element,source);
 				break;
+			case FUNCTION:
+				result = EntityFunction.importFromElement(element,source);
+				break;
 			case LOCATION:
 				result = EntityLocation.importFromElement(element,source);
 				break;
@@ -522,6 +527,9 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 				break;
 			case PERSON:
 				result = EntityPerson.importFromElement(element,source);
+				break;
+			case PRODUCTION:
+				result = EntityProduction.importFromElement(element,source);
 				break;
 		}
 		

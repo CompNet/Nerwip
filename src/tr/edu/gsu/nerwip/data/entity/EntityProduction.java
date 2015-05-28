@@ -31,15 +31,15 @@ import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Class representing a function entity.
+ * Class representing a production entity.
  * 
  * @author Vincent Labatut
  * @author Sabrine Ayachi
  */
-public class EntityFunction extends AbstractEntity<String>
+public class EntityProduction extends AbstractEntity<String>
 {	
 	/**
-	 * Builds a new function entity.
+	 * Builds a new production entity.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
@@ -52,12 +52,12 @@ public class EntityFunction extends AbstractEntity<String>
 	 * @param value
 	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
 	 */
-	public EntityFunction(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public EntityProduction(int startPos, int endPos, RecognizerName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
 	/**
-	 * Builds a new date function without a value.
+	 * Builds a new date production without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
@@ -68,7 +68,7 @@ public class EntityFunction extends AbstractEntity<String>
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityFunction(int startPos, int endPos, RecognizerName source, String valueStr)
+	public EntityProduction(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -77,7 +77,7 @@ public class EntityFunction extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public EntityType getType()
-	{	return EntityType.FUNCTION;
+	{	return EntityType.PRODUCTION;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ public class EntityFunction extends AbstractEntity<String>
 	}
 
 	/**
-	 * Builds a function entity from the specified
+	 * Builds a production entity from the specified
 	 * XML element.
 	 * 
 	 * @param element
@@ -118,9 +118,9 @@ public class EntityFunction extends AbstractEntity<String>
 	 * @param source
 	 * 		Name of the NER tool which detected the entity.
 	 * @return
-	 * 		The function entity corresponding to the specified element.
+	 * 		The production entity corresponding to the specified element.
 	 */
-	public static EntityFunction importFromElement(Element element, RecognizerName source)
+	public static EntityProduction importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -135,7 +135,7 @@ public class EntityFunction extends AbstractEntity<String>
 		if(valueElt!=null)
 			value = valueElt.getText();
 		
-		EntityFunction result =  new EntityFunction(startPos, endPos, source, valueStr, value);
+		EntityProduction result =  new EntityProduction(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }
