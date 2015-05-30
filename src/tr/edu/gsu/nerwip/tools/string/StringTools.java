@@ -24,7 +24,9 @@ package tr.edu.gsu.nerwip.tools.string;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -38,6 +40,27 @@ import java.util.regex.Pattern;
  */
 public class StringTools
 {
+	/////////////////////////////////////////////////////////////////
+	// COMPARISON		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Compares two strings while ignoring their case */
+	public static final Comparator<String> COMPARATOR = new Comparator<String>()
+	{	@Override
+		public int compare(String s1, String s2)
+		{	// remove accents
+			String string1 = removeDiacritics(s1);
+			String string2 = removeDiacritics(s2);
+			
+			// remove case
+			string1 = string1.toUpperCase(Locale.ENGLISH);
+			string2 = string2.toUpperCase(Locale.ENGLISH);
+			
+			// compare
+			int result = s1.compareTo(s2);
+			return result;
+		}	
+	};
+	
 	/////////////////////////////////////////////////////////////////
 	// INITIALS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -143,6 +166,23 @@ public class StringTools
 		return result;
 	}
 
+	/**
+	 * Remove diacritics from the specified text.
+	 * <br/>
+	 * Taken from <a href="http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string">
+	 * http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string</a>.
+	 * 
+	 * @param string
+	 * 		String to process, containing diacritics.
+	 * @return
+	 * 		Same string, but withouth the diacritics.
+	 */
+	public static String removeDiacritics(String string) 
+	{	String result = Normalizer.normalize(string, Normalizer.Form.NFD);
+		result = result.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+	    return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// SPLIT			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
