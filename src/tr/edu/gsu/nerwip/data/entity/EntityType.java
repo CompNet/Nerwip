@@ -31,18 +31,27 @@ import java.awt.Color;
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
+ * @author Sabrine Ayachi
  */
 public enum EntityType
-{	/** Date entity */
+{	
+	/** A Date or any temporal entity (Christmas...) */
 	DATE(Color.PINK),
-	/** Location entity */
+	
+	/** The role associated to a title: general, president, king, pope... */
+	FUNCTION(Color.GRAY),
+	
+	/** The name of a geographical place, artificial place, etc. */
 	LOCATION(Color.ORANGE),
-	/** Organization entity */
+	
+	/** Any organization name: institution, company, assocation... */
 	ORGANIZATION(Color.CYAN),
-	/** Person entity */
+	
+	/** Any real or fiction person or animal, or any group of those */
 	PERSON(Color.YELLOW),
-	/** Function entity */
-	FUNCTION(Color.GREEN); 
+	
+	/** A human production: works, buildings, awards, etc. */
+	PRODUCTION(Color.GREEN); 
 	
 	/**
 	 * Builds an entity type.

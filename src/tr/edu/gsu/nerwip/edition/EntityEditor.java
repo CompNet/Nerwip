@@ -78,6 +78,7 @@ import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
+import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
@@ -98,13 +99,13 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtrac
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
-import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
-import tr.edu.gsu.nerwip.tools.file.FileNames;
-import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.LinkTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
+import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
  * Window used to display and edit annotated texts,
@@ -129,7 +130,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		// create frame
 		frame = new JFrame(TITLE);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setSize(1000, 500);
+		frame.setSize(1200, 500);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(this);
 
@@ -920,7 +921,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * the display of entity types.
 	 */
 	private void initEntityViewActions()
-	{	entityViewActions = new HashMap<EntityType, Action>();
+	{	List<Integer> initials = new ArrayList<Integer>();
+	
+		entityViewActions = new HashMap<EntityType, Action>();
 		for(EntityType type: EntityType.values())
 		{	final EntityType t = type;
 			String typeStr = StringTools.initialize(type.toString());
@@ -934,8 +937,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 			    }
 			};
 			entityViewActions.put(type,action);
-			String initial = type.toString().substring(0,1);
-			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift "+initial));
+			int initial = type.toString().charAt(0);
+			while(initials.contains(initial)) // allows avoiding setting the same shortcut twice
+				initial = initial + 1;
+			initials.add(initial);
+			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift "+((char)initial)));
 			action.putValue(Action.SHORT_DESCRIPTION, STR_ENT_DISPLAY+typeStr+STR_ENT_ENTITIES);
 			action.putValue(Action.SELECTED_KEY, true);
 		}
@@ -984,7 +990,26 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * edition of entities in the reference file.
 	 */
 	private void initEntityEditionActions()
-	{	// insert entities
+	{	List<Integer> initials = new ArrayList<Integer>();
+		
+		// remove entity
+		{	String name = STR_ENT_REMOVE+STR_ENT_ENTITY;
+			entityDeleteAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				@Override
+			    public void actionPerformed(ActionEvent e)
+				{	removeEntity();
+			    }
+			};
+			String initial = name.substring(0,1);
+			initials.add((int)initial.charAt(0));
+			entityDeleteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+initial));
+			entityDeleteAction.putValue(Action.SHORT_DESCRIPTION, name);
+			entityDeleteAction.setEnabled(false);
+		}
+		
+		// insert entities
 		entityInsertActions = new HashMap<EntityType, Action>();
 		for(EntityType type: EntityType.values())
 		{	final EntityType t = type;
@@ -999,26 +1024,13 @@ public class EntityEditor implements WindowListener, ChangeListener
 			    }
 			};
 			entityInsertActions.put(type, action);
-			String initial = type.toString().substring(0,1);
-			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+initial));
+			int initial = type.toString().charAt(0);
+			while(initials.contains(initial)) // allows avoiding setting the same shortcut twice
+				initial = initial + 1;
+			initials.add(initial);
+			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+((char)initial)));
 			action.putValue(Action.SHORT_DESCRIPTION, STR_ENT_INSERT_TT+typeStr+STR_ENT_ENTITY);
 			action.setEnabled(false);
-		}
-		
-		// remove entity
-		{	String name = STR_ENT_REMOVE+STR_ENT_ENTITY;
-			entityDeleteAction = new AbstractAction(name)
-			{	/** Class id */
-				private static final long serialVersionUID = 1L;
-				@Override
-			    public void actionPerformed(ActionEvent e)
-				{	removeEntity();
-			    }
-			};
-			String initial = name.substring(0,1);
-			entityDeleteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+initial));
-			entityDeleteAction.putValue(Action.SHORT_DESCRIPTION, name);
-			entityDeleteAction.setEnabled(false);
 		}
 	}
 

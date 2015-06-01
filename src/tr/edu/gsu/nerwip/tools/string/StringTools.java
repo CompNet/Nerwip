@@ -24,7 +24,9 @@ package tr.edu.gsu.nerwip.tools.string;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -38,6 +40,27 @@ import java.util.regex.Pattern;
  */
 public class StringTools
 {
+	/////////////////////////////////////////////////////////////////
+	// COMPARISON		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Compares two strings while ignoring their case */
+	public static final Comparator<String> COMPARATOR = new Comparator<String>()
+	{	@Override
+		public int compare(String s1, String s2)
+		{	// remove accents
+			String string1 = removeDiacritics(s1);
+			String string2 = removeDiacritics(s2);
+			
+			// remove case
+			string1 = string1.toUpperCase(Locale.ENGLISH);
+			string2 = string2.toUpperCase(Locale.ENGLISH);
+			
+			// compare
+			int result = s1.compareTo(s2);
+			return result;
+		}	
+	};
+	
 	/////////////////////////////////////////////////////////////////
 	// INITIALS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -143,6 +166,23 @@ public class StringTools
 		return result;
 	}
 
+	/**
+	 * Remove diacritics from the specified text.
+	 * <br/>
+	 * Taken from <a href="http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string">
+	 * http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string</a>.
+	 * 
+	 * @param string
+	 * 		String to process, containing diacritics.
+	 * @return
+	 * 		Same string, but withouth the diacritics.
+	 */
+	public static String removeDiacritics(String string) 
+	{	String result = Normalizer.normalize(string, Normalizer.Form.NFD);
+		result = result.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+	    return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// SPLIT			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -153,6 +193,30 @@ public class StringTools
 	 */ 
 	private static final Pattern SENTENCE_PATTERN = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)", Pattern.MULTILINE);
     
+	/**
+	 * Returns the position of the first character of each sentence in the
+	 * specified text. The sentence splitter is very basic, we consider 
+	 * either the newline character, or the presence of a dot followed by 
+	 * a space and not preceeded by an uppercase letter.
+	 *  
+	 * @param text
+	 * 		The text to process.
+	 * @return
+	 * 		A list of integers corresponding to sentence positions in the text.
+	 */
+	public static List<Integer> getSentencePositions(String text)
+	{	List<Integer> result = new ArrayList<Integer>();
+		
+		Matcher matcher = SENTENCE_PATTERN.matcher(text);
+		while(matcher.find())
+		{	//String sentence = matcher.group();
+			int startPos = matcher.start();
+			result.add(startPos);
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Breaks down the specified text in chunks of {@code maxSize} characters.
 	 * <br/>
@@ -221,15 +285,30 @@ public class StringTools
 //			+ "enfin, there could be spaces and stuff in between sentences.   Like this.  End.";
 //		splitText(text, 70);
 		
+		// sentence positions
+//		List<Integer> pos = getSentencePositions(text);
+//		System.out.println(text);
+//		Iterator<Integer> it = pos.iterator();
+//		int current = it.next();
+//		for(int i=0;i<text.length();i++)
+//		{	if(current==i)
+//			{	if(it.hasNext())
+//					current = it.next();
+//				System.out.print("^");
+//			}
+//			else
+//				System.out.print(" ");
+//		}
+		
 		// test clean
-		String str = " abc\u00A0defg h\ni\rk\tl";
-		String res = replaceSpaces(str);
-		System.out.println("\""+str+"\" vs \""+res+"\"");
-		System.out.println((int)(str.charAt(0))+" vs "+(int)(res.charAt(0)));
-		System.out.println((int)(str.charAt(4))+" vs "+(int)(res.charAt(4)));
-		System.out.println((int)(str.charAt(9))+" vs "+(int)(res.charAt(9)));
-		System.out.println((int)(str.charAt(11))+" vs "+(int)(res.charAt(11)));
-		System.out.println((int)(str.charAt(13))+" vs "+(int)(res.charAt(13)));
-		System.out.println((int)(str.charAt(15))+" vs "+(int)(res.charAt(15)));
+//		String str = " abc\u00A0defg h\ni\rk\tl";
+//		String res = replaceSpaces(str);
+//		System.out.println("\""+str+"\" vs \""+res+"\"");
+//		System.out.println((int)(str.charAt(0))+" vs "+(int)(res.charAt(0)));
+//		System.out.println((int)(str.charAt(4))+" vs "+(int)(res.charAt(4)));
+//		System.out.println((int)(str.charAt(9))+" vs "+(int)(res.charAt(9)));
+//		System.out.println((int)(str.charAt(11))+" vs "+(int)(res.charAt(11)));
+//		System.out.println((int)(str.charAt(13))+" vs "+(int)(res.charAt(13)));
+//		System.out.println((int)(str.charAt(15))+" vs "+(int)(res.charAt(15)));
 	}
 }

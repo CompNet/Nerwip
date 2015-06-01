@@ -56,7 +56,7 @@ public class EntityPerson extends AbstractEntity<String>
 	}
 	
 	/**
-	 * Builds a new date person without a value.
+	 * Builds a new person without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.

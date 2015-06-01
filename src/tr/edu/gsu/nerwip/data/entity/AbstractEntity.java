@@ -42,7 +42,7 @@ import tr.edu.gsu.nerwip.tools.xml.XmlNames;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
+public abstract class AbstractEntity<T extends Comparable<T>> implements Comparable<AbstractEntity<T>>
 {	
 	/**
 	 * General constructor for an entity.
@@ -95,6 +95,9 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 		{	case DATE:
 				result = new EntityDate(startPos, endPos, source, valueStr, null);
 				break;
+			case FUNCTION:
+				result = new EntityFunction(startPos, endPos, source, valueStr, null);
+				break;
 			case LOCATION:
 				result = new EntityLocation(startPos, endPos, source, valueStr, null);
 				break;
@@ -104,10 +107,9 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 			case PERSON:
 				result = new EntityPerson(startPos, endPos, source, valueStr, null);
 				break;
-			case FUNCTION:
-				result = new EntityFunction(startPos, endPos, source, valueStr, null);
+			case PRODUCTION:
+				result = new EntityProduction(startPos, endPos, source, valueStr, null);
 				break;
-				
 		}
 		
 		return result;
@@ -514,6 +516,9 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 		{	case DATE:
 				result = EntityDate.importFromElement(element,source);
 				break;
+			case FUNCTION:
+				result = EntityFunction.importFromElement(element,source);
+				break;
 			case LOCATION:
 				result = EntityLocation.importFromElement(element,source);
 				break;
@@ -522,6 +527,9 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 				break;
 			case PERSON:
 				result = EntityPerson.importFromElement(element,source);
+				break;
+			case PRODUCTION:
+				result = EntityProduction.importFromElement(element,source);
 				break;
 		}
 		
@@ -532,7 +540,7 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 	// COMPARABLE		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public int compareTo(AbstractEntity<?> o)
+	public int compareTo(AbstractEntity<T> o)
 	{	int startPos = o.getStartPos();
 		int result = this.startPos - startPos;
 		if(result==0)
@@ -543,6 +551,22 @@ public abstract class AbstractEntity<T> implements Comparable<AbstractEntity<?>>
 				result = this.valueStr.compareTo(valueStr);
 			}
 		}
+		return result;
+	}
+	
+	/**
+	 * Compare the value of this entity to that
+	 * of the specified entity. Both entities
+	 * must contain values of the same type.
+	 * 
+	 * @param entity
+	 * 		The other entity.
+	 * @return
+	 * 		An integer classically representing the result of the comparison.
+	 */
+	public int compareValueTo(AbstractEntity<T> entity)
+	{	T value = entity.getValue();
+		int result = this.value.compareTo(value);
 		return result;
 	}
 	
