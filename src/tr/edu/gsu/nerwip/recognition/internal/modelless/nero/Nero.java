@@ -228,7 +228,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 			
 			
 			//logger.log("extracting result");
-			logger.log("tester");
+			//logger.log("tester");
 			   
 			// String originalText = "Né le 19 juillet 1876 au Mans (Sarthe), mort le 29 novembre 1926 à Paris";
 		    // String NeroAnswer = "N <time> le dix-neuf juillet mille huit cent soixante-seize </time> au <loc> Mans </loc> (<loc>Sarthe </loc>), mort <time> le vingt-neuf novembre mille neuf cent vingt-six </time> à <loc> Paris </loc>";
@@ -243,10 +243,29 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 				  
 			Element resultElt = root.getChild("result");
 		    NeroAnswer = resultElt.getValue();
+		    
+		   if (NeroAnswer.charAt(0) == '?' )
+		    { 
+		   NeroAnswer = NeroAnswer.substring(1, NeroAnswer.length());}
+		   
+		   String originalText = article.getRawText();
+		   logger.log(">>>>>originalText(0)= " + originalText.charAt(0));
+		   logger.log(">>>>>originalText(1)= " + originalText.charAt(1));
+		   //if (originalText.charAt(0) == ' ' )
+		    //{ 
+		   originalText = originalText.substring(1, originalText.length());
+		   //}
+		   
+		    
 		    logger.log (">>>>extracting result");
 			logger.log (">>>>result = " + NeroAnswer);
-			String originalText = article.getRawText();
+			
 			logger.log(">>>>originalText = " +  originalText); 
+			
+			logger.log(">>>>>neroAnswer(0)= " + NeroAnswer.charAt(0));
+			logger.log(">>>>>originalText(0)= " + originalText.charAt(0));
+			
+			
 			char co = originalText.charAt(0);
 			int i1 = 0;
 			char cr = NeroAnswer.charAt(0);

@@ -148,6 +148,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();
+		
 
 		// check if the key was set
 		String key = KeyHandler.KEYS.get(KEY_NAME);

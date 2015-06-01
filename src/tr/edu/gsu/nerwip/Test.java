@@ -26,6 +26,8 @@ package tr.edu.gsu.nerwip;
  */
 
 import java.io.File;
+
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -124,7 +126,7 @@ public class Test
 //		testWikipediaDater(url);
 //		testNero(name);
 		testOpeNER(name);
-		
+//		testTagEN(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
@@ -397,6 +399,36 @@ public class Test
 
 		logger.decreaseOffset();
 	}
+	
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	
+	/*private static void testTagEN(String name) throws Exception
+	{	logger.setName("Test-TagEN");
+		logger.log("Start testing TagEN");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		Nero nero = new TagEN(ignorePronouns, exclusionOn);
+		nero.setOutputRawResults(true);
+		nero.setCacheEnabled(false);
+		nero.process(article);
+
+		logger.decreaseOffset();
+	}*/
+	
+	
 	
 	
 	
