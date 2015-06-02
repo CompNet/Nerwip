@@ -462,7 +462,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/** Title of this application */
 	private static final String TITLE_SHORT = "Entity Editor";
 	/** Title of this application */
-	private static final String TITLE = "Nerwip - " + TITLE_SHORT + " v2";
+	private static final String TITLE = "Nerwip - " + TITLE_SHORT + " v2.1";
 	/** Article name */
 	private String articleName = "";
 	
@@ -1612,11 +1612,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private void displayHelpAbout()
 	{	String string = "<html>"
 			+"<h1>"+TITLE+"</h1><br/>"
-			+ "Galatasaray University<br/>"
-			+ "BIT Lab - Complex Networks research group<br/>"
-			+ "<a href=\"http://bit.gsu.edu.tr/compnet\">http://bit.gsu.edu.tr/compnet</a><br/>"
+			+ "Université d'Avignon<br/>"
+			+ "Laboratoire Informatique d'Avignon (LIA)<br/>"
+			+ "<a href=\"http://lia.univ-avignon.fr\">http://lia.univ-avignon.fr</a><br/>"
 			+ "(c) Yasa Akbulut 2011 (as Annotation Viewer)<br/>"
-			+ "(c) Vincent Labatut 2013"
+			+ "(c) Vincent Labatut 2013-15"
 			+ "</html>";
 		JOptionPane.showMessageDialog(frame, string);
 	}
