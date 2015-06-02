@@ -1472,7 +1472,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * reference entities before loading
 	 * another article or quitting the application.
 	 * The method returns a boolean indicating
-	 * if the action was cancel or not.
+	 * if the action was canceled or not.
 	 *
 	 * @return
 	 * 		{@code false} iff the action was canceled.
@@ -1598,7 +1598,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void displayHelpIndex()
 	{	try
-		{	indexDialog = new TextDialog(frame, STR_INDEX_T, FileNames.FI_HELP_PAGE);
+		{	
+			//indexDialog = new TextDialog(frame, STR_INDEX_T, FileNames.FI_HELP_PAGE); //TODO not written yet
+			indexDialog = new TextDialog(frame, STR_INDEX_T, "README.md");
 			indexDialog.setVisible(true);
 		}
 		catch (FileNotFoundException e)
