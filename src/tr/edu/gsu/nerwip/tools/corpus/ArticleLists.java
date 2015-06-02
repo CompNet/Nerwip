@@ -85,9 +85,23 @@ public class ArticleLists
 	 * 		A list of {@code File} objects.
 	 */
 	public static ArticleList getArticleList()
+	{	File corpusFolder = new File(FileNames.FO_OUTPUT);
+		ArticleList result = getArticleList(corpusFolder);
+		return result;
+	}
+	
+	/**
+	 * Returns the list of all articles in
+	 * the corpus located in the specified folder.
+	 * 
+	 * @param corpusFolder
+	 * 		Corpus folder.
+	 * @return
+	 * 		A list of {@code File} objects.
+	 */
+	public static ArticleList getArticleList(File corpusFolder)
 	{	logger.log("Retrieving the list of articles");
-		File folder = new File(FileNames.FO_OUTPUT);
-		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+		File articles[] = corpusFolder.listFiles(FileTools.FILTER_DIRECTORY);
 		List<File> list = Arrays.asList(articles);
 		Collections.sort(list);
 		ArticleList result = new ArticleList("all", list);
