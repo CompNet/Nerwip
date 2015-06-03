@@ -156,26 +156,32 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	
 	@Override
 	protected String detectEntities(Article article) throws RecognizerException
-	{	String result = null;
+	{	logger.increaseOffset();
+		String result = null;
 		
 		try
 		{	// write article raw text in a temp file
+			logger.log("Copying the article content in a temp file");
 			String text = article.getRawText();
 			String tempPath = getTempFile();
 			File tempFile = new File(tempPath);
 			FileTools.writeTextFile(tempFile, text);
 			
 			// invoke the external tool and retrieve its output
-			Runtime rt = Runtime.getRuntime();
-			String mainCommand = "cat " + tempPath + " | " 
-				+ FileNames.FI_NERO_BASH + " " + tagger.toString();
-		    if(!flat)
-		    	mainCommand = mainCommand + " " + FLAT_SWITCH;
-	    	String[] commands = 
-			{	"/bin/sh", "-c", 
-				mainCommand
-			};
-			Process proc = rt.exec(commands);
+			logger.log("Invoking Nero : ");
+			logger.increaseOffset();
+				Runtime rt = Runtime.getRuntime();
+				String mainCommand = "cat " + tempPath + " | " 
+					+ FileNames.FI_NERO_BASH + " " + tagger.toString();
+			    if(!flat)
+			    	mainCommand = mainCommand + " " + FLAT_SWITCH;
+		    	String[] commands = 
+				{	"/bin/sh", "-c", 
+					mainCommand
+				};
+		    	logger.log(Arrays.asList(commands));
+				Process proc = rt.exec(commands);
+			logger.decreaseOffset();
 		
 			// standard error
 			String error = "";
@@ -185,6 +191,12 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 				{	System.out.println(line);
 					error = error + "\n" + line;
 				}
+			}
+			if(!error.isEmpty())
+			{	logger.log("Some error(s) occured:");
+				logger.increaseOffset();
+					logger.log(error);
+				logger.decreaseOffset();
 			}
 			
 			// standard output
@@ -196,6 +208,17 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 				{	System.out.println(line);
 					result = result + "\n" + line;
 				}
+				logger.log("Raw results:");
+				logger.increaseOffset();
+					logger.log(result);
+				logger.decreaseOffset();
+				
+				// possibly record the raw results (for debug purposes)
+				if(outRawResults)
+				{	File rrF = converter.getRawFile(article);
+					logger.log("Writing the raw results in file "+rrF);
+					FileTools.writeTextFile(rrF, result);
+				}
 			}
 			else
 				throw new RecognizerException(error);
@@ -205,6 +228,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 			throw new RecognizerException(e.getMessage());
 		}
 		
+		logger.decreaseOffset();
 		return result;
 	}
 	

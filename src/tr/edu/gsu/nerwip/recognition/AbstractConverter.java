@@ -108,9 +108,12 @@ public abstract class AbstractConverter
 	}
 	
 	/**
-	 * Returns the raw file associated to the specified
+	 * Returns the raw result file associated to the specified
 	 * article, i.e. the file possibly generated externally
 	 * by the NER tool associated to this converter.
+	 * <br/>
+	 * Nothing to do with the raw <i>text</i> of the article,
+	 * i.e. its plain textual content.
 	 * 
 	 * @param article
 	 * 		Article to process.
