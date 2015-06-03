@@ -80,6 +80,10 @@ public class FileNames
 				public final static String FO_ILLINOIS_MODELS = FO_ILLINOIS + File.separator + "models";
 			/** Folder of LingPipe resources */
 			public final static String FO_LINGPIPE = FO_NER + File.separator + "lingpipe";
+			/** Folder of Nero resources */
+			public final static String FO_NERO = FO_NER + File.separator + "nero";
+				/** Folder of Nero scripts*/
+				public final static String FO_NERO_SCRIPTS = FO_NERO + File.separator + "scripts";
 			/** Folder of OpenNLP resources */
 			public final static String FO_OPENNLP = FO_NER + File.separator + "opennlp";
 			/** Folder of Stanford resources */
@@ -142,6 +146,8 @@ public class FileNames
 	public final static String FI_DEMONYMS = "demonyms" + FileNames.EX_TEXT;
 	/** Configuration file */
 	public final static String FI_CONFIGURATION = "config" + FileNames.EX_TEXT;
+	/** Main script of the Nero tool */
+	public final static String FI_NERO_BASH = "irisa_ne.bash" + FileNames.EX_TEXT;
 	
 //	/**
 //	 * Returns the filename used to store the
