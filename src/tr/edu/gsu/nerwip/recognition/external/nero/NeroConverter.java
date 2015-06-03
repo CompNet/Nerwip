@@ -1,23 +1,7 @@
 package tr.edu.gsu.nerwip.recognition.external.nero;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-
-
-
-import org.apache.commons.lang3.StringUtils;
-//import org.apache.commons.codec.binary.StringUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -26,7 +10,6 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
-import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
@@ -71,7 +54,6 @@ public class NeroConverter extends AbstractExternalConverter
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	@SuppressWarnings("unchecked")
 	@Override
     public Entities convert(Article article, String data) throws ConverterException
 	{   Entities result = new Entities(recognizerName);
@@ -96,7 +78,6 @@ public class NeroConverter extends AbstractExternalConverter
 
 				String name = " ";
 				while (closeTag(j, data) == false)
-					;
 				{
 					do {
 						name = name + originalText.charAt(i);
@@ -171,13 +152,5 @@ public class NeroConverter extends AbstractExternalConverter
 				close = true;
 		}
 		return close;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// RAW				/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	protected void writeRawResults(Article article, String intRes) throws IOException 
-	{	logger.log("rawresultfinal");
-		writeRawResultsStr(article, intRes);
 	}
 }
