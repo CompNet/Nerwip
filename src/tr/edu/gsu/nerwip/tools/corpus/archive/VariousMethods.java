@@ -177,7 +177,7 @@ public class VariousMethods
 			String refPath = folder.getPath() + File.separator + FileNames.FI_REFERENCE_TEXT;
 			File refFile = new File(refPath);
 			String references = FileTools.readTextFile(refFile);
-			Entities entities = converter.convert(references);
+			Entities entities = converter.convert(null,references);
 
 			logger.log("Record our XML format");
 			String xmlPath = folder.getPath() + File.separator + FileNames.FI_ENTITY_LIST;

@@ -98,12 +98,11 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 				
 				// apply the NER tool
 				logger.log("Detect the entities");
-				String text = article.getRawText();
-				String entitiesStr = detectEntities(text);
+				String entitiesStr = detectEntities(article);
 				
 				// convert entities to our internal representation
 				logger.log("Convert entities to our internal representation");
-				result = converter.convert(entitiesStr);
+				result = converter.convert(article,entitiesStr);
 				
 				// possibly trim entities (remove non-digit/letter chars at beginning/end)
 				logger.log("Possibly clean entities.");
@@ -164,13 +163,13 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
      * entities. Those must then be converted 
      * to objects compatible with the rest of Nerwip.
      * 
-     * @param inputText
-     * 		Raw text of the article.
+     * @param article
+     * 		Article to process.
      * @return
      * 		String representing the detected entities.
      * 
      * @throws RecognizerException
      * 		Problem while applying the NER tool.
     */
-	protected abstract String detectEntities(String inputText) throws RecognizerException;
+	protected abstract String detectEntities(Article article) throws RecognizerException;
 }

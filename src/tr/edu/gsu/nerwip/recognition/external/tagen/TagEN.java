@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais;
+package tr.edu.gsu.nerwip.recognition.external.tagen;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
