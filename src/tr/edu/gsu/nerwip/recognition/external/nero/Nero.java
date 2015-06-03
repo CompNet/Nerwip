@@ -71,8 +71,8 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	// FOLDER 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String getFolder() {
-		String result = getName().toString();
+	public String getFolder()
+	{	String result = getName().toString();
 
 		result = result + "_" + "tagger=" + tagger;
 		result = result + "_" + "ignPro=" + ignorePronouns;
@@ -85,13 +85,18 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	// ENTITY TYPES 	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** List of entities recognized by Nero */
-	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
-			EntityType.DATE, EntityType.LOCATION, EntityType.ORGANIZATION,
-			EntityType.FUNCTION, EntityType.PERSON);
+	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
+	(
+		EntityType.DATE, 
+		EntityType.LOCATION, 
+		EntityType.ORGANIZATION,
+		EntityType.FUNCTION, 
+		EntityType.PERSON
+	);
 
 	@Override
-	public List<EntityType> getHandledEntityTypes() {
-		return HANDLED_TYPES;
+	public List<EntityType> getHandledEntityTypes() 
+	{	return HANDLED_TYPES;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -134,7 +139,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	/** Whether entities can contain other entities ({@code false}) or are mutually exclusive ({@code true}) */
 	private boolean flat = false;
 	/** Switch used to enable the detection of non-flat entities */
-	private final static String FLAT_SWITCH = "-f2t";
+	private final static String FLAT_SWITCH = "-f2h";
 	/** Name of the temporary file generated for Nero */
 	private static final String TEMP_FILE = "temp.txt";
 
@@ -143,11 +148,17 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	 * created for Nero (containing the article
 	 * content).
 	 * 
+	 * @param article
+	 * 		The concerned article.
 	 * @return
 	 * 		Path of the temporary file.
 	 */
-	private String getTempFile()
-	{	String result = getFolder() + File.separator + TEMP_FILE;
+	private String getTempFile(Article article)
+	{	String result = article.getFolderPath()
+			+ File.separator
+			+ getFolder() 
+			+ File.separator 
+			+ TEMP_FILE;
 		return result; 
 	}
 	
@@ -158,13 +169,19 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	protected String detectEntities(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		String result = null;
+
+		// debug
+//		String val = System.getenv( "PATH" );
+//		System.out.println(val);
+//		val = System.getenv( "IRISA_NE" );
+//		System.out.println(val);
 		
 		try
 		{	// write article raw text in a temp file
-			logger.log("Copying the article content in a temp file");
 			String text = article.getRawText();
-			String tempPath = getTempFile();
+			String tempPath = getTempFile(article);
 			File tempFile = new File(tempPath);
+			logger.log("Copying the article content in temp file "+tempFile);
 			FileTools.writeTextFile(tempFile, text);
 			
 			// invoke the external tool and retrieve its output
@@ -172,6 +189,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 			logger.increaseOffset();
 				Runtime rt = Runtime.getRuntime();
 				String mainCommand = "cat " + tempPath + " | " 
+					+ "." + File.separator + FileNames.FO_NERO_SCRIPTS + File.separator 
 					+ FileNames.FI_NERO_BASH + " " + tagger.toString();
 			    if(!flat)
 			    	mainCommand = mainCommand + " " + FLAT_SWITCH;
@@ -181,6 +199,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 				};
 		    	logger.log(Arrays.asList(commands));
 				Process proc = rt.exec(commands);
+//		    	Process proc = rt.exec("/bin/sh -c echo $PATH"); // debug
 			logger.decreaseOffset();
 		
 			// standard error
@@ -232,6 +251,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 		return result;
 	}
 	
+	// original sabrine source code
 //	protected String detectEntities0(Article article) throws RecognizerException
 //	{	String text = article.getRawText();
 //		String result = new String();
