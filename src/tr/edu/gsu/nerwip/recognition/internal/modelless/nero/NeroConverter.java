@@ -10,6 +10,7 @@ import java.util.Map;
 
 
 
+
 import org.apache.commons.lang3.StringUtils;
 //import org.apache.commons.codec.binary.StringUtils;
 import org.jdom.Document;
@@ -75,7 +76,7 @@ public class NeroConverter extends AbstractInternalConverter<String>
    {   Entities result = new Entities(recognizerName);
        String originalText = article.getRawText();
        AbstractEntity<?> entity = null;
-       // 2ème algo
+       
        char co = originalText.charAt(0);
        int i = 0;
        char cc = data.charAt(0);
@@ -120,6 +121,23 @@ public class NeroConverter extends AbstractInternalConverter<String>
        while (i <= originalText.length());
        return result;
        }
+
+/**
+ * Receives a position i in the text1  and 
+ * a position j in the the text2 an return
+ * a list of entities.
+ * 
+ * @param i
+ * 		position in the text1.
+ * @param j
+ * 		position in the text2.
+ * @param text1
+ * 		string represents the originalText.
+ * @param text2
+ * 		string represents the nero answer.
+ * @return
+ * 		list of entities.
+ */
 
     public Entities f(int i, int j, String text1, String text2)
     {   Entities entities = null;
@@ -185,7 +203,7 @@ public class NeroConverter extends AbstractInternalConverter<String>
 /////////////////////////////////////////////////////////////////
 // RAW				/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
-
+   @Override
    protected void writeRawResults(Article article, String intRes) throws IOException
    {   logger.log("rawresultfinal");
 	   writeRawResultsStr(article, intRes);

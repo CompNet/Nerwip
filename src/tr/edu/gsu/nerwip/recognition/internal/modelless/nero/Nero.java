@@ -230,9 +230,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 			//logger.log("extracting result");
 			//logger.log("tester");
 			   
-			// String originalText = "Né le 19 juillet 1876 au Mans (Sarthe), mort le 29 novembre 1926 à Paris";
-		    // String NeroAnswer = "N <time> le dix-neuf juillet mille huit cent soixante-seize </time> au <loc> Mans </loc> (<loc>Sarthe </loc>), mort <time> le vingt-neuf novembre mille neuf cent vingt-six </time> à <loc> Paris </loc>";
-			//String res1 = new String();
+			
 		    // build DOM
 		    logger.log("Build DOM");
 		    String NeroAnswer = new String();
@@ -249,12 +247,12 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 		   NeroAnswer = NeroAnswer.substring(1, NeroAnswer.length());}
 		   
 		   String originalText = article.getRawText();
-		   logger.log(">>>>>originalText(0)= " + originalText.charAt(0));
-		   logger.log(">>>>>originalText(1)= " + originalText.charAt(1));
-		   //if (originalText.charAt(0) == ' ' )
-		    //{ 
+		   //logger.log(">>>>>originalText(0)= " + originalText.charAt(0));
+		   
+		   if (originalText.charAt(0) == ' ' )
+		    { 
 		   originalText = originalText.substring(1, originalText.length());
-		   //}
+		   }
 		   
 		    
 		    logger.log (">>>>extracting result");
@@ -437,7 +435,7 @@ public class Nero extends AbstractModellessInternalRecognizer<String, NeroConver
 
 
 	/**
-	 * Receives a postion i  and a string
+	 * Receives a position i  and a string
 	 * and return a string composed of the digital 
 	 * words existing from the i position. 
 	 *  
