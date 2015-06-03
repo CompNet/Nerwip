@@ -124,8 +124,8 @@ public class Test
 //		testStanford(url);
 //		testSubee(url);
 //		testWikipediaDater(url);
-//		testNero(name);
-		testOpeNER(name);
+	testNero(name);
+//		testOpeNER(name);
 //		testTagEN(name);
 		
 //		testVoteCombiner(url);
