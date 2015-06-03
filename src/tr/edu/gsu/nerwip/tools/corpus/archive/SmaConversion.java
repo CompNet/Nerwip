@@ -69,7 +69,7 @@ public class SmaConversion extends AbstractExternalConverter
 	private static final Pattern SEARCH_PATTERN = Pattern.compile("<(.+?)>(.+?)</.+?>",Pattern.DOTALL);
 
 	@Override
-	public Entities convert(String content) throws ConverterException
+	public Entities convert(Article article, String content) throws ConverterException
 	{	Entities result = new Entities(recognizerName);
 		
 	// change the form of tags

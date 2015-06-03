@@ -65,6 +65,8 @@ public abstract class AbstractExternalConverter extends AbstractConverter
 	 * into the entity list used internally by Nerwip. The file to be
 	 * converted is passed as a string. 
 	 * 
+	 * @param article
+	 * 		The considered article.
 	 * @param entitiesStr
 	 * 		String representation of the detected entities.
 	 * @return
@@ -73,7 +75,7 @@ public abstract class AbstractExternalConverter extends AbstractConverter
 	 * @throws ConverterException
 	 * 		Problem while performing the conversion.
 	 */
-	public abstract Entities convert(String entitiesStr) throws ConverterException;
+	public abstract Entities convert(Article article, String entitiesStr) throws ConverterException;
 	
 	/////////////////////////////////////////////////////////////////
 	// RAW				/////////////////////////////////////////////
