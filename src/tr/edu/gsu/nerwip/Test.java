@@ -126,8 +126,7 @@ public class Test
 //		testWikipediaDater(url);
 //		testNero(name);
 //		testOpeNER(name);
-//		testTagEN(name);
-		testOpeNER(name);
+		testTagEN(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
