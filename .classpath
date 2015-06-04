@@ -33,5 +33,7 @@
 	<classpathentry kind="lib" path="lib/heideltime-standalone-1.8.jar" sourcepath="lib/heideltime-standalone-1.8-src.zip"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar" sourcepath="lib/commons-codec-1.10-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar" sourcepath="lib/commons-lang3-3.4-src.zip"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar" sourcepath="lib/commons-io-2.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

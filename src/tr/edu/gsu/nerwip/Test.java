@@ -106,6 +106,7 @@ public class Test
 		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
+		
 //		String name = "Émilien_Brigault";
 //		String name = "Albert_Chauly";
 		String name = "Gilles_Marcel_Cachin";
@@ -130,6 +131,7 @@ public class Test
 		testNero(name);
 //		testOpeNER(name);
 //		testTagEN(name);
+//		testOpeNER(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
