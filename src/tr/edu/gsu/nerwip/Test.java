@@ -126,8 +126,8 @@ public class Test
 //		testSubee(url);
 //		testWikipediaDater(url);
 //		testNero(name);
-//		testOpeNER(name);
-		testTagEN(name);
+		testOpeNER(name);
+//		testTagEN(name);
 		//testOpeNER(name);
 		
 		

@@ -135,6 +135,7 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
         	//String command = "sudo " + FileNames.FO_TAGEN + File.separator + "." + File.separator + "tagen :mucfr " + file;
         	//String command = "chmod +x " + FileNames.FO_TAGEN;
             //String command = "alias tagen=res/ner/tagen/tagen";
+        	
         	//String command = "chmod +x " + FileNames.FO_TAGEN + File.separator + " ." + File.separator + "tagen" +  " :mucfr "  + file;
         	
             Process p = Runtime.getRuntime().exec(command);
