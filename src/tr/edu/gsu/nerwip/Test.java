@@ -47,6 +47,9 @@ import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmTrainer;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisTrainer;
@@ -58,9 +61,6 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
-import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
-import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
-import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNER;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
@@ -126,15 +126,19 @@ public class Test
 //		testSubee(url);
 //		testWikipediaDater(url);
 //		testNero(name);
+
 		testOpeNER(name);
 //		testTagEN(name);
 		//testOpeNER(name);
 		
 		
+
+//		testOpeNER(name);
+		testTagEN(name);
+
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
-		
 		
 //		testEvaluator();
 //		testEditor();
@@ -394,11 +398,11 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
+		Tagger tagger = Tagger.CRF;
+		boolean flat = false;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		Tagger tagger = null;
-		boolean flat = false;
-		Nero nero = new Nero(tagger, flat,ignorePronouns, exclusionOn);
+		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
 		nero.process(article);
@@ -432,8 +436,6 @@ public class Test
 
 		logger.decreaseOffset();
 	}
-	
-	
 	
 	/**
 	 * Tests the features related to NER. 

@@ -40,6 +40,49 @@ import java.util.regex.Pattern;
  */
 public class StringTools
 {
+	/**
+	 * Tests the {@link #splitText(String, int)} method.
+	 * 
+	 * @param args
+	 * 		No need.
+	 */
+	public static void main(String[] args)
+	{	
+		// test split
+//		String text = "This is a first sentence. Cela semble marcher très bien."
+//			+ "What if no space after dot? Or even other punctuation marks!\n"
+//			+ "Et même plein de points !?! Ou... des nombres 12.32 et 12,65.\n"
+//			+ "On pourrait aussi avoir des abréviations comme M.Dupont ou M. Dupont ; "
+//			+ "enfin, there could be spaces and stuff in between sentences.   Like this.  End.";
+//		splitText(text, 70);
+		
+		// sentence positions
+//		List<Integer> pos = getSentencePositions(text);
+//		System.out.println(text);
+//		Iterator<Integer> it = pos.iterator();
+//		int current = it.next();
+//		for(int i=0;i<text.length();i++)
+//		{	if(current==i)
+//			{	if(it.hasNext())
+//					current = it.next();
+//				System.out.print("^");
+//			}
+//			else
+//				System.out.print(" ");
+//		}
+		
+		// test clean
+//		String str = " abc\u00A0defg h\ni\rk\tl";
+//		String res = replaceSpaces(str);
+//		System.out.println("\""+str+"\" vs \""+res+"\"");
+//		System.out.println((int)(str.charAt(0))+" vs "+(int)(res.charAt(0)));
+//		System.out.println((int)(str.charAt(4))+" vs "+(int)(res.charAt(4)));
+//		System.out.println((int)(str.charAt(9))+" vs "+(int)(res.charAt(9)));
+//		System.out.println((int)(str.charAt(11))+" vs "+(int)(res.charAt(11)));
+//		System.out.println((int)(str.charAt(13))+" vs "+(int)(res.charAt(13)));
+//		System.out.println((int)(str.charAt(15))+" vs "+(int)(res.charAt(15)));
+	}
+
 	/////////////////////////////////////////////////////////////////
 	// COMPARISON		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -55,11 +98,40 @@ public class StringTools
 			string1 = string1.toUpperCase(Locale.ENGLISH);
 			string2 = string2.toUpperCase(Locale.ENGLISH);
 			
+			// normalize double quotes
+			string1 = string1.replaceAll("«", "\"");
+			string2 = string2.replaceAll("«", "\"");
+			string1 = string1.replaceAll("»", "\"");
+			string2 = string2.replaceAll("»", "\"");
+			
 			// compare
-			int result = s1.compareTo(s2);
+			int result = string1.compareTo(string2);
 			return result;
 		}	
 	};
+	
+	/**
+	 * Compare the specified characters, using {@link #COMPARATOR},
+	 * i.e. ignoring case and diacritics.
+	 * 
+	 * @param c1
+	 * 		First character to compare.
+	 * @param c2
+	 * 		Second character to compare.
+	 * @return
+	 * 		Integer representing a classic comparison result.
+	 */
+	public static int compareCharsRelaxed(int c1, int c2)
+	{	
+//if(c1=='û')
+//	System.out.print("");
+		
+		String s1 = new String(new int[]{c1},0,1);
+		String s2 = new String(new int[]{c2},0,1);
+		
+		int result = COMPARATOR.compare(s1, s2);
+		return result;
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// INITIALS			/////////////////////////////////////////////
@@ -269,46 +341,45 @@ public class StringTools
 		return result;
 	}
 	
+	/////////////////////////////////////////////////////////////////
+	// MISC				/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	/**
-	 * Tests the {@link #splitText(String, int)} method.
+	 * Takes a string and a position in this string,
+	 * and returns a part of the string centered around
+	 * the specified postion, using the specified range
+	 * to define the interval.
+	 * <br/>
+	 * Another line is used to mark the exact position
+	 * with a ^. This function is used mainly for debug
+	 * purposes.
 	 * 
-	 * @param args
-	 * 		No need.
+	 * @param pos
+	 * 		The position to highlight.
+	 * @param string
+	 * 		The concerned text.
+	 * @param range
+	 * 		The range used to process the interval.
+	 * @return
+	 * 		The highlighted string.
 	 */
-	public static void main(String[] args)
-	{	
-		// test split
-//		String text = "This is a first sentence. Cela semble marcher très bien."
-//			+ "What if no space after dot? Or even other punctuation marks!\n"
-//			+ "Et même plein de points !?! Ou... des nombres 12.32 et 12,65.\n"
-//			+ "On pourrait aussi avoir des abréviations comme M.Dupont ou M. Dupont ; "
-//			+ "enfin, there could be spaces and stuff in between sentences.   Like this.  End.";
-//		splitText(text, 70);
+	public static String highlightPosition(int pos, String string, int range)
+	{	// process the interval
+		int beginIndex = Math.max(0, pos-range);
+		int endIndex = Math.min(string.length(), pos+range);
 		
-		// sentence positions
-//		List<Integer> pos = getSentencePositions(text);
-//		System.out.println(text);
-//		Iterator<Integer> it = pos.iterator();
-//		int current = it.next();
-//		for(int i=0;i<text.length();i++)
-//		{	if(current==i)
-//			{	if(it.hasNext())
-//					current = it.next();
-//				System.out.print("^");
-//			}
-//			else
-//				System.out.print(" ");
-//		}
+		// define the result string
+		String result = "";
+		if(beginIndex>0)
+			result = result + "[...]";
+		result = result + string.substring(beginIndex, endIndex);
+		if(endIndex<string.length())
+			result = result + "[...]\n";
+
+		for(int i=0;i<pos-beginIndex+5;i++)
+			result = result + " ";
+		result = result + "^";
 		
-		// test clean
-//		String str = " abc\u00A0defg h\ni\rk\tl";
-//		String res = replaceSpaces(str);
-//		System.out.println("\""+str+"\" vs \""+res+"\"");
-//		System.out.println((int)(str.charAt(0))+" vs "+(int)(res.charAt(0)));
-//		System.out.println((int)(str.charAt(4))+" vs "+(int)(res.charAt(4)));
-//		System.out.println((int)(str.charAt(9))+" vs "+(int)(res.charAt(9)));
-//		System.out.println((int)(str.charAt(11))+" vs "+(int)(res.charAt(11)));
-//		System.out.println((int)(str.charAt(13))+" vs "+(int)(res.charAt(13)));
-//		System.out.println((int)(str.charAt(15))+" vs "+(int)(res.charAt(15)));
+		return result;
 	}
 }
