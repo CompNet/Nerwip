@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.edition.EntityEditor;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
@@ -38,6 +39,7 @@ import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
@@ -105,7 +107,8 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 //		String name = "Émilien_Brigault";
-		String name = "Albert_Chauly";
+//		String name = "Albert_Chauly";
+		String name = "Gilles_Marcel_Cachin";
 //		String name = "Barack_Obama";
 		
 //		testArticleRetriever(url);
@@ -124,9 +127,9 @@ public class Test
 //		testStanford(url);
 //		testSubee(url);
 //		testWikipediaDater(url);
-//		testNero(name);
+		testNero(name);
 //		testOpeNER(name);
-		testTagEN(name);
+//		testTagEN(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
@@ -396,8 +399,13 @@ public class Test
 		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
-		nero.process(article);
+		
+		// only the specified article
+//		nero.process(article);
 
+		// all the corpus
+		testAllCorpus(nero,150);
+		
 		logger.decreaseOffset();
 	}
 	
@@ -455,9 +463,6 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
-	
-
-
 	/**
 	 * Tests the features related to NER. 
 	 * 
@@ -924,7 +929,48 @@ public class Test
 		
 		logger.decreaseOffset();
 	}
-
+	
+	/**
+	 * Applies the specified NER tool to the 
+	 * whole corpus.
+	 * 
+	 * @param recognizer
+	 * 		NER tool to apply.
+	 * @param start
+	 * 		Which article to start from.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testAllCorpus(AbstractRecognizer recognizer, int start) throws Exception
+	{	logger.log("Process each article individually");
+		logger.increaseOffset();
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		for(File folder: folders)
+		{	if(i>=start)
+			{	// get the results
+				logger.log("Process article "+folder.getName());
+				logger.increaseOffset();
+				
+					// get article
+					logger.log("Retrieve the article");
+					String name = folder.getName();
+					ArticleRetriever retriever = new ArticleRetriever();
+					Article article = retriever.process(name);
+						
+					logger.log("Apply the ner tool");
+					recognizer.process(article);
+					
+				logger.decreaseOffset();
+			}
+			i++;
+		}
+		
+		logger.decreaseOffset();
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// EVALUATION	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

@@ -53,7 +53,8 @@ public class FileNames
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
-	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
+	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
+//	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
@@ -61,8 +62,6 @@ public class FileNames
 //	public final static String FO_OUTPUT = "/home/sabrine/Data2";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
-	
-
 	
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -50,11 +49,12 @@ public class NeroConverter extends AbstractExternalConverter
 	
 	/** Initialization of the conversion map */
 	static 
-	{	CONVERSION_MAP.put("time", EntityType.DATE);
+	{	CONVERSION_MAP.put("fonc", EntityType.FUNCTION);
 		CONVERSION_MAP.put("loc", EntityType.LOCATION);
 		CONVERSION_MAP.put("org", EntityType.ORGANIZATION);
-		CONVERSION_MAP.put("fonc", EntityType.FUNCTION);
 		CONVERSION_MAP.put("pers", EntityType.PERSON);
+		CONVERSION_MAP.put("prod", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("time", EntityType.DATE);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -75,8 +75,10 @@ public class NeroConverter extends AbstractExternalConverter
 		int c1 = originalText.codePointAt(i1);
 		int c2 = data.codePointAt(i2);
 		
+if(c1==65279)
+	System.out.print("");
 		// possibly pass a starting newline character 
-		if(c2=='\n')
+		if(c2=='\n' && c1!='\n')
 		{	i2++;
 			c2 = data.codePointAt(i2);
 		}
@@ -87,7 +89,7 @@ public class NeroConverter extends AbstractExternalConverter
 			
 			// beginning of a tag
 			if(c2=='<')
-			{	//int k2 = i2;
+			{	int k2 = i2;
 				i2++; 
 				c2 = data.codePointAt(i2);
 				
@@ -121,7 +123,17 @@ public class NeroConverter extends AbstractExternalConverter
 					tags.push(tag);
 					EntityType type = CONVERSION_MAP.get(tag);
 					if(type==null && !IGNORED_TYPES.contains(tag))
-						throw new ConverterException("Found an unknown tag : "+tag);
+					{	if(tag.isEmpty())
+						{	int end = Math.min(j2+40, data.length());
+							String msg = data.substring(k2, end);
+							logger.log("WARNING: found an empty tag, settling for a date ("+msg+"[...])");
+							type = EntityType.DATE;
+						}
+						else
+						{	String msg = StringTools.highlightPosition(k2, data, 20);
+							throw new ConverterException("Found an unknown tag : \""+tag+"\" at "+msg);
+						}
+					}
 					types.push(type);
 					startPos1.push(i1);
 //					startPos2.push(i2);
@@ -130,7 +142,12 @@ public class NeroConverter extends AbstractExternalConverter
 			
 			// other character (than '<')
 			else
-			{	// similar characters
+			{	
+if(c1=='[')
+	System.out.print("");
+
+
+				// similar characters
 				if(StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)
 				{	// everything's normal
 					// >> go to next chars in both texts
@@ -138,41 +155,100 @@ public class NeroConverter extends AbstractExternalConverter
 					i2++; 
 				}
 				
-				// different chars, but space in the original text
-				else if(c1==' ')
-				{	// Nero probably ate a space
-					// >> go to next char in the original text only
-					i1++; 
-				}
+				else
+				{	boolean moved = false;
 				
-				// different chars, but space in the annotated text
-				else if(c2==' ')
-				{	// if right before or right after a tag (in the annotated text), Nero probably added a space
-					// >> go to next char in the annotated text
-					int before = data.codePointAt(i2-1);
-					int after = data.codePointAt(i2+1);
-					if(before=='>' || after=='<' || after=='\n')
-					{	i2++; 
+					// pass all non-letter and non-digit characters
+					if(!Character.isLetterOrDigit(c1))//c1==' ' || c1=='\n' || StringTools.isPunctuation(c1))
+					{	i1++;
+						moved = true;
 					}
-					// otherwise, if punctuation in the original text, Nero probably ate this punctuation mark
-					// >> go to next char in the original text
-					else if(Pattern.matches("\\p{Punct}", originalText.substring(i1,i1+1)) && originalText.charAt(i1+1)==' ')
-					{	i1++; 
+					
+					// pass all non-letter and non-digit characters
+					if(!Character.isLetterOrDigit(c2))//c2==' ' || c2=='\n' || StringTools.isPunctuation(c2))
+					{	i2++;
+						moved = true;
 					}
-					// else, we have a problem!
-					else
+					
+					// if both are letters or digits (but different), we have a problem
+					if(!moved)
 					{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
 						String msg2 = StringTools.highlightPosition(i2, data, 20);
-						throw new ConverterException("Problem at position :\n"+msg1+"\n"+msg2);
+						throw new ConverterException("Found an untreatable character:\n"+msg1+"\n"+msg2);
 					}
 				}
-
-				// problem : display a specific error message
-				else
-				{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
-					String msg2 = StringTools.highlightPosition(i2, data, 20);
-					throw new ConverterException("Found a supernumerary character which is not space :\n"+msg1+"\n"+msg2);
-				}
+				
+				
+//				// different chars, but space in the original text
+//				else if(c1==' ')
+//				{	// Nero probably ate a space
+//					// >> go to next char in the original text only
+//					i1++; 
+//				}
+//				
+//				// different chars, but space in the annotated text
+//				else if(c2==' ')
+//				{	// if the very end or beginning of the annotated text, 
+//					// Nero probably added a space
+//					// >> go to next char in the annotated text
+//					if(i2==0 || i2==data.length()-1)
+//					{	i2++;
+//					}
+//					else
+//					{	// if right before or right after a tag (in the annotated text), 
+//						// or right before a new line,
+//						// or right before or after another space, 
+//						// then Nero probably added a space
+//						// >> go to next char in the annotated text
+//						int before = data.codePointAt(i2-1);
+//						int after = data.codePointAt(i2+1);
+//						if(before=='>' || after=='<' 
+//								|| after=='\n'
+//								|| before=='\''
+//								|| before==' ' || after==' ')
+//						{	i2++; 
+//						}
+//						// otherwise, if punctuation in the original text, 
+//						// Nero probably ate this punctuation mark
+//						// >> go to next char in the original text
+//						else if(StringTools.isPunctuation(c1))// && originalText.charAt(i1+1)==' ')
+//						{	i1++;
+//							if(c1=='-')
+//								i2++;
+//						}
+//						// else, we have a problem!
+//						else
+//						{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
+//							String msg2 = StringTools.highlightPosition(i2, data, 20);
+//							throw new ConverterException("Problem at position :\n"+msg1+"\n"+msg2);
+//						}
+//					}
+//				}
+//				
+//				// different chars, and punctuation in the original text
+//				// Nero probably ate the punctuation
+//				// >> go to next char in the original text
+//				else if(StringTools.isPunctuation(c1))
+//				{	i1++;
+//					if(StringTools.isPunctuation(c2))
+//						i2++;
+//				}
+//				
+//				// different chars, and punctuation in the annotated text
+//				// Nero probably moved some punctuation
+//				// >> go to next char in the annotated text
+//				else if(StringTools.isPunctuation(c2))
+//				{	i2++;
+//				}
+//				
+//				// problem : display a specific error message
+//				else
+//				{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
+//					String msg2 = StringTools.highlightPosition(i2, data, 20);
+//					throw new ConverterException("Found a untreatable supernumerary character:\n"+msg1+"\n"+msg2);
+//				}
+				
+				
 			}
 		}
 		
@@ -183,7 +259,7 @@ public class NeroConverter extends AbstractExternalConverter
 			{	c1 = originalText.codePointAt(i1);
 				i1++;
 			}
-			while(i1<originalText.length() && c1=='\n');
+			while(i1<originalText.length() && (c1=='\n' || c1==' '));
 			if(i1<originalText.length())
 			{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
 				throw new ConverterException("Didn't reach the end of the original text\n"+msg1);
@@ -196,102 +272,4 @@ public class NeroConverter extends AbstractExternalConverter
 		
 		return result;
 	}
-	
-//	public Entities convert(Article article, String data)
-//			throws ConverterException {
-//		Entities result = new Entities(recognizerName);
-//		String originalText = article.getRawText();
-//		AbstractEntity<?> entity = null;
-//		// 2ème algo
-//		char co = originalText.charAt(0);
-//		int i = 0;
-//		char cc = data.charAt(0);
-//		int j = 0;
-//		do {
-//			co = originalText.charAt(i);
-//			cc = data.charAt(j);
-//			if (co == cc) {
-//				i++;
-//				j++;
-//			} else {
-//				int start = i;
-//				String typeCode = type(j, data);
-//				EntityType type = CONVERSION_MAP.get(typeCode);
-//				j = j + typeCode.length() + 2; // check l value here
-//
-//				String name = " ";
-//				while (closeTag(j, data) == false) {
-//					do {
-//						name = name + originalText.charAt(i);
-//						i++;
-//						j++;
-//					} while (co == cc);
-//					if (data.charAt(j) == '<' && data.charAt(j + 1) == '/') {
-//						int end = i;
-//						entity = AbstractEntity.build(type, start, end,
-//								recognizerName, name);
-//						result.addEntity(entity);
-//						String ch = type(j, data);
-//						j = j + ch.length() + 3;
-//					} else {
-//						Entities list = f(i, j, originalText, data);
-//						result.addEntities(list);
-//					}
-//				}
-//			}
-//		} while (i <= originalText.length());
-//		return result;
-//	}
-//
-//	public Entities f(int i, int j, String text1, String text2) {
-//		Entities entities = null;
-//		Entities result = new Entities(recognizerName);
-//		AbstractEntity<?> entity = null;
-//		int start = i;
-//		char co = text1.charAt(i);
-//		char cc = text2.charAt(j);
-//		String typeCode = type(j, text2);
-//		EntityType type = CONVERSION_MAP.get(typeCode);
-//		j = j + typeCode.length() + 2; // check l value here
-//		String name = " ";
-//		while (closeTag(j, text2) == false) {
-//			do {
-//				name = name + text1.charAt(i);
-//				i++;
-//				j++;
-//			} while (co == cc);
-//			if (text2.charAt(j) == '<' && text2.charAt(j + 1) == '/') {
-//				int end = i;
-//				entity = AbstractEntity.build(type, start, end, recognizerName,
-//						name);
-//				result.addEntity(entity);
-//				String ch = type(j, text2);
-//				j = j + ch.length() + 3;
-//			} else {
-//				Entities list = f(i, j, text1, text2);
-//				result.addEntities(list);
-//			}
-//		}
-//		return entities;
-//	}
-//
-//	public String type(int i, String ch) {
-//		String type = new String();
-//		i++;
-//		do {
-//			type = type + ch.charAt(i);
-//			i++;
-//		} while (ch.charAt(i) != '>');
-//		return type;
-//	}
-//
-//	// necessary :algo 2 :to know if i pos is clos tag
-//	public boolean closeTag(int i, String ch) {
-//		boolean close = false;
-//		if (ch.charAt(i) == '<') {
-//			if (ch.charAt(i + 1) == '/')
-//				close = true;
-//		}
-//		return close;
-//	}
 }

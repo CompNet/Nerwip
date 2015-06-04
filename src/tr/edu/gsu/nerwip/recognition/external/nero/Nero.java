@@ -28,6 +28,15 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * </ul>
  * Official Nero website: <a
  * href="https://nero.irisa.fr/">https://nero.irisa.fr/</a>
+ * <br/>
+ * <b>Warning:</b> it should be noted Nero was originally designed 
+ * to treat speech transcriptions, and is therefore not very 
+ * robust when handling punctuation. It is also very sensitive to 
+ * specific characters like {@code û} or {@code ë}, or combinations 
+ * of characters such as newline {@code '\n'} followed by 
+ * {@code '"'}. Those should be avoided at all cost in the
+ * parsed text, otherwise the {@link NeroConverter} will not
+ * be able to process Nero's output.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
@@ -88,10 +97,11 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
 	(
 		EntityType.DATE, 
+		EntityType.FUNCTION, 
 		EntityType.LOCATION, 
 		EntityType.ORGANIZATION,
-		EntityType.FUNCTION, 
-		EntityType.PERSON
+		EntityType.PERSON,
+		EntityType.PRODUCTION
 	);
 
 	@Override
@@ -264,9 +274,13 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	 */
 	private String cleanText(String text)
 	{	String result = text;
+		
+		result = result.replaceAll("ë", "e");
 		result = result.replaceAll("û", "u");
+		
 		result = result.replaceAll("«", "\"");
 		result = result.replaceAll("»", "\"");
+		
 		return result;
 	}
 	
