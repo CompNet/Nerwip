@@ -26,8 +26,6 @@ package tr.edu.gsu.nerwip;
  */
 
 import java.io.File;
-
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +48,8 @@ import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisTrainer;
@@ -104,9 +104,9 @@ public class Test
 		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
-		String name = "Émilien_Brigault";
-//		String name = "Albert_Chauly";
-		
+//		String name = "Émilien_Brigault";
+		String name = "Albert_Chauly";
+//		String name = "Barack_Obama";
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
@@ -125,12 +125,12 @@ public class Test
 //		testSubee(url);
 //		testWikipediaDater(url);
 //		testNero(name);
-		testOpeNER(name);
+//		testOpeNER(name);
 //		testTagEN(name);
+		testOpeNER(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
-		
 		
 //		testEvaluator();
 //		testEditor();
@@ -390,9 +390,11 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
+		Tagger tagger = Tagger.CRF;
+		boolean flat = false;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		Nero nero = new Nero(ignorePronouns, exclusionOn);
+		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
 		nero.process(article);
@@ -409,8 +411,7 @@ public class Test
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	
-	/*private static void testTagEN(String name) throws Exception
+	private static void testTagEN(String name) throws Exception
 	{	logger.setName("Test-TagEN");
 		logger.log("Start testing TagEN");
 		logger.increaseOffset();
@@ -420,17 +421,13 @@ public class Test
 
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		Nero nero = new TagEN(ignorePronouns, exclusionOn);
-		nero.setOutputRawResults(true);
-		nero.setCacheEnabled(false);
-		nero.process(article);
+		TagEN tagen = new TagEN(ignorePronouns, exclusionOn);
+		tagen.setOutputRawResults(true);
+		tagen.setCacheEnabled(false);
+		tagen.process(article);
 
 		logger.decreaseOffset();
-	}*/
-	
-	
-	
-	
+	}
 	
 	/**
 	 * Tests the features related to NER. 

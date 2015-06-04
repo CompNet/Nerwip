@@ -141,7 +141,6 @@ public class OpeNER extends AbstractModellessInternalRecognizer<List<String>,Ope
 	String answer = new String();
 	
 	String line = new String();
-	String test = "Né le 15 septembre 1886 à Châtellerault (Vienne) , il est mort en juillet 1900";
 	
 	
 	
