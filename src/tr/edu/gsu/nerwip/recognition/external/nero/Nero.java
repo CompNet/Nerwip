@@ -179,6 +179,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 		try
 		{	// write article raw text in a temp file
 			String text = article.getRawText();
+			text = cleanText(text);
 			String tempPath = getTempFile(article);
 			File tempFile = new File(tempPath);
 			logger.log("Copying the article content in temp file "+tempFile);
@@ -248,6 +249,24 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 		}
 		
 		logger.decreaseOffset();
+		return result;
+	}
+	
+	/**
+	 * Some characters must be cleaned from the text to be annotated by
+	 * Nero, otherwise it outputs additional characters which makes the
+	 * conversion much harder.
+	 * 
+	 * @param text
+	 * 		Original text.
+	 * @return
+	 * 		Cleaned text.
+	 */
+	private String cleanText(String text)
+	{	String result = text;
+		result = result.replaceAll("û", "u");
+		result = result.replaceAll("«", "\"");
+		result = result.replaceAll("»", "\"");
 		return result;
 	}
 	

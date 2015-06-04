@@ -53,9 +53,10 @@ public class FileNames
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
-	public final static String FO_OUTPUT = "D:/Data2";
-
+//	public final static String FO_OUTPUT = "D:/Data2";
+	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
+	
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
 		/** Folder used to store certain cached files */
@@ -147,7 +148,7 @@ public class FileNames
 	/** Configuration file */
 	public final static String FI_CONFIGURATION = "config" + FileNames.EX_TEXT;
 	/** Main script of the Nero tool */
-	public final static String FI_NERO_BASH = "irisa_ne.bash" + FileNames.EX_TEXT;
+	public final static String FI_NERO_BASH = "irisa_ne" + FileNames.EX_BASH;
 	
 //	/**
 //	 * Returns the filename used to store the
@@ -166,6 +167,8 @@ public class FileNames
 	/////////////////////////////////////////////////////////////////
 	// EXTENSIONS	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Bash file extension */
+	public final static String EX_BASH = ".bash";
 	/** PDF file extension */
 	public final static String EX_PDF = ".pdf";
 	/** XML Schema file extension */
