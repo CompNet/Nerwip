@@ -61,7 +61,6 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelN
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
-import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNER;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
@@ -125,8 +124,8 @@ public class Test
 //		testStanford(url);
 //		testSubee(url);
 //		testWikipediaDater(url);
-//		testNero(name);
-		testOpeNER(name);
+	testNero(name);
+//		testOpeNER(name);
 //		testTagEN(name);
 		
 //		testVoteCombiner(url);
@@ -395,7 +394,7 @@ public class Test
 		boolean ignorePronouns = false;
 		Tagger tagger = null;
 		boolean flat = false;
-		Nero nero = new Nero(tagger, flat,  ignorePronouns,  exclusionOn);
+		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
 		nero.process(article);

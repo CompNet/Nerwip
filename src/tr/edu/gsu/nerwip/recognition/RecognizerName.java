@@ -45,40 +45,42 @@ public enum RecognizerName
 	LINGPIPE,
 	/** OpenCalais Web Service */
 	OPENCALAIS,
+	/** OpeNER Web Service */
+	OPENER,
 	/** Apache OpenNLP */
 	OPENNLP, 
 	/** Stanford Named Entity Recognizer */ 
 	STANFORD, 
-	/** NERO Web Service */
-	NERO,
-	/** OPENER Web Service */
-	OPENER,
 	
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL CUSTOM TOOLS	/////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Takes advantage of hyperlinks to detect named entities */ 
-	SUBEE,
 	/** Tool specifically developped to detect dates */
 	DATEEXTRACTOR,
+	/** Takes advantage of hyperlinks to detect named entities */ 
+	SUBEE,
 	/** Tool specifically developped to detect dates in Wikipedia articles */
 	WIKIPEDIADATER,
 	
 	/////////////////////////////////////////////////////////////////
 	// EXTERNAL TOOLS	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** NERO tool */
+	NERO,
+	/** TagEN  tool */
+	TAGEN,
 	
 	/////////////////////////////////////////////////////////////////
 	// COMBINERS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Combination of several NER tools through a simple voting process */
-	VOTECOMBINER,
-	/** Combination of several NER through an SVM classifier */
-	SVMCOMBINER,
 	/** Combination of WikipediaDater for dates and another combiner for the other types */
 	FULLCOMBINER,
 	/** Combination of HeidelTime for dates and OpenCalais for the other types */
 	STRAIGHTCOMBINER,
+	/** Combination of several NER through an SVM classifier */
+	SVMCOMBINER,
+	/** Combination of several NER tools through a simple voting process */
+	VOTECOMBINER,
 	
 	/////////////////////////////////////////////////////////////////
 	// MISC				/////////////////////////////////////////////
