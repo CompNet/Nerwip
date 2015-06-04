@@ -104,6 +104,8 @@ public class FileNames
 			public final static String FO_SUBEE = FO_NER + File.separator + "subee";
 			/** Folder of SVM combiner resources */
 			public final static String FO_SVMCOMBINER = FO_NER + File.separator + "svmcombiner";
+			/** Folder of TagEN resources */
+			public final static String FO_TAGEN = FO_NER + File.separator + "tagen";
 			/** Folder of vote combiner resources */
 			public final static String FO_VOTECOMBINER = FO_NER + File.separator + "votecombiner";
 		/** Folder containing retrieval-related data */
