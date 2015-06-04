@@ -58,7 +58,9 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.nero.Nero;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNER;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
@@ -124,7 +126,10 @@ public class Test
 //		testSubee(url);
 //		testWikipediaDater(url);
 //		testNero(name);
-		testOpeNER(name);
+//		testOpeNER(name);
+		testTagEN(name);
+		//testOpeNER(name);
+		
 		
 		
 //		testVoteCombiner(url);
@@ -391,10 +396,39 @@ public class Test
 
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		Nero nero = new Nero(ignorePronouns, exclusionOn);
+		Tagger tagger = null;
+		boolean flat = false;
+		Nero nero = new Nero(tagger, flat,ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
 		nero.process(article);
+
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testTagEN(String name) throws Exception
+	{	logger.setName("Test-TagEN");
+		logger.log("Start testing TagEN");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		TagEN tagen = new TagEN(ignorePronouns, exclusionOn);
+		tagen.setOutputRawResults(true);
+		tagen.setCacheEnabled(false);
+		tagen.process(article);
 
 		logger.decreaseOffset();
 	}

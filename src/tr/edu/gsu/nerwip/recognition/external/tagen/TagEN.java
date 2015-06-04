@@ -1,27 +1,202 @@
 package tr.edu.gsu.nerwip.recognition.external.tagen;
 
-/*
- * Nerwip - Named Entity Extraction in Wikipedia Pages
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 
- * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
- * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
- * Copyright 2013 Samet Atdağ & Vincent Labatut
- * Copyright 2014-15 Vincent Labatut
+import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.external.AbstractExternalRecognizer;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
+//import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.file.FileTools;
+
+/**
+ * This class acts as an interface with TagEN.
+ * <br/>
+ * Recommended parameter values:
+ * <ul>
+ * <li>{@code ignorePronouns}: {@code true}</li>
+ * <li>{@code exclusionOn}: {@code false}</li>
+ * </ul>
  * 
- * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
  * 
- * Nerwip - Named Entity Extraction in Wikipedia Pages is free software: you can 
- * redistribute it and/or modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
  * 
- * Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
- * License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
- * If not, see <http://www.gnu.org/licenses/>.
+ * @author Sabrine Ayachi
+ * @author Vincent Labatut
  */
+public class TagEN extends AbstractExternalRecognizer<TagENConverter>
+{	
+	/**
+	 * Builds and sets up an object representing TagEN tool.
+	 * @param ignorePronouns
+	 *      Whether or not pronouns should be excluded from the detection.
+	 * @param exclusionOn
+	 *      Whether or not stop words should be excluded from the
+	 *      detection.
+	 */
+
+	public TagEN(boolean ignorePronouns, boolean exclusionOn)
+	{	super(false, ignorePronouns, exclusionOn);
+	//init converter
+    converter = new TagENConverter(getFolder());
+	}
+
+	
+	/////////////////////////////////////////////////////////////////
+	// NAME 			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public RecognizerName getName()
+	{	return RecognizerName.TAGEN;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// FOLDER 			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public String getFolder()
+	{	String result = getName().toString();
+		result = result + "_" + "ignPro=" + ignorePronouns;
+		result = result + "_" + "exclude=" + exclusionOn;
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// ENTITY TYPES 	/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of entities recognized by TagEN */
+	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
+	(
+		EntityType.DATE, 
+		EntityType.LOCATION, 
+		EntityType.PERSON
+		//EntityType.PERCENT
+	);
+
+	@Override
+	public List<EntityType> getHandledEntityTypes() 
+	{	return HANDLED_TYPES;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES 		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** List of languages this recognizer can treat */
+	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList
+	(	
+		ArticleLanguage.EN, 
+		ArticleLanguage.FR
+	);
+
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = HANDLED_LANGUAGES.contains(language);
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// PROCESSING 			/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+
+	
+	public BufferedReader getOutput(Process p) {
+        return new BufferedReader(new InputStreamReader(p.getInputStream()));
+    }
+
+    public BufferedReader getError(Process p) {
+        return new BufferedReader(new InputStreamReader(p.getErrorStream()));
+    }
+    
+
+	@Override
+	protected String detectEntities(Article article) throws RecognizerException
+	{	logger.increaseOffset();
+		String result = null;
+		
+		logger.log("Début du programme");
+        try {
+        	// write article raw text in a file
+        	String text = article.getRawText();
+        	//String path = "/home/sabrine/TagEN/input.txt";
+        	String path = FileNames.FO_TAGEN + File.separator + "input.txt";
+			File file = new File(path);
+        	FileTools.writeTextFile(file, text);
+        	String command = "/home/sabrine/TagEN/./tagen :mucfr /home/sabrine/TagEN/input.txt";
+        	
+        	//String command = "sudo " + FileNames.FO_TAGEN + File.separator + "." + File.separator + "tagen :mucfr " + file;
+        	//String command = "chmod +x " + FileNames.FO_TAGEN;
+            //String command = "alias tagen=res/ner/tagen/tagen";
+        	//String command = "chmod +x " + FileNames.FO_TAGEN + File.separator + " ." + File.separator + "tagen" +  " :mucfr "  + file;
+        	
+            Process p = Runtime.getRuntime().exec(command);
+            
+            BufferedReader output = getOutput(p);
+            BufferedReader error = getError(p);
+            String ligne = "";
+            
+         
+
+            while ((ligne = output.readLine()) != null) {
+               logger.log(ligne);
+            }
+           
+            while ((ligne = error.readLine()) != null) {
+                logger.log(ligne);
+            }
+
+            p.waitFor();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        logger.log("Fin du programme");
+        
+        // extract text from input.tag.txt
+    
+        String tagOutput = null;
+        
+     
+        try {
+        	InputStream ips = new FileInputStream("/home/sabrine/TagEN/input.tag.txt");
+        	
+ 
+        	 //originalText = IOUtils.toString(ips).trim();
+        	
+        	
+        	InputStreamReader ipsr = new InputStreamReader(ips);
+        	BufferedReader br = new BufferedReader(ipsr);
+        	String ligne;
+        	while ((ligne = br.readLine()) != null) {
+        	logger.log(ligne);
+        	result += ligne + "\n";
+        	}
+        	br.close();
+        	} catch (Exception e) {
+        		tagOutput =  e.toString();
+        	
+        	} 
+        //logger.log(tagOutput);
+        
+
+		
+		
+		
+		logger.decreaseOffset();
+		return result;
+		
+        }
+	
+
+}
+
 

@@ -53,7 +53,10 @@ public class FileNames
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
-	public final static String FO_OUTPUT = "D:/Data2";
+//	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
+	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
+//	public final static String FO_OUTPUT = "D:/Data2";
+//	public final static String FO_OUTPUT = "/home/sabrine/Data2";
 
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	/** Resources folder */
@@ -80,6 +83,13 @@ public class FileNames
 				public final static String FO_ILLINOIS_MODELS = FO_ILLINOIS + File.separator + "models";
 			/** Folder of LingPipe resources */
 			public final static String FO_LINGPIPE = FO_NER + File.separator + "lingpipe";
+			/** Folder of Nero resources */
+			public final static String FO_NERO = FO_NER + File.separator + "nero";
+			/** Folder of TagEN resources */
+			public final static String FO_TAGEN = FO_NER + File.separator + "tagen";
+				/** Folder of Nero scripts*/
+				public final static String FO_NERO_SCRIPTS = FO_NERO + File.separator + "scripts";
+				
 			/** Folder of OpenNLP resources */
 			public final static String FO_OPENNLP = FO_NER + File.separator + "opennlp";
 			/** Folder of Stanford resources */
@@ -142,6 +152,8 @@ public class FileNames
 	public final static String FI_DEMONYMS = "demonyms" + FileNames.EX_TEXT;
 	/** Configuration file */
 	public final static String FI_CONFIGURATION = "config" + FileNames.EX_TEXT;
+	/** Main script of the Nero tool */
+	public final static String FI_NERO_BASH = "irisa_ne.bash" + FileNames.EX_TEXT;
 	
 //	/**
 //	 * Returns the filename used to store the
@@ -171,3 +183,4 @@ public class FileNames
 	/** HTML file extension */
 	public final static String EX_WEB = ".html";
 }
+
