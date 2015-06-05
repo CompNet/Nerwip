@@ -126,31 +126,21 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	private static final String PARSER_URL = SERVICE_URL + "/constituent-parser";
 	/** Entity recognizer URL */
 	private static final String RECOGNIZER_URL = SERVICE_URL + "/ner";
-	/** Maximal request size */
+	/** Maximal request size for OpenNer */
 	private static final int MAX_SIZE = 1000;
 	/** Sleep periods (in ms) */
 	private static final long SLEEP_PERIOD = 5000;
-
-
+	
 	@Override
 	protected List<String> detectEntities(Article article) throws RecognizerException
 	{	logger.increaseOffset();
-		List<String> openerAnswer = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();
 		
 		// we need to break down the text
 		List<String> parts = StringTools.splitText(text, MAX_SIZE);
-	
-		
-		
-		
-	
-	
-		
-		String answer = new String();
-		
-		String line = new String();
-	
+
+		// then we process each part separately
 		for(int i=0;i<parts.size();i++)
 		{	logger.log("Processing OpeNer part #"+(i+1)+"/"+parts.size());
 			logger.increaseOffset();
@@ -161,7 +151,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 				String tokenizedText = performTokenization(part);
 				Thread.sleep(SLEEP_PERIOD); //TODO is it really necessary to sleep like this ?
 
-				// apply the pos tagger
+				// detect part-of-speech
 				String taggedText = performTagging(tokenizedText);
 				Thread.sleep(SLEEP_PERIOD);
 				
@@ -172,30 +162,34 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 				// perform the NER
 				String nerText = performRecognition(parsedText);
 
-
-				String kaf ="<KAF xml:lang=\"fr\" version=\"v1.opener\">";
-		        String kaf1 = "<KAF>";
-				answer = nerText.replaceAll(kaf, kaf1);
-				openerAnswer.add(part);
-				openerAnswer.add(answer);
+				// clean the resulting XML //TODO why that?
+				String kafOld ="<KAF xml:lang=\"fr\" version=\"v1.opener\">";
+		        String kafNew = "<KAF>";
+				String answer = nerText.replaceAll(kafOld, kafNew);
 				
-				
+				// add part and corresponding answer to result
+				result.add(part);
+				result.add(answer);
 			}
 			catch (UnsupportedEncodingException e)
-			{	e.printStackTrace();
+			{	//e.printStackTrace();
 				throw new RecognizerException(e.getMessage());
 			}
 			catch (ClientProtocolException e)
-			{	e.printStackTrace();
+			{	//e.printStackTrace();
 				throw new RecognizerException(e.getMessage());
 			}
 			catch (IOException e)
-			{	e.printStackTrace();
+			{	//e.printStackTrace();
 				throw new RecognizerException(e.getMessage());
-			} 
+			}
+			catch (InterruptedException e)
+			{	//e.printStackTrace();
+				throw new RecognizerException(e.getMessage());
+			}
 		}
 		
-		return openerAnswer;
+		return result;
 	}
 	
 	/**
@@ -227,35 +221,13 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		params.add(new BasicNameValuePair("kaf", "false" ));
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 		
-		// send to tokenizer
-		logger.log("Send message to tokenizer");
-		HttpClient client = new DefaultHttpClient();
-		HttpResponse response = client.execute(method);
-		int responseCode = response.getStatusLine().getStatusCode();
-		logger.log("Response Code : " + responseCode);
-		if(responseCode!=200)
-		{	throw new RecognizerException("Received an error code ("+responseCode+") while accessing the tokenizer");
-			//TODO maybe we should try again and issue a warning?
-			//logger.log("WARNING: received an error code ("+responseCode+") from the tokenizer");
-		}
-	    
-	    // read tokenizer answer
-	    HttpEntity entity = response.getEntity();
-	    InputStream inputStream = entity.getContent();
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-	    StringBuffer res = new StringBuffer();
-	 	logger.log("Read the tokenizer answer");
-	 	String line;
-		while((line = reader.readLine()) != null)
-		{	//logger.log(line);
-			res.append(line);
-		}
+		// send to tokenizer and retrieve answer
+		String result = sendReceiveRequest(method);
 		
 		logger.decreaseOffset();
-		String result = res.toString();
 		return result;
 	}
-
+	
 	/**
 	 * Sends the tokenized text to the OpenNer PoS tagger,
 	 * as a second processing step.
@@ -283,32 +255,10 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		params.add(new BasicNameValuePair("input", tokenizedText));
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 		
-		// send to tagger
-		logger.log("Send message to tagger");
-		HttpClient client = new DefaultHttpClient();
-		HttpResponse response = client.execute(method);
-		int responseCode = response.getStatusLine().getStatusCode();
-		logger.log("Response Code : " + responseCode);
-		if(responseCode!=200)
-		{	throw new RecognizerException("Received an error code ("+responseCode+") while accessing the tokenizer");
-			//TODO maybe we should try again and issue a warning?
-			//logger.log("WARNING: received an error code ("+responseCode+") from the tagger");
-		}
-		
-	    // read tagger answer
-	    HttpEntity entity = response.getEntity();
-	    InputStream inputStream = entity.getContent();
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-	    StringBuffer res = new StringBuffer();
-	 	logger.log("Read the tagger answer");
-	 	String line;
-		while((line = reader.readLine()) != null)
-		{	//logger.log(line);
-			res.append(line);
-		}
+		// send to tagger and retrieve answer
+		String result = sendReceiveRequest(method);
 		
 		logger.decreaseOffset();
-		String result = res.toString();
 		return result;
 	}
 	
@@ -339,35 +289,13 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		params.add(new BasicNameValuePair("input", taggedText));
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 		
-		// send to parser
-		logger.log("Send message to parser");
-		HttpClient client = new DefaultHttpClient();
-		HttpResponse response = client.execute(method);
-		int responseCode = response.getStatusLine().getStatusCode();
-		logger.log("Response Code : " + responseCode);
-		if(responseCode!=200)
-		{	throw new RecognizerException("Received an error code ("+responseCode+") while accessing the tokenizer");
-			//TODO maybe we should try again and issue a warning?
-			//logger.log("WARNING: received an error code ("+responseCode+") from the parser");
-		}
-		
-	    // read tagger answer
-	    HttpEntity entity = response.getEntity();
-	    InputStream inputStream = entity.getContent();
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-	    StringBuffer res = new StringBuffer();
-	 	logger.log("Read the parser answer");
-	 	String line;
-		while((line = reader.readLine()) != null)
-		{	//logger.log(line);
-			res.append(line);
-		}
+		// send to parser and retrieve answer
+		String result = sendReceiveRequest(method);
 		
 		logger.decreaseOffset();
-		String result = res.toString();
 		return result;
 	}
-
+	
 	/**
 	 * Sends the parsed text to the OpenNer entity recognizer,
 	 * as a fourth processing step.
@@ -395,32 +323,54 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		params.add(new BasicNameValuePair("input", parsedText));
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 		
-		// send to recognizer
-		logger.log("Send message to recognizer");
+		// send to recognizer and retrieve answer
+		String result = sendReceiveRequest(method);
+		
+		logger.decreaseOffset();
+		return result;
+	}
+	
+	/**
+	 * Sends a request to OpenNer and retrieve the answer.
+	 * 
+	 * @param method
+	 * 		HTTP request to send to OpenNer.
+	 * @return
+	 * 		String representing the OpenNer answer.
+	 * 
+	 * @throws ClientProtocolException
+	 * 		Problem while accessing the OpenNer service.
+	 * @throws IOException
+	 * 		Problem while accessing the OpenNer service.
+	 * @throws RecognizerException
+	 * 		Problem while accessing the OpenNer service.
+	 */
+	private String sendReceiveRequest(HttpPost method) throws ClientProtocolException, IOException, RecognizerException
+	{	// send to service
+		logger.log("Send message to service");
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response = client.execute(method);
 		int responseCode = response.getStatusLine().getStatusCode();
 		logger.log("Response Code : " + responseCode);
 		if(responseCode!=200)
-		{	throw new RecognizerException("Received an error code ("+responseCode+") while accessing the recognizer");
+		{	throw new RecognizerException("Received an error code ("+responseCode+") while accessing the service");
 			//TODO maybe we should try again and issue a warning?
-			//logger.log("WARNING: received an error code ("+responseCode+") from the recognizer");
+			//logger.log("WARNING: received an error code ("+responseCode+") from the OpenNer service");
 		}
 		
-	    // read recognizer answer
+	    // read service answer
+	 	logger.log("Read the service answer");
 	    HttpEntity entity = response.getEntity();
 	    InputStream inputStream = entity.getContent();
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-	    StringBuffer res = new StringBuffer();
-	 	logger.log("Read the parser recognizer");
+	    StringBuffer sb = new StringBuffer();
 	 	String line;
 		while((line = reader.readLine()) != null)
 		{	//logger.log(line);
-			res.append(line);
+			sb.append(line);
 		}
-		
-		logger.decreaseOffset();
-		String result = res.toString();
+
+		String result = sb.toString();
 		return result;
 	}
 }
