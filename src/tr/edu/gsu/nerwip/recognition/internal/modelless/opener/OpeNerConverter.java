@@ -2,17 +2,10 @@ package tr.edu.gsu.nerwip.recognition.internal.modelless.opener;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -84,31 +77,35 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private final static String ELT_TERMS = "terms";
 	/** Element containing the list of all detected entities */
 	private final static String ELT_ENTITIES = "entities";
-	/** Element containing the list of references to an entity */
+	/** Element containing the list of mentions to an entity */
 	private final static String ELT_REFERENCES = "references";
+	/** Element containing the list of external references for an entity */
+	private final static String ELT_EXTERNAL_REFERENCES = "externalReferences";
+	/** Element representing an external reference for an entity */
+	private final static String ELT_EXTERNAL_REFERENCE = "externalReference";
+	/** Element representing a mention to an entity (in a reference element) or a reference to a word (in a term element) */
+	private final static String ELT_SPAN = "span";
+	/** Element refering to a term constituting an entity mention */
+	private final static String ELT_TARGET = "target";
 
 	/** Attribute representing the id of a word */
 	private final static String ATT_WID = "wid";
 	/** Attribute representing the id of a term */
 	private final static String ATT_TID = "tid";
+	/** Attribute representing the id of a term or word in a target element */
+	private final static String ATT_ID = "tid";
 	/** Attribute representing the type of an entity */
 	private final static String ATT_TYPE = "type";
-	
-	
-	
-	
-	/** Element of the KAT XML dialect */
-	private final static String ELT_ENTITY = "entity";
-	/** Element of the KAT XML dialect */
-	private final static String ELT_WF = "wf";
-	
-	/** Attribute of the KAT XML dialect */
+	/** Attribute representing the starting position of a word in the text */
 	private final static String ATT_OFFSET = "offset";
-	/** Attribute of the KAT XML dialect */
+	/** Attribute representing the length of a word in the text */
 	private final static String ATT_LENGTH = "length";
-	
-	/** Id of an Item */
-	private final static String ITEM_ID = "id";
+	/** Attribute representing a knowledge base in an external reference */
+	private final static String ATT_RESOURCE = "resource";
+	/** Attribute representing a knowledge base id in an external reference */
+	private final static String ATT_REFERENCE = "resource";
+	/** Attribute representing a confidence score in an external reference */
+	private final static String ATT_CONFIDENCE = "confidence";
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
@@ -154,13 +151,12 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				{	String tid = termElt.getAttributeValue(ATT_TID); 
 					termMap.put(tid,termElt);
 				}
-
 				
 				// process all entity elements
 				logger.log("Create entity objects");
 				List<Element> entityElts = root.getChildren(ELT_ENTITIES);
 				for(Element entityElt: entityElts)
-				{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize);
+				{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
 					if(entity!=null)
 						result.addEntity(entity);
 				}
@@ -188,273 +184,101 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 *  
 	 * @param element
 	 * 		Element to process.
-	 * @param metaData
-	 * 		Complementary information used to retreive certain details.
+	 * @param wordMap
+	 * 		List of identified words.
+	 * @param termMap
+	 * 		List of identified terms.
 	 * @param prevSize
 	 * 		Size of the parts already processed. 
+	 * @param part
+	 * 		Part of the original text currently processed. 
 	 * @return
 	 * 		The resulting entity.
 	 */
-	private AbstractEntity<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize)
+	@SuppressWarnings("unchecked")
+	private AbstractEntity<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
 	{	AbstractEntity<?> result = null;
 		
 		String typeCode = element.getAttributeValue(ATT_TYPE);
 		EntityType type = CONVERSION_MAP.get(typeCode);
 		
 		if(type!=null)
-		{	List<Element> referencesElt = element.getChild(ELT_REFERENCES);
+		{	// internal references
+			Element referencesElt = element.getChild(ELT_REFERENCES);
 			
-		// https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc
-		// TODO TODO
-			
-			Element valueElt = element.getChild(ELT_EXACT,nsC);
-			String valueStr = valueElt.getText();
-			Element startElt = element.getChild(ELT_OFFSET,nsC);
-			String startStr = startElt.getText();
-			int startPos = prevSize + Integer.parseInt(startStr);
-			Element lengthElt = element.getChild(ELT_LENGTH,nsC);
-			String lengthStr = lengthElt.getText();
-			int length = Integer.parseInt(lengthStr);
-			int endPos = startPos + length;
-			result = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
-		}
-		
-		return result;
-	}
-	
-	
-	{
-			
-			
-			// extracting entities part from opeNer result text
-			logger.log("extracting entities part from opener answer");
-			String openerEntities = extractEntities(openerAnswer);
-			
-			// extracting tokens part from opener result text
-			logger.log("extracting tokens part from opener answer");			
-			String tokens = extractTokenizedText(openerAnswer);
-			
-			try
-			{	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				InputSource is = new InputSource();
-				is.setCharacterStream(new StringReader(openerEntities));
-				Document doc = db.parse(is);
-				NodeList nodes = doc.getElementsByTagName(ELT_ENTITY);
-				NodeList nodes1 = doc.getElementsByTagName(ELT_REFERENCES);
-				String id = null;
-				String id1 = null;
-				String wid = null;
-				for (int m = 0; m < nodes.getLength(); m++)
-				{	Element element = (Element) nodes.item(m);
-				    Element element1 = (Element) nodes1.item(m);
-	                
-				    // parsing entities types
-				    String typeStr = element.getAttribute(ATT_TYPE);
-	                logger.log("entity type" + m + "=" +  typeStr);
-	                EntityType type = CONVERSION_MAP.get(typeStr);
-				    
-	                // parsing entities names
-	                NodeList name = element.getElementsByTagName(ELT_REFERENCES);
-				    Element line = (Element) name.item(0);
-				    String valueStr = getCharacterDataFromElement(line);
-				    logger.log("entity name" + m + "="  + valueStr);
-				   
-				        
-				    // parsing entities ids
-		            Node lastChild = element1.getLastChild();
-		            
-		            Node child = lastChild.getFirstChild(); //target
-		            id = child.getAttributes().getNamedItem(ITEM_ID).getNodeValue();
-		            
-		            Node child1 = lastChild.getLastChild();
-		            id1 = child1.getAttributes().getNamedItem(ITEM_ID).getNodeValue();
-		            
-		            // extracting endPos & startPos
-		            id = id.replace(id.charAt(0), 'w');
-		            id1 = id1.replace(id1.charAt(0), 'w');
-		            
-		            DocumentBuilder db2 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				    InputSource is2 = new InputSource();
-					is2.setCharacterStream(new StringReader(tokens));
-	                Document doc2 = db2.parse(is2);
-					NodeList nodes2 = doc2.getElementsByTagName(ELT_WF);
+			// process each span element
+			List<Element> spanElts = referencesElt.getChildren(ELT_SPAN);
+			for(Element spanElt: spanElts)
+			{	// process each target (=term) in the span
+				List<Element> targetElts = spanElt.getChildren(ELT_TARGET);
+				int startPos = -1;
+				int endPos = 0;
+				for(Element targetElt: targetElts)
+				{	// get the refered term id
+					String id = targetElt.getAttributeValue(ATT_ID);
+					// get the corresponding term element
+					Element termElt = termMap.get(id);
 					
-					int j = 1;
-					int startPos=0;
-					int endPos=0;
-					int off = 0;
-					int leng = 0;
-					String offset = null;
-					String length = null;
-					
-					do
-					{	Element element2 = (Element) nodes2.item(j);
-					    wid = element2.getAttribute(ATT_WID);
-					   
-			            if(id.equals(wid))
-			            {	Element element3 = (Element) nodes2.item(j);
-						    offset = element3.getAttribute(ATT_OFFSET);
-						    length = element3.getAttribute(ATT_LENGTH);						
-						    off = Integer.parseInt(offset) ;						    
-						    startPos = off + prevSize  ;
-						    logger.log("startPos entity" + m + "= " + startPos);
-						    
-			            }
-			            
-			            if(id1.equals(wid))
-			            {	if(numberSpace(valueStr) != 0)
-			            	{	Element element3 = (Element) nodes2.item(j);
-							    offset = element3.getAttribute(ATT_OFFSET);
-							    length = element3.getAttribute(ATT_LENGTH);
-							    off = Integer.parseInt(offset) ;
-							    leng = Integer.parseInt(length) ;
-	                            endPos = off + leng + prevSize ;
-							    logger.log("endPos entity" + m + "= " + endPos);
-							    
-			            	}
-			            	else 
-			            	{	leng = Integer.parseInt(length);
-							    endPos = startPos + leng  ;
-							    logger.log("endPos entity" + m + "=" + endPos);
-			            	}
-		            	}
-			            
-			            if((type!=null) & (startPos != 0) & (endPos != 0))
-			            {	AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
-							//boolean check = entity.checkText(article);	
-							//logger.log("check=" + check);
-						    if(entity!=null)
-						    	result.addEntity(entity);
-			            }
-			            
-			            //else logger.log("error type");
-
-			            j++;
+					// retrieve its constituting words
+					Element spanElt2 = termElt.getChild(ELT_SPAN);
+					List<Element> targetElts2 = spanElt2.getChildren(ELT_TARGET);
+					int startPos2 = -1;
+					int endPos2 = 0;
+					for(Element targetElt2: targetElts2)
+					{	// get the refered word id
+						String id2 = targetElt2.getAttributeValue(ATT_ID);
+						// get the corresponding word element
+						Element wordElt = wordMap.get(id2);
+						
+						// get its position
+						String offsetStr = wordElt.getAttributeValue(ATT_OFFSET);
+						int offset = Integer.parseInt(offsetStr);
+						String lengthStr = wordElt.getAttributeValue(ATT_LENGTH);
+						int length = Integer.parseInt(lengthStr);
+						
+						// update term position
+						if(startPos2<0)
+							startPos2 = offset;
+						endPos2 = offset + length;
 					}
-					while((id != wid) && (j < nodes2.getLength()) );
+					
+					// update mention position
+					if(startPos<0)
+						startPos = startPos2;
+					endPos = endPos2;
 				}
-				// update size
-				prevSize = prevSize + originalText.length();
+				
+				// create entity
+				String valueStr = part.substring(startPos, endPos);
+				startPos = startPos + prevSize;
+				endPos = endPos + prevSize;
+				result = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
 			}
-			catch (IOException e)
-			{	//e.printStackTrace();
-				throw new ConverterException(e.getMessage());
-			}
-			catch (ParserConfigurationException e)
-			{	//e.printStackTrace();
-				throw new ConverterException(e.getMessage());
-			}
-			catch (SAXException e)
-			{	//e.printStackTrace();
-				throw new ConverterException(e.getMessage());
+			
+			// external references
+			Element extReferencesElt = element.getChild(ELT_EXTERNAL_REFERENCES);
+			if(extReferencesElt!=null)
+			{	// TODO we could retrieve the assocated knowledge base references
+				// https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc
+				List<Element> extReferenceElts = extReferencesElt.getChildren(ELT_EXTERNAL_REFERENCE);
+				logger.log("Found the following external references for entity "+result);
+				logger.increaseOffset();
+					for(Element extReferenceElt: extReferenceElts)
+					{	String resource = extReferenceElt.getAttributeValue(ATT_RESOURCE);
+						String reference = extReferenceElt.getAttributeValue(ATT_REFERENCE);
+						String confidence = extReferenceElt.getAttributeValue(ATT_CONFIDENCE);
+						logger.log("resource:"+resource+" reference:"+reference+" confidence:"+confidence);
+					}
+				logger.increaseOffset();
 			}
 		}
 		
 		return result;
 	}
 
-	/**
-	 * Receives an element and get 
-	 * data from it.
-	 *  
-	 * @param element
-	 * 		Element to process.
-	 * @return
-	 * 		The part correspending to entities.
-	 */
-	public static String getCharacterDataFromElement(Element element) 
-	{	Node child = element.getFirstChild();
-		if (child instanceof CharacterData) 
-		{	CharacterData cd = (CharacterData) child;
-	    	return cd.getData();
-	    }
-		return "";
-	}
-	
-	/**
-	 * Receives the result data of opener 
-	 * and extract from it the part correspending 
-	 * to entities.
-	 *  
-	 * @param data
-	 * 		String data to process.
-	 * @return
-	 * 		The part correspending to entities.
-	 */
-	public String extractEntities (String data)
-	{	String openerAnswer = null;	    
-	    Pattern pattern = Pattern.compile("(?<=<entities>).*.(?=</entities>)");
-		Matcher matcher = pattern.matcher(data);
-        String xmlentities = new String();
-		boolean found = false;
-		while (matcher.find()) 
-		{	xmlentities = matcher.group().toString();
-	        //logger.log(">>>>>>>>>>>xml entities: " + xmlentities);
-			found = true;
-		}
-		if (!found)
-			logger.log("ERROR: text not found");
-		openerAnswer =  "<entities>" + xmlentities + "</entities>";
-		openerAnswer = openerAnswer.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
-		logger.log(">>>>>>>>>>>>>>entities:" + openerAnswer);
-		return openerAnswer;
-	}
-	
-	/**
-	 * Receives the result data of opener 
-	 * and extract from it the part correspending 
-	 * to tokenized text.
-	 *  
-	 * @param data
-	 * 		String data to process.
-	 * @return
-	 * 		The tokenized text.
-	 */
-	public String extractTokenizedText(String data)
-	{  String extraText = null;
-	   String tokens = null;    
-       Pattern pattern = Pattern.compile("(?<=<text>).*.(?=</text>)");
-	   Matcher matcher = pattern.matcher(data);
-    
-	   boolean found = false;
-	   while (matcher.find())
-	   {	extraText = matcher.group().toString();
-			//logger.log(">>>>>>>>>>>text: " + extraText);
-			found = true;
-	   }
-	   if (!found)
-		   logger.log("ERROR: text not found");
-	   tokens = "<text>" + extraText + "</text>";
-	   tokens = tokens.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
-	   logger.log(">>>>>>>>>>>>>>tokens:" + tokens);
-	   return tokens;
-	}
-	
-	/**
-	 * Receives the name of entity  
-	 * and returns the number of space  
-	 * in this string.
-	 *  
-	 * @param name
-	 * 		String name to process.
-	 * @return
-	 * 		String number of space.
-	 */
-	public int numberSpace(String name)
-	{   int nbres = 0;
-		for (int i=0; i<name.length(); i++)
-		{char ch = name.charAt(i);
-		
-		if (ch == ' ')
-			nbres++ ;
-		}
-		
-		return nbres ;
-	}
-
-    /////////////////////////////////////////////////////////////////
-    // RAW				/////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	// RAW				/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
     @Override
     protected void writeRawResults(Article article, List<String> intRes) throws IOException
     {	String temp = "";

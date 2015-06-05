@@ -39,6 +39,10 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * Official OpeNer website: 
  * <a href="http://www.opener-project.eu/webservices/">
  * http://www.opener-project.eu/webservices/</a>
+ * <br/>
+ * <b>Notes:</b> the English version is able to recognize mentions
+ * referring to the same entity, and to resolve coreferences. The 
+ * tool also seems to be able to do entity linking (vs. a knowledge base).
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
