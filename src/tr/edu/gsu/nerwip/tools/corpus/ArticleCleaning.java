@@ -34,7 +34,6 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class was used to clean articles, in order to avoid problems 
@@ -120,7 +119,10 @@ public class ArticleCleaning
 		String raw = FileTools.readTextFile(rawPath);
 		String linkedPath = article.getPath() + File.separator + FileNames.FI_LINKED_TEXT;
 		logger.log("Retrieve linked text: "+linkedPath);
-		String linked = FileTools.readTextFile(linkedPath);
+		File linkedFile = new File(linkedPath);
+		String linked = raw;
+		if(linkedFile.exists())
+			FileTools.readTextFile(linkedPath);
 		String annotatedPath = article.getPath() + File.separator + FileNames.FI_REFERENCE_TEXT;
 		String annotated = null;
 		if(processAnnotated)
@@ -132,12 +134,16 @@ public class ArticleCleaning
 		String tab[] = {raw,linked,annotated};
 		
 		// compare content
-		for(int i=0;i<tab.length;i++)
-		{		
-//System.out.println(i);
-			tab[i] = replaceChars(tab[i]);
-			tab[i] = StringTools.cleanSpaces(tab[i]);
-		}
+//		for(int i=0;i<tab.length;i++)
+//		{		
+////System.out.println(i);
+//			tab[i] = replaceChars(tab[i]);
+//			tab[i] = StringTools.cleanSpaces(tab[i]);
+//		}
+		if(raw.codePointAt(0)==65279)
+			tab[0] = raw.substring(1);
+		if(linked.codePointAt(0)==65279)
+			tab[1] = linked.substring(1);
 		
 		// record new texts
 		FileTools.writeTextFile(rawPath, tab[0]);

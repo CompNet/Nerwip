@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.edition.EntityEditor;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
@@ -38,6 +39,7 @@ import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
@@ -47,6 +49,9 @@ import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmTrainer;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisTrainer;
@@ -58,9 +63,8 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.nero.Nero;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNER;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
@@ -102,9 +106,11 @@ public class Test
 		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
+		
 		String name = "Émilien_Brigault";
 //		String name = "Albert_Chauly";
-		
+//		String name = "Gilles_Marcel_Cachin";
+//		String name = "Barack_Obama";
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
@@ -123,12 +129,11 @@ public class Test
 //		testSubee(url);
 //		testWikipediaDater(url);
 //		testNero(name);
-		testOpeNER(name);
-		
+		testOpeNer(name);
+//		testTagEN(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
-		
 		
 //		testEvaluator();
 //		testEditor();
@@ -388,17 +393,22 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
+		Tagger tagger = Tagger.CRF;
+		boolean flat = false;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		Nero nero = new Nero(ignorePronouns, exclusionOn);
+		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
-		nero.process(article);
+		
+		// only the specified article
+//		nero.process(article);
 
+		// all the corpus
+		testAllCorpus(nero,150);
+		
 		logger.decreaseOffset();
 	}
-	
-	
 	
 	/**
 	 * Tests the features related to NER. 
@@ -409,9 +419,9 @@ public class Test
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testOpeNER(String name) throws Exception
-	{	logger.setName("Test-OpeNER");
-		logger.log("Start testing OpeNER");
+	private static void testTagEN(String name) throws Exception
+	{	logger.setName("Test-TagEN");
+		logger.log("Start testing TagEN");
 		logger.increaseOffset();
 	
 		ArticleRetriever retriever = new ArticleRetriever();
@@ -419,7 +429,34 @@ public class Test
 
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNER opener = new OpeNER(ignorePronouns, exclusionOn);
+		TagEN tagen = new TagEN(ignorePronouns, exclusionOn);
+		tagen.setOutputRawResults(true);
+		tagen.setCacheEnabled(false);
+		tagen.process(article);
+
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testOpeNer(String name) throws Exception
+	{	logger.setName("Test-OpeNer");
+		logger.log("Start testing OpeNer");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
 		opener.setCacheEnabled(false);
 		opener.process(article);
@@ -427,9 +464,6 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
-	
-
-
 	/**
 	 * Tests the features related to NER. 
 	 * 
@@ -896,7 +930,48 @@ public class Test
 		
 		logger.decreaseOffset();
 	}
-
+	
+	/**
+	 * Applies the specified NER tool to the 
+	 * whole corpus.
+	 * 
+	 * @param recognizer
+	 * 		NER tool to apply.
+	 * @param start
+	 * 		Which article to start from.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testAllCorpus(AbstractRecognizer recognizer, int start) throws Exception
+	{	logger.log("Process each article individually");
+		logger.increaseOffset();
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		for(File folder: folders)
+		{	if(i>=start)
+			{	// get the results
+				logger.log("Process article "+folder.getName());
+				logger.increaseOffset();
+				
+					// get article
+					logger.log("Retrieve the article");
+					String name = folder.getName();
+					ArticleRetriever retriever = new ArticleRetriever();
+					Article article = retriever.process(name);
+						
+					logger.log("Apply the ner tool");
+					recognizer.process(article);
+					
+				logger.decreaseOffset();
+			}
+			i++;
+		}
+		
+		logger.decreaseOffset();
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// EVALUATION	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

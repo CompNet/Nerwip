@@ -140,16 +140,16 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	@Override
 	public Entities convert(Article article, List<String> text) throws ConverterException
 	{	logger.increaseOffset();
-		Entities result = new Entities(recognizerName);
+		Entities result = new Entities(recognizerName);		
 
-		logger.log("Processing each chunk of data and the associated answer");
+		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = text.iterator();
 		logger.increaseOffset();
 		int i = 0;
 		int prevSize = 0;
 		while(it.hasNext())
 		{	i++;
-			logger.log("Processing chunk "+i+"/"+text.size()/2);
+			logger.log("Processing part "+i+"/"+text.size()/2);
 			String originalText = it.next();
 			String ocAnswer = it.next();
 			
@@ -213,7 +213,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	 * @param metaData
 	 * 		Complementary information used to retreive certain details.
 	 * @param prevSize
-	 * 		Size of the chunks already processed. 
+	 * 		Size of the parts already processed. 
 	 * @return
 	 * 		The resulting entity.
 	 */
@@ -301,9 +301,9 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 		for(String str: intRes)
 		{	i++;
 			if(i%2==1)
-				temp = temp + "\n>>> Chunk " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
+				temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
 			else
-				temp = temp + "\n>>> Chunk " + (i/2) + "/" + intRes.size() + " - OpenCalais Response <<<\n" + str + "\n";
+				temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size() + " - OpenCalais Response <<<\n" + str + "\n";
 		}
 		writeRawResultsStr(article, temp);
 	}
