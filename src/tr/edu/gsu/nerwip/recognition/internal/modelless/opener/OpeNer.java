@@ -28,7 +28,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInterna
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
- * This class acts as an interface with the OpeNER Web service.
+ * This class acts as an interface with the OpeNer Web service.
  * <br/>
  * Recommended parameter values:
  * <ul>
@@ -36,7 +36,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * 		<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
  * <br/>
- * Official OpeNER website: 
+ * Official OpeNer website: 
  * <a href="http://www.opener-project.eu/webservices/">
  * http://www.opener-project.eu/webservices/</a>
  * 
@@ -47,7 +47,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 {
 	/**
 	 * Builds and sets up an object representing
-	 * the OpeNER NER tool.
+	 * the OpeNer NER tool.
 	 * 
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
@@ -85,7 +85,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by OpeNER */
+	/** List of entities recognized by OpeNer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
 	(	EntityType.DATE,
 		EntityType.LOCATION,

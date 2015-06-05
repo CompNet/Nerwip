@@ -129,9 +129,8 @@ public class Test
 //		testSubee(url);
 //		testWikipediaDater(url);
 		testNero(name);
-//		testOpeNER(name);
+//		testOpeNer(name);
 //		testTagEN(name);
-//		testOpeNER(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
@@ -447,9 +446,9 @@ public class Test
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testOpeNER(String name) throws Exception
-	{	logger.setName("Test-OpeNER");
-		logger.log("Start testing OpeNER");
+	private static void testOpeNer(String name) throws Exception
+	{	logger.setName("Test-OpeNer");
+		logger.log("Start testing OpeNer");
 		logger.increaseOffset();
 	
 		ArticleRetriever retriever = new ArticleRetriever();

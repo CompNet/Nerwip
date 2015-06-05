@@ -45,7 +45,7 @@ public enum RecognizerName
 	LINGPIPE,
 	/** OpenCalais Web Service */
 	OPENCALAIS,
-	/** OpeNER Web Service */
+	/** OpeNer Web Service */
 	OPENER,
 	/** Apache OpenNLP */
 	OPENNLP, 

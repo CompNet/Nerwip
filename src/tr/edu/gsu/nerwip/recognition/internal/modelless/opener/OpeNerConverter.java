@@ -11,55 +11,18 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-
 import javax.xml.parsers.ParserConfigurationException;
 
-
-
-
-
-
-
-
-
-
-
-
-
-//import org.htmlparser.util.NodeList;
-//import org.jdom.Document;
-//import org.jdom.Element;
-//import org.jdom.JDOMException;
-//import org.jdom.Namespace;
-//import org.jdom.input.SAXBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-//import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Node;
 
-//import javax.xml.parsers.DocumentBuilder;
-//import javax.xml.parsers.DocumentBuilderFactory;
-
-
-
-
-
-
-
-
-
-
-
-
-
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-//import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
@@ -68,7 +31,7 @@ import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
- * This class is the converter associated to OpeNER.
+ * This class is the converter associated to OpeNer.
  * It is able to convert the text outputed by this NER tool
  * into objects compatible with Nerwip.
  * <br/>
@@ -76,7 +39,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * and our XML format.
  * 
  * @author Sabrine Ayachi
- * 
+ * @author Vincent Labatut
  */
 public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 {	
@@ -93,7 +56,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	/////////////////////////////////////////////////////////////////
 	// TYPE CONVERSION MAP	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Map of URI to entity type conversion */
+	/** Map of string to entity type conversion */
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
 	
 	/** Initialization of the conversion map */
@@ -102,35 +65,29 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 		CONVERSION_MAP.put("LOCATION", EntityType.LOCATION);
 		CONVERSION_MAP.put("ORGANIZATION", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("DATE", EntityType.DATE);
-		
 	}
 	
-//	/** Pattern previously used to adjust entity positions */ 
-//	private final static Pattern DOC_PATTERN = Pattern.compile("\\n\\n");
+	/////////////////////////////////////////////////////////////////
+	// XML NAMES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Element of the KAT XML dialect */
+	private final static String ELT_ENTITY = "entity";
+	/** Element of the KAT XML dialect */
+	private final static String ELT_REFERENCES = "references";
+	/** Element of the KAT XML dialect */
+	private final static String ELT_WF = "wf";
 	
+	/** Attribute of the KAT XML dialect */
+	private final static String ATT_TYPE = "type";
+	/** Attribute of the KAT XML dialect */
+	private final static String ATT_WID = "wid";
+	/** Attribute of the KAT XML dialect */
+	private final static String ATT_OFFSET = "offset";
+	/** Attribute of the KAT XML dialect */
+	private final static String ATT_LENGTH = "length";
 	
-/////////////////////////////////////////////////////////////////
-// XML NAMES		/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-	/** Element of the ner format */
-	private final static String ELT_ENTITY="entity";
-	/** Element of the ner format */
-	private final static String ELT_REFERENCES="references";
-	/** Element of the ner format */
-	private final static String ELT_WF="wf";
-	
-	/** Attribute of the ner format */
-	private final static String ATT_TYPE="type";
-	/** Attribute of the ner format */
-	private final static String ATT_WID="wid";
-	/** Attribute of the ner format */
-	private final static String ATT_OFFSET="offset";
-	/** Attribute of the ner format */
-	private final static String ATT_LENGTH="length";
-	
-	/** Item of the ner format */
-	private final static String ITEM_ID="id";
-	
+	/** Id of an Item */
+	private final static String ITEM_ID = "id";
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
@@ -141,14 +98,14 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	{	logger.increaseOffset();
 		Entities result = new Entities(recognizerName);
 		
-		logger.log("Processing each chunk of data and the associated answer");
+		logger.log("Processing each part of data and the associated answer");
 		Iterator<String> it = data.iterator();
 		logger.increaseOffset();
 		int i = 0;
 		int prevSize = 0;
 		while(it.hasNext())
 		{	i++;
-			logger.log("Processing chunk "+i+"/"+data.size()/2);
+			logger.log("Processing part "+i+"/"+data.size()/2);
 			String originalText = it.next();
 			String openerAnswer = it.next();
 			
@@ -161,8 +118,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 			String tokens = extractTokenizedText(openerAnswer);
 			
 			try
-			{
-				DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			{	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 				InputSource is = new InputSource();
 				is.setCharacterStream(new StringReader(openerEntities));
 	            Document doc = db.parse(is);
@@ -172,8 +128,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				String id1 = null;
 				String wid = null;
 				for (int m = 0; m < nodes.getLength(); m++)
-				{
-					Element element = (Element) nodes.item(m);
+				{	Element element = (Element) nodes.item(m);
 				    Element element1 = (Element) nodes1.item(m);
 	                
 				    // parsing entities types
@@ -216,13 +171,11 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 					String length = null;
 					
 					do
-					{
-						Element element2 = (Element) nodes2.item(j);
+					{	Element element2 = (Element) nodes2.item(j);
 					    wid = element2.getAttribute(ATT_WID);
 					   
-			            if (id.equals(wid))
-			            {
-			            	Element element3 = (Element) nodes2.item(j);
+			            if(id.equals(wid))
+			            {	Element element3 = (Element) nodes2.item(j);
 						    offset = element3.getAttribute(ATT_OFFSET);
 						    length = element3.getAttribute(ATT_LENGTH);						
 						    off = Integer.parseInt(offset) ;						    
@@ -230,11 +183,10 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 						    logger.log("startPos entity" + m + "= " + startPos);
 						    
 			            }
-			            if (id1.equals(wid))
-			            {
-			            	if (numberSpace(valueStr) != 0)
-			            	{
-			            		Element element3 = (Element) nodes2.item(j);
+			            
+			            if(id1.equals(wid))
+			            {	if(numberSpace(valueStr) != 0)
+			            	{	Element element3 = (Element) nodes2.item(j);
 							    offset = element3.getAttribute(ATT_OFFSET);
 							    length = element3.getAttribute(ATT_LENGTH);
 							    off = Integer.parseInt(offset) ;
@@ -244,57 +196,45 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 							    
 			            	}
 			            	else 
-			            	{
-			            		leng = Integer.parseInt(length);
+			            	{	leng = Integer.parseInt(length);
 							    endPos = startPos + leng  ;
 							    logger.log("endPos entity" + m + "=" + endPos);
-							    
 			            	}
-			            	}
-			            
-			            
+		            	}
 			            
 			            if((type!=null) & (startPos != 0) & (endPos != 0))
-			            {
-			            	AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
+			            {	AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
 							//boolean check = entity.checkText(article);	
 							//logger.log("check=" + check);
 						    if(entity!=null)
-						    {
 						    	result.addEntity(entity);
-						    	
-						    }
-						    
 			            }
 			            
 			            //else logger.log("error type");
 
 			            j++;
-			            }
-					while((id != wid) && (j < nodes2.getLength()) );
 					}
+					while((id != wid) && (j < nodes2.getLength()) );
+				}
 				// update size
 				prevSize = prevSize + originalText.length();
-				}
-			catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			catch (IOException e)
+			{	//e.printStackTrace();
+				throw new ConverterException(e.getMessage());
 			}
-			catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			catch (ParserConfigurationException e)
+			{	//e.printStackTrace();
+				throw new ConverterException(e.getMessage());
 			}
-			
+			catch (SAXException e)
+			{	//e.printStackTrace();
+				throw new ConverterException(e.getMessage());
+			}
 		}
 		
 		return result;
-		
 	}
-			
 
 	/**
 	 * Receives an element and get 
@@ -307,12 +247,11 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 */
 	public static String getCharacterDataFromElement(Element element) 
 	{	Node child = element.getFirstChild();
-	if (child instanceof CharacterData) 
-	{
-		CharacterData cd = (CharacterData) child;
-	    return cd.getData();
+		if (child instanceof CharacterData) 
+		{	CharacterData cd = (CharacterData) child;
+	    	return cd.getData();
 	    }
-	return "";
+		return "";
 	}
 	
 	/**
@@ -325,24 +264,19 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * @return
 	 * 		The part correspending to entities.
 	 */
-	
 	public String extractEntities (String data)
-	{
-		String openerAnswer = null;	    
+	{	String openerAnswer = null;	    
 	    Pattern pattern = Pattern.compile("(?<=<entities>).*.(?=</entities>)");
 		Matcher matcher = pattern.matcher(data);
         String xmlentities = new String();
 		boolean found = false;
 		while (matcher.find()) 
-		{
-			xmlentities = matcher.group().toString();
+		{	xmlentities = matcher.group().toString();
 	        //logger.log(">>>>>>>>>>>xml entities: " + xmlentities);
 			found = true;
-			}
+		}
 		if (!found)
-		{
 			logger.log("ERROR: text not found");
-			}
 		openerAnswer =  "<entities>" + xmlentities + "</entities>";
 		openerAnswer = openerAnswer.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
 		logger.log(">>>>>>>>>>>>>>entities:" + openerAnswer);
@@ -359,8 +293,6 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * @return
 	 * 		The tokenized text.
 	 */
-
-	
 	public String extractTokenizedText(String data)
 	{  String extraText = null;
 	   String tokens = null;    
@@ -369,20 +301,16 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
     
 	   boolean found = false;
 	   while (matcher.find())
-	   {
-		extraText = matcher.group().toString();
-        //logger.log(">>>>>>>>>>>text: " + extraText);
-		found = true;
-		}
+	   {	extraText = matcher.group().toString();
+			//logger.log(">>>>>>>>>>>text: " + extraText);
+			found = true;
+	   }
 	   if (!found)
-	   {
 		   logger.log("ERROR: text not found");
-		   }
 	   tokens = "<text>" + extraText + "</text>";
 	   tokens = tokens.replaceAll("\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}|\\p{Space}\\p{Space}\\p{Space}\\p{Space}", "");
 	   logger.log(">>>>>>>>>>>>>>tokens:" + tokens);
 	   return tokens;
-	   
 	}
 	
 	/**
@@ -395,7 +323,6 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * @return
 	 * 		String number of space.
 	 */
-	
 	public int numberSpace(String name)
 	{   int nbres = 0;
 		for (int i=0; i<name.length(); i++)
@@ -406,9 +333,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 		}
 		
 		return nbres ;
-		
 	}
-	
 
     /////////////////////////////////////////////////////////////////
     // RAW				/////////////////////////////////////////////
@@ -421,12 +346,11 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
         {
         	i++;
         	if(i%2==1)
-        		temp = temp + "\n>>> Chunk " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
+        		temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
         	else
-        		temp = temp + "\n>>> Chunk " + (i/2) + "/" + intRes.size() + " - OpeNER Response <<<\n" + str + "\n";
+        		temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size() + " - OpeNer Response <<<\n" + str + "\n";
         	}
         writeRawResultsStr(article, temp);
         
     }
-    
 }
