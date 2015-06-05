@@ -107,9 +107,9 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		
-//		String name = "Émilien_Brigault";
+		String name = "Émilien_Brigault";
 //		String name = "Albert_Chauly";
-		String name = "Gilles_Marcel_Cachin";
+//		String name = "Gilles_Marcel_Cachin";
 //		String name = "Barack_Obama";
 		
 //		testArticleRetriever(url);
@@ -128,8 +128,8 @@ public class Test
 //		testStanford(url);
 //		testSubee(url);
 //		testWikipediaDater(url);
-		testNero(name);
-//		testOpeNer(name);
+//		testNero(name);
+		testOpeNer(name);
 //		testTagEN(name);
 		
 //		testVoteCombiner(url);

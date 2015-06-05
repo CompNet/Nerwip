@@ -2,6 +2,7 @@ package tr.edu.gsu.nerwip.recognition.internal.modelless.opener;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,13 +14,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Node;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -66,21 +66,42 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 		CONVERSION_MAP.put("ORGANIZATION", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("DATE", EntityType.DATE);
 	}
+	/*
+	 * Note: ignored entity types
+	 * (cf https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc)
+	 * Time
+	 * Money
+	 * Percent
+	 * Misc (phone number, id card, bank number, addresses...)
+	 */
 	
 	/////////////////////////////////////////////////////////////////
 	// XML NAMES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Element containing the list of all tokenized words */
+	private final static String ELT_TEXT = "text";
+	/** Element containing the list of all identified terms */
+	private final static String ELT_TERMS = "terms";
+	/** Element containing the list of all detected entities */
+	private final static String ELT_ENTITIES = "entities";
+	/** Element containing the list of references to an entity */
+	private final static String ELT_REFERENCES = "references";
+
+	/** Attribute representing the id of a word */
+	private final static String ATT_WID = "wid";
+	/** Attribute representing the id of a term */
+	private final static String ATT_TID = "tid";
+	/** Attribute representing the type of an entity */
+	private final static String ATT_TYPE = "type";
+	
+	
+	
+	
 	/** Element of the KAT XML dialect */
 	private final static String ELT_ENTITY = "entity";
 	/** Element of the KAT XML dialect */
-	private final static String ELT_REFERENCES = "references";
-	/** Element of the KAT XML dialect */
 	private final static String ELT_WF = "wf";
 	
-	/** Attribute of the KAT XML dialect */
-	private final static String ATT_TYPE = "type";
-	/** Attribute of the KAT XML dialect */
-	private final static String ATT_WID = "wid";
 	/** Attribute of the KAT XML dialect */
 	private final static String ATT_OFFSET = "offset";
 	/** Attribute of the KAT XML dialect */
@@ -92,13 +113,13 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	//@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
 	public Entities convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
 		Entities result = new Entities(recognizerName);
 		
-		logger.log("Processing each part of data and the associated answer");
+		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = data.iterator();
 		logger.increaseOffset();
 		int i = 0;
@@ -108,6 +129,102 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 			logger.log("Processing part "+i+"/"+data.size()/2);
 			String originalText = it.next();
 			String openerAnswer = it.next();
+			
+			try
+			{	// build DOM
+				logger.log("Build DOM");
+				SAXBuilder sb = new SAXBuilder();
+				Document doc = sb.build(new StringReader(openerAnswer));
+				Element root = doc.getRootElement();
+				
+				// index all the detected words
+				logger.log("Index all detected words");
+				Map<String,Element> wordMap = new HashMap<String,Element>();
+				List<Element> wordElts = root.getChildren(ELT_TEXT);
+				for(Element wordElt: wordElts)
+				{	String wid = wordElt.getAttributeValue(ATT_WID); 
+					wordMap.put(wid,wordElt);
+				}
+				
+				// index all the detected terms
+				logger.log("Index all detected terms");
+				Map<String,Element> termMap = new HashMap<String,Element>();
+				List<Element> termElts = root.getChildren(ELT_TERMS);
+				for(Element termElt: termElts)
+				{	String tid = termElt.getAttributeValue(ATT_TID); 
+					termMap.put(tid,termElt);
+				}
+
+				
+				// process all entity elements
+				logger.log("Create entity objects");
+				List<Element> entityElts = root.getChildren(ELT_ENTITIES);
+				for(Element entityElt: entityElts)
+				{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize);
+					if(entity!=null)
+						result.addEntity(entity);
+				}
+				
+				// update size
+				prevSize = prevSize + originalText.length();
+			}
+			catch (JDOMException e)
+			{	e.printStackTrace();
+			}
+			catch (IOException e)
+			{	e.printStackTrace();
+			}
+		}
+		logger.decreaseOffset();
+		
+		logger.decreaseOffset();
+		return result;
+	}
+	
+	/**
+	 * Receives an XML element and extract
+	 * the information necessary to create
+	 * an entity.
+	 *  
+	 * @param element
+	 * 		Element to process.
+	 * @param metaData
+	 * 		Complementary information used to retreive certain details.
+	 * @param prevSize
+	 * 		Size of the parts already processed. 
+	 * @return
+	 * 		The resulting entity.
+	 */
+	private AbstractEntity<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize)
+	{	AbstractEntity<?> result = null;
+		
+		String typeCode = element.getAttributeValue(ATT_TYPE);
+		EntityType type = CONVERSION_MAP.get(typeCode);
+		
+		if(type!=null)
+		{	List<Element> referencesElt = element.getChild(ELT_REFERENCES);
+			
+		// https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc
+		// TODO TODO
+			
+			Element valueElt = element.getChild(ELT_EXACT,nsC);
+			String valueStr = valueElt.getText();
+			Element startElt = element.getChild(ELT_OFFSET,nsC);
+			String startStr = startElt.getText();
+			int startPos = prevSize + Integer.parseInt(startStr);
+			Element lengthElt = element.getChild(ELT_LENGTH,nsC);
+			String lengthStr = lengthElt.getText();
+			int length = Integer.parseInt(lengthStr);
+			int endPos = startPos + length;
+			result = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
+		}
+		
+		return result;
+	}
+	
+	
+	{
+			
 			
 			// extracting entities part from opeNer result text
 			logger.log("extracting entities part from opener answer");
@@ -121,7 +238,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 			{	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 				InputSource is = new InputSource();
 				is.setCharacterStream(new StringReader(openerEntities));
-	            Document doc = db.parse(is);
+				Document doc = db.parse(is);
 				NodeList nodes = doc.getElementsByTagName(ELT_ENTITY);
 				NodeList nodes1 = doc.getElementsByTagName(ELT_REFERENCES);
 				String id = null;
@@ -346,11 +463,27 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
         {
         	i++;
         	if(i%2==1)
-        		temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
+        		temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size()/2 + " - Original Text <<<\n" + str + "\n";
         	else
-        		temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size() + " - OpeNer Response <<<\n" + str + "\n";
+        	{	try
+        		{	// build DOM
+					SAXBuilder sb = new SAXBuilder();
+					Document doc = sb.build(new StringReader(str));
+					Format format = Format.getPrettyFormat();
+					format.setIndent("\t");
+					format.setEncoding("UTF-8");
+					XMLOutputter xo = new XMLOutputter(format);
+					String kafTxt = xo.outputString(doc);
+					
+					// add formatted kaf
+					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - OpeNer Response <<<\n" + kafTxt + "\n";
+        		}
+        		catch (JDOMException e)
+        		{	e.printStackTrace();
+        		}
         	}
-        writeRawResultsStr(article, temp);
+    	}
         
+        writeRawResultsStr(article, temp);
     }
 }

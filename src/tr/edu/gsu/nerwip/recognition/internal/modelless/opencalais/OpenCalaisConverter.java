@@ -142,7 +142,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	{	logger.increaseOffset();
 		Entities result = new Entities(recognizerName);		
 
-		logger.log("Processing each part of data and the associated answer");
+		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = text.iterator();
 		logger.increaseOffset();
 		int i = 0;

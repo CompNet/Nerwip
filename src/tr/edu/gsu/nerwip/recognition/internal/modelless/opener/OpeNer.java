@@ -127,9 +127,9 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	/** Entity recognizer URL */
 	private static final String RECOGNIZER_URL = SERVICE_URL + "/ner";
 	/** Maximal request size for OpenNer */
-	private static final int MAX_SIZE = 1000;
-	/** Sleep periods (in ms) */
-	private static final long SLEEP_PERIOD = 5000;
+	private static final int MAX_SIZE = 5000; //TODO wasn't it possible to use a value larger than 1000?
+//	/** Sleep periods (in ms) */
+//	private static final long SLEEP_PERIOD = 5000;
 	
 	@Override
 	protected List<String> detectEntities(Article article) throws RecognizerException
@@ -149,27 +149,27 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 			try
 			{	// tokenize the text
 				String tokenizedText = performTokenization(part);
-				Thread.sleep(SLEEP_PERIOD); //TODO is it really necessary to sleep like this ?
+//				Thread.sleep(SLEEP_PERIOD); //TODO is it really necessary to sleep like this ?
 
 				// detect part-of-speech
 				String taggedText = performTagging(tokenizedText);
-				Thread.sleep(SLEEP_PERIOD);
+//				Thread.sleep(SLEEP_PERIOD);
 				
 				// apply the constituent parser
 				String parsedText = performParsing(taggedText);
-				Thread.sleep(SLEEP_PERIOD);
+//				Thread.sleep(SLEEP_PERIOD);
 				
 				// perform the NER
 				String nerText = performRecognition(parsedText);
 
 				// clean the resulting XML //TODO why that?
-				String kafOld ="<KAF xml:lang=\"fr\" version=\"v1.opener\">";
-		        String kafNew = "<KAF>";
-				String answer = nerText.replaceAll(kafOld, kafNew);
+//				String kafOld ="<KAF xml:lang=\"fr\" version=\"v1.opener\">";
+//		        String kafNew = "<KAF>";
+//				nerText = nerText.replaceAll(kafOld, kafNew);
 				
 				// add part and corresponding answer to result
 				result.add(part);
-				result.add(answer);
+				result.add(nerText);
 			}
 			catch (UnsupportedEncodingException e)
 			{	//e.printStackTrace();
@@ -183,12 +183,15 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 			{	//e.printStackTrace();
 				throw new RecognizerException(e.getMessage());
 			}
-			catch (InterruptedException e)
-			{	//e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
-			}
+//			catch (InterruptedException e)
+//			{	//e.printStackTrace();
+//				throw new RecognizerException(e.getMessage());
+//			}
+			
+			logger.decreaseOffset();
 		}
 		
+		logger.decreaseOffset();
 		return result;
 	}
 	
