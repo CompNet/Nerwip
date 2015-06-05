@@ -61,6 +61,8 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	public OpeNer(boolean ignorePronouns, boolean exclusionOn)
 	{	super(false,ignorePronouns,exclusionOn);
 		
+		setIgnoreNumbers(false);
+		
 		// init converter
 		converter = new OpeNerConverter(getFolder());
 	}
@@ -381,3 +383,6 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		return result;
 	}
 }
+
+// TODO some entities seem merged (especially when the second contain parenthesis) >> because they are flatten?
+// TODO also check flattening in Nero

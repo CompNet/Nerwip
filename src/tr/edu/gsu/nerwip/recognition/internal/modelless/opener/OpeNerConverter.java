@@ -75,8 +75,12 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private final static String ELT_TEXT = "text";
 	/** Element containing the list of all identified terms */
 	private final static String ELT_TERMS = "terms";
+	/** Element representing a term */
+	private final static String ELT_TERM = "term";
 	/** Element containing the list of all detected entities */
 	private final static String ELT_ENTITIES = "entities";
+	/** Element representing an entity */
+	private final static String ELT_ENTITY = "entity";
 	/** Element containing the list of mentions to an entity */
 	private final static String ELT_REFERENCES = "references";
 	/** Element containing the list of external references for an entity */
@@ -87,13 +91,15 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private final static String ELT_SPAN = "span";
 	/** Element refering to a term constituting an entity mention */
 	private final static String ELT_TARGET = "target";
+	/** Element representing a word (word form) */
+	private final static String ELT_WF = "wf";
 
 	/** Attribute representing the id of a word */
 	private final static String ATT_WID = "wid";
 	/** Attribute representing the id of a term */
 	private final static String ATT_TID = "tid";
 	/** Attribute representing the id of a term or word in a target element */
-	private final static String ATT_ID = "tid";
+	private final static String ATT_ID = "id";
 	/** Attribute representing the type of an entity */
 	private final static String ATT_TYPE = "type";
 	/** Attribute representing the starting position of a word in the text */
@@ -137,7 +143,8 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				// index all the detected words
 				logger.log("Index all detected words");
 				Map<String,Element> wordMap = new HashMap<String,Element>();
-				List<Element> wordElts = root.getChildren(ELT_TEXT);
+				Element textElt = root.getChild(ELT_TEXT);
+				List<Element> wordElts = textElt.getChildren(ELT_WF);
 				for(Element wordElt: wordElts)
 				{	String wid = wordElt.getAttributeValue(ATT_WID); 
 					wordMap.put(wid,wordElt);
@@ -146,7 +153,8 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				// index all the detected terms
 				logger.log("Index all detected terms");
 				Map<String,Element> termMap = new HashMap<String,Element>();
-				List<Element> termElts = root.getChildren(ELT_TERMS);
+				Element termsElt = root.getChild(ELT_TERMS);
+				List<Element> termElts = termsElt.getChildren(ELT_TERM);
 				for(Element termElt: termElts)
 				{	String tid = termElt.getAttributeValue(ATT_TID); 
 					termMap.put(tid,termElt);
@@ -154,7 +162,8 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				
 				// process all entity elements
 				logger.log("Create entity objects");
-				List<Element> entityElts = root.getChildren(ELT_ENTITIES);
+				Element entitiesElt = root.getChild(ELT_ENTITIES);
+				List<Element> entityElts = entitiesElt.getChildren(ELT_ENTITY);
 				for(Element entityElt: entityElts)
 				{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
 					if(entity!=null)
@@ -208,6 +217,8 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 			
 			// process each span element
 			List<Element> spanElts = referencesElt.getChildren(ELT_SPAN);
+			if(spanElts.size()>1)
+				logger.log("WARNING: several mentions to the same entity, this info could be used!");
 			for(Element spanElt: spanElts)
 			{	// process each target (=term) in the span
 				List<Element> targetElts = spanElt.getChildren(ELT_TARGET);
@@ -253,6 +264,8 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				startPos = startPos + prevSize;
 				endPos = endPos + prevSize;
 				result = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
+				
+				// TODO we could add a unique code to the several mentions of the same entity
 			}
 			
 			// external references
@@ -269,7 +282,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 						String confidence = extReferenceElt.getAttributeValue(ATT_CONFIDENCE);
 						logger.log("resource:"+resource+" reference:"+reference+" confidence:"+confidence);
 					}
-				logger.increaseOffset();
+				logger.decreaseOffset();
 			}
 		}
 		

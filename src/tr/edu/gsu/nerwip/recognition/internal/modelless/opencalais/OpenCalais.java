@@ -79,6 +79,8 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	public OpenCalais(boolean ignorePronouns, boolean exclusionOn)
 	{	super(false,ignorePronouns,exclusionOn);
 		
+		setIgnoreNumbers(false);
+		
 		// init converter
 		converter = new OpenCalaisConverter(getFolder());
 	}
@@ -108,8 +110,8 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	// ENTITIES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** List of entities detected by this recognizer */
-	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
-		EntityType.DATE,
+	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
+	(	EntityType.DATE,
 		EntityType.LOCATION,
 		EntityType.ORGANIZATION,
 		EntityType.PERSON
