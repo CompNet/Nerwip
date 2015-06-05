@@ -78,7 +78,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * @author Sabrine Ayachi
  * 
  */
-public class OpeNERConverter extends AbstractInternalConverter<List<String>>
+public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 {	
 	/**
 	 * Builds a new converter using the specified info.
@@ -86,7 +86,7 @@ public class OpeNERConverter extends AbstractInternalConverter<List<String>>
 	 * @param nerFolder
 	 * 		Folder used to stored the results of the NER tool.
 	 */
-	public OpeNERConverter(String nerFolder)
+	public OpeNerConverter(String nerFolder)
 	{	super(RecognizerName.OPENER, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 

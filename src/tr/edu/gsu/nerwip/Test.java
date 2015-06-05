@@ -64,7 +64,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelN
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNER;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
@@ -457,7 +457,7 @@ public class Test
 
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNER opener = new OpeNER(ignorePronouns, exclusionOn);
+		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
 		opener.setCacheEnabled(false);
 		opener.process(article);
