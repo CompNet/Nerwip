@@ -65,7 +65,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>,OpenCalaisConverter>  
+public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>,OpenCalaisConverter>
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -74,7 +74,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
-	 * 		Whether or not stop words should be excluded from the detection.
+	 * 		Whether or not stop-words should be excluded from the detection.
 	 */
 	public OpenCalais(boolean ignorePronouns, boolean exclusionOn)
 	{	super(false,ignorePronouns,exclusionOn);
@@ -138,6 +138,8 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Web service URL */
+	private static final String SERVICE_URL = "http://api.opencalais.com/tag/rs/enrich";
 	/** Key name for OpenCalais */
 	public static final String KEY_NAME = "OpenCalais";
 	/** Maximal request size */
@@ -148,7 +150,6 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();
-		
 
 		// check if the key was set
 		String key = KeyHandler.KEYS.get(KEY_NAME);
@@ -159,22 +160,22 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 //		List<String> parts = new ArrayList<String>();
 //		while(text.length()>95000)
 //		{	int index = text.indexOf("\n",90000) + 1;
-//			String chunk = text.substring(0, index);
-//			parts.add(chunk);
+//			String part = text.substring(0, index);
+//			parts.add(part);
 //			text = text.substring(index);
 //		}
 //		parts.add(text);
 		List<String> parts = StringTools.splitText(text, MAX_SIZE);
 		
 		for(int i=0;i<parts.size();i++)
-		{	logger.log("Processing OpenCalais chunk #"+(i+1)+"/"+parts.size());
+		{	logger.log("Processing OpenCalais part #"+(i+1)+"/"+parts.size());
 			logger.increaseOffset();
 			String part = parts.get(i);
 			
 			try
 			{	// define HTTP message
-				logger.log("Build OpenCalais http message");
-				HttpPost method = new HttpPost("http://api.opencalais.com/tag/rs/enrich");
+				logger.log("Build OpenCalais HTTP message");
+				HttpPost method = new HttpPost(SERVICE_URL);
 				method.setHeader("x-calais-licenseID", key);
 				method.setHeader("Content-Type", "text/raw; charset=UTF-8");
 				method.setHeader("Accept", "xml/rdf");
@@ -196,7 +197,8 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 				while((line = bufferedReader.readLine())!=null)
 				{	builder.append(line+"\n");
 					nbr++;
-					logger.log("Line:" +line);				}
+					//logger.log("Line:" +line);
+				}
 				logger.log("Lines read: "+nbr);
 				
 				String answer = builder.toString();
