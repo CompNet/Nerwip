@@ -1910,7 +1910,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 			String refName = RecognizerName.REFERENCE.toString();
 			Entities references = entityLists.get(refName);
 			if(references==null)
-			{	references = new Entities(RecognizerName.REFERENCE);
+			{	references = new Entities(currentEditor);
 				updateSaved(1);
 				updateTitle();
 			}

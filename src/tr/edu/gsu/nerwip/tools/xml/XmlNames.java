@@ -36,6 +36,8 @@ public class XmlNames
 	/////////////////////////////////////////////////////////////////
 	/** Represents... a date! */
 	public static final String ATT_DATE = "date";
+	/** Person who originally annotated an article */
+	public static final String ATT_EDITOR = "editor";
 	/** Entity end position */
 	public static final String ATT_END = "end";
 	/** Id associated to some key */
