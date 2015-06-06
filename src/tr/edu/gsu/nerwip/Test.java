@@ -2,7 +2,6 @@ package tr.edu.gsu.nerwip;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
-
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
  * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
  * Copyright 2013 Samet Atdağ & Vincent Labatut
@@ -25,10 +24,36 @@ package tr.edu.gsu.nerwip;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.jdom.Content;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.Text;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+
+import de.unihd.dbs.heideltime.standalone.DocumentType;
+import de.unihd.dbs.heideltime.standalone.HeidelTimeStandalone;
+import de.unihd.dbs.heideltime.standalone.OutputType;
+import de.unihd.dbs.heideltime.standalone.POSTagger;
+import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.Entities;
@@ -37,9 +62,12 @@ import tr.edu.gsu.nerwip.edition.EntityEditor;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
+import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
+import tr.edu.gsu.nerwip.evaluation.measure.IstanbulMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
@@ -49,14 +77,19 @@ import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmTrainer;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
+import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
 import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTimeModelName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.Illinois;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisTrainer;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipe;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeTrainer;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlp;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
@@ -71,8 +104,11 @@ import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.file.FileTools;
+import tr.edu.gsu.nerwip.tools.freebase.FbCommonTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbIdTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
+import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.LinkTools;
@@ -118,12 +154,15 @@ public class Test
 //		testFbidRetriever();
 //		testTypeRetriever();
 		
+//		testTreeTagger();
+//		testHeidelTimeRaw();
+		
 //		testDateExtractor(url);
+//		testHeidelTime(url);
 //		testIllinois(url);
 //		testLingPipe(url);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
-		
 //	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
@@ -692,6 +731,74 @@ public class Test
 //			openNlp.process(article);
 //
 //		}
+		
+		logger.decreaseOffset();
+	}
+
+	/**
+	 * Tests the integration of HeidelTime
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testHeidelTimeRaw() throws Exception
+	{	// command line test
+		//String args[] = {"res\\ner\\treetagger\\README.txt","-vv","-c","res\\ner\\heideltime\\config.props"};
+		//String args[] = {"res\\ner\\heideltime\\test-en.txt","-vv","-c","res\\ner\\heideltime\\config.props"};
+//		String args[] = {"res\\ner\\heideltime\\test-fr.txt","-vv","-c","res\\ner\\heideltime\\config.props","-l","FRENCH"};
+//		HeidelTimeStandalone.main(args);
+		
+		// internal test
+		Language language = Language.FRENCH;
+		DocumentType typeToProcess = DocumentType.NARRATIVES; //only for english
+		OutputType outputType = OutputType.TIMEML;
+		String configPath = FileNames.FO_HEIDELTIME + File.separator + "config.props";
+		POSTagger posTagger = POSTagger.TREETAGGER;
+		boolean doIntervalTagging = false;
+		HeidelTimeStandalone nerTool = new HeidelTimeStandalone(language, typeToProcess, outputType, configPath, posTagger, doIntervalTagging);
+		String fileName = FileNames.FO_HEIDELTIME+File.separator+"test-fr.txt";
+		String document = FileTools.readTextFile(fileName);
+		String result = nerTool.process(document);
+		System.out.println(result);
+		result = result.replace("<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">", "");
+		System.out.println("\nXML version:");
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(result));
+		Element root = doc.getRootElement();
+		XMLOutputter xo = new XMLOutputter();
+		System.out.println(xo.outputString(doc));
+	}
+		
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param url
+	 * 		URL of the article to parse.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testHeidelTime(URL url) throws Exception
+	{	logger.setName("Test-HeidelTime");
+		logger.log("Start testing HeidelTime");
+		logger.increaseOffset();
+		
+		{	ArticleRetriever retriever = new ArticleRetriever();
+			Article article = retriever.process(url);
+	
+			HeidelTimeModelName modelName = HeidelTimeModelName.FRENCH_NARRATIVES;
+			boolean doIntervalTagging = false;
+			HeidelTime heidelTime = new HeidelTime(modelName, true, doIntervalTagging);
+			heidelTime.setCacheEnabled(false);
+//			heidelTime.process(article);
+			
+			ArticleList folders= ArticleLists.getArticleList();
+			for(File folder: folders)
+			{	String name = folder.getName();
+				article = retriever.process(name);
+				heidelTime.process(article);
+			}
+		}
 		
 		logger.decreaseOffset();
 	}
@@ -1425,5 +1532,103 @@ public class Test
 		System.out.println("remove '"+rawText.substring(pos,pos+length)+"' "+pos+","+length+": \t'"+temp+"'");
 		temp = LinkTools.removeEmptyLinks(temp);
 		System.out.println("cleaned: '"+temp+"'");
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// OTHER STUFF	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Testing the NERO named entity recognition tool.
+	 * 
+	 * @throws Exception
+	 * 		Some problem occurred...
+	 */
+	private static void nero() throws Exception
+	{	String neroKey = KeyHandler.KEYS.get("Nero");
+		String neroId = KeyHandler.IDS.get("Nero");
+	
+		byte[] encodedBytes = Base64.encodeBase64((neroId+":"+neroKey).getBytes());
+		String encoding = new String(encodedBytes);
+
+		// première requête
+		String url = "https://nero.irisa.fr/texts.xml";
+		HttpPost post = new HttpPost(url);
+		post.setHeader("Authorization", "Basic " + encoding);
+		
+		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+		urlParameters.add(new BasicNameValuePair("text[content]", "Je vais à Marseille cet été voir l'Olympique de Marseille."));
+		post.setEntity(new UrlEncodedFormEntity(urlParameters));
+		
+		HttpClient client = new DefaultHttpClient();
+		HttpResponse response = client.execute(post);
+		int responseCode = response.getStatusLine().getStatusCode();
+		System.out.println("Response Code : " + responseCode);
+		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+		StringBuffer res = new StringBuffer();
+		String line = "";
+		while ((line = rd.readLine()) != null)
+		{	System.out.println(line);
+			res.append(line);
+		}
+		
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(res.toString()));
+		Element root = doc.getRootElement();
+		Element idElt = root.getChild("id");
+		String id = idElt.getValue();
+		
+		// seconde requête
+		int i = 1;
+		do
+		{	System.out.println("\nRepetition "+i);
+			Thread.sleep(5000);
+			url = "https://nero.irisa.fr/texts/"+id+".xml";
+			System.out.println("url="+url);
+			HttpGet get = new HttpGet(url);
+			get.setHeader("Authorization", "Basic " + encoding);
+
+			client = new DefaultHttpClient();
+			response = client.execute(get);
+			responseCode = response.getStatusLine().getStatusCode();
+			System.out.println("Response Code : " + responseCode);
+			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
+			res = new StringBuffer();
+			while((line = rd.readLine()) != null)
+			{	System.out.println(line);
+				res.append(line);
+			}
+			i++;
+		}
+		while(responseCode!=200);
+		
+		sb = new SAXBuilder();
+		doc = sb.build(new StringReader(res.toString()));
+		root = doc.getRootElement();
+		Element resultElt = root.getChild("result");
+		String result = resultElt.getValue();
+		System.out.println("\nResult="+result);
+	}
+	
+	/**
+	 * Test the installation of TreeTagger.
+	 * 
+	 * @exception Exception
+	 * 		Some problem occurred...
+	 */
+	private static void testTreeTagger() throws Exception
+	{	
+//		Process p = Runtime.getRuntime().exec("cmd /c echo %PATH%");
+//		Process p = Runtime.getRuntime().exec("cmd /c cd");
+		Process p = Runtime.getRuntime().exec("cmd /c dir res\\ner\\treetagger");
+//		Process p = Runtime.getRuntime().exec("perl -h");
+		int res = p.waitFor();
+		System.out.println("return code="+res);
+	 
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	    StringBuffer sb = new StringBuffer();
+	    String line = "";			
+	    while ((line = reader.readLine())!= null)
+	    	sb.append(line + "\n");
+	    System.out.println(sb);
 	}
 }

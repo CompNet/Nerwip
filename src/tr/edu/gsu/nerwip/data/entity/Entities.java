@@ -41,6 +41,8 @@ import org.jdom.Attribute;
 import org.jdom.Element;
 import org.xml.sax.SAXException;
 
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.file.FileNames;

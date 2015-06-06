@@ -210,7 +210,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 				String text = element.getText();
 				Date date = parseTimex3Value(valueStr,text);
 				if(date==null)
-					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); 
+					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); //TODO WARNING: 
 				else
 				{	int length = text.length();
 					result = (EntityDate) AbstractEntity.build(EntityType.DATE, index, index+length, recognizerName, text);

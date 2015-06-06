@@ -140,7 +140,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	@Override
 	public Entities convert(Article article, List<String> text) throws ConverterException
 	{	logger.increaseOffset();
-		Entities result = new Entities(recognizerName);		
+		Entities result = new Entities(recognizerName);
 
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = text.iterator();
