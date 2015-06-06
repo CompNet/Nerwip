@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="..\..\res\schemas\edconfig.xsd">
-	<use corpus="true" article="true" />
-	<last>
-		<corpus>D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data</corpus>
-		<article>D:\Users\Vincent\Documents\Dropbox\NetExtraction\Data\Louis_Bretin</article>
-	</last>
-	<editor>Vincent Labatut</editor>
-</configuration>
