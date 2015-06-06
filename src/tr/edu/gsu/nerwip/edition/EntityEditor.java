@@ -2320,7 +2320,10 @@ public class EntityEditor implements WindowListener, ChangeListener
 				updateTitle();
 			}
 			else
-				entityLists.remove(refName);
+			{	entityLists.remove(refName);
+				if(references.getEntities().isEmpty())
+					references.setEditor(currentEditor);
+			}
 			addTab(currentRawText, currentLinkedText, references, references, refName);
 			Set<String> names = new TreeSet<String>(entityLists.keySet());
 			for(String name: names)
