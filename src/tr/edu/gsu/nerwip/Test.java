@@ -450,17 +450,22 @@ public class Test
 	{	logger.setName("Test-OpeNer");
 		logger.log("Start testing OpeNer");
 		logger.increaseOffset();
-	
+		
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
-
+		
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
 		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
-		opener.setCacheEnabled(false);
-		opener.process(article);
-
+		opener.setCacheEnabled(true);
+		
+		// only the specified article
+//		opener.process(article);
+		
+		// all the corpus
+		testAllCorpus(opener,0);
+		
 		logger.decreaseOffset();
 	}
 	

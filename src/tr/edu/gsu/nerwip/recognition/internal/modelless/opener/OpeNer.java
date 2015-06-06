@@ -386,3 +386,5 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 
 // TODO some entities seem merged (especially when the second contain parenthesis) >> because they are flatten?
 // TODO also check flattening in Nero
+
+// TODO OpeNer is available as a set of Java libraries. We could directly integrate them in Nerwip.

@@ -163,11 +163,13 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				// process all entity elements
 				logger.log("Create entity objects");
 				Element entitiesElt = root.getChild(ELT_ENTITIES);
-				List<Element> entityElts = entitiesElt.getChildren(ELT_ENTITY);
-				for(Element entityElt: entityElts)
-				{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
-					if(entity!=null)
-						result.addEntity(entity);
+				if(entitiesElt!=null)
+				{	List<Element> entityElts = entitiesElt.getChildren(ELT_ENTITY);
+					for(Element entityElt: entityElts)
+					{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
+						if(entity!=null)
+							result.addEntity(entity);
+					}
 				}
 				
 				// update size
