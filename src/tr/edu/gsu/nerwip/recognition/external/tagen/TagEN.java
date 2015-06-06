@@ -46,10 +46,12 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
 
 	public TagEN(boolean ignorePronouns, boolean exclusionOn)
 	{	super(false, ignorePronouns, exclusionOn);
-	//init converter
-    converter = new TagENConverter(getFolder());
+	
+		setIgnoreNumbers(false);
+		
+		//init converter
+		converter = new TagENConverter(getFolder());
 	}
-
 	
 	/////////////////////////////////////////////////////////////////
 	// NAME 			/////////////////////////////////////////////
@@ -106,8 +108,6 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-
-	
 	public BufferedReader getOutput(Process p) {
         return new BufferedReader(new InputStreamReader(p.getInputStream()));
     }
@@ -116,7 +116,6 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
         return new BufferedReader(new InputStreamReader(p.getErrorStream()));
     }
     
-
 	@Override
 	protected String detectEntities(Article article) throws RecognizerException
 	{	logger.increaseOffset();
@@ -196,8 +195,4 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
 		return result;
 		
         }
-	
-
 }
-
-

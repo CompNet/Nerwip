@@ -26,6 +26,8 @@ package tr.edu.gsu.nerwip.data.entity;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jdom.Element;
 
@@ -115,6 +117,37 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 		return result;
 	}
 	
+	/**
+	 * For testing purposes.
+	 * 
+	 * @param args
+	 * 		None needed.
+	 */
+	public static void main(String[] args)
+	{	int startPos = 10;
+		String valuesStr[] = 
+		{	"Test",
+			"Test et retest",
+			" Test et retest",
+			".Test et retest",
+			"Test et retest ",
+			"Test et retest.",
+			" Test et retest ",
+			".Test et retest.",
+			" Test et retest.",
+			".Test et retest ",
+			"  Test et retest  ",
+			".!Test et retest,;",
+			". Test et retest ;"
+		};
+		for(String valueStr: valuesStr)
+		{	int endPos = startPos + valueStr.length();
+			AbstractEntity<?> entity = build(EntityType.PERSON, startPos, endPos, RecognizerName.STANFORD, valueStr); 
+			entity.correctEntitySpan();
+			System.out.println("\""+valueStr + "\"\t\t>>\t\t" + entity);
+		}
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// VALUE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -175,6 +208,41 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	 */
 	public void setStringValue(String valueStr)
 	{	this.valueStr = valueStr;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// CORRECTIONS		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Pattern used to check the beginning/end of entity mentions */
+	private static final Pattern PATTERN = Pattern.compile("[\\p{Z}\\p{Punct}]");
+	
+	/**
+	 * Checks if the entity starts/ends with certain
+	 * characters: punctuation, spaces, etc.
+	 * If it is the case, the entity span is redefined
+	 * so that these characters are placed outside
+	 * of the entity.
+	 */
+	public void correctEntitySpan()
+	{	boolean found;
+		do
+		{	found = false;
+			Matcher matcher = PATTERN.matcher(valueStr);
+		 	while(matcher.find() && !found)
+		 	{	int start = matcher.start();
+		 		if(start==0)
+		 		{	valueStr = valueStr.substring(1);
+		 			startPos++;
+		 			found = true;
+		 		}
+		 		else if(start==valueStr.length()-1)
+		 		{	valueStr = valueStr.substring(0,valueStr.length()-1);
+		 			endPos--;
+		 			found = true;
+		 		}
+		 	}
+		}
+		while(found);
 	}
 	
 	/////////////////////////////////////////////////////////////////

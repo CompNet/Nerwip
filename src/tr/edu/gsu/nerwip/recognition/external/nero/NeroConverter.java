@@ -75,8 +75,8 @@ public class NeroConverter extends AbstractExternalConverter
 		int c1 = originalText.codePointAt(i1);
 		int c2 = data.codePointAt(i2);
 		
-if(c1==65279)
-	System.out.print("");
+//if(c1==65279) //debug
+//	System.out.print("");
 		// possibly pass a starting newline character 
 		if(c2=='\n' && c1!='\n')
 		{	i2++;
@@ -111,6 +111,7 @@ if(c1==65279)
 //						String valueStr = data.substring(sp2,k2);
 						String valueStr = originalText.substring(sp1,i1);
 						AbstractEntity<?> entity = AbstractEntity.build(type, sp1, i1, RecognizerName.NERO, valueStr);
+						entity.correctEntitySpan(); // to remove some spaces located at the end of entities
 						result.addEntity(entity);
 					}
 				}
@@ -143,9 +144,8 @@ if(c1==65279)
 			// other character (than '<')
 			else
 			{	
-if(c1=='[')
-	System.out.print("");
-
+//if(c1=='[') // debug
+//	System.out.print("");
 
 				// similar characters
 				if(StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)

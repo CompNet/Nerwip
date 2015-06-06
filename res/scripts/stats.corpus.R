@@ -1,3 +1,9 @@
+# 
+# Generate some plots related to the corpus stats.
+# More convenient to do that in R than in Java...
+# 
+
+
 #
 #	Nerwip - Named Entity Extraction in Wikipedia Pages
 #	Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
@@ -22,10 +28,13 @@
 #	If not, see <http://www.gnu.org/licenses/>.
 #
 
-#source("C:/Eclipse/workspaces/Extraction/Nerwip.v4/res/scripts/stats.corpus.R")
+# setwd("C:/Eclipse/workspaces/Extraction/Nerwip2")
+# source("scripts/stats.corpus.R")
 
-path <- "C:/Eclipse/workspaces/Extraction/Nerwip.v4/out"
-data.file <- paste(path,"/stats.txt",sep="")
+# read the previously processed stat file
+# (see the Java program: classes in tools.corus)
+path <- "out/"
+data.file <- paste(path,"stats.txt",sep="")
 table <- read.table(data.file,header=TRUE)
 
 # plot word count frequency

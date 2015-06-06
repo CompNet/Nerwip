@@ -57,12 +57,13 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	 *      Whether or not stop words should be excluded from the
 	 *      detection.
 	 */
-
 	public Nero(Tagger tagger, boolean flat, boolean ignorePronouns, boolean exclusionOn)
 	{	super(false, ignorePronouns, exclusionOn);
 		
 		this.tagger = tagger;
 		this.flat = flat;
+		
+		setIgnoreNumbers(false);
 		
 		// init converter
 		converter = new NeroConverter(getFolder());
@@ -174,6 +175,8 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	
 // TODO check the system ?
 // TODO check if Nero is installed ?
+// TODO converter: problem with final space in most entities
+// TODO flattening of hierarchical entities?
 	
 	@Override
 	protected String detectEntities(Article article) throws RecognizerException

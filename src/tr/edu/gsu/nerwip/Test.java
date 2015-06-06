@@ -64,7 +64,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelN
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNER;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
@@ -107,9 +107,9 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		
-//		String name = "Émilien_Brigault";
+		String name = "Émilien_Brigault";
 //		String name = "Albert_Chauly";
-		String name = "Gilles_Marcel_Cachin";
+//		String name = "Gilles_Marcel_Cachin";
 //		String name = "Barack_Obama";
 		
 //		testArticleRetriever(url);
@@ -128,10 +128,9 @@ public class Test
 //		testStanford(url);
 //		testSubee(url);
 //		testWikipediaDater(url);
-		testNero(name);
-//		testOpeNER(name);
+//		testNero(name);
+		testOpeNer(name);
 //		testTagEN(name);
-//		testOpeNER(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
@@ -447,21 +446,26 @@ public class Test
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testOpeNER(String name) throws Exception
-	{	logger.setName("Test-OpeNER");
-		logger.log("Start testing OpeNER");
+	private static void testOpeNer(String name) throws Exception
+	{	logger.setName("Test-OpeNer");
+		logger.log("Start testing OpeNer");
 		logger.increaseOffset();
-	
+		
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
-
+		
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNER opener = new OpeNER(ignorePronouns, exclusionOn);
+		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
-		opener.setCacheEnabled(false);
-		opener.process(article);
-
+		opener.setCacheEnabled(true);
+		
+		// only the specified article
+//		opener.process(article);
+		
+		// all the corpus
+		testAllCorpus(opener,0);
+		
 		logger.decreaseOffset();
 	}
 	
@@ -1423,3 +1427,4 @@ public class Test
 		System.out.println("cleaned: '"+temp+"'");
 	}
 }
+
