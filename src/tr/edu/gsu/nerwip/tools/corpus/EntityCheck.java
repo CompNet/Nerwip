@@ -199,9 +199,9 @@ public class EntityCheck
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Parses the xml reference associated to the specified
-	 * articles and for each entity, checks if there exist
-	 * overlapping entities. If some are detected, a warning 
-	 * message is displayed.
+	 * articles and for each entity, checks if it contains
+	 * at least one character. Otherwise, a warning message 
+	 * is displayed.
 	 * 
 	 * @param articles
 	 * 		List of folders corresponding to articles.

@@ -232,7 +232,7 @@ public class StringTools
 		if(result!=null)
 		{	// replace all white spaces by regular spaces
 			// new line and tabs are not affected
-			result = result.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces then \s
+			result = result.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces than \s
 		}
 		
 		return result;

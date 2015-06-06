@@ -43,7 +43,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
  * This class contains various methods to retrieve sets
- * of articles from the web.
+ * of articles from the Web.
  *  
  * @author Vincent Labatut
  */
