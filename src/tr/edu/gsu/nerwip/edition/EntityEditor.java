@@ -497,10 +497,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private String articleName = "";
 	
 	/**
-	 * Updates the title of
-	 * the frame, depending
-	 * on whether the reference
-	 * must be recorded or not.
+	 * Updates the title of the frame, depending
+	 * on whether the reference must be recorded or not.
 	 */
 	private void updateTitle()
 	{	String title = frame.getTitle();
@@ -2290,10 +2288,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 			else
 				currentLinkedText = FileTools.readTextFile(rawFile);
 			
-			// update title
+			// get article name
 			File temp = new File(articlePath);
 			articleName = temp.getName();
-			frame.setTitle(TITLE+" [edt: " + currentEditor + "] - " + articleName + " " + (currentIndex+1) + "/" + articles.size());
 			
 			// update position
 			updateStatusPosition(null);
@@ -2345,6 +2342,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 				if(found)
 					tabbedPane.setSelectedIndex(index);
 			}
+			
+			// update title
+			String editorStr ="[edt: " + currentEditor;
+			String refEdt = references.getEditor();
+			if(refEdt!=null && !refEdt.equals(currentEditor))
+				editorStr = editorStr + " / " + refEdt;
+			editorStr = editorStr + "]";
+			frame.setTitle(TITLE+" " + editorStr + " - " + articleName + " " + (currentIndex+1) + "/" + articles.size());
 			
 			frame.repaint();
 		}
