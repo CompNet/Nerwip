@@ -30,13 +30,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import org.jdom.Content;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Text;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Content;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Text;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -119,7 +119,6 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	/** Begining of the value string when only the date is specified */
 	private static final String TIME_PREFIX = "XXXX-XX-XX";
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Entities convert(Article article, String data) throws ConverterException
 	{	logger.increaseOffset();
@@ -191,7 +190,6 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	 * 		The created entity, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	@SuppressWarnings("unchecked")
 	private EntityDate convertElement(Element element, int index)
 	{	logger.increaseOffset();
 		EntityDate result = null;

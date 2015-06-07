@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jdom.Attribute;
-import org.jdom.Element;
+import org.jdom2.Attribute;
+import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -565,7 +565,6 @@ public class Entities
 		// get entities
 		Entities result = new Entities(source, date);
 		result.setEditor(editor);
-		@SuppressWarnings("unchecked")
 		List<Element> elements = element.getChildren(XmlNames.ELT_ENTITY);
 		for(Element e: elements)
 		{	AbstractEntity<?> entity = AbstractEntity.importFromElement(e, source);

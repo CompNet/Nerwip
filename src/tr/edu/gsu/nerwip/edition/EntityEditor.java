@@ -75,7 +75,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;

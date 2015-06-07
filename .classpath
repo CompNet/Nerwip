@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="lib/lingpipe-4.1.0.jar" sourcepath="lib/lingpipe-4.0.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="lib/thumbelina.jar"/>
-	<classpathentry kind="lib" path="lib/jdom-1.1.jar" sourcepath="lib/jdom-1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/stanford-ner-2012-11-11.jar" sourcepath="lib/stanford-ner-1.2.7-src.zip"/>
 	<classpathentry kind="lib" path="lib/LBJ2.jar" sourcepath="lib/lbj-2.8.2-src.zip">
 		<attributes>
@@ -34,5 +33,6 @@
 	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar" sourcepath="lib/commons-codec-1.10-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar" sourcepath="lib/commons-lang3-3.4-src.zip"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar" sourcepath="lib/commons-io-2.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar" sourcepath="lib/jdom-2.0.6-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
