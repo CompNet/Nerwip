@@ -29,13 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import LBJ2.parse.LinkedVector;
-
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NETagPlain;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NEWord;
-
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
@@ -44,6 +37,11 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
+import LBJ2.parse.LinkedVector;
+import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
+import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
+import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NETagPlain;
+import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NEWord;
 
 /**
  * This class is the converter associated to the Illinois 

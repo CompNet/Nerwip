@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jdom2.Element;
+import org.jdom.Element;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
@@ -187,7 +187,8 @@ public class CategoryMap
 	 * 		Element containing the text/categories associations.
 	 */
 	private void processAcceptElement(Element root)
-	{	List<Element> catElts = (List<Element>)root.getChildren(XmlNames.ELT_CATEGORY);
+	{	@SuppressWarnings("unchecked")
+		List<Element> catElts = (List<Element>)root.getChildren(XmlNames.ELT_CATEGORY);
 		for(Element catElt: catElts)
 		{	String catStr = catElt.getAttributeValue(XmlNames.ATT_NAME);
 			ArticleCategory category = null;
@@ -208,7 +209,8 @@ public class CategoryMap
 	 * 		XML element containing the keys.
 	 */
 	private void processCategoryElement(ArticleCategory category, Element root)
-	{	List<Element> keyElts = (List<Element>)root.getChildren(XmlNames.ELT_KEY);
+	{	@SuppressWarnings("unchecked")
+		List<Element> keyElts = (List<Element>)root.getChildren(XmlNames.ELT_KEY);
 		for(Element keyElt: keyElts)
 		{	String key = keyElt.getValue();
 			map.put(key,category);
@@ -245,7 +247,8 @@ public class CategoryMap
 	 * 		Consider either the "start" or "end" set. 
 	 */
 	private void processXxxsWithElement(Element root, boolean starts)
-	{	List<Element> keyElts = (List<Element>)root.getChildren(XmlNames.ELT_KEY);
+	{	@SuppressWarnings("unchecked")
+		List<Element> keyElts = (List<Element>)root.getChildren(XmlNames.ELT_KEY);
 		for(Element keyElt: keyElts)
 		{	String key = keyElt.getValue();
 			if(starts)

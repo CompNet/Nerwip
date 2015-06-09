@@ -121,7 +121,7 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
 	{	logger.increaseOffset();
 		String result = null;
 		
-		logger.log("Début du programme");
+		//logger.log("Début du programme");
         try {
         	// write article raw text in a file
         	String text = article.getRawText();
@@ -129,13 +129,32 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
         	String path = FileNames.FO_TAGEN + File.separator + "input.txt";
 			File file = new File(path);
         	FileTools.writeTextFile(file, text);
-        	String command = "/home/sabrine/TagEN/./tagen :mucfr /home/sabrine/TagEN/input.txt";
+        	
+        	String cmd = "chmod +x res/ner/tagen/tagen" ;
+        	logger.log("start first process");
+        	Process pr = Runtime.getRuntime().exec(cmd);
+        	logger.log("finish process 1");
+        	
+        	String cmd1 = "sudo res/ner/tagen" ;
+        	logger.log("start process");
+        	Process pr1 = Runtime.getRuntime().exec(cmd1);
+        	logger.log("finish process ");
+        	
+        	
+        	//String command = "/home/sabrine/TagEN/./tagen :mucfr /home/sabrine/TagEN/input.txt";
+        	//String command = "chmod +x " + FileNames.FO_TAGEN + File.separator + " ." + File.separator + "tagen" +  " :mucfr "  + file;
+        	
+        	
+        	logger.log("start process 2");
+        	//String command = "chmod +x res/ner/tagen/ ./res/ner/tagen/tagen res/ner/tagen/tagen.conf res/ner/tagen/input.txt";
+        	String command = "res/ner/tagen/ ./res/ner/tagen/tagen :mucfr res/ner/tagen/input.txt";
         	
         	//String command = "sudo " + FileNames.FO_TAGEN + File.separator + "." + File.separator + "tagen :mucfr " + file;
         	//String command = "chmod +x " + FileNames.FO_TAGEN;
+        	//alias tagen=~/tagen/tagen
             //String command = "alias tagen=res/ner/tagen/tagen";
         	
-        	//String command = "chmod +x " + FileNames.FO_TAGEN + File.separator + " ." + File.separator + "tagen" +  " :mucfr "  + file;
+        	
         	
             Process p = Runtime.getRuntime().exec(command);
             
@@ -159,7 +178,7 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        logger.log("Fin du programme");
+        logger.log("finish process 2");
         
         // extract text from input.tag.txt
     
@@ -168,6 +187,9 @@ public class TagEN extends AbstractExternalRecognizer<TagENConverter>
      
         try {
         	InputStream ips = new FileInputStream("/home/sabrine/TagEN/input.tag.txt");
+        	//InputStream ips = new FileInputStream("res/ner/tagen/input.tag.txt");
+        	
+        	//InputStream ips = new FileInputStream(FileNames.FO_TAGEN + File.separator + "input.txt");
         	
  
         	 //originalText = IOUtils.toString(ips).trim();

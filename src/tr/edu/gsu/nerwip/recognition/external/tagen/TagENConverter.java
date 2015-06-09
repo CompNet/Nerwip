@@ -1,5 +1,6 @@
 package tr.edu.gsu.nerwip.recognition.external.tagen;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,7 +105,10 @@ public class TagENConverter extends AbstractExternalConverter
             String originalText = null;
       		text = text.replaceAll("null", "");
       		try {
+      			//InputStream ips = new FileInputStream(FileNames.FO_TAGEN + File.separator + "input.txt");
       			InputStream ips = new FileInputStream("/home/sabrine/TagEN/input.txt");
+      			//InputStream ips = new FileInputStream("res/ner/tagen/input.txt");
+      			
       			originalText = IOUtils.toString(ips).trim();
       			logger.log("originalText = " + originalText);
       		} catch (IOException e) {
@@ -156,13 +160,9 @@ public class TagENConverter extends AbstractExternalConverter
     	            	   { int end = i;
     	            	   endPos = end ;
     	            	   logger.log("endPos= " + endPos);
-    	        		    //entity = AbstractEntity.build(type, startPos, endPos, recognizerName, name);
-    	        		    // result.addEntity(entity);
     	            	   if((type!=null) & (startPos != 0) & (endPos != 0))
    			            {
-   			            	AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, name);
-   							//boolean check = entity.checkText(article);	
-   							//logger.log("check=" + check);
+   			            	AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, name);						
    						    if(entity!=null)
    						    {
    						    	result.addEntity(entity);

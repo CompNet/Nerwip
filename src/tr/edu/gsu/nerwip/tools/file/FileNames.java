@@ -49,32 +49,16 @@ public class FileNames
 	public final static String FO_LOG = "log";
 	/** Output folder */
 //	public final static String FO_OUTPUT = "out";	//actual folder
-	
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
-//	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
-
-
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-	public final static String FO_OUTPUT = "D:/Data2";
-
-
-	//public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
-
-//	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
-
-//	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
+//	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
+//	public final static String FO_OUTPUT = "D:/Data2";
+	public final static String FO_OUTPUT = "/home/sabrine/Data2";
 
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
-	
-//	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "D:/Data2";
-//	public final static String FO_OUTPUT = "/home/sabrine/Data2";
-//	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
-	
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
 		/** Folder used to store certain cached files */
@@ -101,8 +85,11 @@ public class FileNames
 			public final static String FO_LINGPIPE = FO_NER + File.separator + "lingpipe";
 			/** Folder of Nero resources */
 			public final static String FO_NERO = FO_NER + File.separator + "nero";
+			/** Folder of TagEN resources */
+			public final static String FO_TAGEN = FO_NER + File.separator + "tagen";
 				/** Folder of Nero scripts*/
 				public final static String FO_NERO_SCRIPTS = FO_NERO + File.separator + "scripts";
+				
 			/** Folder of OpenNLP resources */
 			public final static String FO_OPENNLP = FO_NER + File.separator + "opennlp";
 			/** Folder of Stanford resources */
@@ -115,8 +102,6 @@ public class FileNames
 			public final static String FO_SUBEE = FO_NER + File.separator + "subee";
 			/** Folder of SVM combiner resources */
 			public final static String FO_SVMCOMBINER = FO_NER + File.separator + "svmcombiner";
-			/** Folder of TagEN resources */
-			public final static String FO_TAGEN = FO_NER + File.separator + "tagen";
 			/** Folder of vote combiner resources */
 			public final static String FO_VOTECOMBINER = FO_NER + File.separator + "votecombiner";
 		/** Folder containing retrieval-related data */
@@ -166,11 +151,9 @@ public class FileNames
 	/** List of location-related adjectives */
 	public final static String FI_DEMONYMS = "demonyms" + FileNames.EX_TEXT;
 	/** Configuration file */
-	public final static String FI_CONFIGURATION = "config" + FileNames.EX_XML;
-	/** Configuration schema */
-	public final static String FI_CONFIGURATION_SCHEMA = "edconfig" + FileNames.EX_SCHEMA;
+	public final static String FI_CONFIGURATION = "config" + FileNames.EX_TEXT;
 	/** Main script of the Nero tool */
-	public final static String FI_NERO_BASH = "irisa_ne" + FileNames.EX_BASH;
+	public final static String FI_NERO_BASH = "irisa_ne.bash" + FileNames.EX_TEXT;
 	
 //	/**
 //	 * Returns the filename used to store the
@@ -189,8 +172,6 @@ public class FileNames
 	/////////////////////////////////////////////////////////////////
 	// EXTENSIONS	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Bash file extension */
-	public final static String EX_BASH = ".bash";
 	/** PDF file extension */
 	public final static String EX_PDF = ".pdf";
 	/** XML Schema file extension */
@@ -202,3 +183,4 @@ public class FileNames
 	/** HTML file extension */
 	public final static String EX_WEB = ".html";
 }
+
