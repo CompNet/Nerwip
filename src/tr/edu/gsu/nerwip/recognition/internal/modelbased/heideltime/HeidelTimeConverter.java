@@ -315,7 +315,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 			
 			// build date object
 			if(year!=0)
-				result = new Date(year,month,day);
+				result = new Date(day,month,year);
 		}
 		
 		return result;
