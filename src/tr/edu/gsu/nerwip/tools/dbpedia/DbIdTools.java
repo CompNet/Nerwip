@@ -50,7 +50,36 @@ public class DbIdTools {
 /** Common object used for logging */
 protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
-
-
+/**
+ * This method takes an entity as parameter,
+ * and retrieves its DBpedia id.
+ * 
+ * @param entity
+ * 		Name of the entity.
+ * @return
+ * 		A String describing the DBpedia id.
+*/
+public static String getId(String entity) 
+{  logger.increaseOffset();
+   String result = null;
+   //adress of the SPARQL endpoint
+   String service="http://dbpedia.org/sparql";
+   //SPARQL query
+   String query = "select ?wikiPageID where {<http://fr.dbpedia.org/resource/"+ entity + ">"
+		   +"dbpedia-owl:wikiPageID ?wikiPageID.}";
+   
+   QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
+   ResultSet rs=e.execSelect();
+   while (rs.hasNext()) {
+       QuerySolution qs=rs.nextSolution();
+       logger.log("qs=" + qs);
+       result = qs.toString();
+   }
+   
+   
+   
+   
+   return result;
+}
 
 }

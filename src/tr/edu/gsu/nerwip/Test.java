@@ -70,6 +70,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
+import tr.edu.gsu.nerwip.tools.dbpedia.DbIdTools;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.freebase.FbIdTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
@@ -140,7 +141,8 @@ public class Test
 //		testEvaluator();
 //		testEditor();
 //		testWikiIdRetriever();
-		testWikiTypeRetriever();
+//		testWikiTypeRetriever();
+		testDbIdRetriever();
 		
 		logger.close();
 	}
@@ -224,6 +226,25 @@ public class Test
 		
 		logger.decreaseOffset();
 	}
+	
+	/**
+	 * Tests the feature allowing to automatically
+	 * retrieve Freebase ids from Wikipedia titles.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong...
+	 */
+	private static void testDbIdRetriever() throws Exception
+	{	logger.setName("Test-DbIdRetriever");
+		logger.log("Start retrieving ids");
+		logger.increaseOffset();
+		
+		
+		DbIdTools.getId("Paris");
+		
+		logger.decreaseOffset();
+	}
+	
 	
 	/**
 	 * Tests the feature allowing to automatically
