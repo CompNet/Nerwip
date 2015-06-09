@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import LBJ2.learn.SparseNetworkLearner;
-
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Parameters;

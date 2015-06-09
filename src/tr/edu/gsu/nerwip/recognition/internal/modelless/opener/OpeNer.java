@@ -43,9 +43,6 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * <b>Notes:</b> the English version is able to recognize mentions
  * referring to the same entity, and to resolve coreferences. The 
  * tool also seems to be able to do entity linking (vs. a knowledge base).
- * <br/>
- * TODO OpeNer is available as a set of local tools/libraries. 
- * We could directly integrate them in Nerwip.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
@@ -389,3 +386,5 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 
 // TODO some entities seem merged (especially when the second contain parenthesis) >> because they are flatten?
 // TODO also check flattening in Nero
+
+// TODO OpeNer is available as a set of Java libraries. We could directly integrate them in Nerwip.

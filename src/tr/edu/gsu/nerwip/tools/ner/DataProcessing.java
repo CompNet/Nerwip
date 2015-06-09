@@ -2,6 +2,7 @@ package tr.edu.gsu.nerwip.tools.ner;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
+
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
  * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
  * Copyright 2013 Samet Atdağ & Vincent Labatut
@@ -25,6 +26,7 @@ package tr.edu.gsu.nerwip.tools.ner;
  */
 
 import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

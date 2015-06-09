@@ -37,12 +37,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jdom2.Attribute;
-import org.jdom2.Element;
+import org.jdom.Attribute;
+import org.jdom.Element;
 import org.xml.sax.SAXException;
 
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -61,16 +59,11 @@ public class Entities
 {	
 	/**
 	 * Builds an entities object with current
-	 * date and reference source, and the specified
-	 * editor name.
-	 * 
-	 * @param editor
-	 * 		Editor's name for these annotations.
+	 * date and reference source.
 	 */
-	public Entities(String editor)
+	public Entities()
 	{	initDate();
 		source = RecognizerName.REFERENCE;
-		this.editor = editor;
 	}
 	
 	/**
@@ -162,39 +155,6 @@ public class Entities
 	 */
 	public void setSource(RecognizerName source)
 	{	this.source = source;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// EDITOR			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Human person that originally annotated these entities (only relevant if the recognizer name is REFERENCE) */
-	private String editor = null;
-	
-	/**
-	 * Returns the name of the person which
-	 * originally annotated these entities.
-	 * This is relevant only if the recognizer
-	 * name is {@link RecognizerName#REFERENCE},
-	 * otherwise the method returns {@code null}.
-	 * 
-	 * @return
-	 * 		Name of the editor's name, or {@code null}
-	 * 		if this is not a reference, of if this nale
-	 * 		was not previously set.
-	 */
-	public String getEditor()
-	{	return editor;
-	}
-	
-	/**
-	 * Changes the name of the person which originally 
-	 * annotated these entities.
-	 * 
-	 * @param editor
-	 * 		New editor name.
-	 */
-	public void setEditor(String editor)
-	{	this.editor = editor;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -559,12 +519,9 @@ public class Entities
 		String dateStr = element.getAttributeValue(XmlNames.ATT_DATE);
 		Date date = TimeFormatting.parseDate(dateStr);
 		
-		// get editor
-		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
-		
 		// get entities
 		Entities result = new Entities(source, date);
-		result.setEditor(editor);
+		@SuppressWarnings("unchecked")
 		List<Element> elements = element.getChildren(XmlNames.ELT_ENTITY);
 		for(Element e: elements)
 		{	AbstractEntity<?> entity = AbstractEntity.importFromElement(e, source);
@@ -601,12 +558,6 @@ public class Entities
 		String dateStr = TimeFormatting.formatDate(date);
 		Attribute dateAttr = new Attribute(XmlNames.ATT_DATE, dateStr);
 		element.setAttribute(dateAttr);
-		
-		// insert editor attribute
-		if(editor!=null)
-		{	Attribute editorAttr = new Attribute(XmlNames.ATT_EDITOR, editor);
-			element.setAttribute(editorAttr);
-		}
 		
 		// insert entity elements
 		Collections.sort(entities);

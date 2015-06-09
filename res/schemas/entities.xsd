@@ -52,7 +52,6 @@
 		</xsd:sequence>
 		<xsd:attribute name="date" type="xsd:string" use="optional" />
 		<xsd:attribute name="source" type="xsd:string" />
-		<xsd:attribute name="editor" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
 	<xsd:element name="entities" type="tEntities" />

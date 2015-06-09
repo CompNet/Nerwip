@@ -24,17 +24,6 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.aliasi.chunk.Chunker;
-import com.aliasi.dict.ApproxDictionaryChunker;
-import com.aliasi.dict.DictionaryEntry;
-import com.aliasi.dict.ExactDictionaryChunker;
-import com.aliasi.dict.MapDictionary;
-import com.aliasi.dict.TrieDictionary;
-import com.aliasi.spell.FixedWeightEditDistance;
-import com.aliasi.spell.WeightedEditDistance;
-import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
-import com.aliasi.util.AbstractExternalizable;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -47,6 +36,17 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
+
+import com.aliasi.chunk.Chunker;
+import com.aliasi.dict.ApproxDictionaryChunker;
+import com.aliasi.dict.DictionaryEntry;
+import com.aliasi.dict.ExactDictionaryChunker;
+import com.aliasi.dict.MapDictionary;
+import com.aliasi.dict.TrieDictionary;
+import com.aliasi.spell.FixedWeightEditDistance;
+import com.aliasi.spell.WeightedEditDistance;
+import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
+import com.aliasi.util.AbstractExternalizable;
 
 /**
  * Class representing the method used
@@ -91,7 +91,6 @@ public enum LingPipeModelName
 		),
 		Arrays.asList(ArticleLanguage.EN) //TODO could be extended to French by translating the dictionaries
 	),
-
 	/** Uses dictionaries with approximate match */
 	APPROX_DICTIONARY(
 		"ApproxDictionary",

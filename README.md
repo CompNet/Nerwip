@@ -102,7 +102,9 @@ Here are the dependencies for Nerwip:
 
 The project also makes use of several Web services:
 * [Reuters OpenCalais](http://new.opencalais.com/)
+* [Nero](https://nero.irisa.fr/)
 * [OpeNer](http://www.opener-project.eu/)
+
 
 ## References
 * **[AL'13]** Atdağ, S. & Labatut, V. A Comparison of Named Entity Recognition Tools Applied to Biographical Texts, 2nd International Conference on Systems and Computer Science, 2013, 228-233. 

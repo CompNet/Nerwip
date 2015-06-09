@@ -24,8 +24,8 @@ package tr.edu.gsu.nerwip.data.entity;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.jdom2.Attribute;
-import org.jdom2.Element;
+import org.jdom.Attribute;
+import org.jdom.Element;
 
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.time.Date;

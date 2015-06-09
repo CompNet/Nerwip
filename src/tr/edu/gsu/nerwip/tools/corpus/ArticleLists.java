@@ -207,7 +207,7 @@ public class ArticleLists
 		
 		return result;
 	}
-	
+
 	/**
 	 * Creates a text file containing the list of all
 	 * article names from the corpus.
