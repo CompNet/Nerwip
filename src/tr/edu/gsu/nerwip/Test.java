@@ -75,6 +75,8 @@ import tr.edu.gsu.nerwip.tools.freebase.FbIdTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
+import tr.edu.gsu.nerwip.tools.mediawiki.WikiIdTools;
+import tr.edu.gsu.nerwip.tools.mediawiki.WikiTypeTools;
 import tr.edu.gsu.nerwip.tools.string.LinkTools;
 
 /**
@@ -129,7 +131,7 @@ public class Test
 //		testSubee(url);
 //		testWikipediaDater(url);
 //		testNero(name);
-		testOpeNer(name);
+//		testOpeNer(name);
 //		testTagEN(name);
 		
 //		testVoteCombiner(url);
@@ -137,6 +139,8 @@ public class Test
 		
 //		testEvaluator();
 //		testEditor();
+//		testWikiIdRetriever();
+		testWikiTypeRetriever();
 		
 		logger.close();
 	}
@@ -220,6 +224,54 @@ public class Test
 		
 		logger.decreaseOffset();
 	}
+	
+	/**
+	 * Tests the feature allowing to automatically
+	 * retrieve Freebase ids from Wikipedia titles.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong...
+	 */
+	private static void testWikiIdRetriever() throws Exception
+	{	logger.setName("Test-WikiIdRetriever");
+		logger.log("Start retrieving ids");
+		logger.increaseOffset();
+		
+		
+		WikiIdTools.getId("Barack%20Obama");
+		
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Tests the feature allowing to automatically
+	 * retrieve types from Freebase.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong...
+	 */
+	private static void testWikiTypeRetriever() throws Exception
+	{	logger.setName("Test-WikiTypeRetriever");
+		logger.log("Start retrieving types");
+		logger.increaseOffset();
+		
+		String title = "Barack%20Obama";
+		
+		// retrieve all types
+		List<String> types = WikiTypeTools.getAllTypes(title);
+		logger.log("Types retrieved for "+title+":");
+		logger.increaseOffset();
+		logger.log(types);
+		logger.decreaseOffset();
+		
+		// retrieve only notable type
+		//String type = FbTypeTools.getNotableType(title);
+		//logger.log("Notable type for "+title+": "+type);
+		
+		//logger.log("Type retrieval complete");
+		//logger.decreaseOffset();
+	}
+	
 	
 	/**
 	 * Tests the feature allowing to automatically
