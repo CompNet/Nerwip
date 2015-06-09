@@ -71,6 +71,7 @@ import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.dbpedia.DbIdTools;
+import tr.edu.gsu.nerwip.tools.dbpedia.DbTypeTools;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.freebase.FbIdTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
@@ -140,9 +141,11 @@ public class Test
 		
 //		testEvaluator();
 //		testEditor();
+		
 //		testWikiIdRetriever();
 //		testWikiTypeRetriever();
 		testDbIdRetriever();
+//		testDbTypeRetriever();
 		
 		logger.close();
 	}
@@ -229,7 +232,7 @@ public class Test
 	
 	/**
 	 * Tests the feature allowing to automatically
-	 * retrieve Freebase ids from Wikipedia titles.
+	 * retrieve DBpedia ids of entities.
 	 * 
 	 * @throws Exception
 	 * 		Something went wrong...
@@ -245,10 +248,25 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
+	/**
+	 * Tests the feature allowing to automatically
+	 * retrieve DBpedia types of entities.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong...
+	 */
+	private static void testDbTypeRetriever() throws Exception
+	{	logger.setName("Test-DbTypeRetriever");
+		logger.log("Start retrieving types");
+		logger.increaseOffset();
+		DbTypeTools.getAllTypes("Paris");
+		logger.decreaseOffset();
+	}
+	
 	
 	/**
 	 * Tests the feature allowing to automatically
-	 * retrieve Freebase ids from Wikipedia titles.
+	 * retrieve Wikidata ids of entities.
 	 * 
 	 * @throws Exception
 	 * 		Something went wrong...
@@ -266,7 +284,7 @@ public class Test
 	
 	/**
 	 * Tests the feature allowing to automatically
-	 * retrieve types from Freebase.
+	 * retrieve Wikidata types of entities.
 	 * 
 	 * @throws Exception
 	 * 		Something went wrong...

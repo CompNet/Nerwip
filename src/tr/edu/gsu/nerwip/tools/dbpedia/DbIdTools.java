@@ -1,9 +1,16 @@
 package tr.edu.gsu.nerwip.tools.dbpedia;
 
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
+
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
-import com.hp.hpl.jena.query.*;
+
+
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -42,44 +49,71 @@ import com.hp.hpl.jena.query.*;
  */
 
 
-public class DbIdTools {
+public class DbIdTools 
+{
 	
-/////////////////////////////////////////////////////////////////
-//LOGGING			/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/** Common object used for logging */
-protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+    /////////////////////////////////////////////////////////////////
+    //LOGGING			/////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
+    /** Common object used for logging */
+   protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
-/**
- * This method takes an entity as parameter,
- * and retrieves its DBpedia id.
- * 
- * @param entity
- * 		Name of the entity.
- * @return
- * 		A String describing the DBpedia id.
-*/
-public static String getId(String entity) 
-{  logger.increaseOffset();
-   String result = null;
-   //adress of the SPARQL endpoint
-   String service="http://dbpedia.org/sparql";
+   /**
+   * This method takes an entity as parameter,
+   * and retrieves its DBpedia id.
+   * 
+   * @param entity
+   * 		Name of the entity.
+   * @return
+   * 		A String describing the DBpedia id.
+   */
+   public static String getId(String entity) 
+   {   logger.increaseOffset();
+       String result = null;
+   
+       //adress of the SPARQL endpoint
+       String service="http://dbpedia.org/sparql";
+   
+       // test connection
+       /* QueryExecution qe = QueryExecutionFactory.sparqlService(service, "ASK {}");
+         try{
+           if(qe.execAsk())
+           {
+           logger.log(service + " is UP");
+           }
+            }catch(QueryExceptionHTTP e){
+           e.printStackTrace();
+           logger.log(service + "is Down");
+           }
+         finally {
+             qe.close();
+         }*/
+   
+   
    //SPARQL query
-   String query = "select ?wikiPageID where {<http://fr.dbpedia.org/resource/"+ entity + ">"
-		   +"dbpedia-owl:wikiPageID ?wikiPageID.}";
+   String query = "PREFIX res: <http://dbpedia.org/resource/>" +
+		   "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>" +
+           "select ?wikiPageID where {" + 
+		   "<http://fr.dbpedia.org/resource/" + entity + ">" +  
+           "dbpedia-owl:wikiPageID ?wikiPageID." +
+           "}";
    
    QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
    ResultSet rs=e.execSelect();
-   while (rs.hasNext()) {
+   while (rs.hasNext()) 
+   {
        QuerySolution qs=rs.nextSolution();
-       logger.log("qs=" + qs);
        result = qs.toString();
+       logger.log("result=" + result);
+   }
+   e.close();
+  
+   logger.decreaseOffset();
+   return result;
+   
    }
    
-   
-   
-   
-   return result;
 }
 
-}
+
+

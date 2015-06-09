@@ -1,18 +1,10 @@
 package tr.edu.gsu.nerwip.tools.mediawiki;
 
 import java.io.IOException;
-import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import java.util.List;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.simple.parser.JSONParser;
-
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
@@ -51,57 +43,43 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * @author Sabrine Ayachi
  *
  */
-public class WikiTypeTools {
+public class WikiTypeTools 
+{
 	
-/////////////////////////////////////////////////////////////////
-// LOGGING			/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/** Common object used for logging */
-protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+   /////////////////////////////////////////////////////////////////
+   // LOGGING			/////////////////////////////////////////////
+   /////////////////////////////////////////////////////////////////
+   /** Common object used for logging */
+   protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
 
-/**
- * This method takes a name of entity,
- * and retrieves all its Wikidata types.
- * <br/>
- * Those types must then be processed in order to
- * get the corresponding {@link EntityType} or
- * article category.
- * 
- * @param entityy
- * 		Name of the entity.
- * @return
- * 		a List containing the Wikidata types of this entity.
- * 
- * @throws IOException 
- * 		Problem while retrieving the FB types.
- * @throws ClientProtocolException 
- * 		Problem while retrieving the FB types.
- * @throws org.json.simple.parser.ParseException 
- * 		Problem while retrieving the FB types.
- * @throws ParseException
- * 		Problem while retrieving the FB types.
- */
-public static List<String> getAllTypes(String entityy) throws ClientProtocolException, IOException   
-{  logger.increaseOffset();
-   List<String> result = null;
+   /**
+   * This method takes a name of entity,
+   * and retrieves all its Wikidata types.
+   * <br/>
+   * Those types must then be processed in order to
+   * get the corresponding {@link EntityType} or
+   * article category.
+   * 
+   * @param entityy
+   * 		Name of the entity.
+   * @return
+   * 		a List containing the Wikidata types of this entity.
+   * 
+   * @throws IOException 
+   * 		Problem while retrieving the FB types.
+   * @throws ClientProtocolException 
+   * 		Problem while retrieving the FB types.
+   * @throws ParseException
+   * 		Problem while retrieving the FB types.
+   */
+   public static List<String> getAllTypes(String entityy) throws ClientProtocolException, IOException   
+   {  logger.increaseOffset();
+      List<String> result = null;
    
-   String url ="http://www.wikidata.org/wiki/Q76";
-	  
-	  // get Wikidata answer
-	  HttpClient httpclient = new DefaultHttpClient();
-	  HttpGet request = new HttpGet(url);
-	  HttpResponse response = httpclient.execute(request);
-	 logger.log("response=" +  response.toString());
-	 
-	//builds object from answer
-	  JSONParser parser = new JSONParser();
-	  HttpEntity entity = response.getEntity();
-	  String str = EntityUtils.toString(entity);
-	  logger.log("str=" + str);
    
-   return result;
+      return result;
    
-}
+   }
 
 }

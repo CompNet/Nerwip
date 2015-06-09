@@ -50,67 +50,67 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * @author Sabrine Ayachi
  */
 
-public class WikiIdTools {
+public class WikiIdTools 
+{
 	
-/////////////////////////////////////////////////////////////////
-// LOGGING			/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/** Common object used for logging */
-protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+    /////////////////////////////////////////////////////////////////
+    // LOGGING			/////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
+    /** Common object used for logging */
+    protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
 
-/**
- * This method takes an entity as parameter,
- * and retrieves its Wikidata id.
- * 
- * @param entityy
- * 		Name of the entity.
- * @return
- * 		A String describing the wikidata id.
- * @throws IOException
- *      Problem while retrieving the Wikidata types. 
- * @throws ClientProtocolException 
- *      Problem while retrieving the Wikidata types.
- * @throws org.json.simple.parser.ParseException
- *      Problem while retrieving the Wikidata types. 
- * 
- * */
+    /**
+    * This method takes an entity as parameter,
+    * and retrieves its Wikidata id.
+    * 
+    * @param entityy
+    * 		Name of the entity.
+    * @return
+    * 		A String describing the wikidata id.
+    * @throws IOException
+    *      Problem while retrieving the Wikidata types. 
+    * @throws ClientProtocolException 
+    *      Problem while retrieving the Wikidata types.
+    * @throws org.json.simple.parser.ParseException
+    *      Problem while retrieving the Wikidata types. 
+    * 
+    * */
 
-public static String getId(String entityy) throws ClientProtocolException, IOException, org.json.simple.parser.ParseException 
-	{  logger.increaseOffset();
-	   String result = null;
+    public static String getId(String entityy) throws ClientProtocolException, IOException, org.json.simple.parser.ParseException 
+	{   logger.increaseOffset();
+	    String result = null;
 	  
-	  String url ="https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +entityy + "&format=json&language=fr&type=item";
+	    String url ="https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +entityy + "&format=json&language=fr&type=item";
 	  
-	  // get Wikidata answer
-	  HttpClient httpclient = new DefaultHttpClient();
-	  HttpGet request = new HttpGet(url);
-	  HttpResponse response = httpclient.execute(request);
-	 logger.log("response=" +  response.toString());
+	    // get Wikidata answer
+	    HttpClient httpclient = new DefaultHttpClient();
+	    HttpGet request = new HttpGet(url);
+	    HttpResponse response = httpclient.execute(request);
+	    logger.log("response=" +  response.toString());
 	  
 	
-	 //builds object from answer
-	  JSONParser parser = new JSONParser();
-	  HttpEntity entity = response.getEntity();
-	  String str = EntityUtils.toString(entity);
-	  logger.log("str=" + str);
+	    //builds object from answer
+	    JSONParser parser = new JSONParser();
+	    HttpEntity entity = response.getEntity();
+	    String str = EntityUtils.toString(entity);
+	    logger.log("str=" + str);
 	  
 		
 		
-	 JSONObject jsonData = (JSONObject)parser.parse(str);
-	 //logger.log("jsondata=" + jsonData.toString());
-	 JSONArray answer = (JSONArray)jsonData.get("search");
-	 //String string = answer.toString();
-	 //logger.log("answer=" + string);
+	    JSONObject jsonData = (JSONObject)parser.parse(str);
+	    //logger.log("jsondata=" + jsonData.toString());
+	    JSONArray answer = (JSONArray)jsonData.get("search");
+	    //String string = answer.toString();
+	    //logger.log("answer=" + string);
 		
 		
-	// extract types from the answer
-	if(answer!=null)
-	{
-		logger.log("here4");
-	    Object obj = answer.get(0);
-	    result = (String) ((JSONObject)obj).get("id");
-		logger.log("result=" + result);
+	    // extract types from the answer
+	    if(answer!=null)
+	    {
+	    	Object obj = answer.get(0);
+	        result = (String) ((JSONObject)obj).get("id");
+		    logger.log("result=" + result);
 		
 		/*for (Object object : answer)
 		 * {	// process id
@@ -118,16 +118,17 @@ public static String getId(String entityy) throws ClientProtocolException, IOExc
 				   logger.log("result=" + result);
 						}*/
 		
+	
+	    }
+	    
+	    logger.decreaseOffset();
+	    logger.log("result=" + result);
+	    
+	    return result;
+	    
+	
 	}
-	
-	logger.decreaseOffset();
-	logger.log("result=" + result);
-					
-	return result;
-	
-	
-	}
-
+    
 }
 
 
