@@ -35,13 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
-import tr.edu.gsu.nerwip.tools.file.FileNames;
-
 import com.aliasi.chunk.CharLmRescoringChunker;
 import com.aliasi.chunk.Chunk;
 import com.aliasi.chunk.ChunkFactory;
@@ -50,6 +43,13 @@ import com.aliasi.chunk.ChunkingImpl;
 import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
 import com.aliasi.tokenizer.TokenizerFactory;
 import com.aliasi.util.AbstractExternalizable;
+
+import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
+import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
  * This class trains the LingPipe NER

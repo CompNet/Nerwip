@@ -34,29 +34,30 @@
 # read the previously processed stat file
 # (see the Java program: classes in tools.corus)
 path <- "out/"
+path <- "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data/"
 data.file <- paste(path,"stats.txt",sep="")
 table <- read.table(data.file,header=TRUE)
 
 # plot word count frequency
-#plot.file <- paste(path,"/stats.words.emf",sep="")
-#win.metafile(file=plot.file)
-##plot.file <- paste(path,"/stats.words.pdf",sep="")
-##pdf(file=plot.file,bg="white")
-#hist(sort(table[,2]),breaks=50, freq=TRUE, xlab="Number of words", main="Article Size Distribution")
+##plot.file <- paste(path,"/stats.words.emf",sep="")
+##win.metafile(file=plot.file)
+#plot.file <- paste(path,"/stats.words.pdf",sep="")
+#pdf(file=plot.file,bg="white")
+#hist(sort(table[,2]),breaks=50, freq=TRUE, xlab="Number of words", main="Article Size Distribution", col="red")
 #dev.off()
 
 # plot character count frequency
-#plot.file <- paste(path,"/stats.chars.emf",sep="")
-#win.metafile(file=plot.file)
-##plot.file <- paste(path,"/stats.chars.pdf",sep="")
-##pdf(file=plot.file,bg="white")
-#hist(sort(table[,3]),breaks=50, freq=TRUE, xlab="Number of characters", main="Article Size Distribution")
+##plot.file <- paste(path,"/stats.chars.emf",sep="")
+##win.metafile(file=plot.file)
+#plot.file <- paste(path,"/stats.chars.pdf",sep="")
+#pdf(file=plot.file,bg="white")
+#hist(sort(table[,3]),breaks=50, freq=TRUE, xlab="Number of characters", main="Article Size Distribution", col="red")
 #dev.off()
 
 # plot entity count frequency
-plot.file <- paste(path,"/stats.entities.emf",sep="")
-win.metafile(file=plot.file)
+##plot.file <- paste(path,"/stats.entities.emf",sep="")
+##win.metafile(file=plot.file)
 #plot.file <- paste(path,"/stats.entities.pdf",sep="")
 #pdf(file=plot.file,bg="white")
-hist(sort(table[,4]+table[,5]+table[,6]+table[,7]),breaks=50, freq=TRUE, xlab="Number of entities", main="Article Size Distribution")
-dev.off()
+#hist(sort(table[,4]+table[,5]+table[,6]+table[,7]),breaks=50, freq=TRUE, xlab="Number of entities", main="Article Size Distribution", col="red")
+#dev.off()

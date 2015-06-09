@@ -25,36 +25,26 @@
 	If not, see <http://www.gnu.org/licenses/>.
  -->
  
-	<xsd:simpleType name="tType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="DATE" />
-			<xsd:enumeration value="FUNCTION" />
-			<xsd:enumeration value="LOCATION" />
-			<xsd:enumeration value="ORGANIZATION" />
-			<xsd:enumeration value="PERSON" />
-			<xsd:enumeration value="PRODUCTION" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:complexType name="tEntity">
-		<xsd:sequence>
-			<xsd:element name="string" type="xsd:string" />
-			<xsd:element name="value" type="xsd:string" minOccurs="0"/>
-		</xsd:sequence>
-		<xsd:attribute name="type" type="tType" use="required" />
-		<xsd:attribute name="start" type="xsd:integer" use="required" />
-		<xsd:attribute name="end" type="xsd:integer" use="required" />
+	<xsd:complexType name="tUse">
+		<xsd:attribute name="corpus" type="xsd:boolean" use="required" />
+		<xsd:attribute name="article" type="xsd:boolean" use="required" />
 	</xsd:complexType>
 
-	<xsd:complexType name="tEntities">
+	<xsd:complexType name="tLast">
 		<xsd:sequence>
-			<xsd:element name="entity" type="tEntity" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="corpus" type="xsd:string" />
+			<xsd:element name="article" type="xsd:string" minOccurs="0" />
 		</xsd:sequence>
-		<xsd:attribute name="date" type="xsd:string" use="optional" />
-		<xsd:attribute name="source" type="xsd:string" />
-		<xsd:attribute name="editor" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
-	<xsd:element name="entities" type="tEntities" />
+	<xsd:complexType name="tConfiguration">
+		<xsd:sequence>
+			<xsd:element name="use" type="tUse" />
+			<xsd:element name="last" type="tLast" minOccurs="0" />
+			<xsd:element name="editor" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="configuration" type="tConfiguration" />
 
 </xsd:schema>
