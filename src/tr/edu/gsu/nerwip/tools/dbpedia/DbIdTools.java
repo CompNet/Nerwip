@@ -1,16 +1,28 @@
 package tr.edu.gsu.nerwip.tools.dbpedia;
 
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
-
-
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -38,7 +50,6 @@ import com.hp.hpl.jena.query.ResultSet;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /**
  * This class handles DBpedia ids, and more particularly
  * the mapping between named entities and their DBpedia
@@ -47,11 +58,15 @@ import com.hp.hpl.jena.query.ResultSet;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-
-
 public class DbIdTools 
-{
-	
+{  
+	/////////////////////////////////////////////////////////////////
+	// PREFIXES		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Prefix for representing article data */
+    private final static String PRE_DBR = "PREFIX res: <http://dbpedia.org/resource/>";
+    /** Prefix for representing the DBpedia ontology */
+	private final static String PRE_DBO = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>";
     /////////////////////////////////////////////////////////////////
     //LOGGING			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
@@ -67,49 +82,103 @@ public class DbIdTools
    * @return
    * 		A String describing the DBpedia id.
    */
-   public static String getId(String entity) 
+   @SuppressWarnings("unchecked")
+public static String getId(String entity) 
    {   logger.increaseOffset();
-       String result = null;
+       String ID = null;
+
+       //adress of the french SPARQL endpoint
+       String service="http://fr.dbpedia.org/sparql";
+ 
    
-       //adress of the SPARQL endpoint
-       String service="http://dbpedia.org/sparql";
+      //SPARQL query
+      String query = PRE_DBR + PRE_DBO + "select ?wikiPageID where {" + 
+    		   "<http://fr.dbpedia.org/resource/" + entity + ">" +  
+               "dbpedia-owl:wikiPageID ?wikiPageID." +
+               "}";
+     
+       //String query = "SELECT ?wikiPageID WHERE { <http://fr.dbpedia.org/resource/Paris> dbpedia-owl:wikiPageID ?wikiPageID. }";
+ 
+      try {
+	   
+	   HttpClient httpclient = new DefaultHttpClient();
+	   List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+	   params.add(new BasicNameValuePair("query", query)); 
+	  // params.add(new BasicNameValuePair("Accept", "application/json"));
+	   params.add(new BasicNameValuePair("output", "xml"));
+ 
+	   HttpGet httpget = new HttpGet(service+"?"+URLEncodedUtils.format(params, "utf-8"));
+	   HttpResponse response = httpclient.execute(httpget);
+	   logger.log( response.toString());
+	   
+	   InputStream stream = response.getEntity().getContent();
+		InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
+		BufferedReader bufferedReader = new BufferedReader(streamReader);
+		
+		// read DBanswer
+		logger.log("DB answer");
+		StringBuilder builder = new StringBuilder();
+		String line;
+		while((line = bufferedReader.readLine())!=null)
+		{	builder.append(line+"\n");
+			//logger.log("Line:" +line);
+		}
+		String dbAnswer = builder.toString();
+		logger.log("DBAnswer=" + dbAnswer);
+		
+		// build DOM
+		logger.log("Build DOM");
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(dbAnswer));
+		Element root = doc.getRootElement();
+		List<Element> list = root.getChildren();
+        //logger.log("size :" + list.size());
+        Element results = list.get(1);
+        logger.log("results :" + results.getName());
+        
+		List<Element> list2 = results.getChildren();
+        //logger.log("size list2 :" + resultt.size());
+         
+        Element result = list2.get(0);
+        logger.log("result :" + result.getName());
+      
+		List<Element> list3 = result.getChildren();
+        Element wikiPageID = list3.get(0);
+        logger.log("wikiPageID :" + wikiPageID.getValue());
+        ID = wikiPageID.getValue();
+
+       }
+      catch (ClientProtocolException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+    } catch (IOException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+	
+    }
+     /* catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/ catch (JDOMException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
    
-       // test connection
-       /* QueryExecution qe = QueryExecutionFactory.sparqlService(service, "ASK {}");
-         try{
-           if(qe.execAsk())
-           {
-           logger.log(service + " is UP");
-           }
-            }catch(QueryExceptionHTTP e){
-           e.printStackTrace();
-           logger.log(service + "is Down");
-           }
-         finally {
-             qe.close();
-         }*/
+   // processing with jena library 
    
-   
-   //SPARQL query
-   String query = "PREFIX res: <http://dbpedia.org/resource/>" +
-		   "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>" +
-           "select ?wikiPageID where {" + 
-		   "<http://fr.dbpedia.org/resource/" + entity + ">" +  
-           "dbpedia-owl:wikiPageID ?wikiPageID." +
-           "}";
-   
-   QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
+   /*QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
    ResultSet rs=e.execSelect();
+   
    while (rs.hasNext()) 
    {
        QuerySolution qs=rs.nextSolution();
        result = qs.toString();
        logger.log("result=" + result);
    }
-   e.close();
+   e.close();*/
   
    logger.decreaseOffset();
-   return result;
+   return ID;
    
    }
    

@@ -145,7 +145,7 @@ public class Test
 //		testWikiIdRetriever();
 //		testWikiTypeRetriever();
 		testDbIdRetriever();
-//		testDbTypeRetriever();
+		testDbTypeRetriever();
 		
 		logger.close();
 	}
@@ -243,7 +243,7 @@ public class Test
 		logger.increaseOffset();
 		
 		
-		DbIdTools.getId("Paris");
+		DbIdTools.getId("Tunisie");
 		
 		logger.decreaseOffset();
 	}
@@ -259,7 +259,7 @@ public class Test
 	{	logger.setName("Test-DbTypeRetriever");
 		logger.log("Start retrieving types");
 		logger.increaseOffset();
-		DbTypeTools.getAllTypes("Paris");
+		DbTypeTools.getAllTypes("Barack_Obama");
 		logger.decreaseOffset();
 	}
 	
