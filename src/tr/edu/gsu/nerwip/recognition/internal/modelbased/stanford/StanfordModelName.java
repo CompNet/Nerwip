@@ -65,7 +65,6 @@ public enum StanfordModelName
 		),
 		Arrays.asList(ArticleLanguage.EN)
 	), 
-	
 	/** 
 	 * MUC 7 entity types 
 	 * <ul>
@@ -89,7 +88,6 @@ public enum StanfordModelName
 		),
 		Arrays.asList(ArticleLanguage.EN)
 	), 
-	
 	/** 
 	 * MUC & CoNLL 3 entity types 
 	 * <ul>
@@ -108,7 +106,6 @@ public enum StanfordModelName
 		),
 		Arrays.asList(ArticleLanguage.EN)
 	),
-	
 	/** 
 	 * Nerwip 3 entity types 
 	 * <ul>
@@ -215,7 +212,7 @@ public enum StanfordModelName
 	public List<EntityType> getHandledTypes()
 	{	return types;
 	}
-	
+
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

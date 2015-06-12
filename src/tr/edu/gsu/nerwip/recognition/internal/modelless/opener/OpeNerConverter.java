@@ -7,12 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -116,6 +116,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	@SuppressWarnings("unchecked")
 	@Override
 	public Entities convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
@@ -205,6 +206,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * @return
 	 * 		The resulting entity.
 	 */
+	@SuppressWarnings("unchecked")
 	private AbstractEntity<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
 	{	AbstractEntity<?> result = null;
 		

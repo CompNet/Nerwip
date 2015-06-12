@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.jdom2.Element;
+import org.jdom.Element;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.entity.Entities;
@@ -517,6 +517,7 @@ public class Article
 	 * @throws IOException
 	 * 		Problem while accessing the file.
 	 */
+	@SuppressWarnings("unchecked")
 	private void readProperties() throws ParseException, SAXException, IOException
 	{	// schema file
 		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_PROPERTY_SCHEMA;

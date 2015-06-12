@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
@@ -587,7 +588,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 		
 		// create and add panel
 //		boolean editable = entities==references;
-		boolean editable = false;
+boolean editable = false;//TODO mettre une option
+		
 		EntityEditorPanel panel = new EntityEditorPanel(this, text, linkedText, entities, references, params, modeState, switches, linkState, editable, name);
 		tabbedPane.add(algoName, panel);
 	}
@@ -716,6 +718,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		toolBar = new JPanel();
 		toolBar.setBorder(BorderFactory.createRaisedBevelBorder());
 		LayoutManager layout = new BoxLayout(toolBar, BoxLayout.LINE_AXIS);
+//		LayoutManager layout = new FlowLayout(FlowLayout.LEFT);
 		toolBar.setLayout(layout);
 		//toolBar.setPreferredSize(new Dimension(100, 20));
 		frame.getContentPane().add(toolBar, java.awt.BorderLayout.NORTH);
@@ -2464,3 +2467,19 @@ public class EntityEditor implements WindowListener, ChangeListener
 	{	// nothing to do here
 	}
 }
+
+// TODO solve the GUI problem when the screen is too narrow (buttons)
+// TODO forcer à sélectionner un corpus si le dossier actuel est vide d'article
+// TODO bloquer la modif du texte
+// TODO couleur des boutons sous mac
+// TODO meeting
+// TODO corriger script mac
+// TODO mettre lettre Q dans les boutons à la place de P
+/**
+ * La droite du PS >> PS = organisation
+ * député de haute vienne >> tout, fonction
+ * fils de job >> fonction, personne de référence pas annotée
+ * député maire émile labruissière >> tout=personne + fonction dedans
+ * traitement des congrès ? 
+ *  
+*/

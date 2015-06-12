@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jdom2.Element;
+import org.jdom.Element;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -67,6 +67,7 @@ public class KeyHandler
 	 * the appropriate XML file, as well as the
 	 * ids possibly associated to certain keys.
 	 */
+	@SuppressWarnings("unchecked")
 	private static void loadData()
 	{	// set up file names
 		String dataFileName = FileNames.FO_MISC + File.separator + FileNames.FI_KEY_LIST;
