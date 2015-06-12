@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
@@ -36,6 +37,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
@@ -72,8 +76,10 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
+import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -103,6 +109,8 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.LinkTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
+import tr.edu.gsu.nerwip.tools.xml.XmlNames;
+import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
@@ -119,12 +127,22 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
 public class EntityEditor implements WindowListener, ChangeListener
 {
 	/**
-	 * Builds a new, empty EntityEditor.
-	 * Data must be provided through the
-	 * {@link #setArticle(String)} method.
+	 * Builds a new, empty EntityEditor. Data must be 
+	 * provided through the {@link #setArticle(String)} 
+	 * method.
+	 * 
+	 * @throws ParseException
+	 * 		Problem while loading the configuration file or the first article. 
+	 * @throws IOException 
+	 * 		Problem while loading the configuration file or the first article. 
+	 * @throws SAXException 
+	 * 		Problem while loading the configuration file or the first article. 
 	 */
-	public EntityEditor()
-	{	// set up tooltip popup speed
+	public EntityEditor() throws SAXException, IOException, ParseException
+	{	// init the corpus folder
+		String articlePath = retrieveSettings();
+		
+		// set up tooltip popup speed
 		ToolTipManager.sharedInstance().setInitialDelay(400);
 		
 		// create frame
@@ -156,7 +174,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 		initStatusBar();
 		
         setStatusInformation("Waiting...");
+		
 		frame.setVisible(true);
+		
+		if(!articlePath.isEmpty())
+			setArticle(articlePath);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -176,9 +198,18 @@ public class EntityEditor implements WindowListener, ChangeListener
 	{	HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 		logger.setEnabled(false);
 		
+		// check if settings already exist
+		String settingsPath = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
+		File settingsFile = new File(settingsPath);
+		boolean mustCreate = !settingsFile.exists();
+		
 		// set up viewer
 		Locale.setDefault(Locale.ENGLISH);
 		EntityEditor viewer = new EntityEditor();
+		
+		// possibly ask the user to init some values
+		if(mustCreate)
+			viewer.doFirstLaunch();
 		
 		// select specific NER tools
 		List<String> prefixes = Arrays.asList(new String[]
@@ -445,19 +476,19 @@ public class EntityEditor implements WindowListener, ChangeListener
 //		String articleName = "Fleur_Pellerin";
 		
 		// set up article by number
-		ArticleList articles = ArticleLists.getArticleList();
+//		ArticleList articles = ArticleLists.getArticleList();
 //		File article = articles.get(250);
-		File article = articles.get(0);
-		articleName = article.getName();
+//		File article = articles.get(0);
+//		articleName = article.getName();
 		
-		String articlePath = FileNames.FO_OUTPUT + File.separator + articleName;
-		viewer.setArticle(articlePath);
+//		String articlePath = FileNames.FO_OUTPUT + File.separator + articleName;
+//		viewer.setArticle(articlePath);
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// FRAME			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Frame to contain tabs and abstractEntities */
+	/** Frame to contain tabs and entities */
 	private JFrame frame;
 	/** Title of this application */
 	private static final String TITLE_SHORT = "Entity Editor";
@@ -467,10 +498,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private String articleName = "";
 	
 	/**
-	 * Updates the title of
-	 * the frame, depending
-	 * on whether the reference
-	 * must be recorded or not.
+	 * Updates the title of the frame, depending
+	 * on whether the reference must be recorded or not.
 	 */
 	private void updateTitle()
 	{	String title = frame.getTitle();
@@ -498,6 +527,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		initDisplayModeActions();
 		initBrowseActions();
 		initLinksActions();
+		initSettingsActions();
 		initInformationActions();
 		initQuitActions();
 	}
@@ -505,7 +535,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/////////////////////////////////////////////////////////////////
 	// TAB PANES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Tab to represent a tool's abstractEntities. */
+	/** Tab to represent a tool entities. */
 //	private MovableTabbedPane tabbedPane;
 	private JTabbedPane tabbedPane;
 	/** Selected tab */
@@ -557,7 +587,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 		boolean linkState = (Boolean)showLinksAction.getValue(Action.SELECTED_KEY);
 		
 		// create and add panel
-		boolean editable = entities==references;
+//		boolean editable = entities==references;
+boolean editable = false;//TODO mettre une option
+		
 		EntityEditorPanel panel = new EntityEditorPanel(this, text, linkedText, entities, references, params, modeState, switches, linkState, editable, name);
 		tabbedPane.add(algoName, panel);
 	}
@@ -616,9 +648,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 		{	statusInformationLabel = new JLabel("",JLabel.LEFT);
 //statusInformationLabel.setOpaque(true);
 //statusInformationLabel.setBackground(Color.RED);		
-//        	statusInformationLabel.setPreferredSize(new Dimension(100, 16));
-//			statusInformationLabel.setBorder(BorderFactory.createLoweredBevelBorder()); 
-        	statusBar.add(BorderLayout.WEST,statusInformationLabel);
+			statusInformationLabel.setPreferredSize(new Dimension(100, 16));
+			statusInformationLabel.setBorder(BorderFactory.createLoweredBevelBorder()); 
+			statusBar.add(BorderLayout.CENTER,statusInformationLabel);
 		}
 
 //		statusBar.add(BorderLayout.CENTER, new JSeparator(SwingConstants.VERTICAL));
@@ -686,6 +718,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		toolBar = new JPanel();
 		toolBar.setBorder(BorderFactory.createRaisedBevelBorder());
 		LayoutManager layout = new BoxLayout(toolBar, BoxLayout.LINE_AXIS);
+//		LayoutManager layout = new FlowLayout(FlowLayout.LEFT);
 		toolBar.setLayout(layout);
 		//toolBar.setPreferredSize(new Dimension(100, 20));
 		frame.getContentPane().add(toolBar, java.awt.BorderLayout.NORTH);
@@ -772,6 +805,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/** String used for menu definition */
 	private final static String MENU_VIEW = "View";
 	/** String used for menu definition */
+	private final static String MENU_SETTINGS = "Settings";
+	/** String used for menu definition */
 	private final static String MENU_HELP = "Help";
 	/** Menu bar of this editor */
 	private JMenuBar menuBar;
@@ -795,6 +830,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JRadioButtonMenuItem riTypes;
 	/** Menu item of the comparison display mode */
 	private JRadioButtonMenuItem riComparison;
+	/** Menu item of the corpus selection action */
+	private JMenuItem miCorpus;
+	/** Menu item of the editor selection action */
+	private JMenuItem miEditor;
+	/** Menu item of the last corpus option action */
+	private JCheckBoxMenuItem miLastCorpus;
+	/** Menu item of the last article option action */
+	private JCheckBoxMenuItem miLastArticle;
 	/** Menu item of the index action */
 	private JMenuItem miIndex;
 	/** Menu item of the about action */
@@ -890,6 +933,25 @@ public class EntityEditor implements WindowListener, ChangeListener
 			menu.add(miLinks);
 		}
 		
+		// settings menu
+		{	JMenu menu = new JMenu(MENU_SETTINGS);
+			menuBar.add(menu);
+			
+			miCorpus = new JMenuItem(corpusAction);
+			menu.add(miCorpus);
+			
+			miEditor = new JMenuItem(editorAction);
+			menu.add(miEditor);
+			
+			menu.addSeparator();
+
+			miLastCorpus = new JCheckBoxMenuItem(lastCorpusAction);
+			menu.add(miLastCorpus);
+			
+			miLastArticle = new JCheckBoxMenuItem(lastArticleAction);
+			menu.add(miLastArticle);
+		}
+
 		// about menu
 		{	JMenu menu = new JMenu(MENU_HELP);
 			menuBar.add(menu);
@@ -1369,7 +1431,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{	File file = articleChooser.getSelectedFile();
 			String name = file.getName();
-			String pathStr = FileNames.FO_OUTPUT + File.separator + name;
+			String pathStr = corpusFolder + File.separator + name;
 			try
 			{	setArticle(pathStr);
 			}
@@ -1468,11 +1530,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 
 	/**
-	 * Lets the user record modified
-	 * reference entities before loading
+	 * Lets the user record modified reference entities before loading
 	 * another article or quitting the application.
-	 * The method returns a boolean indicating
-	 * if the action was canceled or not.
+	 * <br/>
+	 * The method returns a boolean indicating if the action was canceled 
+	 * or not.
 	 *
 	 * @return
 	 * 		{@code false} iff the action was canceled.
@@ -1526,11 +1588,127 @@ public class EntityEditor implements WindowListener, ChangeListener
 		// possibly save
 		if(changed>0)
 			action = proposeSaving();
+		
 		// then only, quit
 		if(action)
-		{	frame.dispose();
+		{	// update configuration file
+			try
+			{	recordSettings();
+			}
+			catch (IOException e)
+			{	e.printStackTrace();
+			}
+			
+			// close the application
+			frame.dispose();
 			System.exit(0);
 		}
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// SETTINGS			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** String used for action definition */
+	private final static String STR_CORPUS = "Corpus folder";
+	/** String used for action definition */
+	private final static String STR_CORPUS_TT = "Change the main folder containing the corpus";
+	/** Action triggering the corpus dialog */
+	private Action corpusAction = null;
+	/** String used for action definition */
+	private final static String STR_EDITOR = "Editor name";
+	/** String used for action definition */
+	private final static String STR_EDITOR_TT = "Change the name of the current editor";
+	/** Action triggering the editor dialog */
+	private Action editorAction = null;
+	/** String used for action definition */
+	private final static String STR_LAST_CORPUS = "Last corpus";
+	/** String used for action definition */
+	private final static String STR_LAST_CORPUS_TT = "Try to access the last corpus at startup";
+	/** Action switching the last corpus option */
+	private Action lastCorpusAction = null;
+	/** String used for action definition */
+	private final static String STR_LAST_ARTICLE = "Last article";
+	/** String used for action definition */
+	private final static String STR_LAST_ARTICLE_TT = "Try to load the last article at startup";
+	/** Action switching the last article option */
+	private Action lastArticleAction = null;
+	
+	/**
+	 * Initializes actions related to the settings.
+	 */
+	private void initSettingsActions()
+	{	// corpus
+		{	String name = STR_CORPUS;
+			corpusAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	changeCorpusFolder();
+			    }
+			};
+			corpusAction.putValue(Action.SHORT_DESCRIPTION, STR_CORPUS_TT);
+		}
+		
+		// editor
+		{	String name = STR_EDITOR;
+			editorAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	changeEditorName();
+			    }
+			};
+			editorAction.putValue(Action.SHORT_DESCRIPTION, STR_EDITOR_TT);
+		}
+		
+		// last corpus
+		{	String name = STR_LAST_CORPUS;
+			lastCorpusAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	switchLastCorpusOption();
+			    }
+			};
+			lastCorpusAction.putValue(Action.SHORT_DESCRIPTION, STR_LAST_CORPUS_TT);
+			lastCorpusAction.putValue(Action.SELECTED_KEY, useLastCorpus);
+		}
+		
+		
+		// last article
+		{	String name = STR_LAST_ARTICLE;
+			lastArticleAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	switchLastArticleOption();
+			    }
+			};
+			lastArticleAction.putValue(Action.SHORT_DESCRIPTION, STR_LAST_ARTICLE_TT);
+			lastArticleAction.putValue(Action.SELECTED_KEY, useLastArticle);
+		}
+	}
+	
+	/**
+	 * Changes the value of the {@link #useLastCorpus} switch.
+	 */
+	private void switchLastCorpusOption()
+	{	useLastCorpus = !useLastCorpus;
+	}
+	
+	/**
+	 * Changes the value of the {@link #useLastArticle} switch.
+	 */
+	private void switchLastArticleOption()
+	{	useLastArticle = !useLastArticle;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -1598,8 +1776,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void displayHelpIndex()
 	{	try
-		{	
-			//indexDialog = new TextDialog(frame, STR_INDEX_T, FileNames.FI_HELP_PAGE); //TODO not written yet
+		{	//indexDialog = new TextDialog(frame, STR_INDEX_T, FileNames.FI_HELP_PAGE); //TODO not written yet
 			indexDialog = new TextDialog(frame, STR_INDEX_T, "README.md");
 			indexDialog.setVisible(true);
 		}
@@ -1630,6 +1807,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JFileChooser articleChooser;
 	/** Component used to save the reference */
 	private JFileChooser referenceChooser;
+	/** Component used to select the corpus main folder */
+	private JFileChooser corpusChooser;
 	/** Indicates if the reference was modified since the last save: 0=no, 1=ref entities, 2=text */
 	private int changed = 0;
 	
@@ -1637,25 +1816,25 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * Creates and initializes the file chooser.
 	 */
 	private void initFileChooser()
-	{	File folder = new File(FileNames.FO_OUTPUT);
-		
-		articleChooser = new JFileChooser(folder);
+	{	articleChooser = new JFileChooser(corpusFolder);
 		articleChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		articleChooser.setDialogTitle("Select an article folder");
 		
-		referenceChooser = new JFileChooser(folder);
+		referenceChooser = new JFileChooser(corpusFolder);
 		referenceChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		referenceChooser.setDialogTitle("Select the new reference file");
+		
+		corpusChooser = new JFileChooser(corpusFolder);
+		corpusChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		corpusChooser.setDialogTitle("Select the main corpus folder");
 	}
 	
 	/**
-	 * Updates the save indicator
-	 * and the corresponding GUI elements.
-	 * The value 0 means there is no change anymore
-	 * (we probably've just recorded them); the
-	 * value 1 means only reference entities were
-	 * modified; and the value 2 means the text
-	 * was modified.  
+	 * Updates the saved indicator and the corresponding GUI elements.
+	 * <br/>
+	 * The value 0 means there is no change anymore (we probably've 
+	 * just recorded them); the value 1 means only reference entities 
+	 * were modified; and the value 2 means the text was modified.  
 	 * 
 	 * @param changed
 	 * 		Changes the current status.
@@ -1724,6 +1903,232 @@ public class EntityEditor implements WindowListener, ChangeListener
 			// update selected panel name
 			selectedTab = tabbedPane.getTitleAt(index)+status;
 		}
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// SETTINGS VALUES		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Main folder containing the whole corpus */
+	private String corpusFolder = null;
+	/** Name of the person currently annotating the articles */
+	private String currentEditor = "N/A";
+	/** Whether or not to use the last loaded corpus */
+	private boolean useLastCorpus = true;
+	/** Whether or not to use the last loaded article */
+	private boolean useLastArticle = true;
+	
+	/**
+	 * Changes the folder containing the whole corpus.
+	 */
+	private void changeCorpusFolder()
+	{	int returnVal = corpusChooser.showOpenDialog(frame);
+		if (returnVal == JFileChooser.APPROVE_OPTION)
+		{	File file = corpusChooser.getSelectedFile();
+			try
+			{	// set up the new folder
+				String tempFolder = file.getCanonicalPath();
+				
+				// possibly switch to its first article (if there's one)
+				File cf = new File(tempFolder);
+				ArticleList articles = ArticleLists.getArticleList(cf);
+				if(!articles.isEmpty())
+				{	corpusFolder = tempFolder;
+					File article = articles.get(0);
+					String articleName = article.getName();
+					String articlePath = corpusFolder + File.separator + articleName;
+					setArticle(articlePath);
+				}
+				
+				// otherwise, display an error message (=no corpus)
+				else
+				{	JOptionPane.showMessageDialog(frame, "The selected folder does not contain any article", "No article found", JOptionPane.ERROR_MESSAGE);
+				}
+				
+				cf = new File(corpusFolder);
+				corpusChooser.setCurrentDirectory(cf);
+			}
+			catch (SAXException e1)
+			{	e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{	e1.printStackTrace();
+			}
+			catch (ParseException e)
+			{	e.printStackTrace();
+			}
+        }
+	}
+	
+	/**
+	 * Changes the name of the current editor.
+	 */
+	private void changeEditorName()
+	{	String answer = (String)JOptionPane.showInputDialog(frame,
+                "Enter the name of the current editor:",
+                "Editor name",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                null,
+                currentEditor);
+		if(answer!=null && !answer.isEmpty())
+			currentEditor = answer;
+	}
+
+	/**
+	 * Record the editor settings in the
+	 * appropriate XML file.
+	 * 
+	 * @throws IOException 
+	 * 		Problem while recording the configuration file. 
+	 */
+	private void recordSettings() throws IOException
+	{	// check folder
+		File folder = new File(FileNames.FO_MISC);
+		if(!folder.exists())
+			folder.mkdirs();
+		// schema file
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_CONFIGURATION_SCHEMA;
+		File schemaFile = new File(schemaPath);
+		
+		// build xml document
+		Element root = new Element(XmlNames.ELT_CONFIGURATION);
+
+		// use
+		{	Element useElt = new Element(XmlNames.ELT_USE);
+			String useLastCorpusStr = Boolean.toString(useLastCorpus);
+			useElt.setAttribute(XmlNames.ATT_CORPUS, useLastCorpusStr);
+			String useLastArticleStr = Boolean.toString(useLastArticle);
+			useElt.setAttribute(XmlNames.ATT_ARTICLE, useLastArticleStr);
+			root.addContent(useElt);
+		}
+		
+		// last
+		{	Element lastElt = new Element(XmlNames.ELT_LAST);
+			Element corpusElt = new Element(XmlNames.ELT_CORPUS);
+			corpusElt.setText(corpusFolder);
+			lastElt.addContent(corpusElt);
+			if(currentArticle!=null)
+			{	Element articleElt = new Element(XmlNames.ELT_ARTICLE);
+				articleElt.setText(currentArticle);
+				lastElt.addContent(articleElt);
+			}
+			root.addContent(lastElt);
+		}
+		
+		// editor
+		if(currentEditor!=null)
+		{	Element editorElt = new Element(XmlNames.ELT_EDITOR);
+			editorElt.setText(currentEditor);
+			root.addContent(editorElt);
+		}
+		
+		// record file
+		String configPath = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
+		File configFile = new File(configPath);
+		XmlTools.makeFileFromRoot(configFile,schemaFile,root);
+	}
+	
+	/**
+	 * Retrieves the configuration file content,
+	 * and initializes the corpus folder.
+	 * 
+	 * @return
+	 * 		Path of the first article to load (for later).
+	 * 
+	 * @throws IOException
+	 * 		Problem while loading the configuration file. 
+	 * @throws SAXException 
+	 * 		Problem while loading the configuration file. 
+	 */
+	private String retrieveSettings() throws SAXException, IOException
+	{	Locale.setDefault(Locale.ENGLISH);
+		// get the predefined folder
+		corpusFolder = FileNames.FO_OUTPUT; 
+		String articlePath = "";
+		
+		// schema file
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_CONFIGURATION_SCHEMA;
+		File schemaFile = new File(schemaPath);
+	
+		// load file
+		String configPath = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
+		File configFile = new File(configPath);
+		if(configFile.exists())
+		{	Element root = XmlTools.getRootFromFile(configFile,schemaFile);
+			
+			// use
+			{	Element useElt = root.getChild(XmlNames.ELT_USE);
+				String useLastCorpusStr = useElt.getAttributeValue(XmlNames.ATT_CORPUS);
+				useLastCorpus = Boolean.parseBoolean(useLastCorpusStr);
+				String useLastArticleStr = useElt.getAttributeValue(XmlNames.ATT_ARTICLE);
+				useLastArticle = Boolean.parseBoolean(useLastArticleStr);
+			}
+		
+			// last
+			{	Element lastElt = root.getChild(XmlNames.ELT_LAST);
+				if(lastElt!=null)
+				{	if(useLastCorpus)
+					{	Element corpusElt = lastElt.getChild(XmlNames.ELT_CORPUS);
+						corpusFolder = corpusElt.getValue().trim();
+					}
+					if(useLastArticle)
+					{	Element articleElt = lastElt.getChild(XmlNames.ELT_ARTICLE);
+						if(articleElt!=null)
+						{	articlePath = articleElt.getValue().trim();
+							File f1 = new File(corpusFolder);
+							File f2 = new File(articlePath);
+							if(!f2.getParentFile().equals(f1))
+								articlePath = "";
+						}
+					}
+				}
+			}
+			
+			// editor
+			{	Element editorElt = root.getChild(XmlNames.ELT_EDITOR);
+				if(editorElt!=null)
+					currentEditor = editorElt.getValue().trim();
+			}
+		}
+		
+		// check if the corpus folder exists
+		File cff = new File(corpusFolder);
+		if(!cff.exists())
+		{	corpusFolder = System.getProperty("user.home");
+			articlePath = "";
+		}
+		else if(!articlePath.isEmpty())
+		{	cff = new File(articlePath);
+			if(!cff.exists())
+				articlePath = "";
+		}
+		if(articlePath.isEmpty())
+		{	ArticleList articles = ArticleLists.getArticleList(new File(corpusFolder));
+			if(articles!=null && !articles.isEmpty())
+			{	File article = articles.get(0);
+				String articleName = article.getName();
+				articlePath = corpusFolder + File.separator + articleName;
+			}
+		}
+		
+		return articlePath;
+	}
+	
+	/**
+	 * Forces the user to set up the settings for the first launch.
+	 */
+	public void doFirstLaunch()
+	{	JOptionPane.showMessageDialog(frame, 
+			"<html>"
+			+ "This is the first launch of "+TITLE+".<hr/>"
+			+ "For this time only, "+TITLE_SHORT+" is now going to ask you to:"
+			+ "<ol><li>Enter your name (as the editor)</li>"
+			+ "<li>Select the main folder of the corpus "
+			+ "(<u>warning:</u> the <i>main</i> folder, not some article folder)</li>"
+			+ "</html>");
+		
+		changeEditorName();
+		changeCorpusFolder();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -1833,7 +2238,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void setArticle(int offset) throws SAXException, IOException, ParseException
 	{	// get the sorted list of articles
-		ArticleList folders = ArticleLists.getArticleList();
+		File cf = new File(corpusFolder);
+		ArticleList folders = ArticleLists.getArticleList(cf);
 		if(!folders.isEmpty())
 		{	// find and set new article
 			int index = 0;
@@ -1872,8 +2278,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			// update info regarding the current article
 			currentArticle = articlePath;
+			File cf = new File(corpusFolder);
+			ArticleList articles = ArticleLists.getArticleList(cf);
 			File f = new File(currentArticle);
-			ArticleList articles = ArticleLists.getArticleList();
 			currentIndex = articles.indexOf(f);
 		
 			// retrieve texts
@@ -1885,10 +2292,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 			else
 				currentLinkedText = FileTools.readTextFile(rawFile);
 			
-			// update title
+			// get article name
 			File temp = new File(articlePath);
 			articleName = temp.getName();
-			frame.setTitle(TITLE+" - " + articleName + " " + (currentIndex+1) + "/" + articles.size());
 			
 			// update position
 			updateStatusPosition(null);
@@ -1899,7 +2305,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 			// open them to get the entities
 			Map<String,Entities> entityLists = getEntityLists(entityFiles);
 			
-			// clear existing articles
+			// clear existing article
 			String selectedTab = this.selectedTab;
 			tabbedPane.removeChangeListener(this);
 			tabbedPane.removeAll();
@@ -1910,12 +2316,15 @@ public class EntityEditor implements WindowListener, ChangeListener
 			String refName = RecognizerName.REFERENCE.toString();
 			Entities references = entityLists.get(refName);
 			if(references==null)
-			{	references = new Entities(RecognizerName.REFERENCE);
+			{	references = new Entities(currentEditor);
 				updateSaved(1);
 				updateTitle();
 			}
 			else
-				entityLists.remove(refName);
+			{	entityLists.remove(refName);
+				if(references.getEntities().isEmpty())
+					references.setEditor(currentEditor);
+			}
 			addTab(currentRawText, currentLinkedText, references, references, refName);
 			Set<String> names = new TreeSet<String>(entityLists.keySet());
 			for(String name: names)
@@ -1938,6 +2347,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 					tabbedPane.setSelectedIndex(index);
 			}
 			
+			// update title
+			String editorStr ="[edt: " + currentEditor;
+			String refEdt = references.getEditor();
+			if(refEdt!=null && !refEdt.equals(currentEditor))
+				editorStr = editorStr + " / " + refEdt;
+			editorStr = editorStr + "]";
+			frame.setTitle(TITLE+" " + editorStr + " - " + articleName + " " + (currentIndex+1) + "/" + articles.size());
+			
 			frame.repaint();
 		}
 //		show();
@@ -1946,7 +2363,6 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/////////////////////////////////////////////////////////////////
 	// TEXT EDITION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Method called by the reference panel when
 	 * some text is inserted in the reference panel.
@@ -2051,3 +2467,19 @@ public class EntityEditor implements WindowListener, ChangeListener
 	{	// nothing to do here
 	}
 }
+
+// TODO solve the GUI problem when the screen is too narrow (buttons)
+// TODO forcer à sélectionner un corpus si le dossier actuel est vide d'article
+// TODO bloquer la modif du texte
+// TODO couleur des boutons sous mac
+// TODO meeting
+// TODO corriger script mac
+// TODO mettre lettre Q dans les boutons à la place de P
+/**
+ * La droite du PS >> PS = organisation
+ * député de haute vienne >> tout, fonction
+ * fils de job >> fonction, personne de référence pas annotée
+ * député maire émile labruissière >> tout=personne + fonction dedans
+ * traitement des congrès ? 
+ *  
+*/

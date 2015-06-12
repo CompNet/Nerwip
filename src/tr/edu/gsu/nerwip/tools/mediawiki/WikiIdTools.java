@@ -1,21 +1,5 @@
 package tr.edu.gsu.nerwip.tools.mediawiki;
 
-import java.io.IOException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser; 
-
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
 
@@ -41,6 +25,21 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser; 
+
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
  * This class handles Wikidata ids, and more particularly
@@ -52,13 +51,11 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 public class WikiIdTools 
 {
-	
     /////////////////////////////////////////////////////////////////
     // LOGGING			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
     /** Common object used for logging */
     protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
-
 
     /**
     * This method takes an entity as parameter,
@@ -75,8 +72,7 @@ public class WikiIdTools
     * @throws org.json.simple.parser.ParseException
     *      Problem while retrieving the Wikidata types. 
     * 
-    * */
-
+    */
     public static String getId(String entityy) throws ClientProtocolException, IOException, org.json.simple.parser.ParseException 
 	{   logger.increaseOffset();
 	    String result = null;
@@ -125,10 +121,5 @@ public class WikiIdTools
 	    logger.log("result=" + result);
 	    
 	    return result;
-	    
-	
 	}
-    
 }
-
-

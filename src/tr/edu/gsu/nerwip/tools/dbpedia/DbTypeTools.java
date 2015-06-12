@@ -1,31 +1,5 @@
 package tr.edu.gsu.nerwip.tools.dbpedia;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-
-import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
 
@@ -51,12 +25,37 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
+
 /**
  * This class contains methods used to retrieve the DBpedia
  * types associated to entities. 
  * 
  * @author Sabrine Ayachi
- * @author Vincent Labatut
  */
 public class DbTypeTools 
 {

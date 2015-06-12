@@ -55,22 +55,12 @@ public class FileNames
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
 
-
-//	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
-	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "D:/Data2";
-
-
-	//public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
-
 //	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
-
 //	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
-
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "D:/Data2";
+	public final static String FO_OUTPUT = "D:/Data2";
 //	public final static String FO_OUTPUT = "/home/sabrine/Data2";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
@@ -166,7 +156,9 @@ public class FileNames
 	/** List of location-related adjectives */
 	public final static String FI_DEMONYMS = "demonyms" + FileNames.EX_TEXT;
 	/** Configuration file */
-	public final static String FI_CONFIGURATION = "config" + FileNames.EX_TEXT;
+	public final static String FI_CONFIGURATION = "config" + FileNames.EX_XML;
+	/** Configuration schema */
+	public final static String FI_CONFIGURATION_SCHEMA = "edconfig" + FileNames.EX_SCHEMA;
 	/** Main script of the Nero tool */
 	public final static String FI_NERO_BASH = "irisa_ne" + FileNames.EX_BASH;
 	

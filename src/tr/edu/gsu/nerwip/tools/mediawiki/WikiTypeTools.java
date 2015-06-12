@@ -1,14 +1,5 @@
 package tr.edu.gsu.nerwip.tools.mediawiki;
 
-import java.io.IOException;
-
-import java.util.List;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
 
@@ -34,7 +25,14 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.IOException;
 
+import java.util.List;
+import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
  * This class contains methods used to retrieve the Freebase
@@ -45,13 +43,11 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  */
 public class WikiTypeTools 
 {
-	
    /////////////////////////////////////////////////////////////////
    // LOGGING			/////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////
    /** Common object used for logging */
    protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
-
 
    /**
    * This method takes a name of entity,
@@ -61,7 +57,7 @@ public class WikiTypeTools
    * get the corresponding {@link EntityType} or
    * article category.
    * 
-   * @param entityy
+   * @param entity
    * 		Name of the entity.
    * @return
    * 		a List containing the Wikidata types of this entity.
@@ -73,13 +69,11 @@ public class WikiTypeTools
    * @throws ParseException
    * 		Problem while retrieving the FB types.
    */
-   public static List<String> getAllTypes(String entityy) throws ClientProtocolException, IOException   
+   public static List<String> getAllTypes(String entity) throws ClientProtocolException, IOException   
    {  logger.increaseOffset();
       List<String> result = null;
-   
-   
+      
+      
       return result;
-   
    }
-
 }
