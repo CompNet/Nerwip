@@ -586,7 +586,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 		boolean linkState = (Boolean)showLinksAction.getValue(Action.SELECTED_KEY);
 		
 		// create and add panel
-		boolean editable = entities==references;
+//		boolean editable = entities==references;
+		boolean editable = false;
 		EntityEditorPanel panel = new EntityEditorPanel(this, text, linkedText, entities, references, params, modeState, switches, linkState, editable, name);
 		tabbedPane.add(algoName, panel);
 	}
