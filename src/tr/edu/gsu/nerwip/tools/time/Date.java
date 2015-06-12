@@ -185,7 +185,8 @@ public class Date implements Comparable<Date>
 		if(month==0)
 			result = result + "?";
 		else
-			result = result + month + "/";
+			result = result + month;
+		result = result + "/";
 		if(year==0)
 			result = result + "?";
 		else
