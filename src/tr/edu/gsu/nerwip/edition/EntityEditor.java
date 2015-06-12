@@ -475,12 +475,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 //		String articleName = "Fleur_Pellerin";
 		
 		// set up article by number
-		ArticleList articles = ArticleLists.getArticleList();
+//		ArticleList articles = ArticleLists.getArticleList();
 //		File article = articles.get(250);
-		File article = articles.get(0);
-		articleName = article.getName();
+//		File article = articles.get(0);
+//		articleName = article.getName();
 		
-		String articlePath = FileNames.FO_OUTPUT + File.separator + articleName;
+//		String articlePath = FileNames.FO_OUTPUT + File.separator + articleName;
 //		viewer.setArticle(articlePath);
 	}
 	
@@ -2100,7 +2100,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		}
 		if(articlePath.isEmpty())
 		{	ArticleList articles = ArticleLists.getArticleList(new File(corpusFolder));
-			if(!articles.isEmpty())
+			if(articles!=null && !articles.isEmpty())
 			{	File article = articles.get(0);
 				String articleName = article.getName();
 				articlePath = corpusFolder + File.separator + articleName;

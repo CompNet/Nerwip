@@ -101,10 +101,14 @@ public class ArticleLists
 	 */
 	public static ArticleList getArticleList(File corpusFolder)
 	{	logger.log("Retrieving the list of articles");
-		File articles[] = corpusFolder.listFiles(FileTools.FILTER_DIRECTORY);
-		List<File> list = Arrays.asList(articles);
-		Collections.sort(list);
-		ArticleList result = new ArticleList("all", list);
+		ArticleList result = null;
+//		File articles[] = corpusFolder.listFiles(FileTools.FILTER_DIRECTORY);
+		File articles[] = corpusFolder.listFiles(FileTools.FILTER_ARTICLES);
+		if(articles!=null)
+		{	List<File> list = Arrays.asList(articles);
+			Collections.sort(list);
+			result = new ArticleList("all", list);
+		}
 		return result;
 	}
 	
@@ -162,7 +166,8 @@ public class ArticleLists
 		
 		// get the full list
 		File folder = new File(FileNames.FO_OUTPUT);
-		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+//		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+		File articles[] = folder.listFiles(FileTools.FILTER_ARTICLES);
 		List<File> list = Arrays.asList(articles);
 		Collections.sort(list);
 		
@@ -188,7 +193,8 @@ public class ArticleLists
 	public static List<URL> getArticleUrlList()
 	{	logger.log("Retrieving the list of article URLs");
 		File folder = new File(FileNames.FO_OUTPUT);
-		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+//		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+		File articles[] = folder.listFiles(FileTools.FILTER_ARTICLES);
 		List<File> files = new ArrayList<File>(Arrays.asList(articles));
 		Collections.sort(files);
 
