@@ -1,29 +1,5 @@
 package tr.edu.gsu.nerwip.tools.dbpedia;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
 
@@ -50,13 +26,37 @@ import org.jdom.input.SAXBuilder;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+
 /**
  * This class handles DBpedia ids, and more particularly
  * the mapping between named entities and their DBpedia
  * ids.
  * 
  * @author Sabrine Ayachi
- * @author Vincent Labatut
  */
 public class DbIdTools 
 {  
@@ -67,24 +67,25 @@ public class DbIdTools
     private final static String PRE_DBR = "PREFIX res: <http://dbpedia.org/resource/>";
     /** Prefix for representing the DBpedia ontology */
 	private final static String PRE_DBO = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>";
+	
     /////////////////////////////////////////////////////////////////
     //LOGGING			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
     /** Common object used for logging */
-   protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
-   /**
-   * This method takes an entity as parameter,
-   * and retrieves its DBpedia id.
-   * 
-   * @param entity
-   * 		Name of the entity.
-   * @return
-   * 		A String describing the DBpedia id.
-   */
-   @SuppressWarnings("unchecked")
-public static String getId(String entity) 
-   {   logger.increaseOffset();
+	/**
+	* This method takes an entity as parameter,
+	* and retrieves its DBpedia id.
+	* 
+	* @param entity
+	* 		Name of the entity.
+	* @return
+	* 		A String describing the DBpedia id.
+	*/
+	@SuppressWarnings("unchecked")
+	public static String getId(String entity) 
+	{   logger.increaseOffset();
        String ID = null;
 
        //adress of the french SPARQL endpoint
@@ -181,8 +182,4 @@ public static String getId(String entity)
    return ID;
    
    }
-   
 }
-
-
-

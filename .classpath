@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar" sourcepath="lib/commons-logging-1.1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/filterbuilder.jar"/>
@@ -13,18 +12,9 @@
 	<classpathentry kind="lib" path="lib/lingpipe-4.1.0.jar" sourcepath="lib/lingpipe-4.0.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="lib/thumbelina.jar"/>
-	<classpathentry kind="lib" path="lib/jdom-1.1.jar" sourcepath="lib/jdom-1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/stanford-ner-2012-11-11.jar" sourcepath="lib/stanford-ner-1.2.7-src.zip"/>
-	<classpathentry kind="lib" path="lib/LBJ2.jar" sourcepath="lib/lbj-2.8.2-src.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="http://cogcomp.cs.illinois.edu/software/doc/LBJ2/library/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/LBJ2Library.jar" sourcepath="lib/lbj-2.8.2-src.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="http://cogcomp.cs.illinois.edu/software/doc/LBJ2/library/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/LBJ2.jar" sourcepath="lib/lbj-2.8.2-src.zip" />
+	<classpathentry kind="lib" path="lib/LBJ2Library.jar" sourcepath="lib/lbj-2.8.2-src.zip" />
 	<classpathentry kind="lib" path="lib/LbjNerTagger-2.1.jar" sourcepath="lib/LbjNerTagger-2.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/libsvm-3.17.jar" sourcepath="lib/libsvm-3.17-src.zip"/>
 	<classpathentry kind="lib" path="lib/opennlp-maxent-3.0.3.jar" sourcepath="lib/opennlp-maxent-3.0.3-src.zip"/>
@@ -35,31 +25,27 @@
 	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar" sourcepath="lib/commons-codec-1.10-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar" sourcepath="lib/commons-lang3-3.4-src.zip"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar" sourcepath="lib/commons-io-2.4-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io-2.4-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/commons-csv-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jena-arq-2.13.0.jar" sourcepath="lib/jena-arq-2.13.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jena-core-2.13.0.jar"/>
-	<classpathentry kind="lib" path="lib/jena-iri-1.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/jena-tdb-1.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-4.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-cache-4.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-annotations-2.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-2.3.3.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-databind-2.3.3.jar"/>
-	<classpathentry kind="lib" path="lib/jcl-over-slf4j-1.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/jsonld-java-0.5.1.jar"/>
-	<classpathentry kind="lib" path="lib/libthrift-0.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/xercesImpl-2.11.0.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis-1.4.01.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
-	<classpathentry kind="lib" path="lib/jena-arq-2.13.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jena-core-2.13.0-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jena-iri-1.1.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jena-tdb-1.1.2-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar" />
+	<classpathentry kind="lib" path="lib/commons-csv-1.0.jar" />
+	<classpathentry kind="lib" path="lib/jena-arq-2.13.0.jar" sourcepath="lib/jena-arq-2.13.0-sources.jar" />
+	<classpathentry kind="lib" path="lib/jena-core-2.13.0.jar" sourcepath="lib/jena-core-2.13.0-sources.jar" />
+	<classpathentry kind="lib" path="lib/jena-iri-1.1.2.jar" sourcepath="lib/jena-iri-1.1.2-sources.jar" />
+	<classpathentry kind="lib" path="lib/jena-tdb-1.1.2.jar" sourcepath="lib/jena-tdb-1.1.2-sources.jar" />
+	<classpathentry kind="lib" path="lib/httpclient-4.2.6.jar" />
+	<classpathentry kind="lib" path="lib/httpclient-cache-4.2.6.jar" />
+	<classpathentry kind="lib" path="lib/httpcore-4.2.5.jar" />
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.3.0.jar" />
+	<classpathentry kind="lib" path="lib/jackson-core-2.3.3.jar" />
+	<classpathentry kind="lib" path="lib/jackson-databind-2.3.3.jar" />
+	<classpathentry kind="lib" path="lib/jcl-over-slf4j-1.7.6.jar" />
+	<classpathentry kind="lib" path="lib/jsonld-java-0.5.1.jar" />
+	<classpathentry kind="lib" path="lib/libthrift-0.9.2.jar" />
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar" />
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar" />
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.6.jar" />
+	<classpathentry kind="lib" path="lib/xercesImpl-2.11.0.jar" />
+	<classpathentry kind="lib" path="lib/xml-apis-1.4.01.jar" />
+	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar" />
+	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar" sourcepath="lib/jdom-2.0.6-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
