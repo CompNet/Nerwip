@@ -152,8 +152,8 @@ public class Test
 //		testHeidelTimeRaw();
 //		testWikiIdRetriever();
 //		testWikiTypeRetriever();
-		testDbIdRetriever();
-		testDbTypeRetriever();
+//		testDbIdRetriever();
+//		testDbTypeRetriever();
 
 //		testDateExtractor(url);
 //		testHeidelTime(url);
@@ -162,7 +162,7 @@ public class Test
 //		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
-//		testOpeNer(name);
+		testOpeNer(name);
 //	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
@@ -524,7 +524,7 @@ public class Test
 //		nero.process(article);
 
 		// all the corpus
-		testAllCorpus(nero,150);
+		testAllCorpus(nero,0);
 		
 		logger.decreaseOffset();
 	}
@@ -573,11 +573,12 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 		
+		boolean parenSplit = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
+		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
-		opener.setCacheEnabled(true);
+		opener.setCacheEnabled(false);
 		
 		// only the specified article
 //		opener.process(article);
