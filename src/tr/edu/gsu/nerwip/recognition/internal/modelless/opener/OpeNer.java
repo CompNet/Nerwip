@@ -450,6 +450,3 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 //		return result;
 //	}
 }
-
-// TODO some entities seem merged (especially when the second contain parenthesis) >> because they are flatten?
-// TODO also check flattening in Nero

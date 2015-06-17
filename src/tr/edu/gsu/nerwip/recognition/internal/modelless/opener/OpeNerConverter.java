@@ -332,7 +332,8 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 			// analyze the original string
 			int startPar = original.lastIndexOf('(');
 			int endPar = original.lastIndexOf(')');
-			if(startPar!=-1 && endPar!=-1 && startPar<endPar)
+			if(startPar!=-1 && endPar!=-1 && startPar<endPar  // we need both opening and closing parentheses
+					&& !(startPar==0 && endPar==original.length()-1)) // to avoid treating things like "(Paris)" 
 			{	// first entity
 				String valueStr1 = original.substring(0,startPar);
 				int startPos1 = startPos;
