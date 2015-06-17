@@ -159,7 +159,7 @@ public class Test
 //		testHeidelTime(url);
 //		testIllinois(url);
 //		testLingPipe(url);
-//		testNero(name);
+		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 		testOpeNer(name);
@@ -1145,7 +1145,7 @@ public class Test
 		for(File folder: folders)
 		{	if(i>=start)
 			{	// get the results
-				logger.log("Process article "+folder.getName());
+				logger.log("Process article "+folder.getName()+"("+(i+1)+"/"+folders.size()+")");
 				logger.increaseOffset();
 				
 					// get article
