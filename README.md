@@ -56,12 +56,12 @@ Most of the data files are too large to be compatible with GitHub constraints. F
   * Put it in the Eclipse project, in place of the existing `res` folder. **Do not** remove the existing folder, just overwrite it (we need the existing folders and files).
 
 Certain NER tools require the installation of other programming languages than Java:
-* HeidelTime: it is based on **TreeTagger**, and this tool requires [Perl](https://www.perl.org/). Just install it normally, and do not forget to check the location to the Perl interpreter was added to the PATH system variable (see the official Perl documentation). If Perl is correctly installed and configured, then you should obtain its help page by opening a terminal and executing `perl -h`. Note that, for Linux systems, it is usually installed by default. For Windows systems, you could use the [ActiveState](http://www.activestate.com/activeperl/downloads) implementation of Perl.
+* HeidelTime: it is based on **TreeTagger**, and this tool requires [Perl](https://www.perl.org/). Just install it normally, and do not forget to check the location of the Perl interpreter was added to the PATH system variable (see the official Perl documentation). If Perl is correctly installed and configured, then you should obtain its help page by opening a terminal and executing `perl -h`. Note that, for Linux systems, it is usually installed by default. For Windows systems, you could use the [ActiveState](http://www.activestate.com/activeperl/downloads) implementation of Perl.
+* Nero: this C++ software must be compiled and needs certain libraries (OpenFST & Wapiti). Everything is explained in the `README` file located in the res/ner/nero folder. Do not forget to set the LD_LIBRARY_PATH and IRISA_NE system variables, as explained in this file.  
 
 Finally, some of the NER tools integrated in Nerwip require some key or password to work. This is the case of:
 * Subee: our Wikipedia/Freebase-based NER tool requires a Freebase key to work correctly.
-* OpenCalais: this NER tool takes the form of a Web service.
-* Nero: also a Web service.
+* OpenCalais: this NER tool takes the form of a Web service, and also requires a key.
 
 All keys (and possibly their associated IDs) are set up in the dedicated XML file `keys.xml`, which is located in `res/misc`.
 
@@ -91,14 +91,18 @@ Here are the dependencies for Nerwip:
   * [HeidelTime](https://code.google.com/p/heideltime/)
 * Other libraries:
   * [Apache Commons](http://commons.apache.org/)
-  * [HTML Parser](http://htmlparser.sourceforge.net/)
   * [Apache HttpComponents](https://hc.apache.org/downloads.cgi)
+  * [HTML Parser](http://htmlparser.sourceforge.net/)
   * [JDOM](http://www.jdom.org/)
   * [Jericho HTML Parser](http://jericho.htmlparser.net/docs/index.html)
   * [JSON Simple](https://code.google.com/p/json-simple/)
   * [Jsoup](http://jsoup.org/)
   * [LIBSVM](http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
-  * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), needed by HeidelTime
+  * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), needed by HeidelTime.
+  * [Unitext](http://www-igm.univ-mlv.fr/~unitex/), needed by Nero.
+* Non-included libraries: some libraries are not included in Nerwip and must be installed manually.  
+  * [OpenFST](http://www.openfst.org/), needed by Nero (see its `README` file for instructions).
+  * [Wapiti](http://wapiti.limsi.fr/), needed by Nero (see its `README` file for instructions).
 
 The project also makes use of several Web services:
 * [Reuters OpenCalais](http://new.opencalais.com/)
