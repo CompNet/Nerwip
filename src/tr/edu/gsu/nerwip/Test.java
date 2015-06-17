@@ -147,19 +147,19 @@ public class Test
 //		testCategoryRetriever();
 //		testFbidRetriever();
 //		testTypeRetriever();
+//		testDbIdRetriever();
+//		testDbTypeRetriever();
 		
 //		testTreeTagger();
 //		testHeidelTimeRaw();
 //		testWikiIdRetriever();
 //		testWikiTypeRetriever();
-//		testDbIdRetriever();
-//		testDbTypeRetriever();
 
 //		testDateExtractor(url);
 //		testHeidelTime(url);
 //		testIllinois(url);
 //		testLingPipe(url);
-		testNero(name);
+//		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 		testOpeNer(name);
@@ -1145,7 +1145,7 @@ public class Test
 		for(File folder: folders)
 		{	if(i>=start)
 			{	// get the results
-				logger.log("Process article "+folder.getName()+"("+(i+1)+"/"+folders.size()+")");
+				logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
 				logger.increaseOffset();
 				
 					// get article
@@ -1620,7 +1620,7 @@ public class Test
 	// OTHER STUFF	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Testing the NERO named entity recognition tool.
+	 * Testing the Nero named entity recognition tool.
 	 * 
 	 * @throws Exception
 	 * 		Some problem occurred...
