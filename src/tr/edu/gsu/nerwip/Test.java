@@ -584,7 +584,7 @@ public class Test
 //		opener.process(article);
 		
 		// all the corpus
-		testAllCorpus(opener,0);
+		testAllCorpus(opener,50);
 		
 		logger.decreaseOffset();
 	}

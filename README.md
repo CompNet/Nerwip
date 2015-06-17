@@ -83,12 +83,15 @@ or `tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter` (reads the
 ## Dependencies
 Here are the dependencies for Nerwip. All of them are included in the Eclipse project, unless specified otherwise.  
 * NER tools:
-  * [Illinois Named Entity Tagger](http://cogcomp.cs.illinois.edu/page/software_view/NETagger)
   * [alias-i LingPipe](http://alias-i.com/lingpipe/)
   * [Apache OpenNLP](https://opennlp.apache.org/)
-  * [Stanford Named Entity Recognizer](http://nlp.stanford.edu/software/CRF-NER.shtml)
-  * [Thomson Reuters OpenCalais](http://www.opencalais.com/)
   * [HeidelTime](https://code.google.com/p/heideltime/)
+  * [Illinois Named Entity Tagger](http://cogcomp.cs.illinois.edu/page/software_view/NETagger)
+  * [Nero](https://nero.irisa.fr/)
+  * [OpeNer](http://www.opener-project.eu/)
+  * [Stanford Named Entity Recognizer](http://nlp.stanford.edu/software/CRF-NER.shtml)
+  * [TagEn](http://gurau-audibert.hd.free.fr/josdblog/wp-content/uploads/2008/03/TagEN.tar.gz)
+  * [Thomson Reuters OpenCalais](http://www.opencalais.com/)
 * Other libraries:
   * [Apache Commons](http://commons.apache.org/)
   * [Apache HttpComponents](https://hc.apache.org/downloads.cgi)
