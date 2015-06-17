@@ -338,12 +338,16 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				int startPos1 = startPos;
 				int endPos1 = startPos + startPar;
 				AbstractEntity<?> entity1 = AbstractEntity.build(type, startPos1, endPos1, source, valueStr1);
-				
+if(valueStr1.isEmpty())
+	System.out.print("");
+
 				// second entity
 				String valueStr2 = original.substring(startPar+1,endPar);
 				int startPos2 = startPos + startPar + 1;
 				int endPos2 = startPos + endPar;
 				AbstractEntity<?> entity2 = AbstractEntity.build(type, startPos2, endPos2, source, valueStr2);
+if(valueStr2.isEmpty())
+	System.out.print("");
 				
 				result = new AbstractEntity<?>[]{entity1,entity2};
 			}

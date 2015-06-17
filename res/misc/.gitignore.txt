@@ -1,2 +1,2 @@
-/keys.xml
 /config.xml
+/keys.xml
