@@ -48,6 +48,7 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 
 /**
  * This class is the converter associated to TagEN.
@@ -82,7 +83,7 @@ public class TagEnConverter extends AbstractExternalConverter
 	/** Enumerated entity value */
 	private final static String ELT_ENAMEX = "enamex";	// location, organization, person...
 	/** Temporal entity value */
-	private final static String ELT_TIMEX = "timex";	// date... 
+	private final static String ELT_TIMEX = "timex";	// date, time... 
 	/** Numerical entity value */
 	private final static String ELT_NUMEX = "numex";	// percent...
 	/** Use to represent range of values, inside entity elements */
@@ -96,9 +97,12 @@ public class TagEnConverter extends AbstractExternalConverter
 		CONVERSION_MAP.put("person", EntityType.PERSON);
 	}
 	/** List of ignored XML elements */
-	private final static List<String> ELEMENT_BLACKLIST = Arrays.asList
-	(	ELT_NUMEX,
-		ELT_RANGE
+	private final static List<String> BLACKLISTED_ELEMENT = Arrays.asList
+	(	ELT_NUMEX
+	);
+	/** List of ignored entity types (used for debug) */
+	private final static List<String> BLACKLISTED_TYPES = Arrays.asList
+	(	"time"
 	);
 	
 	/////////////////////////////////////////////////////////////////
@@ -108,6 +112,7 @@ public class TagEnConverter extends AbstractExternalConverter
     public Entities convert(Article article, String data) throws ConverterException
 	{	logger.increaseOffset();
 		Entities result = new Entities(recognizerName);
+		String rawText = article.getRawText();
 		
 		// the result file is basically an XML file, only the header is missing
 		// so add a fake header and parse it like an xml file
@@ -153,13 +158,20 @@ public class TagEnConverter extends AbstractExternalConverter
 			// elements are processed individually
 			else if(child instanceof Element)
 			{	Element e = (Element)child;
-				String str = e.getText();
+				String str = XmlTools.getRecText(e);
 				int length = str.length();
 				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
 				List<AbstractEntity<?>> entList = convertElement(e, index);
 				result.addEntities(entList);
 				for(AbstractEntity<?> entity: entList)
+				{	// this is necessary, because some characters of the treated text
+					// had to be cleaned, and can therefore be different from those of
+					// the original text.
+					String valueStr = rawText.substring(entity.getStartPos(), entity.getEndPos());
+					entity.setStringValue(valueStr);
 					logger.log(entity.toString());
+				
+				}
 				index = index + length;
 			}
 		}
@@ -203,7 +215,7 @@ public class TagEnConverter extends AbstractExternalConverter
 				result = convertTemporalElement(innerElt,index);
 			
 			// other entity
-			else if(!ELEMENT_BLACKLIST.contains(name))
+			else if(!BLACKLISTED_ELEMENT.contains(name))
 				logger.log("WARNING: detected an unknown element: <"+name+">");
 		}
 		
@@ -235,7 +247,7 @@ public class TagEnConverter extends AbstractExternalConverter
 		else
 		{	String name = element.getName();
 			EntityType type = CONVERSION_MAP.get(name);
-			if(type==null)
+			if(type==null && !BLACKLISTED_TYPES.contains(name))
 				logger.log("WARNING: could not find the entity type associated to tag "+xo.outputString(element));
 			
 			else
@@ -269,9 +281,8 @@ public class TagEnConverter extends AbstractExternalConverter
 		String name = element.getName();
 		String originalStr = element.getText();
 		EntityType type = CONVERSION_MAP.get(name);
-		if(type==null)
+		if(type==null && !BLACKLISTED_TYPES.contains(name))
 			logger.log("WARNING: could not find the entity type associated to tag "+xo.outputString(element));
-//			logger.log("Element not describing a date/time (ignored): "+xo.outputString(element));
 		
 		// we only focus on dates and date-times
 		else
@@ -293,7 +304,8 @@ public class TagEnConverter extends AbstractExternalConverter
 					else
 					{	String text = element2.getText();
 						if(!text.contains("-"))
-							logger.log("WARNING: detected an unknown form of <range> content in "+xo.outputString(element));
+//							logger.log("WARNING: detected an unknown form of <range> content in "+xo.outputString(element));
+							valuesStr.add(text);
 						else
 						{	String tmp[] = text.split("-");
 							for(String str: tmp)

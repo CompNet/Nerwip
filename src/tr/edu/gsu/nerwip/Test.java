@@ -556,10 +556,10 @@ public class Test
 		tagen.setCacheEnabled(false);
 		
 		// only the specified article
-		tagen.process(article);
+//		tagen.process(article);
 		
 		// all the corpus
-//		testAllCorpus(tagen,0);
+		testAllCorpus(tagen,0);
 
 		logger.decreaseOffset();
 	}
