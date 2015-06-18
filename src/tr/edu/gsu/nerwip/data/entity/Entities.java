@@ -253,6 +253,7 @@ public class Entities
 
 	/**
 	 * Adds a new entity in the list.
+	 * <br/>
 	 * No redundance check is performed. 
 	 * 
 	 * @param entity
@@ -263,14 +264,30 @@ public class Entities
 	}
 	
 	/**
-	 * Adds a new entity in the list.
+	 * Adds all the entities from the specifid object
+	 * to this object.
+	 * <br/>
 	 * No redundance check is performed. 
 	 * 
 	 * @param entities
 	 * 		Entities to add to the list.
 	 */
 	public void addEntities(Entities entities)
-	{	this.entities.addAll(entities.getEntities());
+	{	List<AbstractEntity<?>> list = entities.getEntities();
+		this.entities.addAll(list);
+	}
+
+	/**
+	 * Adds to this object all the entities contained in 
+	 * the specified list.
+	 * <br/>
+	 * No redundance check is performed. 
+	 * 
+	 * @param entities
+	 * 		List of entities to add to the list.
+	 */
+	public void addEntities(List<AbstractEntity<?>> entities)
+	{	this.entities.addAll(entities);
 	}
 
 	/**

@@ -1,5 +1,29 @@
 package tr.edu.gsu.nerwip.recognition.external.nero;
 
+/*
+ * Nerwip - Named Entity Extraction in Wikipedia Pages
+ * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
+ * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
+ * Copyright 2013 Samet Atdağ & Vincent Labatut
+ * Copyright 2014-15 Vincent Labatut
+ * 
+ * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is free software: you can 
+ * redistribute it and/or modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
+ * License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +46,7 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * Recommended parameter values:
  * <ul>
  * <li>{@code tagger}: {@code CRF}</li>
- * <li>{@code flat}: {@code false}</li>
+ * <li>{@code flat}: {@code true}</li>
  * <li>{@code ignorePronouns}: {@code true}</li>
  * <li>{@code exclusionOn}: {@code false}</li>
  * </ul>
@@ -44,7 +68,7 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
 public class Nero extends AbstractExternalRecognizer<NeroConverter>
 {	
 	/**
-	 * Builds and sets up an object representing Nero tool.
+	 * Builds and sets up an object representing the Nero tool.
 	 * 
 	 * @param tagger
 	 * 		Tagger used by Nero (CRF or FST).
@@ -166,17 +190,10 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	 */
 	private String getTempFile(Article article)
 	{	String result = article.getFolderPath()
-			+ File.separator
-			+ getFolder() 
-			+ File.separator 
-			+ TEMP_FILE;
+			+ File.separator + getFolder() 
+			+ File.separator + TEMP_FILE;
 		return result; 
 	}
-	
-// TODO check the system ?
-// TODO check if Nero is installed ?
-// TODO converter: problem with final space in most entities
-// TODO flattening of hierarchical entities?
 	
 	@Override
 	protected String detectEntities(Article article) throws RecognizerException
@@ -199,7 +216,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 			FileTools.writeTextFile(tempFile, text);
 			
 			// invoke the external tool and retrieve its output
-			logger.log("Invoking Nero : ");
+			logger.log("Invoking Nero: ");
 			logger.increaseOffset();
 				Runtime rt = Runtime.getRuntime();
 				String mainCommand = "cat " + tempPath + " | " 
@@ -255,6 +272,10 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 			}
 			else
 				throw new RecognizerException(error);
+			
+			// possibly remove the temp file
+			if(!outRawResults)
+				tempFile.delete();
 		}
 		catch (IOException e)
 		{	//e.printStackTrace();

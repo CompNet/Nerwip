@@ -54,12 +54,12 @@ public class FileNames
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
-//	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
+	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-	public final static String FO_OUTPUT = "D:/Data2";
+//	public final static String FO_OUTPUT = "D:/Data2";
 //	public final static String FO_OUTPUT = "/home/sabrine/Data2";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
@@ -104,7 +104,7 @@ public class FileNames
 			public final static String FO_SUBEE = FO_NER + File.separator + "subee";
 			/** Folder of SVM combiner resources */
 			public final static String FO_SVMCOMBINER = FO_NER + File.separator + "svmcombiner";
-			/** Folder of TagEN resources */
+			/** Folder of TagEn resources */
 			public final static String FO_TAGEN = FO_NER + File.separator + "tagen";
 			/** Folder of vote combiner resources */
 			public final static String FO_VOTECOMBINER = FO_NER + File.separator + "votecombiner";
@@ -160,6 +160,8 @@ public class FileNames
 	public final static String FI_CONFIGURATION_SCHEMA = "edconfig" + FileNames.EX_SCHEMA;
 	/** Main script of the Nero tool */
 	public final static String FI_NERO_BASH = "irisa_ne" + FileNames.EX_BASH;
+	/** Main program of the TagEn tool */
+	public final static String FI_TAGEN_EXE = "tagen";
 	
 //	/**
 //	 * Returns the filename used to store the

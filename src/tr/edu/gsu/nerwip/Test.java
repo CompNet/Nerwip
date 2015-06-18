@@ -74,7 +74,8 @@ import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
-import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEn;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEnModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTimeModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
@@ -149,12 +150,13 @@ public class Test
 //		testTypeRetriever();
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
+//		testWikiIdRetriever();
+//		testWikiTypeRetriever();
 		
 //		testTreeTagger();
 //		testHeidelTimeRaw();
-//		testWikiIdRetriever();
-//		testWikiTypeRetriever();
-
+//		testTagEnRaw();
+		
 //		testDateExtractor(url);
 //		testHeidelTime(url);
 //		testIllinois(url);
@@ -162,11 +164,11 @@ public class Test
 //		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
-		testOpeNer(name);
+//		testOpeNer(name);
 //	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
-//		testTagEN(name);
+		testTagEn(name);
 //		testWikipediaDater(url);
 		
 //		testVoteCombiner(url);
@@ -513,7 +515,7 @@ public class Test
 		Article article = retriever.process(name);
 
 		Tagger tagger = Tagger.CRF;
-		boolean flat = false;
+		boolean flat = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
 		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
@@ -538,7 +540,7 @@ public class Test
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testTagEN(String name) throws Exception
+	private static void testTagEn(String name) throws Exception
 	{	logger.setName("Test-TagEN");
 		logger.log("Start testing TagEN");
 		logger.increaseOffset();
@@ -546,12 +548,18 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
+		TagEnModelName model = TagEnModelName.MUC_MODEL;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		TagEN tagen = new TagEN(ignorePronouns, exclusionOn);
+		TagEn tagen = new TagEn(model,ignorePronouns, exclusionOn);
 		tagen.setOutputRawResults(true);
 		tagen.setCacheEnabled(false);
+		
+		// only the specified article
 		tagen.process(article);
+		
+		// all the corpus
+//		testAllCorpus(tagen,0);
 
 		logger.decreaseOffset();
 	}
@@ -584,7 +592,7 @@ public class Test
 //		opener.process(article);
 		
 		// all the corpus
-		testAllCorpus(opener,50);
+		testAllCorpus(opener,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1625,7 +1633,7 @@ public class Test
 	 * @throws Exception
 	 * 		Some problem occurred...
 	 */
-	private static void nero() throws Exception
+	private static void testNeroRaw() throws Exception
 	{	String neroKey = KeyHandler.KEYS.get("Nero");
 		String neroId = KeyHandler.IDS.get("Nero");
 	
@@ -1713,5 +1721,42 @@ public class Test
 	    	sb.append(line + "\n");
 	    System.out.println(sb);
 	}
-}
 
+	/**
+	 * Test the installation of TagEn.
+	 * 
+	 * @exception Exception
+	 * 		Some problem occurred...
+	 */
+	private static void testTagEnRaw() throws Exception
+	{	String[] commands = 
+		{	"/bin/sh", "-c", 
+//			"ls -l res/ner/tagen"
+//			"./res/ner/tagen/tagen --help"
+			"./res/ner/tagen/tagen :mucfr -aVy ./res/ner/tagen/input.txt"
+		};
+		Process p = Runtime.getRuntime().exec(commands);
+		
+//		Process p = Runtime.getRuntime().exec("/bin/sh -c ls -l res/ner/tagen");
+		int res = p.waitFor();
+		System.out.println("return code="+res);
+	 
+		// error output
+		{	BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+	    	StringBuffer sb = new StringBuffer();
+	    	String line = "";			
+		    while((line=reader.readLine()) != null)
+		    	sb.append(line + "\n");
+		    System.out.println(sb);
+		}
+		
+		// standard output
+	    {	BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	    	StringBuffer sb = new StringBuffer();
+	    	String line = "";			
+	    	while ((line = reader.readLine())!= null)
+	    		sb.append(line + "\n");
+	    	System.out.println(sb);
+	    }
+	}
+}

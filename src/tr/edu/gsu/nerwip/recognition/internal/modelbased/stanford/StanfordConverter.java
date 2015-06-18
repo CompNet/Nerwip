@@ -87,7 +87,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-//	/** Pattern used to fiund entities in the NER output */
+//	/** Pattern used to find entities in the NER output */
 //	private final static Pattern SEARCH_PATTERN = Pattern.compile("<(.+?)>(.+?)</.+?>",Pattern.DOTALL);
 	
 // old version	
