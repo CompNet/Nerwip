@@ -55,9 +55,11 @@ Most of the data files are too large to be compatible with GitHub constraints. F
   * Extract the `res` folder,  
   * Put it in the Eclipse project, in place of the existing `res` folder. **Do not** remove the existing folder, just overwrite it (we need the existing folders and files).
 
-Certain NER tools require the installation of other programming languages than Java:
+Certain NER tools require other programming languages than Java, and/or some libraries, and/or to be compiled:
 * HeidelTime: it is based on **TreeTagger**, and this tool requires [Perl](https://www.perl.org/). Just install it normally, and do not forget to check the location of the Perl interpreter was added to the PATH system variable (see the official Perl documentation). If Perl is correctly installed and configured, then you should obtain its help page by opening a terminal and executing `perl -h`. Note that, for Linux systems, it is usually installed by default. For Windows systems, you could use the [ActiveState](http://www.activestate.com/activeperl/downloads) implementation of Perl.
-* Nero: this C++ software must be compiled and needs the **OpenFST** and **Wapiti** libraries. Everything is explained in the `README` file located in the res/ner/nero folder. Do not forget to set the `LD_LIBRARY_PATH` and `IRISA_NE` system variables, as explained in the same file.  
+* LIA-NE: this C program must be installed (see its `README.txt` file), as well as the libraries it requires (LIA-Tagg and CRF++). Not tested on Windows, only on Linux.
+* TagEN: this C++ software is already compiled for Linux (it was not tested for Windows). It also needs the Perl language (cf. HeidelTime).
+* Nero: this C++ software must be compiled and needs the **OpenFST** and **Wapiti** libraries. Everything is explained in the `README` file located in the res/ner/nero folder. Do not forget to set the `LD_LIBRARY_PATH` and `IRISA_NE` system variables, as explained in the same file. We did not test this tool on Windows (only on Linux). 
 
 Finally, some of the NER tools integrated in Nerwip require some key or password to work. This is the case of:
 * Subee: our Wikipedia/Freebase-based NER tool requires a Freebase key to work correctly.
@@ -87,19 +89,21 @@ Here are the dependencies for Nerwip. All of them are included in the Eclipse pr
   * [Apache OpenNLP](https://opennlp.apache.org/)
   * [HeidelTime](https://code.google.com/p/heideltime/)
   * [Illinois Named Entity Tagger](http://cogcomp.cs.illinois.edu/page/software_view/NETagger)
+  * [LIA-NE](http://pageperso.lif.univ-mrs.fr/~frederic.bechet/download.html)
   * [Nero](https://nero.irisa.fr/)
-  * [OpeNer](http://www.opener-project.eu/)
   * [Stanford Named Entity Recognizer](http://nlp.stanford.edu/software/CRF-NER.shtml)
-  * [TagEn](http://gurau-audibert.hd.free.fr/josdblog/wp-content/uploads/2008/03/TagEN.tar.gz)
+  * [TagEN](http://gurau-audibert.hd.free.fr/josdblog/wp-content/uploads/2008/03/TagEN.tar.gz)
   * [Thomson Reuters OpenCalais](http://www.opencalais.com/)
 * Other libraries:
   * [Apache Commons](http://commons.apache.org/)
   * [Apache HttpComponents](https://hc.apache.org/downloads.cgi)
+  * [CRF++](http://sourceforge.net/projects/crfpp/), needed by LIA-NE.
   * [HTML Parser](http://htmlparser.sourceforge.net/)
   * [JDOM](http://www.jdom.org/)
   * [Jericho HTML Parser](http://jericho.htmlparser.net/docs/index.html)
   * [JSON Simple](https://code.google.com/p/json-simple/)
   * [Jsoup](http://jsoup.org/)
+  * [LIA-Tagg](http://pageperso.lif.univ-mrs.fr/~frederic.bechet/download.html), needed by LIA-NE.
   * [LIBSVM](http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
   * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), needed by HeidelTime.
   * [Unitex](http://www-igm.univ-mlv.fr/~unitex/), needed by TagEn.
@@ -109,7 +113,7 @@ Here are the dependencies for Nerwip. All of them are included in the Eclipse pr
 
 The project also makes use of several Web services:
 * [Reuters OpenCalais](http://new.opencalais.com/)
-* [OpeNer](http://www.opener-project.eu/)
+* [OpeNER](http://www.opener-project.eu/)
 
 ## References
 * **[AL'13]** Atdağ, S. & Labatut, V. A Comparison of Named Entity Recognition Tools Applied to Biographical Texts, 2nd International Conference on Systems and Computer Science, 2013, 228-233. 
