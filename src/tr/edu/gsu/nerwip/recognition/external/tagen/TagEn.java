@@ -43,7 +43,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
- * This class acts as an interface with TagEN.
+ * This class acts as an interface with TagEn.
  * <br/>
  * Recommended parameter values:
  * <ul>
@@ -52,6 +52,8 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * 	<li>{@code ignorePronouns}: {@code true}</li>
  * 	<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
+ * <br/>
+ * TagEn was tested only on Linux system.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
