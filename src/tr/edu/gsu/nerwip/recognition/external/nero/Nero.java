@@ -61,6 +61,8 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * {@code '"'}. Those should be avoided at all cost in the
  * parsed text, otherwise the {@link NeroConverter} will not
  * be able to process Nero's output.
+ * <br/>
+ * Nero was tested only on Linux system.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
