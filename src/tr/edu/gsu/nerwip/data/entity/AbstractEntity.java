@@ -103,6 +103,9 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 			case LOCATION:
 				result = new EntityLocation(startPos, endPos, source, valueStr, null);
 				break;
+			case MEETING:
+				result = new EntityMeeting(startPos, endPos, source, valueStr, null);
+				break;
 			case ORGANIZATION:
 				result = new EntityOrganization(startPos, endPos, source, valueStr, null);
 				break;
@@ -590,6 +593,9 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 			case LOCATION:
 				result = EntityLocation.importFromElement(element,source);
 				break;
+			case MEETING:
+				result = EntityMeeting.importFromElement(element,source);
+				break;
 			case ORGANIZATION:
 				result = EntityOrganization.importFromElement(element,source);
 				break;
@@ -609,13 +615,19 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public int compareTo(AbstractEntity<T> o)
-	{	int startPos = o.getStartPos();
+	{	
+//if(o==null)
+//	System.out.print("");
+
+		int startPos = o.getStartPos();
 		int result = this.startPos - startPos;
 		if(result==0)
 		{	int endPos = o.getEndPos();
 			result = this.endPos - endPos;
 			if(result==0)
 			{	String valueStr = o.getStringValue();
+//if(valueStr==null)
+//	System.out.print("");
 				result = this.valueStr.compareTo(valueStr);
 			}
 		}

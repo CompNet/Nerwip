@@ -25,14 +25,22 @@ package tr.edu.gsu.nerwip.edition;
  */
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
+import java.awt.image.LookupOp;
+import java.awt.image.LookupTable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -51,12 +59,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -69,12 +79,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
@@ -83,6 +100,8 @@ import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.edition.language.Language;
+import tr.edu.gsu.nerwip.edition.language.LanguageLoader;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -137,8 +156,10 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * 		Problem while loading the configuration file or the first article. 
 	 * @throws SAXException 
 	 * 		Problem while loading the configuration file or the first article. 
+	 * @throws ParserConfigurationException 
+	 * 		Problem while loading the configuration file. 
 	 */
-	public EntityEditor() throws SAXException, IOException, ParseException
+	public EntityEditor() throws SAXException, IOException, ParseException, ParserConfigurationException
 	{	// init the corpus folder
 		String articlePath = retrieveSettings();
 		
@@ -175,9 +196,17 @@ public class EntityEditor implements WindowListener, ChangeListener
 		
         setStatusInformation("Waiting...");
 		
+        // add icon
+		String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_APP;
+		File iconFile = new File(iconPath);
+		Image img = ImageIO.read(iconFile);
+		frame.setIconImage(img);
+        
 		frame.setVisible(true);
 		
-		if(!articlePath.isEmpty())
+		if(articlePath.isEmpty())
+			mustSetCorpus = true;
+		else
 			setArticle(articlePath);
 	}
 	
@@ -198,9 +227,31 @@ public class EntityEditor implements WindowListener, ChangeListener
 	{	HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 		logger.setEnabled(false);
 		
-		// check if settings already exist
-		String settingsPath = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
-		File settingsFile = new File(settingsPath);
+		// change look and feel
+		UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+//		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//		UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+//		UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+		try
+		{	LookAndFeelInfo tab[] = UIManager.getInstalledLookAndFeels();
+			int i = 0;
+			boolean found = false;
+			while(i<tab.length && !found)
+			{	LookAndFeelInfo info = tab[i];
+				if("Nimbus".equals(info.getName()))
+				{	UIManager.setLookAndFeel(info.getClassName());
+		            found = true;
+		        }
+				i++;
+		    }
+		} catch (Exception e)
+		{	// Nimbus not available
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			logger.log("WARNING: could not find the Nimbus Look-and-feel");
+		}
+		
+		// check if the settings file already exist
+		File settingsFile = new File(EntityEditor.CONFIG_PATH);
 		boolean mustCreate = !settingsFile.exists();
 		
 		// set up viewer
@@ -210,10 +261,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 		// possibly ask the user to init some values
 		if(mustCreate)
 			viewer.doFirstLaunch();
+		else if(viewer.getMustSetCorpus())
+			viewer.doSetCorpus();
 		
 		// select specific NER tools
-		List<String> prefixes = Arrays.asList(new String[]
-		{	
+//		List<String> prefixes = Arrays.asList(new String[]
+//		{	
 //			new DateExtractor().getFolder(),
 //			
 //			new Illinois(IllinoisModelName.CONLL_MODEL, true, false, false, false).getFolder(),
@@ -466,11 +519,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 //				
 //			new FullCombiner(Combiner.SVM).getFolder(),
 //			new FullCombiner(Combiner.VOTE).getFolder()
-		});
-		viewer.setPrefixes(prefixes);
+//		});
+//		viewer.setPrefixes(prefixes);
 		
 		// set up article by name
-		String articleName = "Aart_Kemink";
+//		String articleName = "Aart_Kemink";
 //		String articleName = "Seamus_Brennan";
 //		String articleName = "John_Zorn";
 //		String articleName = "Fleur_Pellerin";
@@ -490,10 +543,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/////////////////////////////////////////////////////////////////
 	/** Frame to contain tabs and entities */
 	private JFrame frame;
+	/** Version of this application */
+	private static final String APP_VERSION = "v2.3";
+	/** Name of this application */
+	private static final String APP_NAME = "Entity Editor";
 	/** Title of this application */
-	private static final String TITLE_SHORT = "Entity Editor";
-	/** Title of this application */
-	private static final String TITLE = "Nerwip - " + TITLE_SHORT + " v2.1";
+	private static final String TITLE = "Nerwip - " + APP_NAME + " " + APP_VERSION;
 	/** Article name */
 	private String articleName = "";
 	
@@ -525,11 +580,40 @@ public class EntityEditor implements WindowListener, ChangeListener
 		initEntityViewActions();
 		initEntityEditionActions();
 		initDisplayModeActions();
+		initFontActions();
 		initBrowseActions();
 		initLinksActions();
 		initSettingsActions();
 		initInformationActions();
 		initQuitActions();
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// ENTITIES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** String used to set up entity names */
+	private final static String STR_ENTITY = "Entity";
+	
+	/** Colors associated to the entities */ 
+	protected static final Map<EntityType,Color> ENTITY_COLOR = new HashMap<EntityType,Color>();
+	{	ENTITY_COLOR.put(EntityType.DATE, Color.PINK);
+		ENTITY_COLOR.put(EntityType.FUNCTION, new Color(180,180,180));
+		ENTITY_COLOR.put(EntityType.LOCATION, Color.ORANGE);
+		ENTITY_COLOR.put(EntityType.MEETING, new Color(218,112,214));
+		ENTITY_COLOR.put(EntityType.ORGANIZATION, Color.CYAN);
+		ENTITY_COLOR.put(EntityType.PERSON, Color.YELLOW);
+		ENTITY_COLOR.put(EntityType.PRODUCTION, Color.GREEN);
+	}
+	
+	/** Shortcut letters associated to the entities */ 
+	private static final Map<EntityType,Character> ENTITY_LETTER = new HashMap<EntityType,Character>();
+	{	ENTITY_LETTER.put(EntityType.DATE, 'D');
+		ENTITY_LETTER.put(EntityType.FUNCTION, 'F');
+		ENTITY_LETTER.put(EntityType.LOCATION, 'L');
+		ENTITY_LETTER.put(EntityType.MEETING, 'M');
+		ENTITY_LETTER.put(EntityType.ORGANIZATION, 'O');
+		ENTITY_LETTER.put(EntityType.PERSON, 'P');
+		ENTITY_LETTER.put(EntityType.PRODUCTION, 'Q');
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -587,10 +671,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 		boolean linkState = (Boolean)showLinksAction.getValue(Action.SELECTED_KEY);
 		
 		// create and add panel
-//		boolean editable = entities==references;
-boolean editable = false;//TODO mettre une option
+		boolean editable = entities==references && editableReference;
 		
 		EntityEditorPanel panel = new EntityEditorPanel(this, text, linkedText, entities, references, params, modeState, switches, linkState, editable, name);
+		if(fontSize!=null)
+			panel.setFontSize(fontSize);
 		tabbedPane.add(algoName, panel);
 	}
 
@@ -623,7 +708,7 @@ boolean editable = false;//TODO mettre une option
 	/** Label displaying information */
 	private JLabel statusInformationLabel;
 	/** Text displayed in the position label */
-	private String STR_STATUS_POSITION = "Pos.: ";
+	private final static String MISC_POSITION = "MiscPosition";
 	/** Label displaying position */
 	private JLabel statusPositionLabel;
 	
@@ -656,7 +741,7 @@ boolean editable = false;//TODO mettre une option
 //		statusBar.add(BorderLayout.CENTER, new JSeparator(SwingConstants.VERTICAL));
 		
 		// create position label
-		{	statusPositionLabel = new JLabel(STR_STATUS_POSITION,JLabel.LEFT);
+		{	statusPositionLabel = new JLabel(language.getText(MISC_POSITION),JLabel.LEFT);
 //statusPositionLabel.setOpaque(true);
 //statusPositionLabel.setBackground(Color.BLUE);		
 	        statusPositionLabel.setPreferredSize(new Dimension(100, 16));
@@ -682,21 +767,39 @@ boolean editable = false;//TODO mettre une option
 	 * @param pos
 	 * 		New position to be displayed,
 	 * 		or {@code null} for no position at all.
+	 * @param length
+	 * 		New length of the displayed text,
+	 * 		or {@code null} for no length at all.
 	 */
-	public void updateStatusPosition(Integer pos)
-	{	if(pos==null)
-			statusPositionLabel.setText(STR_STATUS_POSITION);
+	public void updateStatusPosition(Integer pos, Integer length)
+	{	String text = language.getText(MISC_POSITION) + " ";
+		if(pos==null)
+			text = text + "...";
 		else
-			statusPositionLabel.setText(STR_STATUS_POSITION+pos.toString());
+			text = text + pos.toString();
+		
+		text = text + "/";
+		if(length==null)
+			text = text + "...";
+		else
+			text = text + length.toString();
+		
+		statusPositionLabel.setText(text);
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// TOOL BAR			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Button allowing to save the current article*/
+	private JButton saveButton = null;
+	/** Button allowing to load a different article */
+	private JButton loadButton = null;
 	/** Tool bar with the entity types buttons */
 	private JPanel toolBar = null;
+	/** Colored panels containing the entity-related buttons */
+	private Map<EntityType,JPanel> entityPanels = null;
 	/** Map of entity type view buttons */
-	private Map<EntityType,PaintableToggleButton> entityViewButtons = null;
+	private Map<EntityType,JToggleButton> entityViewButtons = null;
 	/** Map of entity type insert buttons */
 	private Map<EntityType,JButton> entityInsertButtons = null;
 	/** Button allowing to delete an entity */
@@ -709,12 +812,24 @@ boolean editable = false;//TODO mettre une option
 	private JButton prevButton = null;
 	/** Button giving access to the next article in the folder */
 	private JButton nextButton = null;
+	/** Button increasing the font size */
+	private JButton largerFontButton = null;
+	/** Button decreasing the font size */
+	private JButton smallerFontButton = null;
 		
 	/**
 	 * Creates and populates the tool bar.
+	 * 
+	 * @throws IOException
+	 * 		Problem while loading the icons. 
 	 */
-	private void initToolBar()
-	{	// panel
+	private void initToolBar() throws IOException
+	{	int iconSize = 30;
+		int buttonSize = 40;
+		Dimension buttonDim = new Dimension(buttonSize,buttonSize);
+		Dimension labelDim = new Dimension(70,20);
+		
+		// panel
 		toolBar = new JPanel();
 		toolBar.setBorder(BorderFactory.createRaisedBevelBorder());
 		LayoutManager layout = new BoxLayout(toolBar, BoxLayout.LINE_AXIS);
@@ -723,91 +838,307 @@ boolean editable = false;//TODO mettre une option
 		//toolBar.setPreferredSize(new Dimension(100, 20));
 		frame.getContentPane().add(toolBar, java.awt.BorderLayout.NORTH);
 
-		// view entity types
-		entityViewButtons = new HashMap<EntityType, PaintableToggleButton>();
-		for(EntityType type: EntityType.values())
-		{	Action action = entityViewActions.get(type);
-			PaintableToggleButton button = new PaintableToggleButton(action);
-			String name = StringTools.initialize(type.toString());
-			button.setText(name);
-//			button.setBorder(BorderFactory.createLineBorder(type.getColor()));
-//			button.setSelected(false);
-			button.setBackground(type.getColor());
-//			button.getActionMap().put(name, action);
-//			KeyStroke keyStroke = (KeyStroke) action.getValue(Action.ACCELERATOR_KEY);
-//			button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, name);
-			entityViewButtons.put(type, button);
-	    	toolBar.add(button);
+		// init file panel
+	   {	JPanel filePanel = new JPanel();
+			LayoutManager lay = new BoxLayout(filePanel, BoxLayout.PAGE_AXIS);
+			filePanel.setLayout(lay);
+			toolBar.add(filePanel);
+	    	toolBar.add(Box.createHorizontalStrut(5));
+			// save
+			{	String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SAVE;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				saveButton = new JButton(saveAction);
+				saveButton.setToolTipText(language.getTooltip(ACTION_SAVE));
+				saveButton.setText(null);
+				saveButton.setIcon(new ImageIcon(img));
+				saveButton.setMinimumSize(buttonDim);
+				saveButton.setMaximumSize(buttonDim);
+				saveButton.setPreferredSize(buttonDim);
+				saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+				filePanel.add(saveButton);
+			}
+			//load
+			{	String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_OPEN;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				loadButton = new JButton(loadAction);
+				loadButton.setToolTipText(language.getTooltip(ACTION_LOAD));
+				loadButton.setText(null);
+				loadButton.setIcon(new ImageIcon(img));
+				loadButton.setMinimumSize(buttonDim);
+				loadButton.setMaximumSize(buttonDim);
+				loadButton.setPreferredSize(buttonDim);
+				loadButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+				filePanel.add(loadButton);
+			}
 		}
 		
-		toolBar.add(Box.createHorizontalGlue());
+		// init entity panels
+		entityPanels = new HashMap<EntityType, JPanel>();
+		Map<EntityType, JPanel> innerEntityPanels = new HashMap<EntityType, JPanel>();
+		for(EntityType type: EntityType.values())
+		{	JPanel entPanel = new JPanel();
+			LayoutManager lay = new BoxLayout(entPanel, BoxLayout.LINE_AXIS);
+//			LayoutManager lay = new GridLayout(3,1);
+			entPanel.setLayout(lay);
+//			entPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+			String name = language.getText(STR_ENTITY+StringTools.initialize(type.toString()));
+//			entPanel.setBorder(BorderFactory.createTitledBorder(name));
+			entPanel.setBorder(BorderFactory.createEtchedBorder());
+			entPanel.setBackground(ENTITY_COLOR.get(type));
+//			JLabel label = new JLabel(name,SwingConstants.CENTER);
+			VerticalLabel label = new VerticalLabel(name, SwingConstants.CENTER);
+			label.setRotation(VerticalLabel.ROTATE_LEFT);
+			label.setMinimumSize(labelDim);
+			label.setMaximumSize(labelDim);
+			label.setPreferredSize(labelDim);
+			label.setAlignmentX(Component.CENTER_ALIGNMENT);
+			entPanel.add(label);
+			JPanel panel = new JPanel();
+			lay = new BoxLayout(panel, BoxLayout.PAGE_AXIS);
+			panel.setLayout(lay);
+			panel.setBackground(null);
+			entPanel.add(panel);
+	    	innerEntityPanels.put(type,panel);
+	    	entityPanels.put(type,entPanel);
+	    	toolBar.add(entPanel);
+	    	
+	    	toolBar.add(Box.createHorizontalStrut(1));
+//	    	JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
+//	    	toolBar.add(separator);
+//	    	toolBar.add(Box.createHorizontalStrut(5));
+	    }
+		
+		// view entity types
+		{	entityViewButtons = new HashMap<EntityType, JToggleButton>();
+			// get the icon
+			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SHOW;
+			File iconFile = new File(iconPath);
+			Image img = ImageIO.read(iconFile);
+			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+			// create the buttons
+			for(EntityType type: EntityType.values())
+			{	JPanel panel = innerEntityPanels.get(type);
+				Action action = entityViewActions.get(type);
+				JToggleButton button = new JToggleButton(action);
+//				PaintableToggleButton button = new PaintableToggleButton(action);
+//				String name = StringTools.initialize(type.toString());
+//				String name = ENTITY_LETTER.get(type).toString();			
+//				button.setText(name);
+				button.setText(null);
+				button.setIcon(new ImageIcon(img));
+//				button.setBackground(ENTITY_COLOR.get(type));
+				button.setMinimumSize(buttonDim);
+				button.setMaximumSize(buttonDim);
+				button.setPreferredSize(buttonDim);
+				button.setAlignmentX(Component.CENTER_ALIGNMENT);
+				entityViewButtons.put(type, button);
+				panel.add(button);			
+			}
+		}
+		
+//		toolBar.add(Box.createHorizontalGlue());
+//    	toolBar.add(Box.createHorizontalStrut(10));
+//    	toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+//    	toolBar.add(Box.createHorizontalStrut(5));
+		
+		// center subpanel
+    	JPanel centerPanel = new JPanel();
+		{	LayoutManager lay = new BoxLayout(centerPanel, BoxLayout.PAGE_AXIS);
+//			LayoutManager lay = new GridLayout(3,1);
+			centerPanel.setLayout(lay);
+			toolBar.add(centerPanel);
+//	    	toolBar.add(Box.createHorizontalStrut(10));
+		}
 		
 		// mode
-		ButtonGroup group = new ButtonGroup();
-		{	// display types
-			modeTypesButton = new JRadioButton(modeTypesAction);
-			modeTypesButton.setText(STR_MODE_TYPES);
-//			modeTypesButton.setSelected(true);
-			toolBar.add(modeTypesButton);
-			group.add(modeTypesButton);
-		}
-		{	// display comparison
-			modeCompButton = new JRadioButton(modeCompAction);
-			modeCompButton.setText(STR_MODE_COMP);
-			toolBar.add(modeCompButton);
-			group.add(modeCompButton);
+		{	ButtonGroup group = new ButtonGroup();
+			JPanel panel = new JPanel();
+			// setup panel
+			{	LayoutManager lay = new BoxLayout(panel, BoxLayout.LINE_AXIS);
+				panel.setLayout(lay);
+				panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+				centerPanel.add(Box.createVerticalGlue());
+				centerPanel.add(panel);
+				centerPanel.add(Box.createVerticalGlue());
+			}
+			// display types
+			{	modeTypesButton = new JRadioButton(modeTypesAction);
+				modeTypesButton.setText(language.getText(ACTION_MODE_TYPES));
+				modeTypesButton.setToolTipText(language.getTooltip(ACTION_MODE_TYPES));
+				panel.add(modeTypesButton);
+				group.add(modeTypesButton);
+			}
+			// display comparison
+			{	modeCompButton = new JRadioButton(modeCompAction);
+				modeCompButton.setText(language.getText(ACTION_MODE_COMP));
+				modeCompButton.setToolTipText(language.getTooltip(ACTION_MODE_COMP));
+				panel.add(modeCompButton);
+				group.add(modeCompButton);
+			}
 		}
 		
-		toolBar.add(Box.createHorizontalGlue());
+//		toolBar.add(Box.createHorizontalGlue());
 		
 		// edit entities
-		entityInsertButtons = new HashMap<EntityType, JButton>();
-		for(EntityType type: EntityType.values())
-		{	Action action = entityInsertActions.get(type);
-			JButton button = new JButton(action);
-			String name = type.toString().substring(0,1);
-			button.setText(name);
-			button.setBackground(type.getColor());
-			entityInsertButtons.put(type, button);
-	    	toolBar.add(button);
+		{	entityInsertButtons = new HashMap<EntityType, JButton>();
+			// get the icon
+			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_ADD;
+			File iconFile = new File(iconPath);
+			Image img = ImageIO.read(iconFile);
+			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+			// create the buttons
+			for(EntityType type: EntityType.values())
+			{	JPanel panel = innerEntityPanels.get(type);
+				Action action = entityInsertActions.get(type);
+				JButton button = new JButton(action);
+//				Character name = ENTITY_LETTER.get(type);
+//				button.setText(name.toString());
+				button.setText(null);
+				button.setIcon(new ImageIcon(img));
+//				button.setBackground(ENTITY_COLOR.get(type));
+				button.setMinimumSize(buttonDim);
+				button.setMaximumSize(buttonDim);
+				button.setPreferredSize(buttonDim);
+				button.setAlignmentX(Component.CENTER_ALIGNMENT);
+				entityInsertButtons.put(type, button);
+				panel.add(button);			
+			}
 		}
 		
 		// remove entity
-		{	entityDeleteButton = new JButton(entityDeleteAction);
-			String name = STR_ENT_REMOVE.substring(0,1);
-			entityDeleteButton.setText(name);
-	    	toolBar.add(entityDeleteButton);
+		{	// get the icon
+			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_REMOVE;
+			File iconFile = new File(iconPath);
+			Image img = ImageIO.read(iconFile);
+			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+			// create the button
+			entityDeleteButton = new JButton(entityDeleteAction);
+//			String name = ACTION_REMOVE.substring(0,1);
+//			entityDeleteButton.setText(name);
+			entityDeleteButton.setText(null);
+			entityDeleteButton.setIcon(new ImageIcon(img));
+			Dimension dim = new Dimension(155,buttonSize);
+			entityDeleteButton.setMinimumSize(dim);
+			entityDeleteButton.setMaximumSize(dim);
+			entityDeleteButton.setPreferredSize(dim);
+			entityDeleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+			centerPanel.add(entityDeleteButton);
+//			centerPanel.add(Box.createVerticalGlue());
+//			centerPanel.add(Box.createVerticalStrut(2));
+		}
+		
+//		toolBar.add(Box.createHorizontalGlue());
+		
+		// right subpanel
+    	JPanel rightPanel = new JPanel();
+		{	LayoutManager lay = new BoxLayout(rightPanel, BoxLayout.PAGE_AXIS);
+			rightPanel.setLayout(lay);
+			toolBar.add(rightPanel);
+//	    	toolBar.add(Box.createHorizontalStrut(10));
+		}
+
+		// browse
+		{	JPanel panel = new JPanel();
+			// setup panel
+			{	LayoutManager lay = new BoxLayout(panel, BoxLayout.LINE_AXIS);
+				panel.setLayout(lay);
+				rightPanel.add(panel);
+			}
+			// previous article
+			{	// get the icon
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_PREVIOUS;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				// create the button
+				prevButton = new JButton(prevAction);
+//				prevButton.setText("<");					//"\u25C0"
+				prevButton.setText(null);
+				prevButton.setIcon(new ImageIcon(img));
+				prevButton.setMinimumSize(buttonDim);
+				prevButton.setMaximumSize(buttonDim);
+				prevButton.setPreferredSize(buttonDim);
+				panel.add(prevButton);
+			}
+			// next article
+			{	// get the icon
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_NEXT;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				// create the button
+				nextButton = new JButton(nextAction);
+//				nextButton.setText(">");					//"\u25B6"
+				nextButton.setText(null);
+				nextButton.setIcon(new ImageIcon(img));
+				nextButton.setMinimumSize(buttonDim);
+				nextButton.setMaximumSize(buttonDim);
+				nextButton.setPreferredSize(buttonDim);
+				panel.add(nextButton);
+			}
+		}
+		
+		// browse
+		{	JPanel panel = new JPanel();
+			// setup panel
+			{	LayoutManager lay = new BoxLayout(panel, BoxLayout.LINE_AXIS);
+				panel.setLayout(lay);
+				rightPanel.add(panel);
+			}
+			// smaller font
+			{	// get the icon
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SMALLER;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				// create the button
+				smallerFontButton = new JButton(smallerFontAction);
+				smallerFontButton.setText(null);
+				smallerFontButton.setIcon(new ImageIcon(img));
+				smallerFontButton.setMinimumSize(buttonDim);
+				smallerFontButton.setMaximumSize(buttonDim);
+				smallerFontButton.setPreferredSize(buttonDim);
+				panel.add(smallerFontButton);
+			}
+			// larger font
+			{	// get the icon
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LARGER;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				// create the button
+				largerFontButton = new JButton(largerFontAction);
+				largerFontButton.setText(null);
+				largerFontButton.setIcon(new ImageIcon(img));
+				largerFontButton.setMinimumSize(buttonDim);
+				largerFontButton.setMaximumSize(buttonDim);
+				largerFontButton.setPreferredSize(buttonDim);
+				panel.add(largerFontButton);
+			}
 		}
 		
 		toolBar.add(Box.createHorizontalGlue());
-		
-		// browse
-		{	// previous article
-			{	prevButton = new JButton(prevAction);
-				prevButton.setText("<");					//"\u25C0"
-				toolBar.add(prevButton);
-			}
-			// next article
-			{	nextButton = new JButton(nextAction);
-				nextButton.setText(">");					//"\u25B6"
-				toolBar.add(nextButton);
-			}
-		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// MENU BAR			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for menu definition */
-	private final static String MENU_FILE = "File";
+	private final static String MENU_FILE = "MenuFile";
 	/** String used for menu definition */
-	private final static String MENU_EDIT = "Edit";
+	private final static String MENU_EDIT = "MenuEdit";
 	/** String used for menu definition */
-	private final static String MENU_VIEW = "View";
+	private final static String MENU_VIEW = "MenuView";
 	/** String used for menu definition */
-	private final static String MENU_SETTINGS = "Settings";
+	private final static String MENU_SETTINGS = "MenuSettings";
 	/** String used for menu definition */
-	private final static String MENU_HELP = "Help";
+	private final static String MENU_HELP = "MenuHelp";
+	/** String used for menu definition */
+	private final static String MENU_LANGUAGE = "MenuLanguage";
 	/** Menu bar of this editor */
 	private JMenuBar menuBar;
 	/** Menu item of the open action */
@@ -838,75 +1169,140 @@ boolean editable = false;//TODO mettre une option
 	private JCheckBoxMenuItem miLastCorpus;
 	/** Menu item of the last article option action */
 	private JCheckBoxMenuItem miLastArticle;
+	/** Menu item of the edition switch */
+	private JCheckBoxMenuItem miEditable;
+	/** Menu item of the decrease font size action*/
+	private JMenuItem miSmallerFont;
+	/** Menu item of the increase font size action*/
+	private JMenuItem miLargerFont;
 	/** Menu item of the index action */
 	private JMenuItem miIndex;
 	/** Menu item of the about action */
 	private JMenuItem miAbout;
 	/** Menu item of the show links */
 	private JCheckBoxMenuItem miLinks;
+	/** Menu item of the language selection */
+	private JMenu mLanguage;
+	/** Menu items of the available languages */
+	private List<JRadioButtonMenuItem> miLanguages;
 	
 	/**
 	 * Initializes the menu bar of this editor.
+	 * 
+	 * @throws IOException
+	 * 		Problem while loading the icons. 
 	 */
-	private void initMenuBar()
-	{
+	private void initMenuBar() throws IOException
+	{	int iconSize = 13;
 		menuBar = new JMenuBar();
 		
 		// file menu
-		{	JMenu menu = new JMenu(MENU_FILE);
+		{	JMenu menu = new JMenu(language.getText(MENU_FILE));
 			menuBar.add(menu);
 			
-			miOpen = new JMenuItem(loadAction);
-			menu.add(miOpen);
+			{	miOpen = new JMenuItem(loadAction);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_OPEN;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				miOpen.setIcon(new ImageIcon(img));
+				menu.add(miOpen);
+			}
 			
-			miPrev = new JMenuItem(prevAction);
-			menu.add(miPrev);
+			{	miPrev = new JMenuItem(prevAction);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_PREVIOUS;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				miPrev.setIcon(new ImageIcon(img));
+				menu.add(miPrev);
+			}
 			
-			miNext = new JMenuItem(nextAction);
-			menu.add(miNext);
+			{	miNext = new JMenuItem(nextAction);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_NEXT;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				miNext.setIcon(new ImageIcon(img));
+				menu.add(miNext);
+			}
 			
 			menu.addSeparator();
 			
-			miSave = new JMenuItem(saveAction);
-			menu.add(miSave);
+			{	miSave = new JMenuItem(saveAction);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SAVE;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				miSave.setIcon(new ImageIcon(img));
+				menu.add(miSave);
+			}
 			
-			miSaveCopy = new JMenuItem(copyAction);
-			menu.add(miSaveCopy);
+			{	miSaveCopy = new JMenuItem(copyAction);
+				menu.add(miSaveCopy);
+			}
 			
 			menu.addSeparator();
 			
-			miClose = new JMenuItem(quitAction);
-			menu.add(miClose);
+			{	miClose = new JMenuItem(quitAction);
+				menu.add(miClose);
+			}
 		}
 		
 		// edit menu
-		{	JMenu menu = new JMenu(MENU_EDIT);
+		{	JMenu menu = new JMenu(language.getText(MENU_EDIT));
 			menuBar.add(menu);
 			
 			// insert entities
+			Color from = Color.BLACK;
 			for(EntityType type: EntityType.values())
 			{	Action action = entityInsertActions.get(type);
 				JMenuItem jmi = new JMenuItem(action);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_ADD;
+				File iconFile = new File(iconPath);
+				BufferedImage img0 = ImageIO.read(iconFile);
+				Color to = ENTITY_COLOR.get(type);
+//				to = new Color((int)(to.getRed()/1.5),(int)(to.getGreen()/1.5),(int)(to.getBlue()/1.5));
+				BufferedImageOp lookup = new LookupOp(new ColorMapper(from, to), null);
+				img0 = lookup.filter(img0, null);
+				Image img = img0.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				jmi.setIcon(new ImageIcon(img));
 				menu.add(jmi);
 			}
 			
 			menu.addSeparator();
 
 			// remove entity
-			miRemove = new JMenuItem(entityDeleteAction);
-			menu.add(miRemove);
+			{	miRemove = new JMenuItem(entityDeleteAction);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_REMOVE;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				miRemove.setIcon(new ImageIcon(img));
+				menu.add(miRemove);
+			}
 		}
 		
 		// view menu
-		{	JMenu menu = new JMenu(MENU_VIEW);
+		{	JMenu menu = new JMenu(language.getText(MENU_VIEW));
 			menuBar.add(menu);
 			
 			// insert entities
 			entityViewCheck = new HashMap<EntityType, JCheckBoxMenuItem>();
+			Color from = Color.BLACK;
 			for(EntityType type: EntityType.values())
 			{	Action action = entityViewActions.get(type);
 				JCheckBoxMenuItem  jmcbi = new JCheckBoxMenuItem(action);
 //				jmcbi.setSelected(true);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SHOW;
+				File iconFile = new File(iconPath);
+				BufferedImage img0 = ImageIO.read(iconFile);
+				Color to = ENTITY_COLOR.get(type);
+//				to = new Color((int)(to.getRed()/1.5),(int)(to.getGreen()/1.5),(int)(to.getBlue()/1.5));
+				BufferedImageOp lookup = new LookupOp(new ColorMapper(from, to), null);
+				img0 = lookup.filter(img0, null);
+				Image img = img0.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				jmcbi.setIcon(new ImageIcon(img));
 				entityViewCheck.put(type,jmcbi);
 				menu.add(jmcbi);
 			}
@@ -929,12 +1325,33 @@ boolean editable = false;//TODO mettre une option
 			
 			menu.addSeparator();
 
-			miLinks = new JCheckBoxMenuItem(showLinksAction);
-			menu.add(miLinks);
+			{	miLinks = new JCheckBoxMenuItem(showLinksAction);
+				menu.add(miLinks);
+			}
+			
+			menu.addSeparator();
+			
+			{	miLargerFont = new JMenuItem(largerFontAction);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LARGER;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				miLargerFont.setIcon(new ImageIcon(img));
+				menu.add(miLargerFont);
+			}
+
+			{	miSmallerFont = new JMenuItem(smallerFontAction);
+				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SMALLER;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				miSmallerFont.setIcon(new ImageIcon(img));
+				menu.add(miSmallerFont);
+			}
 		}
 		
 		// settings menu
-		{	JMenu menu = new JMenu(MENU_SETTINGS);
+		{	JMenu menu = new JMenu(language.getText(MENU_SETTINGS));
 			menuBar.add(menu);
 			
 			miCorpus = new JMenuItem(corpusAction);
@@ -950,10 +1367,34 @@ boolean editable = false;//TODO mettre une option
 			
 			miLastArticle = new JCheckBoxMenuItem(lastArticleAction);
 			menu.add(miLastArticle);
-		}
+			
+			menu.addSeparator();
 
+			miEditable = new JCheckBoxMenuItem(editableAction);
+			menu.add(miEditable);
+			
+			menu.addSeparator();
+			
+			mLanguage = new JMenu(language.getText(MENU_LANGUAGE));
+			menu.add(mLanguage);
+			miLanguages = new ArrayList<JRadioButtonMenuItem>();
+			ButtonGroup group = new ButtonGroup();
+			for(Action action: languageActions)
+			{	JRadioButtonMenuItem mi = new JRadioButtonMenuItem(action);
+				String languageName = (String) action.getValue(Action.NAME);
+				String iconPath = FileNames.FO_IMAGES + File.separator + languageName.toLowerCase(Locale.ENGLISH) + FileNames.EX_PNG;
+				File iconFile = new File(iconPath);
+				Image img = ImageIO.read(iconFile);
+				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+				mi.setIcon(new ImageIcon(img));
+				mLanguage.add(mi);
+				miLanguages.add(mi);
+				group.add(mi);
+			}
+		}
+		
 		// about menu
-		{	JMenu menu = new JMenu(MENU_HELP);
+		{	JMenu menu = new JMenu(language.getText(MENU_HELP));
 			menuBar.add(menu);
 			
 			miIndex = new JMenuItem(indexAction);
@@ -970,26 +1411,20 @@ boolean editable = false;//TODO mettre une option
 	// ENTITY VIEW		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
-	private final static String STR_ENT_VIEW = "View ";
-	/** String used for action definition */
-	private final static String STR_ENT_DISPLAY = "Display/hide ";
-	/** String used for action definition */
-	private final static String STR_ENT_ENTITIES = " entities";
+	private final static String ACTION_DISPLAY = "ActionDisplay";
 	/** Map of entity type view actions */
 	private Map<EntityType, Action> entityViewActions = null;
-
+	
 	/**
 	 * Initializes the actions related to
 	 * the display of entity types.
 	 */
 	private void initEntityViewActions()
-	{	List<Integer> initials = new ArrayList<Integer>();
-	
-		entityViewActions = new HashMap<EntityType, Action>();
+	{	entityViewActions = new HashMap<EntityType, Action>();
 		for(EntityType type: EntityType.values())
 		{	final EntityType t = type;
-			String typeStr = StringTools.initialize(type.toString());
-			String name = STR_ENT_VIEW + typeStr + STR_ENT_ENTITIES;
+			String typeStr = language.getTooltip(STR_ENTITY+StringTools.initialize(type.toString()));
+			String name = language.getText(ACTION_DISPLAY) + " " + typeStr;
 			Action action = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -999,12 +1434,10 @@ boolean editable = false;//TODO mettre une option
 			    }
 			};
 			entityViewActions.put(type,action);
-			int initial = type.toString().charAt(0);
-			while(initials.contains(initial)) // allows avoiding setting the same shortcut twice
-				initial = initial + 1;
-			initials.add(initial);
+			int initial = ENTITY_LETTER.get(type);
 			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift "+((char)initial)));
-			action.putValue(Action.SHORT_DESCRIPTION, STR_ENT_DISPLAY+typeStr+STR_ENT_ENTITIES);
+			typeStr = language.getText(STR_ENTITY+StringTools.initialize(type.toString()));
+			action.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_DISPLAY)+" "+typeStr);
 			action.putValue(Action.SELECTED_KEY, true);
 		}
 	}
@@ -1017,17 +1450,32 @@ boolean editable = false;//TODO mettre une option
 	 * 		Type of the entities to hide/display.
 	 */
 	private void switchEntityView(EntityType type)
-	{	PaintableToggleButton button = entityViewButtons.get(type);
+	{	JToggleButton button = entityViewButtons.get(type);
 //		JCheckBoxMenuItem item = entityViewCheck.get(type);
 //		Action action = entityViewActions.get(type);
 //		boolean state = (Boolean)action.getValue(Action.SELECTED_KEY);
+		boolean state = button.isSelected();
+
+		// update tabpanes
 		int count = tabbedPane.getComponentCount();
 		for(int i=0;i<count;i++)
 		{	EntityEditorPanel panel = (EntityEditorPanel)tabbedPane.getComponentAt(i);
 			panel.switchType(type);
-			boolean state = button.isSelected();
 			Action action = entityInsertActions.get(type);
 			action.setEnabled(state);
+		}
+		
+		// update toolbar (color)
+		JPanel panel = entityPanels.get(type);
+		Color color = ENTITY_COLOR.get(type);
+		if(state)
+			panel.setBackground(color);
+		else
+		{	int r = Math.min(color.getRed()/2,255);
+			int g = Math.min(color.getGreen()/2,255);
+			int b = Math.min(color.getBlue()/2,255);
+			Color c = new Color(r,g,b);
+			panel.setBackground(c);
 		}
 	}
 	
@@ -1035,15 +1483,11 @@ boolean editable = false;//TODO mettre une option
 	// ENTITY EDITION	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
-	private final static String STR_ENT_INSERT = "Insert ";
-	/** String used for action definition */
-	private final static String STR_ENT_INSERT_TT = "Insert or convert ";
-	/** String used for action definition */
-	private final static String STR_ENT_ENTITY = " entity";
+	private final static String ACTION_INSERT = "ActionInsert";
 	/** Map of entity type insert actions */
 	private Map<EntityType, Action> entityInsertActions = null;
 	/** String used for action definition */
-	private final static  String STR_ENT_REMOVE = "Remove";
+	private final static  String ACTION_REMOVE = "ActionRemove";
 	/** Action allowing to delete an entity */
 	private Action entityDeleteAction = null;
 
@@ -1052,10 +1496,8 @@ boolean editable = false;//TODO mettre une option
 	 * edition of entities in the reference file.
 	 */
 	private void initEntityEditionActions()
-	{	List<Integer> initials = new ArrayList<Integer>();
-		
-		// remove entity
-		{	String name = STR_ENT_REMOVE+STR_ENT_ENTITY;
+	{	// remove entity
+		{	String name = language.getText(ACTION_REMOVE);
 			entityDeleteAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1064,10 +1506,8 @@ boolean editable = false;//TODO mettre une option
 				{	removeEntity();
 			    }
 			};
-			String initial = name.substring(0,1);
-			initials.add((int)initial.charAt(0));
-			entityDeleteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+initial));
-			entityDeleteAction.putValue(Action.SHORT_DESCRIPTION, name);
+			entityDeleteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt R"));
+			entityDeleteAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_REMOVE));
 			entityDeleteAction.setEnabled(false);
 		}
 		
@@ -1075,8 +1515,8 @@ boolean editable = false;//TODO mettre une option
 		entityInsertActions = new HashMap<EntityType, Action>();
 		for(EntityType type: EntityType.values())
 		{	final EntityType t = type;
-			String typeStr = StringTools.initialize(type.toString());
-			String name = STR_ENT_INSERT + typeStr + STR_ENT_ENTITY;
+			String typeStr = language.getText(STR_ENTITY+StringTools.initialize(type.toString()));
+			String name = language.getText(ACTION_INSERT) + " " + typeStr;
 			Action action = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1086,12 +1526,9 @@ boolean editable = false;//TODO mettre une option
 			    }
 			};
 			entityInsertActions.put(type, action);
-			int initial = type.toString().charAt(0);
-			while(initials.contains(initial)) // allows avoiding setting the same shortcut twice
-				initial = initial + 1;
-			initials.add(initial);
-			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+((char)initial)));
-			action.putValue(Action.SHORT_DESCRIPTION, STR_ENT_INSERT_TT+typeStr+STR_ENT_ENTITY);
+			char initial = ENTITY_LETTER.get(type);
+			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+initial));
+			action.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_INSERT)+" "+typeStr);
 			action.setEnabled(false);
 		}
 	}
@@ -1159,13 +1596,9 @@ boolean editable = false;//TODO mettre une option
 	// DISPLAY MODE		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
-	private final static String STR_MODE_TYPES = "Types";
+	private final static String ACTION_MODE_TYPES = "ActionModeTypes";
 	/** String used for action definition */
-	private final static String STR_MODE_TYPES_TT = "Display entity types";
-	/** String used for action definition */
-	private final static String STR_MODE_COMP = "Comparison";
-	/** String used for action definition */
-	private final static String STR_MODE_COMP_TT = "Compare entities to reference";
+	private final static String ACTION_MODE_COMP = "ActionModeComp";
 	/** Action controling the display of types */
 	private Action modeTypesAction = null;
 	/** Action controling the display of comparisons */
@@ -1177,7 +1610,7 @@ boolean editable = false;//TODO mettre une option
 	 */
 	private void initDisplayModeActions()
 	{	// display entity types
-		{	String name = STR_MODE_TYPES;
+		{	String name = language.getText(ACTION_MODE_TYPES);
 			modeTypesAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1186,14 +1619,13 @@ boolean editable = false;//TODO mettre une option
 				{	switchDisplayMode(true);
 			    }
 			};
-			String initial = name.substring(0,1);
-			modeTypesAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift "+initial));
-			modeTypesAction.putValue(Action.SHORT_DESCRIPTION, STR_MODE_TYPES_TT);
+			modeTypesAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift T"));
+			modeTypesAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_MODE_TYPES));
 			modeTypesAction.putValue(Action.SELECTED_KEY, true);
 		}
 		
 		// display comparisons
-		{	String name = STR_MODE_COMP;
+		{	String name = language.getText(ACTION_MODE_COMP);
 			modeCompAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1202,9 +1634,8 @@ boolean editable = false;//TODO mettre une option
 				{	switchDisplayMode(false);
 			    }
 			};
-			String initial = name.substring(0,1);
-			modeCompAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift "+initial));
-			modeCompAction.putValue(Action.SHORT_DESCRIPTION, STR_MODE_COMP_TT);
+			modeCompAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift C"));
+			modeCompAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_MODE_COMP));
 			modeCompAction.putValue(Action.SELECTED_KEY, false);
 		}
 	}
@@ -1229,19 +1660,17 @@ boolean editable = false;//TODO mettre une option
 	/////////////////////////////////////////////////////////////////
 	// HYPERLINKS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** String used for action definition */
+	private final static String ACTION_LINKS = "ActionLinks";
 	/** Action showing/hidding hyperlinks */
 	private Action showLinksAction = null;
-	/** String used for action definition */
-	private final static String STR_LINKS_TT = "Show/Hide the article hyperlinks";
-	/** String used for action definition */
-	private final static String STR_LINKS = "Hyperlinks";
 	
 	/**
 	 * Initializes actions related to 
 	 * hyperlinks.
 	 */
 	private void initLinksActions()
-	{	String name = STR_LINKS;
+	{	String name = language.getText(ACTION_LINKS);
 		showLinksAction = new AbstractAction(name)
 		{	/** Class id */
 			private static final long serialVersionUID = 1L;
@@ -1252,7 +1681,7 @@ boolean editable = false;//TODO mettre une option
 		    }
 		};
 		showLinksAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift H"));
-		showLinksAction.putValue(Action.SHORT_DESCRIPTION, STR_LINKS_TT);
+		showLinksAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_LINKS));
 		showLinksAction.putValue(Action.SELECTED_KEY, false);
 	}
 	
@@ -1269,18 +1698,78 @@ boolean editable = false;//TODO mettre une option
 	}
 	
 	/////////////////////////////////////////////////////////////////
+	// FONT SIZE		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Current font size */
+	private Integer fontSize = null;
+	/** String used for action definition */
+	private final static String ACTION_LARGER = "ActionLarger";
+	/** Action increasing the font size */
+	private Action largerFontAction = null;
+	/** String used for action definition */
+	private final static String ACTION_SMALLER = "ActionSmaller";
+	/** Action decreasing the font size */
+	private Action smallerFontAction = null;
+	
+	/**
+	 * Initializes actions related to 
+	 * font size.
+	 */
+	private void initFontActions()
+	{	// smaller font
+		{	String name = language.getText(ACTION_SMALLER);
+			smallerFontAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	changeFontSize(-1);
+			    }
+			};
+			smallerFontAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control SUBTRACT"));
+			smallerFontAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SMALLER));
+		}
+		
+		// larger font
+		{	String name = language.getText(ACTION_LARGER);
+			largerFontAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	changeFontSize(+1);
+			    }
+			};
+			largerFontAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control ADD"));
+			largerFontAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_LARGER));
+		}
+	}
+	
+	/**
+	 * Modifies the size of the font used to display the text.
+	 * 
+	 * @param delta
+	 * 		How much to decrease/increase the font.
+	 */
+	private void changeFontSize(int delta)
+	{	for(Component c:tabbedPane.getComponents())
+		{	EntityEditorPanel panel = (EntityEditorPanel) c;
+			panel.changeFontSize(delta);
+			fontSize = panel.getFontSize();
+		}
+	}
+	
+	/////////////////////////////////////////////////////////////////
 	// BROWSE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
-	private final static String STR_PREV = "Previous article";
-	/** String used for action definition */
-	private final static String STR_PREV_TT = "Go to the previous article";
+	private final static String ACTION_PREV = "ActionPrevious";
 	/** Action giving access to the previous article in the folder */
 	private Action prevAction = null;
 	/** String used for action definition */
-	private final static String STR_NEXT = "Next article";
-	/** String used for action definition */
-	private final static String STR_NEXT_TT = "Go to the next article";
+	private final static String ACTION_NEXT = "ActionNext";
 	/** Action giving access to the next article in the folder */
 	private Action nextAction = null;
 	
@@ -1290,7 +1779,7 @@ boolean editable = false;//TODO mettre une option
 	 */
 	private void initBrowseActions()
 	{	// previous article
-		{	String name = STR_PREV;
+		{	String name = language.getText(ACTION_PREV);
 			prevAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1311,13 +1800,12 @@ boolean editable = false;//TODO mettre une option
 					}
 			    }
 			};
-			String initial = name.substring(0,1);
-			prevAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control "+initial));
-			prevAction.putValue(Action.SHORT_DESCRIPTION, STR_PREV_TT);
+			prevAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control P"));
+			prevAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_PREV));
 		}
 		
 		// next article
-		{	String name = STR_NEXT;
+		{	String name = language.getText(ACTION_NEXT);
 			nextAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1339,30 +1827,26 @@ boolean editable = false;//TODO mettre une option
 			    }
 			};
 			String initial = name.substring(0,1);
-			nextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control "+initial));
-			nextAction.putValue(Action.SHORT_DESCRIPTION, STR_NEXT_TT);
+			nextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
+			nextAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_NEXT));
 		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// FILE ACCESS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Dialog title */
+	private final static String DIALOG_PROPOSE_SAVING = "DialogProposeSaving";
 	/** String used for action definition */
-	private final static String STR_LOAD = "Open article";
-	/** String used for action definition */
-	private final static String STR_LOAD_TT = "Load the files related to an article";
+	private final static String ACTION_LOAD = "ActionLoad";
 	/** Action allowing loading an existing set of files */
 	private Action loadAction = null;
 	/** String used for action definition */
-	private final static String STR_SAVE = "Save";
-	/** String used for action definition */
-	private final static String STR_SAVE_TT = "Record the modified text and entities";
+	private final static String ACTION_SAVE = "ActionSave";
 	/** Action allowing recording the current reference file */
 	private Action saveAction = null;
 	/** String used for action definition */
-	private final static String STR_COPY = "Save copy of reference";
-	/** String used for action definition */
-	private final static String STR_COPY_TT = "Save a copy of the reference entities";
+	private final static String ACTION_COPY = "ActionCopy";
 	/** Action allowing recording a copy of the current reference file */
 	private Action copyAction = null;
 	
@@ -1372,7 +1856,7 @@ boolean editable = false;//TODO mettre une option
 	 */
 	private void initFileActions()
 	{	// open
-		{	String name = STR_LOAD;
+		{	String name = language.getText(ACTION_LOAD);
 			loadAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1382,13 +1866,12 @@ boolean editable = false;//TODO mettre une option
 				{	loadArticle();
 			    }
 			};
-			String initial = name.substring(0,1);
-			loadAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control "+initial));
-			loadAction.putValue(Action.SHORT_DESCRIPTION, STR_LOAD_TT);
+			loadAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
+			loadAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_LOAD));
 		}
 
 		// save
-		{	String name = STR_SAVE;
+		{	String name = language.getText(ACTION_SAVE);
 			saveAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1398,14 +1881,13 @@ boolean editable = false;//TODO mettre une option
 				{	saveAll();
 			    }
 			};
-			String initial = name.substring(0,1);
-			saveAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control "+initial));
-			saveAction.putValue(Action.SHORT_DESCRIPTION, STR_SAVE_TT);
+			saveAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
+			saveAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SAVE));
 			saveAction.setEnabled(false);
 		}
 		
 		// save copy
-		{	String name = STR_COPY;
+		{	String name = language.getText(ACTION_COPY);
 			copyAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1416,8 +1898,8 @@ boolean editable = false;//TODO mettre une option
 			    }
 			};
 			String initial = name.substring(0,1);
-			copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift "+initial));
-			copyAction.putValue(Action.SHORT_DESCRIPTION, STR_COPY_TT);
+			copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift S"));
+			copyAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_COPY));
 			copyAction.setEnabled(false); //TODO maybe other actions should be disabled too, when there's no article currently open?
 		}
 	}
@@ -1528,7 +2010,7 @@ boolean editable = false;//TODO mettre une option
 			}
         }
 	}
-
+	
 	/**
 	 * Lets the user record modified reference entities before loading
 	 * another article or quitting the application.
@@ -1541,7 +2023,12 @@ boolean editable = false;//TODO mettre une option
 	 */
 	private boolean proposeSaving()
 	{	boolean result = true;
-		int answer = JOptionPane.showConfirmDialog(frame, "The reference has been modified. Do you want to record these changes?", "Reference modified", JOptionPane.YES_NO_CANCEL_OPTION);
+		int answer = JOptionPane.showConfirmDialog(
+			frame, 
+			language.getTooltip(DIALOG_PROPOSE_SAVING), 
+			language.getText(DIALOG_PROPOSE_SAVING), 
+			JOptionPane.YES_NO_CANCEL_OPTION
+		);
 		if(answer==JOptionPane.YES_OPTION)
 			saveAll();
 		else if(answer==JOptionPane.CANCEL_OPTION)
@@ -1553,9 +2040,7 @@ boolean editable = false;//TODO mettre une option
 	// QUIT				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
-	private final static String STR_QUIT = "Quit "+TITLE_SHORT;
-	/** String used for action definition */
-	private final static String STR_QUIT_TT = "Quit "+TITLE_SHORT;
+	private final static String ACTION_QUIT = "ActionQuit";
 	/** Action letting the user close the application */
 	private Action quitAction = null;
 
@@ -1564,7 +2049,7 @@ boolean editable = false;//TODO mettre une option
 	 * to quitting the application.
 	 */
 	private void initQuitActions()
-	{	String name = STR_QUIT;
+	{	String name = language.getText(ACTION_QUIT);
 		quitAction = new AbstractAction(name)
 		{	/** Class id */
 			private static final long serialVersionUID = 1L;
@@ -1574,9 +2059,8 @@ boolean editable = false;//TODO mettre une option
 			{	closeWindow();
 		    }
 		};
-		String initial = name.substring(0,1);
-		quitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control "+initial));
-		quitAction.putValue(Action.SHORT_DESCRIPTION, STR_QUIT_TT);
+		quitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Q"));
+		quitAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_QUIT)+" "+APP_NAME);
 	}
 
 	/**
@@ -1609,36 +2093,34 @@ boolean editable = false;//TODO mettre une option
 	// SETTINGS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
-	private final static String STR_CORPUS = "Corpus folder";
-	/** String used for action definition */
-	private final static String STR_CORPUS_TT = "Change the main folder containing the corpus";
+	private final static String ACTION_CORPUS = "ActionCorpus";
 	/** Action triggering the corpus dialog */
 	private Action corpusAction = null;
 	/** String used for action definition */
-	private final static String STR_EDITOR = "Editor name";
-	/** String used for action definition */
-	private final static String STR_EDITOR_TT = "Change the name of the current editor";
+	private final static String ACTION_EDITOR = "ActionEditor";
 	/** Action triggering the editor dialog */
 	private Action editorAction = null;
 	/** String used for action definition */
-	private final static String STR_LAST_CORPUS = "Last corpus";
-	/** String used for action definition */
-	private final static String STR_LAST_CORPUS_TT = "Try to access the last corpus at startup";
+	private final static String ACTION_LAST_CORPUS = "ActionLastCorpus";
 	/** Action switching the last corpus option */
 	private Action lastCorpusAction = null;
 	/** String used for action definition */
-	private final static String STR_LAST_ARTICLE = "Last article";
-	/** String used for action definition */
-	private final static String STR_LAST_ARTICLE_TT = "Try to load the last article at startup";
+	private final static String ACTION_LAST_ARTICLE = "ActionLastArticle";
 	/** Action switching the last article option */
 	private Action lastArticleAction = null;
+	/** String used for action definition */
+	private final static String ACTION_EDITABLE = "ActionEditable";
+	/** Action switching the last article option */
+	private Action editableAction = null;
+	/** Action switching the last article option */
+	private List<Action> languageActions = null;
 	
 	/**
 	 * Initializes actions related to the settings.
 	 */
 	private void initSettingsActions()
 	{	// corpus
-		{	String name = STR_CORPUS;
+		{	String name = language.getText(ACTION_CORPUS);
 			corpusAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1648,11 +2130,11 @@ boolean editable = false;//TODO mettre une option
 				{	changeCorpusFolder();
 			    }
 			};
-			corpusAction.putValue(Action.SHORT_DESCRIPTION, STR_CORPUS_TT);
+			corpusAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_CORPUS));
 		}
 		
 		// editor
-		{	String name = STR_EDITOR;
+		{	String name = language.getText(ACTION_EDITOR);
 			editorAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1662,11 +2144,11 @@ boolean editable = false;//TODO mettre une option
 				{	changeEditorName();
 			    }
 			};
-			editorAction.putValue(Action.SHORT_DESCRIPTION, STR_EDITOR_TT);
+			editorAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_EDITOR));
 		}
 		
 		// last corpus
-		{	String name = STR_LAST_CORPUS;
+		{	String name = language.getText(ACTION_LAST_CORPUS);
 			lastCorpusAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1676,13 +2158,13 @@ boolean editable = false;//TODO mettre une option
 				{	switchLastCorpusOption();
 			    }
 			};
-			lastCorpusAction.putValue(Action.SHORT_DESCRIPTION, STR_LAST_CORPUS_TT);
+			lastCorpusAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_LAST_CORPUS));
 			lastCorpusAction.putValue(Action.SELECTED_KEY, useLastCorpus);
 		}
 		
 		
 		// last article
-		{	String name = STR_LAST_ARTICLE;
+		{	String name = language.getText(ACTION_LAST_ARTICLE);
 			lastArticleAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1692,8 +2174,46 @@ boolean editable = false;//TODO mettre une option
 				{	switchLastArticleOption();
 			    }
 			};
-			lastArticleAction.putValue(Action.SHORT_DESCRIPTION, STR_LAST_ARTICLE_TT);
+			lastArticleAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_LAST_ARTICLE));
 			lastArticleAction.putValue(Action.SELECTED_KEY, useLastArticle);
+		}
+		
+		// editable reference
+		{	String name = language.getText(ACTION_EDITABLE);
+			editableAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	switchEditableOption();
+			    }
+			};
+			editableAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_EDITABLE));
+			editableAction.putValue(Action.SELECTED_KEY, editableReference);
+		}
+		
+		// language
+		{	languageActions = new ArrayList<Action>();
+			String langPath = FileNames.FO_LANGUAGE;
+			List<File> files = FileTools.getFilesEndingWith(langPath, FileNames.EX_XML);
+			for(File file: files)
+			{	String name0 = file.getName();
+				name0 = name0.substring(0, name0.lastIndexOf('.'));// removing extension
+				final String name = StringTools.initialize(name0);
+				Action action = new AbstractAction(name)
+				{	/** Class id */
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+				    public void actionPerformed(ActionEvent evt)
+					{	changeLanguage(name);
+				    }
+				};
+				action.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(MENU_LANGUAGE)+" "+name);
+				action.putValue(Action.SELECTED_KEY, name.equals(languageName));
+				languageActions.add(action);
+			}
 		}
 	}
 	
@@ -1711,23 +2231,32 @@ boolean editable = false;//TODO mettre une option
 	{	useLastArticle = !useLastArticle;
 	}
 	
+	/**
+	 * Changes the value of the {@link #editableReference} switch.
+	 */
+	private void switchEditableOption()
+	{	editableReference = !editableReference;
+		if(tabbedPane.getTabCount()>0)
+		{	EntityEditorPanel eep = (EntityEditorPanel) tabbedPane.getComponentAt(0);
+			eep.setEditable(editableReference);
+		}
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// INFORMATION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Dialog displayed for the action "index" */
 	private TextDialog indexDialog = null;
 	/** String used for action definition */
-	private final static String STR_INDEX = "Index";
-	/** String used for action definition */
-	private final static String STR_INDEX_TT = "Display basic instructions regarding how to use "+TITLE_SHORT;
+	private final static String ACTION_INDEX = "ActionIndex";
 	/** String used as the "index" dialog title */
-	private final static String STR_INDEX_T = "Help with " + TITLE_SHORT;
+	private final static String DIALOG_INDEX = "DialogIndex";
 	/** Action triggering the 'index' dialog */
 	private Action indexAction = null;
 	/** String used for action definition */
-	private final static String STR_ABOUT = "About";
-	/** String used for action definition */
-	private final static String STR_ABOUT_TT = "Display general information about "+TITLE_SHORT;
+	private final static String ACTION_ABOUT = "ActionAbout";
+	/** String used as the "index" dialog title */
+	private final static String DIALOG_ABOUT = "DialogAbout";
 	/** Action triggering the 'about' dialog */
 	private Action aboutAction = null;
 
@@ -1737,7 +2266,7 @@ boolean editable = false;//TODO mettre une option
 	 */
 	private void initInformationActions()
 	{	// index
-		{	String name = STR_INDEX;
+		{	String name = language.getText(ACTION_INDEX);
 			indexAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1749,11 +2278,11 @@ boolean editable = false;//TODO mettre une option
 			};
 //			String initial = name.substring(0,1);
 //			indexAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control "+initial));
-			indexAction.putValue(Action.SHORT_DESCRIPTION, STR_INDEX_TT);
+			indexAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_INDEX)+" "+APP_NAME);
 		}
 		
 		// about
-		{	String name = STR_ABOUT;
+		{	String name = language.getText(ACTION_ABOUT);
 			aboutAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
@@ -1765,7 +2294,7 @@ boolean editable = false;//TODO mettre une option
 			};
 //			String initial = name.substring(0,1);
 //			aboutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control "+initial));
-			aboutAction.putValue(Action.SHORT_DESCRIPTION, STR_ABOUT_TT);
+			aboutAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_ABOUT)+" "+APP_NAME);
 		}
 	}
 	
@@ -1776,8 +2305,14 @@ boolean editable = false;//TODO mettre une option
 	 */
 	private void displayHelpIndex()
 	{	try
-		{	//indexDialog = new TextDialog(frame, STR_INDEX_T, FileNames.FI_HELP_PAGE); //TODO not written yet
-			indexDialog = new TextDialog(frame, STR_INDEX_T, "README.md");
+		{	//indexDialog = new TextDialog(frame, language.getText(DIALOG_INDEX)+" "+APP_NAME, FileNames.FI_HELP_PAGE); //TODO not written yet
+			String htmlPath = FileNames.FO_LANGUAGE + File.separator + language.getName().toLowerCase() + FileNames.EX_HTML; 
+			indexDialog = new TextDialog(
+				frame, 
+				language.getText(DIALOG_INDEX)+" "+APP_NAME,
+				language.getTooltip(DIALOG_INDEX),
+				htmlPath//"README.md"
+			);
 			indexDialog.setVisible(true);
 		}
 		catch (FileNotFoundException e)
@@ -1794,19 +2329,30 @@ boolean editable = false;//TODO mettre une option
 			+ "Université d'Avignon<br/>"
 			+ "Laboratoire Informatique d'Avignon (LIA)<br/>"
 			+ "<a href=\"http://lia.univ-avignon.fr\">http://lia.univ-avignon.fr</a><br/>"
-			+ "(c) Yasa Akbulut 2011 (as Annotation Viewer)<br/>"
+			+ "(c) Yasa Akbulut 2011 (<i>Annotation Viewer</i>)<br/>"
 			+ "(c) Vincent Labatut 2013-15"
 			+ "</html>";
-		JOptionPane.showMessageDialog(frame, string);
+		JOptionPane.showMessageDialog(
+			frame, 
+			string,
+			language.getText(DIALOG_ABOUT)+" "+APP_NAME,
+			JOptionPane.INFORMATION_MESSAGE
+		);
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// FILE CHOOSER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Title of a dialog box */
+	private final static String DIALOG_ARTICLE_CHOOSER = "DialogArticleChooser";
 	/** Component used to select the article to open */
 	private JFileChooser articleChooser;
+	/** Title of a dialog box */
+	private final static String DIALOG_REFERENCE_CHOOSER = "DialogReferenceChooser";
 	/** Component used to save the reference */
 	private JFileChooser referenceChooser;
+	/** Title of a dialog box */
+	private final static String DIALOG_CORPUS_CHOOSER = "DialogCorpusChooser";
 	/** Component used to select the corpus main folder */
 	private JFileChooser corpusChooser;
 	/** Indicates if the reference was modified since the last save: 0=no, 1=ref entities, 2=text */
@@ -1818,15 +2364,15 @@ boolean editable = false;//TODO mettre une option
 	private void initFileChooser()
 	{	articleChooser = new JFileChooser(corpusFolder);
 		articleChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		articleChooser.setDialogTitle("Select an article folder");
+		articleChooser.setDialogTitle(language.getText(DIALOG_ARTICLE_CHOOSER));
 		
 		referenceChooser = new JFileChooser(corpusFolder);
 		referenceChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		referenceChooser.setDialogTitle("Select the new reference file");
+		referenceChooser.setDialogTitle(language.getText(DIALOG_REFERENCE_CHOOSER));
 		
 		corpusChooser = new JFileChooser(corpusFolder);
 		corpusChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		corpusChooser.setDialogTitle("Select the main corpus folder");
+		corpusChooser.setDialogTitle(language.getText(DIALOG_CORPUS_CHOOSER));
 	}
 	
 	/**
@@ -1906,8 +2452,92 @@ boolean editable = false;//TODO mettre une option
 	}
 
 	/////////////////////////////////////////////////////////////////
+	// LANGUAGE				/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Dialog box title */
+	private final static String DIALOG_LANGUAGE_ERROR = "DialogLanguageError";
+	/** Dialog box content */
+	private final static String DIALOG_LANGUAGE_ERROR_END = "DialogLanguageErrorEnd";
+	/** Dialog box title */
+	private final static String DIALOG_RESTART = "DialogRestart";
+	/** Name of the GUI language */
+	private String languageName = "english";
+	/** Language of the GUI */
+	private Language language = null;
+	
+	/**
+	 * Changes the current GUI language.
+	 * 
+	 * @param languageName
+	 * 		New language.
+	 */
+	private void changeLanguage(String languageName)
+	{	if(!languageName.equals(this.languageName))
+		{	Language newLang = null;
+			// try to load the new language
+			try
+			{	newLang = LanguageLoader.loadLanguage(languageName);
+			}
+			catch (Exception e)
+			{	String msg = e.getMessage();
+				String langName = StringTools.initialize(languageName);
+				String string = "<html>"
+					+ language.getTooltip(DIALOG_LANGUAGE_ERROR)+" "+langName+":<br/>"
+					+ msg + "<br/>"
+					+ language.getText(DIALOG_LANGUAGE_ERROR_END)
+					+ "</html>";
+				JOptionPane.showMessageDialog(
+					frame, 
+					string, 
+					language.getText(DIALOG_LANGUAGE_ERROR), 
+					JOptionPane.ERROR_MESSAGE
+				);
+			}
+			
+			// if the language could be loaded
+			if(newLang!=null)
+			{	// ask to restart
+				JOptionPane.showMessageDialog(
+					frame, 
+					language.getTooltip(DIALOG_RESTART), 
+					language.getText(DIALOG_RESTART), 
+					JOptionPane.WARNING_MESSAGE
+				);
+				
+				// set up the new language
+				language = newLang;
+				this.languageName = languageName;
+			}
+		}
+	}
+	
+	/////////////////////////////////////////////////////////////////
 	// SETTINGS VALUES		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Dialog box title */
+	private final static String DIALOG_CORPUS_ERROR = "DialogCorpusError";
+	/** Dialog box title */
+	private final static String DIALOG_CHANGE_EDITOR = "DialogChangeEditor";
+	/** Dialog box text */
+	private final static String DIALOG_FIRST_LAUNCH = "DialogFirstLaunch";
+	/** Dialog box text */
+	private final static String DIALOG_FIRST_LAUNCH_ASKED = "DialogFirstLaunchAsked";
+	/** Dialog box text */
+	private final static String DIALOG_FIRST_LAUNCH_NAME = "DialogFirstLaunchName";
+	/** Dialog box text */
+	private final static String DIALOG_FIRST_LAUNCH_FOLDER = "DialogFirstLaunchFolder";
+	/** Dialog box text */
+	private final static String DIALOG_FIRST_LAUNCH_WARNING = "DialogFirstLaunchWarning";
+	/** Dialog box text */
+	private final static String DIALOG_FIRST_LAUNCH_MAIN = "DialogFirstLaunchMain";
+	/** Dialog box text */
+	private final static String DIALOG_SET_CORPUS = "DialogSetCorpus";
+	/** Dialog box text */
+	private final static String DIALOG_SET_CORPUS_SELECT = "DialogSetCorpusSelect";
+
+	/** Full path of the configuration file */
+	public final static String CONFIG_PATH = System.getProperty("user.home") + File.separator + FileNames.FI_CONFIGURATION;
+//	private final static String CONFIG_PATH = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
 	/** Main folder containing the whole corpus */
 	private String corpusFolder = null;
 	/** Name of the person currently annotating the articles */
@@ -1916,6 +2546,10 @@ boolean editable = false;//TODO mettre une option
 	private boolean useLastCorpus = true;
 	/** Whether or not to use the last loaded article */
 	private boolean useLastArticle = true;
+	/** Whether or not the user can edit the reference text */
+	private boolean editableReference = false;
+	/** Whether or not the corpus folder should be set by the user */
+	private boolean mustSetCorpus = false;
 	
 	/**
 	 * Changes the folder containing the whole corpus.
@@ -1941,7 +2575,13 @@ boolean editable = false;//TODO mettre une option
 				
 				// otherwise, display an error message (=no corpus)
 				else
-				{	JOptionPane.showMessageDialog(frame, "The selected folder does not contain any article", "No article found", JOptionPane.ERROR_MESSAGE);
+				{	corpusFolder = tempFolder;
+					JOptionPane.showMessageDialog(
+						frame, 
+						language.getTooltip(DIALOG_CORPUS_ERROR), 
+						language.getText(DIALOG_CORPUS_ERROR), 
+						JOptionPane.ERROR_MESSAGE
+					);
 				}
 				
 				cf = new File(corpusFolder);
@@ -1964,8 +2604,8 @@ boolean editable = false;//TODO mettre une option
 	 */
 	private void changeEditorName()
 	{	String answer = (String)JOptionPane.showInputDialog(frame,
-                "Enter the name of the current editor:",
-                "Editor name",
+				language.getTooltip(DIALOG_CHANGE_EDITOR),
+				language.getText(DIALOG_CHANGE_EDITOR),
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
@@ -2022,9 +2662,22 @@ boolean editable = false;//TODO mettre une option
 			root.addContent(editorElt);
 		}
 		
+		// text
+		{	Element textElt = new Element(XmlNames.ELT_TEXT);
+			if(fontSize!=null)
+				textElt.setAttribute(XmlNames.ATT_FONT_SIZE,fontSize.toString());
+			textElt.setAttribute(XmlNames.ATT_EDITABLE,Boolean.toString(editableReference));
+			root.addContent(textElt);
+		}
+		
+		// language
+		{	Element languageElt = new Element(XmlNames.ELT_LANGUAGE);
+			languageElt.setText(languageName);
+			root.addContent(languageElt);
+		}
+		
 		// record file
-		String configPath = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
-		File configFile = new File(configPath);
+		File configFile = new File(CONFIG_PATH);
 		XmlTools.makeFileFromRoot(configFile,schemaFile,root);
 	}
 	
@@ -2039,11 +2692,14 @@ boolean editable = false;//TODO mettre une option
 	 * 		Problem while loading the configuration file. 
 	 * @throws SAXException 
 	 * 		Problem while loading the configuration file. 
+	 * @throws ParserConfigurationException 
+	 * 		Problem while loading the language file. 
 	 */
-	private String retrieveSettings() throws SAXException, IOException
+	private String retrieveSettings() throws SAXException, IOException, ParserConfigurationException
 	{	Locale.setDefault(Locale.ENGLISH);
 		// get the predefined folder
 		corpusFolder = FileNames.FO_OUTPUT; 
+//		corpusFolder = System.getProperty("user.home");
 		String articlePath = "";
 		
 		// schema file
@@ -2051,8 +2707,7 @@ boolean editable = false;//TODO mettre une option
 		File schemaFile = new File(schemaPath);
 	
 		// load file
-		String configPath = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
-		File configFile = new File(configPath);
+		File configFile = new File(CONFIG_PATH);
 		if(configFile.exists())
 		{	Element root = XmlTools.getRootFromFile(configFile,schemaFile);
 			
@@ -2089,6 +2744,22 @@ boolean editable = false;//TODO mettre une option
 				if(editorElt!=null)
 					currentEditor = editorElt.getValue().trim();
 			}
+			
+			// font size
+			{	Element textElt = root.getChild(XmlNames.ELT_TEXT);
+				String fontSizeStr = textElt.getAttributeValue(XmlNames.ATT_FONT_SIZE);
+				if(fontSizeStr!=null)
+					fontSize = Integer.parseInt(fontSizeStr);
+				String editableReferenceStr = textElt.getAttributeValue(XmlNames.ATT_EDITABLE);
+				editableReference = Boolean.parseBoolean(editableReferenceStr);
+			}
+			
+			// language
+			{	Element languageElt = root.getChild(XmlNames.ELT_LANGUAGE);
+				if(languageElt!=null)
+					languageName = languageElt.getValue().trim();
+				language = LanguageLoader.loadLanguage(languageName);
+			}
 		}
 		
 		// check if the corpus folder exists
@@ -2118,17 +2789,54 @@ boolean editable = false;//TODO mettre une option
 	 * Forces the user to set up the settings for the first launch.
 	 */
 	public void doFirstLaunch()
-	{	JOptionPane.showMessageDialog(frame, 
-			"<html>"
-			+ "This is the first launch of "+TITLE+".<hr/>"
-			+ "For this time only, "+TITLE_SHORT+" is now going to ask you to:"
-			+ "<ol><li>Enter your name (as the editor)</li>"
-			+ "<li>Select the main folder of the corpus "
-			+ "(<u>warning:</u> the <i>main</i> folder, not some article folder)</li>"
-			+ "</html>");
+	{	String msg = "<html>"
+			+ language.getTooltip(DIALOG_FIRST_LAUNCH)+" "+TITLE+".<hr/>"
+			+ language.getText(DIALOG_FIRST_LAUNCH_ASKED)
+			+ "<ol><li>"+language.getText(DIALOG_FIRST_LAUNCH_NAME)+"</li>"
+			+ "<li>"+language.getText(DIALOG_FIRST_LAUNCH_FOLDER)+" "
+			+ "(<u>"+language.getText(DIALOG_FIRST_LAUNCH_WARNING)+"</u> "
+			+ language.getText(DIALOG_FIRST_LAUNCH_MAIN)+")</li></ol>"
+			+ "</html>";
+		JOptionPane.showMessageDialog(
+			frame,
+			msg,
+			language.getText(DIALOG_FIRST_LAUNCH),
+			JOptionPane.WARNING_MESSAGE
+		);
 		
 		changeEditorName();
 		changeCorpusFolder();
+	}
+	
+	/**
+	 * Forces the user to set up the settings for the first launch.
+	 */
+	public void doSetCorpus()
+	{	String msg = "<html>"
+			+ language.getTooltip(DIALOG_SET_CORPUS)+"<hr/>"
+			+ language.getText(DIALOG_SET_CORPUS_SELECT)+"<br/>"
+			+ "<u>"+language.getText(DIALOG_FIRST_LAUNCH_WARNING)+"</u> "
+			+ language.getText(DIALOG_FIRST_LAUNCH_MAIN)
+			+ "</html>";
+		JOptionPane.showMessageDialog(
+			frame, 
+			msg,
+			language.getText(DIALOG_SET_CORPUS),
+			JOptionPane.WARNING_MESSAGE
+		);
+		
+		changeCorpusFolder();
+	}
+	
+	/**
+	 * Indicates if the corpus folder
+	 * should be set by the user.
+	 * 
+	 * @return
+	 * 		{@code true} iff the corpus folder must be set.
+	 */
+	public boolean getMustSetCorpus()
+	{	return mustSetCorpus;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -2297,7 +3005,7 @@ boolean editable = false;//TODO mettre une option
 			articleName = temp.getName();
 			
 			// update position
-			updateStatusPosition(null);
+			updateStatusPosition(currentRawText.length(),currentRawText.length());
 			
 			// get entity files
 			Map<String,File> entityFiles = getEntityFiles(articlePath);
@@ -2394,6 +3102,9 @@ boolean editable = false;//TODO mettre une option
 		// update title
 		updateSaved(2);
 		updateTitle();
+		
+		// update status bar
+		updateStatusPosition(pos,currentRawText.length());
 	}
 	
 	/**
@@ -2427,6 +3138,9 @@ boolean editable = false;//TODO mettre une option
 		// update title
 		updateSaved(2);
 		updateTitle();
+		
+		// update status bar
+		updateStatusPosition(start,currentRawText.length());
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -2468,18 +3182,20 @@ boolean editable = false;//TODO mettre une option
 	}
 }
 
-// TODO solve the GUI problem when the screen is too narrow (buttons)
-// TODO forcer à sélectionner un corpus si le dossier actuel est vide d'article
-// TODO bloquer la modif du texte
-// TODO couleur des boutons sous mac
-// TODO meeting
-// TODO corriger script mac
-// TODO mettre lettre Q dans les boutons à la place de P
+// TODO fixer les raccourcis clavier (pas utiliser l'initiale de la commande)
+// TODO recherche guigui
+// TODO corriger script mac >> voir msg sur ordi fred
+
+// TODO rajouter les références biblio
+// TODO faire mes propres annotations
+// TODO compléter le guide avec des exemples
 /**
  * La droite du PS >> PS = organisation
  * député de haute vienne >> tout, fonction
  * fils de job >> fonction, personne de référence pas annotée
  * député maire émile labruissière >> tout=personne + fonction dedans
- * traitement des congrès ? 
- *  
+ * décorations = productions
+ * "congrès de 1948" = meeting 
+ * "Fils de Louis-Albert Baurens et de Marie-Louise Mauret, Alexandre Baurens épousa, en février 1926, Georgette Bessagnet," fils de ?
+ * que faire des durées ?
 */

@@ -26,8 +26,11 @@ package tr.edu.gsu.nerwip.edition;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +54,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -117,6 +121,9 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 		add(scrollPane);
 		textPane.setText(text);
 		textPane.setToolTipText(tooltip);
+		SimpleAttributeSet sa = new SimpleAttributeSet();
+		StyleConstants.setAlignment(sa, StyleConstants.ALIGN_JUSTIFIED);
+		textPane.getStyledDocument().setParagraphAttributes(0, text.length(), sa, false);
 		
 		// set scrollbar
 		scrollBar = scrollPane.getVerticalScrollBar();
@@ -127,12 +134,8 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 		InputMap im = textPane.getInputMap(JComponent.WHEN_FOCUSED);
 		im.put(remove, "none");
 
-		// prevent text edition
-		textPane.setEditable(editable);
-		if(editable)
-			textPane.getDocument().addDocumentListener(this);
-		else
-			textPane.getCaret().setVisible(true);
+		// prevent/allow text edition
+		setEditable(editable);
 		
 		// change selection behavior
 		TextAction action = new NextWordAction("selection-next-word", true);
@@ -161,6 +164,86 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 	/////////////////////////////////////////////////////////////////
 	/** Panel used for display */
 	private JTextPane textPane;
+	
+	/////////////////////////////////////////////////////////////////
+	// FONT SIZE		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Modifies the size of the font used to display the text.
+	 * 
+	 * @param delta
+	 * 		How much to decrease/increase the font.
+	 */
+	public void changeFontSize(int delta)
+	{	Font font = textPane.getFont();
+		int size = Math.max(font.getSize() + delta,5);
+		String name = font.getName();
+		int style = font.getStyle();
+		Font newFont = new Font(name,style,size);
+		textPane.setFont(newFont);
+	}
+	
+	/**
+	 * Modifies the size of the font used to display the text.
+	 * 
+	 * @param size
+	 * 		New font size.
+	 */
+	public void setFontSize(int size)
+	{	Font font = textPane.getFont();
+		String name = font.getName();
+		int style = font.getStyle();
+		Font newFont = new Font(name,style,size);
+		textPane.setFont(newFont);
+	}
+
+	/**
+	 * Returns the current size of the font used to display the text.
+	 * 
+	 * @return
+	 * 		The font size.
+	 */
+	public int getFontSize()
+	{	Font font = textPane.getFont();
+		int result = font.getSize();
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// EDITABLE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Focus listener used when disabling edition in the textpane */
+	private final FocusListener focusListener = new FocusListener()
+	{	@Override
+		public void focusLost(FocusEvent e)
+		{	//
+		}
+		
+		@Override
+		public void focusGained(FocusEvent e)
+		{	textPane.getCaret().setVisible(true);	
+		}
+	};
+	
+	/**
+	 * Sets up the textpane in order to make it editable
+	 * or non-editable.
+	 * 
+	 * @param editable
+	 * 		If {@code true}, the textpane is editable.
+	 */
+	public void setEditable(boolean editable)
+	{	textPane.setEditable(editable);
+		if(editable)
+		{	textPane.getDocument().addDocumentListener(this);
+			textPane.removeFocusListener(focusListener);
+		}
+		else
+		{	textPane.getCaret().setVisible(true);
+			textPane.getDocument().removeDocumentListener(this);
+			textPane.addFocusListener(focusListener);
+		}
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// SCROLLBAR		/////////////////////////////////////////////
@@ -292,7 +375,7 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 		for(EntityType type: EntityType.values())
 		{	// style
 			Style style = doc.addStyle(type.toString(), null);
-			StyleConstants.setBackground(style, type.getColor());
+			StyleConstants.setBackground(style, EntityEditor.ENTITY_COLOR.get(type));
 			entityStyles.put(type, style);
 		}
 		
@@ -1010,7 +1093,9 @@ if(endPos>document.getLength())
 //		}
 		
 		// fetch position
+		String text = textPane.getText();
+		int length = text.length();
 		int dot = arg0.getDot();
-		mainEditor.updateStatusPosition(dot);
+		mainEditor.updateStatusPosition(dot,length);
 	}
 }

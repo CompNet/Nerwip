@@ -24,34 +24,33 @@
 	along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
 	If not, see <http://www.gnu.org/licenses/>.
  -->
- 	
-	<xsd:complexType name="tUse">
-		<xsd:attribute name="corpus" type="xsd:boolean" use="required" />
-		<xsd:attribute name="article" type="xsd:boolean" use="required" />
-	</xsd:complexType>
-	
-	<xsd:complexType name="tLast">
+
+	<xsd:group name="gGroup">
+		<xsd:choice>
+			<xsd:element name="text"  type="tText"/>
+			<xsd:element name="group"  type="tGroup"/>
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:complexType name="tGroup">
 		<xsd:sequence>
-			<xsd:element name="corpus" type="xsd:string" />
-			<xsd:element name="article" type="xsd:string" minOccurs="0" />
+			<xsd:group ref="gGroup"  maxOccurs="unbounded"/>
 		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="tText">
-		<xsd:attribute name="fontSize" type="xsd:integer" use="optional" />
-		<xsd:attribute name="editable" type="xsd:boolean" use="required" />
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="value" type="xsd:string" use="required" />
+		<xsd:attribute name="tooltip" type="xsd:string" use="optional" />
 	</xsd:complexType>
-	
-	<xsd:complexType name="tConfiguration">
+
+	<xsd:complexType name="tLanguage">
 		<xsd:sequence>
-			<xsd:element name="use" type="tUse" />
-			<xsd:element name="last" type="tLast" minOccurs="0" />
-			<xsd:element name="editor" type="xsd:string" minOccurs="0" />
-			<xsd:element name="text" type="tText" />
-			<xsd:element name="language" type="xsd:string" minOccurs="0" />
+			<xsd:element name="group"  type="tGroup" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:element name="configuration" type="tConfiguration" />
+	<xsd:element name="language" type="tLanguage" />
 
 </xsd:schema>

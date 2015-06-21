@@ -30,6 +30,7 @@
 			<xsd:enumeration value="DATE" />
 			<xsd:enumeration value="FUNCTION" />
 			<xsd:enumeration value="LOCATION" />
+			<xsd:enumeration value="MEETING" />
 			<xsd:enumeration value="ORGANIZATION" />
 			<xsd:enumeration value="PERSON" />
 			<xsd:enumeration value="PRODUCTION" />

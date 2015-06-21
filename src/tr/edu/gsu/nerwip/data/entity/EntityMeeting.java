@@ -31,11 +31,11 @@ import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Class representing an organization entity.
+ * Class representing a meeting entity.
  * 
  * @author Vincent Labatut
  */
-public class EntityOrganization extends AbstractEntity<String>
+public class EntityMeeting extends AbstractEntity<String>
 {	
 	/**
 	 * Builds a new organization entity.
@@ -51,12 +51,12 @@ public class EntityOrganization extends AbstractEntity<String>
 	 * @param value
 	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
 	 */
-	public EntityOrganization(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public EntityMeeting(int startPos, int endPos, RecognizerName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
 	/**
-	 * Builds a new organization without a value.
+	 * Builds a new meeting without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
@@ -67,7 +67,7 @@ public class EntityOrganization extends AbstractEntity<String>
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityOrganization(int startPos, int endPos, RecognizerName source, String valueStr)
+	public EntityMeeting(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -76,7 +76,7 @@ public class EntityOrganization extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public EntityType getType()
-	{	return EntityType.ORGANIZATION;
+	{	return EntityType.MEETING;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ public class EntityOrganization extends AbstractEntity<String>
 	}
 	
 	/**
-	 * Builds an organization entity from the specified
+	 * Builds a meeting entity from the specified
 	 * XML element.
 	 * 
 	 * @param element
@@ -117,9 +117,9 @@ public class EntityOrganization extends AbstractEntity<String>
 	 * @param source
 	 * 		Name of the NER tool which detected the entity.
 	 * @return
-	 * 		The organization entity corresponding to the specified element.
+	 * 		The meeting entity corresponding to the specified element.
 	 */
-	public static EntityOrganization importFromElement(Element element, RecognizerName source)
+	public static EntityMeeting importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -134,7 +134,7 @@ public class EntityOrganization extends AbstractEntity<String>
 		if(valueElt!=null)
 			value = valueElt.getText();
 		
-		EntityOrganization result =  new EntityOrganization(startPos, endPos, source, valueStr, value);
+		EntityMeeting result =  new EntityMeeting(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }

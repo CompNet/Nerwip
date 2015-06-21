@@ -2,7 +2,6 @@ package tr.edu.gsu.nerwip;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
-
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
  * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
  * Copyright 2013 Samet Atdağ & Vincent Labatut
@@ -43,8 +42,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+
+import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.Text;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
@@ -53,6 +55,7 @@ import de.unihd.dbs.heideltime.standalone.HeidelTimeStandalone;
 import de.unihd.dbs.heideltime.standalone.OutputType;
 import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
+
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -60,9 +63,12 @@ import tr.edu.gsu.nerwip.edition.EntityEditor;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
+import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
+import tr.edu.gsu.nerwip.evaluation.measure.IstanbulMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
@@ -72,16 +78,20 @@ import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmTrainer;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
+import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
 import tr.edu.gsu.nerwip.recognition.external.tagen.TagEn;
 import tr.edu.gsu.nerwip.recognition.external.tagen.TagEnModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTimeModelName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.Illinois;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisTrainer;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipe;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeTrainer;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlp;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;

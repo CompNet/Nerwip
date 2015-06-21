@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Help of EntityEditor</title>
+	</head>
+
+	<body>
+		<h1>Presentation</h1>
+		<i>EntityEditor</i> is a software developped to ease the manual annotation of named entities, 
+		as well as to visualize named entities identified automatically by named entity detection tools.
+		This software is meant to be used jointly with <i>Nerwip</i>i>, a plateform allowing to integrate any
+		named entity detection tool and to evaluate it.
+		<br/>
+		This document describes the basis of its use. Note these instructions focus on using the menus, 
+		but all the main features are also available through the toolbar buttons.
+		
+		
+		<h1>Startup and options</h1>
+		At the first launch, <i>EntityEditor</i> asks the user to indicate his name and the path of the corpus main folder,
+		which contains all the texts to be annotated or visualized. This name will be use during the manual annotation:
+		<i>EntityEditor</i> will record it in the XML file containing the created annotations, in order to easily
+		correct systematic errors that can occur when several persons annotate a corpus. Both pieces of information
+		(name and corpus folder) can be changed later, by using the <i>Options</i> menu.
+		<br/>
+		By default, at each startup, the software tries to reload the last loaded article, and to go to the last selected corpus
+		folder. The user chan change this in the <i>Options</i> menu.
+		<br>
+		The <i>Options</i> menu also lets the user change the language used in the graphical interface. Note this does not
+		change the keyboard shortcuts, and requires to restart the software.
+		<br/> 
+		By default, it is possible to edit the reference text. These modifications are automatically applied to the positions
+		of the existing entities, both those manually annotated and those estimated by named entity detection tools. This feature
+		can be disabled in the <i>Options</i> menu, in order to avoid accidentally changing a text.
+		
+		
+		<h1>Navigation</h1>
+		As previously mentioned, the user can switch to another corpus folder through the
+		<i>Options</i> menu. The software then automatically loads the first article in the new corpus.
+		From the <i>File</i> menu, the user can then select another article, either by directly loading it, 
+		or by going to the next/previous article.
+		<br/>
+		The same <i>File</i> menu also allows recording the modications performed on the text or annotations, 
+		recording the annotations in a new file, and quitting the software.
+		<br/>
+		In the main panel of the software, several tabs display different annotations. Those associated to the
+		<i>Reference</i> tab correspond to the those manually defined. The other tabs display results
+		obtained through different name entity detection tools, and are not editable. Any text modification
+		of the reference is nevertheless applied to the annotations presented in the other tabs.
+		
+		
+		<h1>Entities</h1>
+		For more readability, each entity type is associated to a unique color, used in every GUI component
+		related to this type control or display. First, entities are highlighted using this color in the text.
+		Each type can be hidden, independently from the others, from the <i>View</i>  menu.
+		When a type is hidden, it cannot be treated anymore: one cannot create any new annotation of this type,
+		ore remove any existing ones.
+		<br/>
+		Entities are created by selecting the appropriate text and using the <i>Edition</i> menu. The concerned
+		text is then highlighted using the type color, in order to indicate the presence of an entity. In order
+		to remove an entity, one put the cursor inside it, or select a part of the entity, and use the <i>Edition</i>
+		menu.
+		<br/>
+		<b>Warning: </b>when two annotations overlap, one may hide the other. It still exists, as one can check
+		in the corresponding XML file.  
+		
+		
+		<h1>Display</h1>
+		BEsides displaying/hiding entities depending on their type, it is also possible to change other visual aspects.
+		The <i>View</i> menu first allows increasing/decreasing the size of the font used to display the text. It also
+		lets the user show/hide hypertext links of the document (providing it contains some hyperlinks).
+		<br/>
+		The <i>View</i> menu finally has an option allowing to switch between two types of highlight colors with different meaning. 
+		They can either represent entity types (as described before), or compare entities estimated by some named entity
+		detection tool and the reference ones. These three colors have the following meanings:
+		<ul>
+			<li><i>Green</i> for the parts of estimated annotations which are consistent with the reference (true positives),</li>
+			<li><i>Yellow</i> for those existing in the estimation, but not in the reference (false positives),</li>
+			<li><i>Red</i> for those existing in the reference but not in the estimation (false negatives).</li>
+		</ul>
+		The goal of this last option is to allow an easy quick visual comparison between results and reference,
+		and to make differences appear clearly.
+	</body>
+</html>

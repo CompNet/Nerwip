@@ -61,13 +61,15 @@ public class TextDialog extends JDialog implements ActionListener
 	 * 		Frame containing this dialog.
 	 * @param title
 	 * 		Title of the dialog.
+	 * @param tooltip 
+	 * 		Tooltip message displaye in the textpane.
 	 * @param textFile
 	 * 		File containing the dialog text.
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while loading the text file.
 	 */
-	public TextDialog(JFrame parentFrame, String title, String textFile) throws FileNotFoundException
+	public TextDialog(JFrame parentFrame, String title, String tooltip, String textFile) throws FileNotFoundException
 	{	// call the parent
 		super(parentFrame);
 
@@ -82,7 +84,7 @@ public class TextDialog extends JDialog implements ActionListener
 		add(panel);
 
 		// add text area
-		JScrollPane scrollPane = initContent(textFile);
+		JScrollPane scrollPane = initContent(textFile,tooltip);
 		panel.add(scrollPane,BorderLayout.CENTER);
 		
 		// add button
@@ -106,17 +108,19 @@ public class TextDialog extends JDialog implements ActionListener
 	 * 
 	 * @param textFile
 	 * 		File containing the text to be displayed.
+	 * @param tooltip 
+	 * 		Tooltip message.
 	 * @return
 	 * 		Scroll pane containing the text.
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while loading the text file.
 	 */
-	private JScrollPane initContent(String textFile) throws FileNotFoundException
+	private JScrollPane initContent(String textFile, String tooltip) throws FileNotFoundException
 	{	textPane = new JEditorPane();
 		textPane.setContentType("text/html");
 		JScrollPane result = new JScrollPane(textPane);
-		textPane.setToolTipText("Click OK to close");
+		textPane.setToolTipText(tooltip);
 		textPane.setEditable(false);
 
 		// get file content
