@@ -41,12 +41,24 @@
 		or by going to the next/previous article.
 		<br/>
 		The same <i>File</i> menu also allows recording the modications performed on the text or annotations, 
-		recording the annotations in a new file, and quitting the software.
+		recording the annotations in a new file, and quitting the software. The <i>Generate article list</i>
+		option allows to generate a CSV file (i.e. one which can be opened Excel or a similar software) listing
+		the articles from the corpus which have already (or currently are being) annotated, and the concerned editor
+		(person having annotated or currently annotating them).
 		<br/>
 		In the main panel of the software, several tabs display different annotations. Those associated to the
 		<i>Reference</i> tab correspond to the those manually defined. The other tabs display results
 		obtained through different name entity detection tools, and are not editable. Any text modification
 		of the reference is nevertheless applied to the annotations presented in the other tabs.
+		<br/>
+		The status bar (bottom of the window) displays the following details (in this order):
+		<ul>
+			<li>Parameters of the NER tool whose tab is currently selected (or nothing for the reference).</li>
+			<li>Number of the current article in the corpus.</li>
+			<li>Name of the current editor (person annotating the articles).</li>
+			<li>Name of the editor who annotated the current article (or nothing if not annotation was performed before).</li>
+			<li>Position of the cursor in the article, expressed in characters.</li>
+		</ul>
 		
 		
 		<h1>Entities</h1>

@@ -30,6 +30,9 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
@@ -544,7 +547,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/** Frame to contain tabs and entities */
 	private JFrame frame;
 	/** Version of this application */
-	private static final String APP_VERSION = "v2.3";
+	private static final String APP_VERSION = "v2.31";
 	/** Name of this application */
 	private static final String APP_NAME = "Entity Editor";
 	/** Title of this application */
@@ -711,6 +714,16 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private final static String MISC_POSITION = "MiscPosition";
 	/** Label displaying position */
 	private JLabel statusPositionLabel;
+	/** Text displayed in the current editor label */
+	private final static String MISC_EDITOR_CURRENT = "MiscEditorCurrent";
+	/** Label displaying the current editor name */
+	private JLabel statusEditorCurrentLabel;
+	/** Text displayed in the article editor label */
+	private final static String MISC_EDITOR_ARTICLE = "MiscEditorArticle";
+	/** Label displaying the article editor name */
+	private JLabel statusEditorArticleLabel;
+	/** Label displaying the article editor name */
+	private JLabel statusArticleNumberLabel;
 	
 	/**
 	 * Initialises the status bar,
@@ -721,32 +734,90 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * in the text.
 	 */
 	private void initStatusBar()
-	{	// create panel
+	{	// used to estimate text size
+		BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+		Graphics graphics = image.getGraphics();
+		FontMetrics metrics = graphics.getFontMetrics();
+//		int hgt = metrics.getHeight();
+		
+		// create panel
 		{	Container contentPane = frame.getContentPane();
 			statusBar = new JPanel();
-			statusBar.setLayout(new BorderLayout(2,2)); 
+//			LayoutManager layout = new BoxLayout(statusBar, BoxLayout.LINE_AXIS);
+			LayoutManager layout = new BorderLayout(2,2);
+//			LayoutManager layout = new FlowLayout();
+			statusBar.setLayout(layout);
 			statusBar.setPreferredSize(new Dimension(100, 20));
-			contentPane.add(statusBar, java.awt.BorderLayout.SOUTH);
+			contentPane.add(statusBar, BorderLayout.SOUTH);
 		}
         
 		// create information label
 		{	statusInformationLabel = new JLabel("",JLabel.LEFT);
 //statusInformationLabel.setOpaque(true);
 //statusInformationLabel.setBackground(Color.RED);		
-			statusInformationLabel.setPreferredSize(new Dimension(100, 16));
+//			statusInformationLabel.setPreferredSize(new Dimension(100, 20));
 			statusInformationLabel.setBorder(BorderFactory.createLoweredBevelBorder()); 
 			statusBar.add(BorderLayout.CENTER,statusInformationLabel);
 		}
 
 //		statusBar.add(BorderLayout.CENTER, new JSeparator(SwingConstants.VERTICAL));
 		
+		// right panel
+//		LayoutManager lay = new FlowLayout();
+		JPanel rightPanel = new JPanel();
+		LayoutManager lay = new BoxLayout(rightPanel,BoxLayout.LINE_AXIS);
+		rightPanel.setLayout(lay);
+		statusBar.add(BorderLayout.EAST,rightPanel);
+//		rightPanel.setBackground(Color.RED);	
+		
+		// create article number label
+		{	statusArticleNumberLabel = new JLabel("/",JLabel.LEFT);
+			
+			int adv = metrics.stringWidth("XXXX/XXXX");
+			
+			statusArticleNumberLabel.setMinimumSize(new Dimension(adv, 20));
+	        statusArticleNumberLabel.setPreferredSize(new Dimension(adv, 20));
+	        statusArticleNumberLabel.setMaximumSize(new Dimension(adv, 20));
+	        statusArticleNumberLabel.setBorder(BorderFactory.createLoweredBevelBorder()); 
+			rightPanel.add(statusArticleNumberLabel);
+		}
+
+		// create current editor name label
+		{	statusEditorCurrentLabel = new JLabel(language.getText(MISC_EDITOR_CURRENT),JLabel.LEFT);
+			
+			int adv = metrics.stringWidth(language.getText(MISC_EDITOR_CURRENT)+"XXXXXXXXXX XXXXXXXXXX");
+			
+	        statusEditorCurrentLabel.setMinimumSize(new Dimension(adv, 20));
+	        statusEditorCurrentLabel.setPreferredSize(new Dimension(adv, 20));
+	        statusEditorCurrentLabel.setMaximumSize(new Dimension(adv, 20));
+			statusEditorCurrentLabel.setBorder(BorderFactory.createLoweredBevelBorder()); 
+			rightPanel.add(statusEditorCurrentLabel);
+		}
+
+		// create article editor name label
+		{	statusEditorArticleLabel = new JLabel(language.getText(MISC_EDITOR_ARTICLE),JLabel.LEFT);
+			
+			int adv = metrics.stringWidth(language.getText(MISC_EDITOR_ARTICLE)+"XXXXXXXXXX XXXXXXXXXX");
+			
+	        statusEditorArticleLabel.setMinimumSize(new Dimension(adv, 20));
+	        statusEditorArticleLabel.setPreferredSize(new Dimension(adv, 20));
+	        statusEditorArticleLabel.setMaximumSize(new Dimension(adv, 20));
+	        statusEditorArticleLabel.setBorder(BorderFactory.createLoweredBevelBorder()); 
+			rightPanel.add(statusEditorArticleLabel);
+		}
+
 		// create position label
 		{	statusPositionLabel = new JLabel(language.getText(MISC_POSITION),JLabel.LEFT);
 //statusPositionLabel.setOpaque(true);
-//statusPositionLabel.setBackground(Color.BLUE);		
-	        statusPositionLabel.setPreferredSize(new Dimension(100, 16));
+//statusPositionLabel.setBackground(Color.BLUE);
+			
+			int adv = metrics.stringWidth(language.getText(MISC_POSITION)+"1000000/1000000");
+			
+	        statusPositionLabel.setMinimumSize(new Dimension(adv, 20));
+	        statusPositionLabel.setPreferredSize(new Dimension(adv, 20));
+	        statusPositionLabel.setMaximumSize(new Dimension(adv, 20));
 			statusPositionLabel.setBorder(BorderFactory.createLoweredBevelBorder()); 
-			statusBar.add(BorderLayout.EAST,statusPositionLabel);
+			rightPanel.add(statusPositionLabel);
 		}
 	}
 	
@@ -785,6 +856,41 @@ public class EntityEditor implements WindowListener, ChangeListener
 			text = text + length.toString();
 		
 		statusPositionLabel.setText(text);
+	}
+	
+	/**
+	 * Updates the part of the status bar
+	 * dedicated to displaying the editors names.
+	 */
+	private void updateStatusEditor()
+	{	// current editor
+		{	String text = language.getText(MISC_EDITOR_CURRENT) + " "
+				+ currentEditor;
+			statusEditorCurrentLabel.setText(text);
+		}
+		
+		// article editor
+		{	String text = language.getText(MISC_EDITOR_ARTICLE) + " ";
+			if(articleEditor!=null)
+				text = text + articleEditor;
+			statusEditorArticleLabel.setText(text);
+		}
+	}
+	
+	/**
+	 * Updates the editor of the current article.
+	 */
+	private void updateArticleEditor()
+	{	if(articleEditor==null)
+		{	articleEditor = currentEditor;
+			int size = tabbedPane.getTabCount();
+			for(int i=0;i<size;i++)
+			{	EntityEditorPanel panel = (EntityEditorPanel)tabbedPane.getComponentAt(i);
+				Entities references = panel.getReferences();
+				references.setEditor(currentEditor);
+			}
+			updateStatusEditor();
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -1185,6 +1291,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JMenu mLanguage;
 	/** Menu items of the available languages */
 	private List<JRadioButtonMenuItem> miLanguages;
+	/** Menu item allowing to generate the list of articles */
+	private JMenuItem miArticleList;
 	
 	/**
 	 * Initializes the menu bar of this editor.
@@ -1240,6 +1348,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			{	miSaveCopy = new JMenuItem(copyAction);
 				menu.add(miSaveCopy);
+			}
+			
+			menu.addSeparator();
+
+			{	miArticleList = new JRadioButtonMenuItem(articleListAction);
+				menu.add(miArticleList);
 			}
 			
 			menu.addSeparator();
@@ -1310,27 +1424,29 @@ public class EntityEditor implements WindowListener, ChangeListener
 			menu.addSeparator();
 
 			// display mode
-			ButtonGroup group = new ButtonGroup();
+			ButtonGroup displayGroup = new ButtonGroup();
 			{	// display types
 				riTypes = new JRadioButtonMenuItem(modeTypesAction);
 //				riTypes.setSelected(true);
-				group.add(riTypes);
+				displayGroup.add(riTypes);
 				menu.add(riTypes);
 			}
 			{	// display comparisons
 				riComparison = new JRadioButtonMenuItem(modeCompAction);
-				group.add(riComparison);
+				displayGroup.add(riComparison);
 				menu.add(riComparison);
 			}
 			
 			menu.addSeparator();
-
+			
+			// links
 			{	miLinks = new JCheckBoxMenuItem(showLinksAction);
 				menu.add(miLinks);
 			}
 			
 			menu.addSeparator();
 			
+			// fonts
 			{	miLargerFont = new JMenuItem(largerFontAction);
 				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LARGER;
 				File iconFile = new File(iconPath);
@@ -1339,7 +1455,6 @@ public class EntityEditor implements WindowListener, ChangeListener
 				miLargerFont.setIcon(new ImageIcon(img));
 				menu.add(miLargerFont);
 			}
-
 			{	miSmallerFont = new JMenuItem(smallerFontAction);
 				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SMALLER;
 				File iconFile = new File(iconPath);
@@ -1553,6 +1668,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 			updateSaved(1);
 			updateTitle();
 			
+			// update article author
+			updateArticleEditor();
+			
 			//int selectedTab = tabbedPane.getSelectedIndex();
 			int size = tabbedPane.getTabCount();
 			for(int i=0;i<size;i++)
@@ -1582,6 +1700,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 		{	// update title
 			updateSaved(1);
 			updateTitle();
+			
+			// update article author
+			updateArticleEditor();
 			
 			int size = tabbedPane.getTabCount();
 			for(int i=0;i<size;i++)
@@ -1849,6 +1970,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private final static String ACTION_COPY = "ActionCopy";
 	/** Action allowing recording a copy of the current reference file */
 	private Action copyAction = null;
+	/** Dialog text */
+	private final static String DIALOG_ARTICLE_LIST = "DialogArticleList";
+	/** Dialog text */
+	private final static String DIALOG_ARTICLE_LIST_ERROR = "DialogArticleListError";
+	/** String used for action definition */
+	private final static String ACTION_ARTICLE_LIST = "ActionArticleList";
+	/** Browse all articles */
+	private Action articleListAction = null;
 	
 	/**
 	 * Initializes the actions related
@@ -1902,6 +2031,20 @@ public class EntityEditor implements WindowListener, ChangeListener
 			copyAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_COPY));
 			copyAction.setEnabled(false); //TODO maybe other actions should be disabled too, when there's no article currently open?
 		}
+		
+		// list articles
+		{	String name = language.getText(ACTION_ARTICLE_LIST);
+			articleListAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	generateArticleList();
+			    }
+			};
+			articleListAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_ARTICLE_LIST));
+		}
 	}
 
 	/**
@@ -1937,7 +2080,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 		try
 		{	String fileName = currentArticle + File.separator + FileNames.FI_ENTITY_LIST;
 			File file = new File(fileName);
-			int index = tabbedPane.getSelectedIndex();
+//			int index = tabbedPane.getSelectedIndex();
+			int index = 0;
 			EntityEditorPanel panel = (EntityEditorPanel) tabbedPane.getComponentAt(index);
 			Entities references = panel.getReferences();
 			references.writeToXml(file);
@@ -2034,6 +2178,43 @@ public class EntityEditor implements WindowListener, ChangeListener
 		else if(answer==JOptionPane.CANCEL_OPTION)
 			result = false;
 		return result;
+	}
+	
+	/**
+	 * Generates a list of articles with their
+	 * annotation statuses. 
+	 */
+	private void generateArticleList()
+	{	File corpus = new File(corpusFolder);
+		String outputPath = corpusFolder + File.separator + "list-annotated-articles.csv";
+		File output = new File(outputPath);
+		try
+		{	ArticleLists.generateAnnotatedArticleList(corpus, output);
+			String string = "<html>"
+				+ language.getTooltip(DIALOG_ARTICLE_LIST)+"<br/>"
+				+ "<pre>"+outputPath+"</pre>"
+				+ "</html>";
+			JOptionPane.showMessageDialog(
+				frame, 
+				string, 
+				language.getText(DIALOG_ARTICLE_LIST), 
+				JOptionPane.INFORMATION_MESSAGE
+			);
+		}
+		catch (SAXException | IOException | ParseException e)
+		{	String string = "<html>"
+				+ language.getTooltip(DIALOG_ARTICLE_LIST_ERROR)+"<br/>"
+				+ "<pre>"+outputPath+"</pre>"
+				+ "<pre>"+e.getMessage()+"</pre>"
+				+ "</html>";
+			JOptionPane.showMessageDialog(
+				frame, 
+				string, 
+				language.getText(DIALOG_ARTICLE_LIST_ERROR), 
+				JOptionPane.INFORMATION_MESSAGE
+			);
+//			e.printStackTrace();
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -2211,7 +2392,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 				    }
 				};
 				action.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(MENU_LANGUAGE)+" "+name);
-				action.putValue(Action.SELECTED_KEY, name.equals(languageName));
+				action.putValue(Action.SELECTED_KEY, name.equalsIgnoreCase(languageName));
 				languageActions.add(action);
 			}
 		}
@@ -2542,6 +2723,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private String corpusFolder = null;
 	/** Name of the person currently annotating the articles */
 	private String currentEditor = "N/A";
+	/** Name of the editor of the current article */
+	private String articleEditor = null;
 	/** Whether or not to use the last loaded corpus */
 	private boolean useLastCorpus = true;
 	/** Whether or not to use the last loaded article */
@@ -2611,7 +2794,9 @@ public class EntityEditor implements WindowListener, ChangeListener
                 null,
                 currentEditor);
 		if(answer!=null && !answer.isEmpty())
-			currentEditor = answer;
+		{	currentEditor = answer;
+			updateStatusEditor();
+		}
 	}
 
 	/**
@@ -2758,7 +2943,6 @@ public class EntityEditor implements WindowListener, ChangeListener
 			{	Element languageElt = root.getChild(XmlNames.ELT_LANGUAGE);
 				if(languageElt!=null)
 					languageName = languageElt.getValue().trim();
-				language = LanguageLoader.loadLanguage(languageName);
 			}
 		}
 		
@@ -2781,6 +2965,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 				articlePath = corpusFolder + File.separator + articleName;
 			}
 		}
+		
+		// load language
+		language = LanguageLoader.loadLanguage(languageName);
 		
 		return articlePath;
 	}
@@ -3024,14 +3211,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 			String refName = RecognizerName.REFERENCE.toString();
 			Entities references = entityLists.get(refName);
 			if(references==null)
-			{	references = new Entities(currentEditor);
+			{	references = new Entities();
 				updateSaved(1);
 				updateTitle();
 			}
 			else
 			{	entityLists.remove(refName);
-				if(references.getEntities().isEmpty())
-					references.setEditor(currentEditor);
 			}
 			addTab(currentRawText, currentLinkedText, references, references, refName);
 			Set<String> names = new TreeSet<String>(entityLists.keySet());
@@ -3056,12 +3241,13 @@ public class EntityEditor implements WindowListener, ChangeListener
 			}
 			
 			// update title
-			String editorStr ="[edt: " + currentEditor;
-			String refEdt = references.getEditor();
-			if(refEdt!=null && !refEdt.equals(currentEditor))
-				editorStr = editorStr + " / " + refEdt;
-			editorStr = editorStr + "]";
-			frame.setTitle(TITLE+" " + editorStr + " - " + articleName + " " + (currentIndex+1) + "/" + articles.size());
+			frame.setTitle(TITLE+" - " + articleName);
+
+			// update editors in the status bar
+			articleEditor = references.getEditor();
+			updateStatusEditor();
+			// update article number in the status bar
+			statusArticleNumberLabel.setText((currentIndex+1) + "/" + articles.size());
 			
 			frame.repaint();
 		}
@@ -3182,20 +3368,13 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 }
 
-// TODO fixer les raccourcis clavier (pas utiliser l'initiale de la commande)
-// TODO recherche guigui
+// TODO recherche guigui >> dans barre menu, mettre une zone texte et un bouton pour surligner/réinitialiser. un appui sur création d'entité transforme toutes les occurrences en entités.
 // TODO corriger script mac >> voir msg sur ordi fred
 
 // TODO rajouter les références biblio
-// TODO faire mes propres annotations
-// TODO compléter le guide avec des exemples
+
 /**
  * La droite du PS >> PS = organisation
- * député de haute vienne >> tout, fonction
  * fils de job >> fonction, personne de référence pas annotée
- * député maire émile labruissière >> tout=personne + fonction dedans
- * décorations = productions
- * "congrès de 1948" = meeting 
  * "Fils de Louis-Albert Baurens et de Marie-Louise Mauret, Alexandre Baurens épousa, en février 1926, Georgette Bessagnet," fils de ?
- * que faire des durées ?
 */

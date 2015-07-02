@@ -63,14 +63,10 @@ public class Entities
 	 * Builds an entities object with current
 	 * date and reference source, and the specified
 	 * editor name.
-	 * 
-	 * @param editor
-	 * 		Editor's name for these annotations.
 	 */
-	public Entities(String editor)
+	public Entities()
 	{	initDate();
 		source = RecognizerName.REFERENCE;
-		this.editor = editor;
 	}
 	
 	/**

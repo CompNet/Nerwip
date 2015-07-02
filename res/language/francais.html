@@ -43,12 +43,23 @@
 		directement, soit en allant à l'article suivant/précédent.
 		<br/>
 		Le même menu <i>Fichier</i> permet aussi d'enregistrer les modications effectuées sur le texte ou les annotations, 
-		d'enregistrer les annotations dans un nouveau fichier, et de quitter le logiciel.
+		d'enregistrer les annotations dans un nouveau fichier, et de quitter le logiciel. L'option <i>Générer la liste des articles</i>
+		permet de produire un fichier CSV (i.e. que l'on peut ouvrir dans un tableur) listant les articles du corpus qui ont été
+		annotés (ou qui sont en cours d'annotation), ainsi que la personne qui les a annotés.
 		<br/>
 		Dans la partie principale du logiciel, plusieurs onglets affichent différentes annotations. Celles associées à l'onglet
 		<i>Reference</i> correspondent à celles qui ont été définies manuellement. Les autres onglets affichent les résultats
 		obtenus par différents outils de détection d'entités nommées, et ne sont pas éditables. Toute modification du texte de
 		référence est toutefois répercuté sur les annotations présentées dans les autres onglets.
+		<br/>
+		La barre de statut (en bas) affiche les informations suivantes (dans cet ordre) :
+		<ul>
+			<li>Paramètres de l'outil de détection d'entités nommées dont l'onglet est actuellement sélectionné (ou rien si c'est la référence).</li>
+			<li>Numéro de l'article dans le corpus.</li>
+			<li>Identité de l'éditeur courant.</li>
+			<li>Identité de l'éditeur ayant annoté la référence (ou rien si la référence n'a pas été annotée).</li>
+			<li>Position du curseur dans l'article, exprimée en caractères.</li>
+		</ul>
 		
 		
 		<h1>Entités</h1>

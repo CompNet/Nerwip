@@ -52,6 +52,7 @@
 		<text name="Save" value="Enregistrer" tooltip="Enregistrer les modifications apportées au texte et/ou aux entités de la référence" />
 		<text name="Copy" value="Enregistrer une copie" tooltip="Enregistrer une copie des entités de la reférence" />
 		<text name="Quit" value="Quitter" tooltip="Quitter" />
+		<text name="ArticleList" value="Générer la liste des articles" tooltip="Génère un fichier listant les articles et leur statut d'annotation" />
 		
 		<text name="Insert" value="Insérer" tooltip="Insérer ou convertir une entité de type" />
 		<text name="Remove" value="Supprimer une entité" tooltip="Supprimer une entité existante" />
@@ -62,7 +63,7 @@
 		<text name="Links" value="Hyperliens" tooltip="Afficher/masquer les hyperliens contenus dans l'article" />
 		<text name="Larger" value="Agrandir texte" tooltip="Augmenter la taille de la police de caractères" />
 		<text name="Smaller" value="Réduire texte" tooltip="Diminuer la taille de la police de caractères" />
-		
+
 		<text name="Corpus" value="Dossier du corpus" tooltip="Changer le dossier principal contenant le corpus" />
 		<text name="Editor" value="Nom de l'éditeur" tooltip="Changer le nom de la personne qui édite actuellement l'article" />
 		<text name="LastCorpus" value="Dernier corpus" tooltip="Accéder au dernier corpus ouvert, lors du démarrage" />
@@ -85,6 +86,9 @@
 		<text name="ProposeSaving" value="Référence modifiée" tooltip="La référence a été modifiée. Voulez-vous enregistrer ces modifications ?" />
 		<text name="Index" value="Aide pour" tooltip="Cliquez sur OK pour fermer" />
 		<text name="About" value="À propos de" />
+
+		<text name="ArticleList" value="Opération terminée" tooltip="Le fichier suivant a été créé :" />
+		<text name="ArticleListError" value="Erreur" tooltip="Un problème est survenu lors de la création du fichier :" />
 		
 		<text name="LanguageError" value="Erreur de chargement" tooltip="Impossible de charger le fichier de langue" />
 		<text name="LanguageErrorEnd" value="La langue précédemment sélectionnée est donc conservée." />
@@ -100,6 +104,9 @@
 	</group>
 
 	<group name="Misc" >
-		<text name="Position" value="Pos. : " />
+		<text name="EditorArticle" value="Édt. art. :" />
+		<text name="EditorCurrent" value="Édt. :" />
+		
+		<text name="Position" value="Pos. :" />
 	</group>
 </language>
