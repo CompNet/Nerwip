@@ -547,7 +547,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/** Frame to contain tabs and entities */
 	private JFrame frame;
 	/** Version of this application */
-	private static final String APP_VERSION = "v2.31";
+	private static final String APP_VERSION = "v2.32";
 	/** Name of this application */
 	private static final String APP_NAME = "Entity Editor";
 	/** Title of this application */
@@ -2486,8 +2486,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void displayHelpIndex()
 	{	try
-		{	//indexDialog = new TextDialog(frame, language.getText(DIALOG_INDEX)+" "+APP_NAME, FileNames.FI_HELP_PAGE); //TODO not written yet
-			String htmlPath = FileNames.FO_LANGUAGE + File.separator + language.getName().toLowerCase() + FileNames.EX_HTML; 
+		{	String htmlPath = FileNames.FO_LANGUAGE + File.separator + language.getName().toLowerCase() + FileNames.EX_HTML; 
 			indexDialog = new TextDialog(
 				frame, 
 				language.getText(DIALOG_INDEX)+" "+APP_NAME,
@@ -2505,8 +2504,16 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * Displays the about dialog.
 	 */
 	private void displayHelpAbout()
-	{	String string = "<html>"
+	{	File labFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_LAB);
+		String labPath = "file:/" + labFile.getAbsolutePath().replaceAll("\\\\", "/");
+		File uniFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_UNIV);
+		String uniPath = "file:/" + uniFile.getAbsolutePath().replaceAll("\\\\", "/");
+		
+		String string = "<html>"
 			+"<h1>"+TITLE+"</h1><br/>"
+			+"<img src=\""+uniPath+"\" alt=\"Logo LIA\" height=\"200\" width=\"115\" />"
+			+ "&nbsp;"
+			+"<img src=\""+labPath+"\" alt=\"Logo UAPV\" height=\"200\" width=\"342\" /><br/>"
 			+ "Université d'Avignon<br/>"
 			+ "Laboratoire Informatique d'Avignon (LIA)<br/>"
 			+ "<a href=\"http://lia.univ-avignon.fr\">http://lia.univ-avignon.fr</a><br/>"

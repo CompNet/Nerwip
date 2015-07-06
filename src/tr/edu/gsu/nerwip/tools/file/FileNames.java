@@ -190,6 +190,12 @@ public class FileNames
 	/** Icon for opening file */
 	public final static String FI_ICON_OPEN = "folder" + FileNames.EX_PNG;
 	
+	/** Laboratory logo */
+	public final static String FI_LOGO_LAB = "lia" + FileNames.EX_JPEG;
+	/** University logo */
+	public final static String FI_LOGO_UNIV = "uapv" + FileNames.EX_GIF;
+	
+	
 //	/**
 //	 * Returns the filename used to store the
 //	 * specified statistic.
@@ -215,6 +221,10 @@ public class FileNames
 	public final static String EX_PDF = ".pdf";
 	/** PNG image format */
 	public final static String EX_PNG = ".png";
+	/** JPEG image format */
+	public final static String EX_JPEG = ".jpeg";
+	/** GIF image format */
+	public final static String EX_GIF = ".gif";
 	/** XML Schema file extension */
 	public final static String EX_SCHEMA = ".xsd";
 	/** Text file extension */
