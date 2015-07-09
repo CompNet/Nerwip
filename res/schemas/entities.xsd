@@ -51,7 +51,9 @@
 		<xsd:sequence>
 			<xsd:element name="entity" type="tEntity" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
-		<xsd:attribute name="date" type="xsd:string" use="optional" />
+		<xsd:attribute name="creation" type="xsd:dateTime" />
+		<xsd:attribute name="modification" type="xsd:dateTime" />
+<!-- 		<xsd:attribute name="date" type="xsd:string" use="optional" /> -->
 		<xsd:attribute name="source" type="xsd:string" />
 		<xsd:attribute name="editor" type="xsd:string" use="optional" />
 	</xsd:complexType>

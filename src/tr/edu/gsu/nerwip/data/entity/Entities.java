@@ -65,7 +65,7 @@ public class Entities
 	 * editor name.
 	 */
 	public Entities()
-	{	initDate();
+	{	initDates();
 		source = RecognizerName.REFERENCE;
 	}
 	
@@ -77,37 +77,58 @@ public class Entities
 	 * 		Source of the entities (a NER tool).
 	 */
 	public Entities(RecognizerName source)
-	{	initDate();
+	{	initDates();
 		this.source = source;
 	}
+	
+//	/**
+//	 * Builds an entities object with specified
+//	 * date and source.
+//	 * 
+//	 * @param source
+//	 * 		Source of the entities (a NER tool).
+//	 * @param date
+//	 * 		Date the entities were detected.
+//	 */
+//	public Entities(RecognizerName source, Date date)
+//	{	this.creationDate = date;
+//		this.modificationDate = date;
+//		this.source = source;
+//	}
 	
 	/**
 	 * Builds an entities object with specified
-	 * date and source.
+	 * dates and source.
 	 * 
 	 * @param source
 	 * 		Source of the entities (a NER tool).
-	 * @param date
+	 * @param creationDate
 	 * 		Date the entities were detected.
+	 * @param modificationDate
+	 * 		Date the entities were last modified.
 	 */
-	public Entities(RecognizerName source, Date date)
-	{	this.date = date;
+	public Entities(RecognizerName source, Date creationDate, Date modificationDate)
+	{	this.creationDate = creationDate;
+		this.modificationDate = modificationDate;
 		this.source = source;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// DATE				/////////////////////////////////////////////
+	// DATES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Date the entities were detected */
-	private Date date = null;
+	/** Date the entities were detected/annotated */
+	private Date creationDate = null;
+	/** Date the entities were last modified (mainly for manual annotation files) */
+	private Date modificationDate = null;
 	
 	/**
 	 * Sets the detection date
 	 * to the current time.
 	 */
-	private void initDate()
+	private void initDates()
 	{	Calendar cal = Calendar.getInstance();
-		date = cal.getTime();
+		creationDate = cal.getTime();
+		modificationDate = cal.getTime();
 	}
 	
 	/**
@@ -117,19 +138,41 @@ public class Entities
 	 * @return
 	 * 		Date these entities were detected.
 	 */
-	public Date getDate()
-	{	return date;
+	public Date getCreationDate()
+	{	return creationDate;
+	}
+	
+	/**
+	 * Returns the date these entities
+	 * were last modified.
+	 * 
+	 * @return
+	 * 		Date these entities were modified.
+	 */
+	public Date getModificationDate()
+	{	return modificationDate;
 	}
 	
 	/**
 	 * Changes the date these entities
 	 * were detected.
 	 * 
-	 * @param date
+	 * @param creationDate
 	 * 		Date of the detection.
 	 */
-	public void setDate(Date date)
-	{	this.date = date;
+	public void setCreationDate(Date creationDate)
+	{	this.creationDate = creationDate;
+	}
+	
+	/**
+	 * Changes the date these entities
+	 * were last modified.
+	 * 
+	 * @param modificationDate
+	 * 		Date of the modification.
+	 */
+	public void setModificationDate(Date modificationDate)
+	{	this.modificationDate = modificationDate;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -568,15 +611,21 @@ public class Entities
 		String sourceStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
 		RecognizerName source = RecognizerName.valueOf(sourceStr);
 		
-		// get date
-		String dateStr = element.getAttributeValue(XmlNames.ATT_DATE);
-		Date date = TimeFormatting.parseDate(dateStr);
+		// get dates
+//String creationDateStr = element.getAttributeValue(XmlNames.ATT_DATE);
+//SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
+//Date date = df.parse(creationDateStr);
+		String creationDateStr = element.getAttributeValue(XmlNames.ATT_CREATION);
+		Date creationDate = TimeFormatting.parseXmlTime(creationDateStr);
+		String modificationDateStr = element.getAttributeValue(XmlNames.ATT_MODIFICATION);
+		Date modificationDate = TimeFormatting.parseXmlTime(modificationDateStr);
 		
 		// get editor
 		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
 		
 		// get entities
-		Entities result = new Entities(source, date);
+//Entities result = new Entities(source, date);
+		Entities result = new Entities(source, creationDate, modificationDate);
 		result.setEditor(editor);
 		List<Element> elements = element.getChildren(XmlNames.ELT_ENTITY);
 		for(Element e: elements)
@@ -585,6 +634,7 @@ public class Entities
 		}
 		Collections.sort(result.entities);
 
+//result.writeToXml(dataFile);
 		return result;
 	}
 
@@ -610,10 +660,13 @@ public class Entities
 		Attribute sourceAttr = new Attribute(XmlNames.ATT_SOURCE, source.toString());
 		element.setAttribute(sourceAttr);
 		
-		// insert date attribute
-		String dateStr = TimeFormatting.formatDate(date);
-		Attribute dateAttr = new Attribute(XmlNames.ATT_DATE, dateStr);
-		element.setAttribute(dateAttr);
+		// insert date attributes
+		String creationDateStr = TimeFormatting.formatXmlTime(creationDate);
+		Attribute creationDateAttr = new Attribute(XmlNames.ATT_CREATION, creationDateStr);
+		element.setAttribute(creationDateAttr);
+		String modificationDateStr = TimeFormatting.formatXmlTime(modificationDate);
+		Attribute modificationDateAttr = new Attribute(XmlNames.ATT_MODIFICATION, modificationDateStr);
+		element.setAttribute(modificationDateAttr);
 		
 		// insert editor attribute
 		if(editor!=null)

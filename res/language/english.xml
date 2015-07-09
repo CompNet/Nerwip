@@ -52,7 +52,8 @@
 		<text name="Save" value="Save" tooltip="Record the modified text and entities" />
 		<text name="Copy" value="Save copy of reference" tooltip="Save a copy of the reference entities" />
 		<text name="Quit" value="Quit" tooltip="Quit" />
-		<text name="ArticleList" value="Generate article list" tooltip="Generate a file listing all articles and their annotation status" />
+		<text name="ArticleAnnotatedList" value="List annotated articles" tooltip="Generate a file listing all annotated articles" />
+		<text name="ArticleNonAnnotatedList" value="List non-annotated articles" tooltip="Generate a file listing all articles not annotated yet" />
 		
 		<text name="Insert" value="Insert" tooltip="Insert or convert an entity of type" />
 		<text name="Remove" value="Remove entity" tooltip="Remove an entity" />
@@ -104,9 +105,11 @@
 	</group>
 
 	<group name="Misc" >
-		<text name="EditorArticle" value="Art. edt.:" />
-		<text name="EditorCurrent" value="Edt.:" />
+		<text name="EditorArticle" value="Art. edt.:" tooltip="Name of the origial editor of this article" />
+		<text name="EditorCurrent" value="Edt.:" tooltip="Name of the current editor (you)" />
 		
-		<text name="Position" value="Pos.:" />
+		<text name="NerDetails" value=" " tooltip="Parameters of the considered NER tool" />
+		<text name="ArticleNumber" value="/" tooltip="Rank of the article in the considered corpus" />
+		<text name="Position" value="Pos.:" tooltip="Position of the carret in the text, expressed in characters" />
 	</group>
 </language>

@@ -93,7 +93,7 @@ public class HierarchicalFormatter extends SimpleFormatter
 			int offset = (Integer)parameters[1];
 			
 			// init
-			String hour = TimeFormatting.formatTime(record.getMillis())+" ";
+			String hour = TimeFormatting.formatFileTime(record.getMillis())+" ";
 			int length = hour.length();
 			String space = "";
 			for(int i=0;i<length;i++)

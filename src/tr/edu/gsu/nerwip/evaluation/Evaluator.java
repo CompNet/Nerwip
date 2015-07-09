@@ -347,7 +347,7 @@ public class Evaluator
 			File oldFile = new File(FileNames.FO_OUTPUT + File.separator + measure.getFileName());
 			AbstractRecognizer recognizer = recognizers.get(i);
 			String newName = FileNames.FO_OUTPUT + File.separator 
-				+ TimeFormatting.formatCurrentTime()
+				+ TimeFormatting.formatCurrentFileTime()
 				+ "." + recognizer.getFolder()
 				+ "." + measure.getFileName(); 
 			File newFile = new File(newName);
