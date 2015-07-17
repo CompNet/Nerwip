@@ -78,7 +78,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	 * 		Whether entities can contain other entities ({@code false}) or
 	 * 		are mutually exclusive ({@code true}).
 	 * @param ignorePronouns
-	 *      Whether or not prnouns should be excluded from the detection.
+	 *      Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 *      Whether or not stop words should be excluded from the
 	 *      detection.
