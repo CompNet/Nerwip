@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -110,33 +109,21 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	/////////////////////////////////////////////////////////////////
 	// ENTITIES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities detected by this recognizer */
-	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
-	(	EntityType.DATE,		// only EN
-		EntityType.FUNCTION,	// only EN
-		EntityType.LOCATION,
-		EntityType.ORGANIZATION,
-		EntityType.PERSON,
-		EntityType.PRODUCTION	// only EN
-	);
-	
 	@Override
 	public List<EntityType> getHandledEntityTypes()
-	{	return HANDLED_TYPES;
+	{	List<EntityType> result = selectedLanguage.getHandledTypes(); 
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of languages this recognizer can treat */
-	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
-		ArticleLanguage.EN,
-		ArticleLanguage.FR
-	);
-
+	/** Language we want OpenCalais to process */
+	private OpenCalaisLanguage selectedLanguage;
+	
 	@Override
 	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = HANDLED_LANGUAGES.contains(language);
+	{	boolean result = selectedLanguage.handlesLanguage(language);
 		return result;
 	}
 	
