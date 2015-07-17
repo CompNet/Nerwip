@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -81,6 +82,10 @@ public class StringTools
 //		System.out.println((int)(str.charAt(11))+" vs "+(int)(res.charAt(11)));
 //		System.out.println((int)(str.charAt(13))+" vs "+(int)(res.charAt(13)));
 //		System.out.println((int)(str.charAt(15))+" vs "+(int)(res.charAt(15)));
+		
+		// test expr
+//		List<Integer> list = extractValues("1,2,3,8,9,10-18,56,98,2,6,8");
+//		System.out.println(list);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -356,6 +361,43 @@ public class StringTools
 		// for debug
 //		System.out.println("result:\n"+result);
 		
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// VALUES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Takes a string of the form 1,4,8,12-15,78 and returns the
+	 * corresponding values as an integer list (1,4,8,12,13,14,15,78).
+	 * 
+	 * @param expression
+	 * 		String expression.
+	 * @return
+	 * 		Corresponding integer list.
+	 */
+	public static List<Integer> extractValues(String expression)
+	{	TreeSet<Integer> temp = new TreeSet<Integer>();
+		String s1[] = expression.split(",");
+		for(String str1: s1)
+		{	if(!str1.isEmpty())
+			{	String s2[] = str1.split("-");
+				if(s2.length==1)
+				{	int val = Integer.parseInt(str1);
+					temp.add(val);
+				}
+				else if(s2.length==2)
+				{	int start = Integer.parseInt(s2[0]);
+					int end = Integer.parseInt(s2[1]);
+					for(int val=start;val<=end;val++)
+						temp.add(val);
+				}
+				else
+					throw new IllegalArgumentException("Incorrect expression: "+expression);
+			}
+		}
+		
+		List<Integer> result = new ArrayList<Integer>(temp);
 		return result;
 	}
 	
