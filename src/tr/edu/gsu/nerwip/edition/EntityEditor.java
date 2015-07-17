@@ -2082,7 +2082,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * to some article, and displays them.
 	 */
 	private void loadArticle()
-	{	int returnVal = articleChooser.showOpenDialog(frame);
+	{	articleChooser.setCurrentDirectory(new File(corpusFolder));
+		int returnVal = articleChooser.showOpenDialog(frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{	File file = articleChooser.getSelectedFile();
 			String name = file.getName();
@@ -2832,7 +2833,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 				
 				// otherwise, display an error message (=no corpus)
 				else
-				{	corpusFolder = tempFolder;
+				{	//corpusFolder = tempFolder;
 					JOptionPane.showMessageDialog(
 						frame, 
 						language.getTooltip(DIALOG_CORPUS_ERROR), 
