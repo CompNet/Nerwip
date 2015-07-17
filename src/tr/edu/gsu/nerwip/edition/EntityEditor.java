@@ -547,7 +547,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/** Frame to contain tabs and entities */
 	private JFrame frame;
 	/** Version of this application */
-	private static final String APP_VERSION = "v2.31";
+	private static final String APP_VERSION = "v2.33";
 	/** Name of this application */
 	private static final String APP_NAME = "Entity Editor";
 	/** Title of this application */
@@ -708,6 +708,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JPanel statusBar;
 	/** Texts displayed in the status bar */
 	private List<String> statusInformationTexts = new ArrayList<String>();
+	/** Text displayed in the information label */
+	private final static String MISC_NER_DETAILS = "MiscNerDetails";
 	/** Label displaying information */
 	private JLabel statusInformationLabel;
 	/** Text displayed in the position label */
@@ -722,6 +724,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private final static String MISC_EDITOR_ARTICLE = "MiscEditorArticle";
 	/** Label displaying the article editor name */
 	private JLabel statusEditorArticleLabel;
+	/** Text displayed in the article number label */
+	private final static String MISC_ARTICLE_NUMBER = "MiscArticleNumber";
 	/** Label displaying the article editor name */
 	private JLabel statusArticleNumberLabel;
 	
@@ -753,6 +757,7 @@ public class EntityEditor implements WindowListener, ChangeListener
         
 		// create information label
 		{	statusInformationLabel = new JLabel("",JLabel.LEFT);
+			statusInformationLabel.setToolTipText(language.getTooltip(MISC_NER_DETAILS));
 //statusInformationLabel.setOpaque(true);
 //statusInformationLabel.setBackground(Color.RED);		
 //			statusInformationLabel.setPreferredSize(new Dimension(100, 20));
@@ -772,6 +777,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		
 		// create article number label
 		{	statusArticleNumberLabel = new JLabel("/",JLabel.LEFT);
+			statusArticleNumberLabel.setToolTipText(language.getTooltip(MISC_ARTICLE_NUMBER));
 			
 			int adv = metrics.stringWidth("XXXX/XXXX");
 			
@@ -784,6 +790,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 
 		// create current editor name label
 		{	statusEditorCurrentLabel = new JLabel(language.getText(MISC_EDITOR_CURRENT),JLabel.LEFT);
+			statusEditorCurrentLabel.setToolTipText(language.getTooltip(MISC_EDITOR_CURRENT));
 			
 			int adv = metrics.stringWidth(language.getText(MISC_EDITOR_CURRENT)+"XXXXXXXXXX XXXXXXXXXX");
 			
@@ -796,6 +803,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 
 		// create article editor name label
 		{	statusEditorArticleLabel = new JLabel(language.getText(MISC_EDITOR_ARTICLE),JLabel.LEFT);
+			statusEditorArticleLabel.setToolTipText(language.getTooltip(MISC_EDITOR_ARTICLE));
 			
 			int adv = metrics.stringWidth(language.getText(MISC_EDITOR_ARTICLE)+"XXXXXXXXXX XXXXXXXXXX");
 			
@@ -808,6 +816,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 
 		// create position label
 		{	statusPositionLabel = new JLabel(language.getText(MISC_POSITION),JLabel.LEFT);
+			statusPositionLabel.setToolTipText(language.getTooltip(MISC_POSITION));
 //statusPositionLabel.setOpaque(true);
 //statusPositionLabel.setBackground(Color.BLUE);
 			
@@ -1291,8 +1300,10 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JMenu mLanguage;
 	/** Menu items of the available languages */
 	private List<JRadioButtonMenuItem> miLanguages;
-	/** Menu item allowing to generate the list of articles */
-	private JMenuItem miArticleList;
+	/** Menu item allowing to generate the list of annotated articles */
+	private JMenuItem miArticleAnnotatedList;
+	/** Menu item allowing to generate the list of non-annotated articles */
+	private JMenuItem miArticleNonAnnotatedList;
 	
 	/**
 	 * Initializes the menu bar of this editor.
@@ -1352,8 +1363,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			menu.addSeparator();
 
-			{	miArticleList = new JRadioButtonMenuItem(articleListAction);
-				menu.add(miArticleList);
+			{	miArticleAnnotatedList = new JRadioButtonMenuItem(articleAnnotatedListAction);
+				menu.add(miArticleAnnotatedList);
+			}
+			{	miArticleNonAnnotatedList = new JRadioButtonMenuItem(articleNonAnnotatedListAction);
+				menu.add(miArticleNonAnnotatedList);
 			}
 			
 			menu.addSeparator();
@@ -1649,13 +1663,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 
 	/**
-	 * Creates a new entity in the
-	 * currently selected tab, and therefore
-	 * the corresponding text.
+	 * Creates a new entity in the currently selected tab, 
+	 * and therefore the corresponding text.
 	 * <br/>
-	 * The entity corresponds to the currently
-	 * selected text. If none is selected, then
-	 * no entity is created.
+	 * The entity corresponds to the currently selected text. 
+	 * If none is selected, then no entity is created.
 	 * 
 	 * @param type
 	 * 		Type of the entity to be created.
@@ -1975,9 +1987,13 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/** Dialog text */
 	private final static String DIALOG_ARTICLE_LIST_ERROR = "DialogArticleListError";
 	/** String used for action definition */
-	private final static String ACTION_ARTICLE_LIST = "ActionArticleList";
+	private final static String ACTION_ARTICLE_ANNOTATED_LIST = "ActionArticleAnnotatedList";
 	/** Browse all articles */
-	private Action articleListAction = null;
+	private Action articleAnnotatedListAction = null;
+	/** String used for action definition */
+	private final static String ACTION_ARTICLE_NONANNOTATED_LIST = "ActionArticleNonAnnotatedList";
+	/** Browse all articles */
+	private Action articleNonAnnotatedListAction = null;
 	
 	/**
 	 * Initializes the actions related
@@ -2032,21 +2048,35 @@ public class EntityEditor implements WindowListener, ChangeListener
 			copyAction.setEnabled(false); //TODO maybe other actions should be disabled too, when there's no article currently open?
 		}
 		
-		// list articles
-		{	String name = language.getText(ACTION_ARTICLE_LIST);
-			articleListAction = new AbstractAction(name)
+		// list annotated articles
+		{	String name = language.getText(ACTION_ARTICLE_ANNOTATED_LIST);
+			articleAnnotatedListAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
 				
 				@Override
 			    public void actionPerformed(ActionEvent evt)
-				{	generateArticleList();
+				{	generateAnnotatedArticleList();
 			    }
 			};
-			articleListAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_ARTICLE_LIST));
+			articleAnnotatedListAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_ARTICLE_ANNOTATED_LIST));
+		}
+
+		// list non-annotated articles
+		{	String name = language.getText(ACTION_ARTICLE_NONANNOTATED_LIST);
+			articleNonAnnotatedListAction = new AbstractAction(name)
+			{	/** Class id */
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+			    public void actionPerformed(ActionEvent evt)
+				{	generateNonAnnotatedArticleList();
+			    }
+			};
+			articleNonAnnotatedListAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_ARTICLE_NONANNOTATED_LIST));
 		}
 	}
-
+	
 	/**
 	 * Loads all the files related
 	 * to some article, and displays them.
@@ -2084,7 +2114,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 			int index = 0;
 			EntityEditorPanel panel = (EntityEditorPanel) tabbedPane.getComponentAt(index);
 			Entities references = panel.getReferences();
-			references.writeToXml(file);
+			// record only if non-empty
+			if(!references.getEntities().isEmpty())
+				references.writeToXml(file);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
@@ -2181,15 +2213,50 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Generates a list of articles with their
-	 * annotation statuses. 
+	 * Generates a list of annotated articles. 
 	 */
-	private void generateArticleList()
+	private void generateAnnotatedArticleList()
 	{	File corpus = new File(corpusFolder);
 		String outputPath = corpusFolder + File.separator + "list-annotated-articles.csv";
 		File output = new File(outputPath);
 		try
 		{	ArticleLists.generateAnnotatedArticleList(corpus, output);
+			String string = "<html>"
+				+ language.getTooltip(DIALOG_ARTICLE_LIST)+"<br/>"
+				+ "<pre>"+outputPath+"</pre>"
+				+ "</html>";
+			JOptionPane.showMessageDialog(
+				frame, 
+				string, 
+				language.getText(DIALOG_ARTICLE_LIST), 
+				JOptionPane.INFORMATION_MESSAGE
+			);
+		}
+		catch (SAXException | IOException | ParseException e)
+		{	String string = "<html>"
+				+ language.getTooltip(DIALOG_ARTICLE_LIST_ERROR)+"<br/>"
+				+ "<pre>"+outputPath+"</pre>"
+				+ "<pre>"+e.getMessage()+"</pre>"
+				+ "</html>";
+			JOptionPane.showMessageDialog(
+				frame, 
+				string, 
+				language.getText(DIALOG_ARTICLE_LIST_ERROR), 
+				JOptionPane.INFORMATION_MESSAGE
+			);
+//			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Generates a list of non-annotated articles. 
+	 */
+	private void generateNonAnnotatedArticleList()
+	{	File corpus = new File(corpusFolder);
+		String outputPath = corpusFolder + File.separator + "list-nonannotated-articles.csv";
+		File output = new File(outputPath);
+		try
+		{	ArticleLists.generateNonAnnotatedArticleList(corpus, output);
 			String string = "<html>"
 				+ language.getTooltip(DIALOG_ARTICLE_LIST)+"<br/>"
 				+ "<pre>"+outputPath+"</pre>"
@@ -2486,8 +2553,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void displayHelpIndex()
 	{	try
-		{	//indexDialog = new TextDialog(frame, language.getText(DIALOG_INDEX)+" "+APP_NAME, FileNames.FI_HELP_PAGE); //TODO not written yet
-			String htmlPath = FileNames.FO_LANGUAGE + File.separator + language.getName().toLowerCase() + FileNames.EX_HTML; 
+		{	String htmlPath = FileNames.FO_LANGUAGE + File.separator + language.getName().toLowerCase() + FileNames.EX_HTML; 
 			indexDialog = new TextDialog(
 				frame, 
 				language.getText(DIALOG_INDEX)+" "+APP_NAME,
@@ -2505,8 +2571,16 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * Displays the about dialog.
 	 */
 	private void displayHelpAbout()
-	{	String string = "<html>"
+	{	File labFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_LAB);
+		String labPath = "file:/" + labFile.getAbsolutePath().replaceAll("\\\\", "/");
+		File uniFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_UNIV);
+		String uniPath = "file:/" + uniFile.getAbsolutePath().replaceAll("\\\\", "/");
+		
+		String string = "<html>"
 			+"<h1>"+TITLE+"</h1><br/>"
+			+"<img src=\""+uniPath+"\" alt=\"Logo LIA\" height=\"200\" width=\"115\" />"
+			+ "&nbsp;"
+			+"<img src=\""+labPath+"\" alt=\"Logo UAPV\" height=\"200\" width=\"342\" /><br/>"
 			+ "Université d'Avignon<br/>"
 			+ "Laboratoire Informatique d'Avignon (LIA)<br/>"
 			+ "<a href=\"http://lia.univ-avignon.fr\">http://lia.univ-avignon.fr</a><br/>"
@@ -3212,8 +3286,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 			Entities references = entityLists.get(refName);
 			if(references==null)
 			{	references = new Entities();
-				updateSaved(1);
-				updateTitle();
+				//updateSaved(1); // preferable not to mark the article as mofified
+				//updateTitle();  // when just creating an empty reference
 			}
 			else
 			{	entityLists.remove(refName);
@@ -3378,3 +3452,9 @@ public class EntityEditor implements WindowListener, ChangeListener
  * fils de job >> fonction, personne de référence pas annotée
  * "Fils de Louis-Albert Baurens et de Marie-Louise Mauret, Alexandre Baurens épousa, en février 1926, Georgette Bessagnet," fils de ?
 */
+
+/*
+ * - supprimer les fichiers entities vides (vérif si pas besoin plus loin ?)
+ * - éditeur : quand entities vide, ne pas proposer d'enregistrer. ça évitera de créer inutilement des fichiers vides
+ * - mettre à jour le corpus anglais
+ */

@@ -52,7 +52,8 @@
 		<text name="Save" value="Enregistrer" tooltip="Enregistrer les modifications apportées au texte et/ou aux entités de la référence" />
 		<text name="Copy" value="Enregistrer une copie" tooltip="Enregistrer une copie des entités de la reférence" />
 		<text name="Quit" value="Quitter" tooltip="Quitter" />
-		<text name="ArticleList" value="Générer la liste des articles" tooltip="Génère un fichier listant les articles et leur statut d'annotation" />
+		<text name="ArticleAnnotatedList" value="Lister les articles annotés" tooltip="Génère un fichier listant les articles annotés" />
+		<text name="ArticleNonAnnotatedList" value="Lister les articles non-annotés" tooltip="Génère un fichier listant les articles pas encore annotés" />
 		
 		<text name="Insert" value="Insérer" tooltip="Insérer ou convertir une entité de type" />
 		<text name="Remove" value="Supprimer une entité" tooltip="Supprimer une entité existante" />
@@ -104,9 +105,11 @@
 	</group>
 
 	<group name="Misc" >
-		<text name="EditorArticle" value="Édt. art. :" />
-		<text name="EditorCurrent" value="Édt. :" />
+		<text name="EditorArticle" value="Édt. art. :" tooltip="Nom de l'éditeur original de cet article" />
+		<text name="EditorCurrent" value="Édt. :" tooltip="Nom de l'éditeur courant (vous)" />
 		
-		<text name="Position" value="Pos. :" />
+		<text name="NerDetails" value=" " tooltip="Paramètres de l'outil de NER considéré" />
+		<text name="ArticleNumber" value="/" tooltip="Numéro de l'article dans le corpus" />
+		<text name="Position" value="Pos. :" tooltip="Position du curseur dans le texte, exprimée en caractères"/>
 	</group>
 </language>

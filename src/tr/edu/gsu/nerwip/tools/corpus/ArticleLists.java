@@ -32,10 +32,13 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -195,6 +198,9 @@ public class ArticleLists
 	/////////////////////////////////////////////////////////////////
 	// FILE LISTS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Format last modification date */
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	
 	/**
 	 * Returns the list of the corpus articles which have been annotated
 	 * manually, as well as other details (name of the editor, size in 
@@ -216,7 +222,7 @@ public class ArticleLists
 	{	String sep = ",";
 		// open output file
 		PrintWriter pw = FileTools.openTextFileWrite(output);
-		pw.println("Number"+sep+"Title"+sep+"Size"+sep+"Editor"+sep+"Count");
+		pw.println("Number"+sep+"Title"+sep+"Size"+sep+"Date"+sep+"Editor"+sep+"Count");
 		
 		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
 		FilenameFilter ffRaw = FileTools.createFilter(FileNames.FI_RAW_TEXT);
@@ -236,6 +242,8 @@ public class ArticleLists
 				{	files = folder.listFiles(ffRaw);
 					if(files.length>0)
 					{	file = files[0];
+						Date date = entities.getModificationDate();
+						String dateStr = DATE_FORMAT.format(date);
 						String rawText = FileTools.readTextFile(file);
 						int size = rawText.length();
 						Integer count = counts.get(editor);
@@ -243,9 +251,68 @@ public class ArticleLists
 							count = 0;
 						count++;
 						counts.put(editor, count);
-						pw.println(i+sep+name+sep+size+sep+editor+sep+count);
+						pw.println(i+sep+name+sep+size+sep+dateStr+sep+editor+sep+count);
 					}
 				}
+			}
+			i++;
+		}
+		
+		// close output file
+		pw.close();
+	}
+	
+	/**
+	 * Returns the list of the corpus articles which have <i>not</i>been annotated
+	 * manually, as well as other details (size in chars, etc.).
+	 * 
+	 * @param corpus
+	 * 		Main folder of the considered corpus.
+	 * @param output
+	 * 		Ouput file (a text file).
+	 *  
+	 * @throws ParseException
+	 * 		Problem while reading the entity file. 
+	 * @throws IOException 
+	 * 		Problem while accessing a file. 
+	 * @throws SAXException 
+	 * 		Problem while accessing a file. 
+	 */
+	public static void generateNonAnnotatedArticleList(File corpus, File output) throws SAXException, IOException, ParseException
+	{	String sep = ",";
+		// open output file
+		PrintWriter pw = FileTools.openTextFileWrite(output);
+		pw.println("Number"+sep+"Title"+sep+"Size");
+		
+		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
+		FilenameFilter ffRaw = FileTools.createFilter(FileNames.FI_RAW_TEXT);
+			
+		// get the list of articles
+		ArticleList list = getArticleList(corpus);
+		int i = 1;
+		for(File folder: list)
+		{	String name = folder.getName();
+			
+			File files[] = folder.listFiles(ffRaw);
+			if(files.length>0)
+			{	boolean treat = false;
+				File file = files[0];
+				String rawText = FileTools.readTextFile(file);
+				int size = rawText.length();
+				
+				files = folder.listFiles(ffEnt);
+				if(files.length==0)
+					treat = true;
+				else
+				{	file = files[0];
+					Entities entities = Entities.readFromXml(file);
+					String editor = entities.getEditor();
+					if(editor==null)
+						treat = true;
+				}
+				
+				if(treat)
+					pw.println(i+sep+name+sep+size);
 			}
 			i++;
 		}

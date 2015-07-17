@@ -27,6 +27,7 @@ package tr.edu.gsu.nerwip.tools.time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -54,14 +55,15 @@ public class TimeFormatting
 	 */
 	public static String formatCurrentHour()
 	{	Calendar cal = Calendar.getInstance();
-	    return HOUR_FORMAT.format(cal.getTime());
+	    String result = HOUR_FORMAT.format(cal.getTime());
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// DATE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** pattern used to format a date */
-	private static final String DATE_PATTERN = "dd-MM-yyyy";
+	private static final String DATE_PATTERN = "yyyy-MM-dd";
 	/** format a date */
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_PATTERN,Locale.ENGLISH);
 	
@@ -85,7 +87,7 @@ public class TimeFormatting
 	 * @return
 	 * 		A string representing the specified date.
 	 */
-	public static String formatDate(java.util.Date date)
+	public static String formatDate(Date date)
 	{	String result = DATE_FORMAT.format(date);
 		return result;
 	}
@@ -102,45 +104,134 @@ public class TimeFormatting
 	 * @throws ParseException
 	 * 		Problem while parsing the string.
 	 */
-	public static java.util.Date parseDate(String dateStr) throws ParseException
-	{	java.util.Date result = DATE_FORMAT.parse(dateStr);
+	public static Date parseDate(String dateStr) throws ParseException
+	{	Date result = DATE_FORMAT.parse(dateStr);
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// FILESTAMP		/////////////////////////////////////////////
+	// XML TIME			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** pattern used to format a date and hour */
-	private static final String TIME_PATTERN = "yyyy-MM-dd.HH-mm-ss";
-	/** format a date and hour */
-	public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(TIME_PATTERN,Locale.ENGLISH);
-
+	/** pattern used to format a date and hour in XML files */
+	private static final String TIME_PATTERN_XML = "yyyy-MM-dd'T'HH:mm:ss";
+	/** format a date and hour in XML files*/
+	public static final SimpleDateFormat TIME_FORMAT_XML = new SimpleDateFormat(TIME_PATTERN_XML,Locale.ENGLISH);
+	
 	/**
-	 * Returns a string representation of the current date & hour.
+	 * Returns an XML string representation of the current date & hour.
 	 *  
 	 * @return
-	 * 		A string representing the current date & hour.
+	 * 		An XML string representing the current date & hour.
 	 */
-	public static String formatCurrentTime()
+	public static String formatCurrentXmlTime()
 	{	Calendar cal = Calendar.getInstance();
-	    return TIME_FORMAT.format(cal.getTime());
+	    String result = TIME_FORMAT_XML.format(cal.getTime());
+		return result;
 	}
 	
 	/**
-	 * Returns a string representation of the specified time
+	 * Returns an XML string representation of the specified time
 	 * in terms of date & hour.
 	 * 
 	 * @param time 
 	 * 		The time to format. 
 	 * @return
-	 * 		A string representing the specified time in terms of date & hour.
+	 * 		An XML string representing the specified time in terms of date & hour.
 	 */
-	public static String formatTime(long time)
+	public static String formatXmlTime(long time)
 	{	Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(time);
-		return TIME_FORMAT.format(cal.getTime());
+		String result =  TIME_FORMAT_XML.format(cal.getTime());
+		return result;
 	}
+	
+	/**
+	 * Returns an XML string representation of the specified time
+	 * in terms of date & hour.
+	 * 
+	 * @param date
+	 * 		The date to format. 
+	 * @return
+	 * 		An XML string representing the specified time in terms of date & hour.
+	 */
+	public static String formatXmlTime(Date date)
+	{	String result =  TIME_FORMAT_XML.format(date);
+		return result;
+	}
+	
+	/**
+	 * Returns the Date object corresponding
+	 * to the specified XML string.
+	 * 
+	 * @param timeStr
+	 * 		An XML string representation of the time.
+	 * @return
+	 * 		The corresponding Date object.
+	 * 
+	 * @throws ParseException
+	 * 		Problem while parsing the string.
+	 */
+	public static Date parseXmlTime(String timeStr) throws ParseException
+	{	Date result = TIME_FORMAT_XML.parse(timeStr);
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// FILE TIME		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** pattern used to format a date and hour in file names */
+	private static final String TIME_PATTERN_FILE = "yyyy-MM-dd.HH-mm-ss";
+	/** format a date and hour in file names */
+	public static final SimpleDateFormat TIME_FORMAT_FILE = new SimpleDateFormat(TIME_PATTERN_FILE,Locale.ENGLISH);
 
+	/**
+	 * Returns a filename-compatible string representation 
+	 * of the current date & hour.
+	 *  
+	 * @return
+	 * 		A filename-compatible string representing the current date & hour.
+	 */
+	public static String formatCurrentFileTime()
+	{	Calendar cal = Calendar.getInstance();
+	    String result = TIME_FORMAT_FILE.format(cal.getTime());
+		return result;
+	}
+	
+	/**
+	 * Returns a filename-compatible string representation 
+	 * of the specified time in terms of date & hour.
+	 * 
+	 * @param time 
+	 * 		The time to format. 
+	 * @return
+	 * 		A filename-compatible string representing the 
+	 * 		specified time in terms of date & hour.
+	 */
+	public static String formatFileTime(long time)
+	{	Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(time);
+		String result = TIME_FORMAT_FILE.format(cal.getTime());
+		return result;
+	}
+	
+	/**
+	 * Returns a filename-compatible string representation 
+	 * of the specified time in terms of date & hour.
+	 * 
+	 * @param date
+	 * 		The date to format. 
+	 * @return
+	 * 		A filename-compatible string representing the 
+	 * 		specified time in terms of date & hour.
+	 */
+	public static String formatFileTime(Date date)
+	{	String result = TIME_FORMAT_FILE.format(date);
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// DURATIONS		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	/**
 	 * Returns a {@code String} representation of
 	 * the specified duration. The duration is

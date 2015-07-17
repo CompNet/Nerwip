@@ -38,8 +38,10 @@ public class XmlNames
 	public static final String ATT_ARTICLE = "article";
 	/** Represents a corpus */
 	public static final String ATT_CORPUS = "corpus";
-	/** Represents... a date! */
-	public static final String ATT_DATE = "date";
+	/** Represents a creation date */
+	public static final String ATT_CREATION = "creation";
+//	/** Represents... a date! */
+//	public static final String ATT_DATE = "date";
 	/** Whether the text can be edited, or not */
 	public static final String ATT_EDITABLE = "editable";
 	/** Person who originally annotated an article */
@@ -50,6 +52,8 @@ public class XmlNames
 	public static final String ATT_FONT_SIZE = "fontSize";
 	/** Id associated to some key */
 	public static final String ATT_KEYID = "id";
+	/** Represents a modification date */
+	public static final String ATT_MODIFICATION = "modification";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
 	/** NER tool used to detect the entity */
