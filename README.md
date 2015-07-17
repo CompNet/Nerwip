@@ -5,7 +5,8 @@ Nerwip v4.1 [French edition]
 * Copyright 2011 (v1) Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
 * Copyright 2012 (v2) Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
 * Copyright 2013 (v3) Samet Atdağ & Vincent Labatut
-* Copyright 2014-15 (v4) Vincent Labatut
+* Copyright 2014 (v4) Vincent Labatut
+* Copyright 2015 (v4.1) Sabrine Ayachi & Vincent Labatut
 
 Nerwip is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see `licence.txt`
 
@@ -57,7 +58,6 @@ Most of the data files are too large to be compatible with GitHub constraints. F
 
 Certain NER tools require other programming languages than Java, and/or some libraries, and/or to be compiled:
 * HeidelTime: it is based on **TreeTagger**, and this tool requires [Perl](https://www.perl.org/). Just install it normally, and do not forget to check the location of the Perl interpreter was added to the PATH system variable (see the official Perl documentation). If Perl is correctly installed and configured, then you should obtain its help page by opening a terminal and executing `perl -h`. Note that, for Linux systems, it is usually installed by default. For Windows systems, you could use the [ActiveState](http://www.activestate.com/activeperl/downloads) implementation of Perl.
-* LIA-NE: this C program must be installed (see its `README.txt` file), as well as the libraries it requires (LIA-Tagg and CRF++). Not tested on Windows, only on Linux.
 * TagEN: this C++ software is already compiled for Linux (it was not tested for Windows). It also needs the Perl language (cf. HeidelTime).
 * Nero: this C++ software must be compiled and needs the **OpenFST** and **Wapiti** libraries. Everything is explained in the `README` file located in the res/ner/nero folder. Do not forget to set the `LD_LIBRARY_PATH` and `IRISA_NE` system variables, as explained in the same file. We did not test this tool on Windows (only on Linux). 
 
@@ -97,13 +97,11 @@ Here are the dependencies for Nerwip. All of them are included in the Eclipse pr
 * Other libraries:
   * [Apache Commons](http://commons.apache.org/)
   * [Apache HttpComponents](https://hc.apache.org/downloads.cgi)
-  * [CRF++](http://sourceforge.net/projects/crfpp/), needed by LIA-NE.
   * [HTML Parser](http://htmlparser.sourceforge.net/)
   * [JDOM](http://www.jdom.org/)
   * [Jericho HTML Parser](http://jericho.htmlparser.net/docs/index.html)
   * [JSON Simple](https://code.google.com/p/json-simple/)
   * [Jsoup](http://jsoup.org/)
-  * [LIA-Tagg](http://pageperso.lif.univ-mrs.fr/~frederic.bechet/download.html), needed by LIA-NE.
   * [LIBSVM](http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
   * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), needed by HeidelTime.
   * [Unitex](http://www-igm.univ-mlv.fr/~unitex/), needed by TagEn.
