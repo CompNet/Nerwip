@@ -83,15 +83,29 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Company", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Continent", EntityType.LOCATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Country", EntityType.LOCATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/EntertainmentAwardEvent", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Facility", EntityType.LOCATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Holiday", EntityType.DATE);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Movie", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/MusicAlbum", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/MusicGroup", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/NaturalFeature", EntityType.LOCATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/OperatingSystem", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Organization", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Person", EntityType.PERSON);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/PharmaceuticalDrug", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Position", EntityType.FUNCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Product", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/ProgrammingLanguage", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/ProvinceOrState", EntityType.LOCATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/PublishedMedium", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/RadioProgram", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/RadioStation", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Region", EntityType.LOCATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/SportsEvent", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/SportsLeague", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/TVShow", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/TVStation", EntityType.ORGANIZATION);
 	}
 	
 //	/** Pattern previously used to adjust entity positions */ 

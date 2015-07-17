@@ -111,10 +111,12 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	/////////////////////////////////////////////////////////////////
 	/** List of entities detected by this recognizer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
-	(	EntityType.DATE,
+	(	EntityType.DATE,		// only EN
+		EntityType.FUNCTION,	// only EN
 		EntityType.LOCATION,
 		EntityType.ORGANIZATION,
-		EntityType.PERSON
+		EntityType.PERSON,
+		EntityType.PRODUCTION	// only EN
 	);
 	
 	@Override
