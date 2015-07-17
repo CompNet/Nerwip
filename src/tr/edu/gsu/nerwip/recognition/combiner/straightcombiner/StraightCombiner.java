@@ -43,22 +43,37 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTimeMo
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
 
 /**
- * This combiner is very basic: it is meant to combine
- * complementary tools, in the sense that these tools detect
- * different types of entities. So, there is no voting of
- * any sort here.
+ * This combiner uses uniform weighting on a selection of tools
+ * able to handle French. The way the votes are conducted is different
+ * from VoteCombiner though, because VoteCombiner is designed to handle
+ * a group of tools able to detect the same entity types. This is not
+ * the case here, for instance some tools are able to detect functions 
+ * whereas others cannot.
  * <br/>
- * The NER tools handled by this combiner are:
+ * Here is the principle of the voting process. We call 'activated tool' a tool
+ * which has detected an entity for a given expression. When there is at least
+ * one activated tool:
+ * <ol>
+ * 	<li>Type vote: we keep the majority entity type, among all activated tools.</li>
+ *  <li>Existence vote: only the tools able to handle the selected type can vote.
+ *      If the activated tools are majority among them, the process goes on.</li>
+ *  <li>Position vote: all activated tool vote, the majority positions win.
+ * </ol> 
+ * <br/>
+ * The NER tools used by this combiner are:
  * <ul>
- * 		<li>OpenCalais to detect persons, locations and organizations</li>
- * 		<li>HeidelTime to detect dates</li>
+ * 		<li>HeidelTime (dates)</li>
+ * 		<li>Nero (dates, functions, persons, locations, organizations and productions)</li>
+ * 		<li>OpenCalais (dates, persons, locations and organizations)</li>
+ * 		<li>OpeNer (dates, persons, locations and organizations)</li>
+ * 		<li>TagEn (dates, persons, locations and organizations)</li>
  * </ul>
  * There is no option to change its behavior (yet).
  * 
  * @author Vincent Labatut
  */
 public class StraightCombiner extends AbstractCombiner
-{	
+{	//TODO how to change supported entity types depending on language?
 	/**
 	 * Builds a new straight combiner.
 	 *  
@@ -172,6 +187,11 @@ public class StraightCombiner extends AbstractCombiner
 	{	logger.increaseOffset();
 		Entities result = new Entities(getName());
 		Iterator<AbstractRecognizer> it = recognizers.iterator();
+		
+		// vote for the types
+		// existence: only consider the tools able to detect said type
+		// position: consider only the tools who detected something
+		
 		
 		// first get the dates
 		AbstractRecognizer heidelTime = it.next();

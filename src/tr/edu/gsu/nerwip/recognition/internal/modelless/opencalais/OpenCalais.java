@@ -66,7 +66,8 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Vincent Labatut
  */
 public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>,OpenCalaisConverter>
-{	
+{	// user guide: http://new.opencalais.com/wp-content/uploads/2015/06/Thomson-Reuters-Open-Calais-API-User-Guide-v3.pdf
+	
 	/**
 	 * Builds and sets up an object representing
 	 * an OpenCalais NER tool.
