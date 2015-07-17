@@ -224,7 +224,7 @@ public class Evaluator
 	private List<AbstractMeasure> processArticle(File folder) throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
 	{	logger.increaseOffset();
 		List<AbstractMeasure> result = new ArrayList<AbstractMeasure>();
-	
+		
 		// get article
 		logger.log("Retrieve the article");
 		String name = folder.getName();
@@ -267,7 +267,7 @@ public class Evaluator
 			}
 		}
 		logger.decreaseOffset();
-			
+		
 		logger.decreaseOffset();
 		return result;
 	}

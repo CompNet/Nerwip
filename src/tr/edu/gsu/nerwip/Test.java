@@ -1544,8 +1544,8 @@ public class Test
 		
 		// set evaluation measure
 //		AbstractMeasure evaluation = new MucMeasure(null);
-//		AbstractMeasure evaluation = new LilleMeasure(null);
-		AbstractMeasure evaluation = new IstanbulMeasure(null);
+		AbstractMeasure evaluation = new LilleMeasure(null);
+//		AbstractMeasure evaluation = new IstanbulMeasure(null);
 		logger.log("Using assmessment measure "+evaluation.getClass().getName());
 
 		// launch evaluation

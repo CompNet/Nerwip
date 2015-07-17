@@ -214,7 +214,7 @@ public abstract class AbstractRecognizer
 	{	for(ArticleLanguage language: ArticleLanguage.values())
 		{	logger.log("Treating language "+language);
 			// set up file path
-			String path = prefix + language.toString() + File.separator + FileNames.EX_TEXT;
+			String path = FileNames.FO_CUSTOM_LISTS + File.separator + prefix + language.toString() + FileNames.EX_TEXT;
 			File file = new File(path);
 			
 			// retrieve values
