@@ -1282,6 +1282,23 @@ public class Test
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  false),	// 
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  true),	// LOC, ORG, PERS
 			
+//			new Nero(Tagger.CRF, false, false, false),
+//			new Nero(Tagger.CRF, false, false, true),
+//			new Nero(Tagger.CRF, false, true, false),
+//			new Nero(Tagger.CRF, false, true, true),
+			new Nero(Tagger.CRF, true, false, false),
+			new Nero(Tagger.CRF, true, false, true),
+			new Nero(Tagger.CRF, true, true, false),
+			new Nero(Tagger.CRF, true, true, true),
+//			new Nero(Tagger.FST, false, false, false),
+//			new Nero(Tagger.FST, false, false, true),
+//			new Nero(Tagger.FST, false, true, false),
+//			new Nero(Tagger.FST, false, true, true),
+			new Nero(Tagger.FST, true, false, false),
+			new Nero(Tagger.FST, true, false, true),
+			new Nero(Tagger.FST, true, true, false),
+			new Nero(Tagger.FST, true, true, true),
+			
 			new OpenCalais(false, false),
 			new OpenCalais(false, true),
 			new OpenCalais(true,  false),	// (DATE), LOC, ORG, PERS	

@@ -68,7 +68,8 @@ public class NeroConverter extends AbstractExternalConverter
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
 	/** List of ignored entity types */
 	private final static List<String> IGNORED_TYPES = Arrays.asList(
-		"amount"
+		"amount",
+		"unk"
 	);
 	
 	/** Initialization of the conversion map */
