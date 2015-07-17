@@ -178,13 +178,13 @@ public class Test
 //	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
-		testTagEn(name);
+//		testTagEn(name);
 //		testWikipediaDater(url);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
 		
-//		testEvaluator();
+		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -474,7 +474,12 @@ public class Test
 		boolean ignorePronouns = false;
 		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
 		openCalais.setCacheEnabled(false);
-		openCalais.process(article);
+
+		// only the specified article
+//		openCalais.process(article);
+
+		// all the corpus
+		testAllCorpus(openCalais,0);
 
 		logger.decreaseOffset();
 	}
@@ -889,14 +894,12 @@ public class Test
 			boolean doIntervalTagging = false;
 			HeidelTime heidelTime = new HeidelTime(modelName, true, doIntervalTagging);
 			heidelTime.setCacheEnabled(false);
-//			heidelTime.process(article);
 			
-			ArticleList folders= ArticleLists.getArticleList();
-			for(File folder: folders)
-			{	String name = folder.getName();
-				article = retriever.process(name);
-				heidelTime.process(article);
-			}
+			// only the specified article
+//			heidelTime.process(article);
+
+			// all the corpus
+			testAllCorpus(heidelTime,0);
 		}
 		
 		logger.decreaseOffset();
@@ -1200,9 +1203,12 @@ public class Test
 		// set types
 		List<EntityType> types = Arrays.asList(
 			EntityType.DATE,
+			EntityType.FUNCTION,
 			EntityType.LOCATION,
+			EntityType.MEETING,
 			EntityType.ORGANIZATION,
-			EntityType.PERSON
+			EntityType.PERSON,
+			EntityType.PRODUCTION
 		);
 		logger.log("Processed types: ");
 		logger.increaseOffset();
@@ -1217,6 +1223,19 @@ public class Test
 //			new DateExtractor(),
 //			new WikipediaDater(),
 			
+			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, false),	
+			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, true),	
+			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, false),	
+			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_COLLOQUIAL, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_COLLOQUIAL, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NARRATIVES, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NARRATIVES, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NEWS, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NEWS, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_SCIENTIFIC, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_SCIENTIFIC, loadOnDemand, true),	
+				
 //			new Illinois(IllinoisModelName.CONLL_MODEL, loadOnDemand, false, false, false),
 //			new Illinois(IllinoisModelName.CONLL_MODEL, loadOnDemand, false, false, true),	// LOC, ORG, PERS
 //			new Illinois(IllinoisModelName.CONLL_MODEL, loadOnDemand, false, true,  false),
@@ -1263,10 +1282,19 @@ public class Test
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  false),	// 
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  true),	// LOC, ORG, PERS
 			
-//			new OpenCalais(false, false),
-//			new OpenCalais(false, true),
-//			new OpenCalais(true,  false),	// (DATE), LOC, ORG, PERS	
-//			new OpenCalais(true,  true),	
+			new OpenCalais(false, false),
+			new OpenCalais(false, true),
+			new OpenCalais(true,  false),	// (DATE), LOC, ORG, PERS	
+			new OpenCalais(true,  true),
+			
+			new OpeNer(false, false, false),
+			new OpeNer(false, false, true),
+			new OpeNer(false, true, false),
+			new OpeNer(false, true, true),
+			new OpeNer(true, false, false),
+			new OpeNer(true, false, true),
+			new OpeNer(true, true, false),
+			new OpeNer(true, true, true),
 			
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,false),
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,true),
@@ -1326,6 +1354,25 @@ public class Test
 //			new Subee(true,true,true,false,true),
 //			new Subee(true,true,true,true,false),
 //			new Subee(true,true,true,true,true),
+			
+			new TagEn(TagEnModelName.MUC_MODEL, false, false),
+			new TagEn(TagEnModelName.MUC_MODEL, false, true),
+			new TagEn(TagEnModelName.MUC_MODEL, true, false),
+			new TagEn(TagEnModelName.MUC_MODEL, true, true),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, true),
+//			new TagEn(TagEnModelName.WIKI_MODEL, false, false),
+//			new TagEn(TagEnModelName.WIKI_MODEL, false, true),
+//			new TagEn(TagEnModelName.WIKI_MODEL, true, false),
+//			new TagEn(TagEnModelName.WIKI_MODEL, true, true),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, false, false),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, false, true),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, true, false),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, true, true),
+			
+////////////////////			
 			
 //			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false, SubeeMode.NONE),
 //			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false, SubeeMode.SINGLE),
@@ -1463,8 +1510,8 @@ public class Test
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
 				
-			new FullCombiner(Combiner.SVM),
-			new FullCombiner(Combiner.VOTE)
+//			new FullCombiner(Combiner.SVM),
+//			new FullCombiner(Combiner.VOTE)
 		};
 		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed NER tools: ");
@@ -1486,8 +1533,8 @@ public class Test
 //			new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
 //		);
 //		ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-//		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
-		ArticleList folders = ArticleLists.getArticleList();
+		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
+//		ArticleList folders = ArticleLists.getArticleList();
 //		ArticleList folders = new ArticleList("test", Arrays.asList(new File(FileNames.FO_OUTPUT).listFiles(FileTools.FILTER_DIRECTORY)));
 		logger.log("Processed articles: ");
 		logger.increaseOffset();
@@ -1496,9 +1543,9 @@ public class Test
 		logger.decreaseOffset();
 		
 		// set evaluation measure
-		AbstractMeasure evaluation = new MucMeasure(null);
+//		AbstractMeasure evaluation = new MucMeasure(null);
 //		AbstractMeasure evaluation = new LilleMeasure(null);
-//		AbstractMeasure evaluation = new IstanbulMeasure(null);
+		AbstractMeasure evaluation = new IstanbulMeasure(null);
 		logger.log("Using assmessment measure "+evaluation.getClass().getName());
 
 		// launch evaluation
