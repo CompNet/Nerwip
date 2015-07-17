@@ -3453,9 +3453,3 @@ public class EntityEditor implements WindowListener, ChangeListener
  * fils de job >> fonction, personne de référence pas annotée
  * "Fils de Louis-Albert Baurens et de Marie-Louise Mauret, Alexandre Baurens épousa, en février 1926, Georgette Bessagnet," fils de ?
 */
-
-/*
- * - supprimer les fichiers entities vides (vérif si pas besoin plus loin ?)
- * - éditeur : quand entities vide, ne pas proposer d'enregistrer. ça évitera de créer inutilement des fichiers vides
- * - mettre à jour le corpus anglais
- */
