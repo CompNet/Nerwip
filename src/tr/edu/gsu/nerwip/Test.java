@@ -70,6 +70,7 @@ import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
+import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner.CombineMode;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmTrainer;
@@ -1531,9 +1532,11 @@ public class Test
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-				
+			
 //			new FullCombiner(Combiner.SVM),
-//			new FullCombiner(Combiner.VOTE)
+//			new FullCombiner(Combiner.VOTE),
+			
+			new StraightCombiner()
 		};
 		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed NER tools: ");

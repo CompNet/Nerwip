@@ -94,7 +94,7 @@ public class FullCombiner extends AbstractCombiner
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public RecognizerName getName()
-	{	return RecognizerName.SVMCOMBINER;
+	{	return RecognizerName.FULLCOMBINER;
 	}
 
 	/////////////////////////////////////////////////////////////////

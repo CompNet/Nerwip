@@ -435,7 +435,7 @@ public class VoteCombiner extends AbstractCombiner
 				int startPos = pos[0];
 				int endPos = pos[1];
 				String valueStr = text.substring(startPos,endPos);
-				AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, RecognizerName.VOTECOMBINER, valueStr);
+				AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, getName(), valueStr);
 				result.addEntity(entity);
 				rawOutput.append(">> Entity="+endPos+"\n\n");
 			}
