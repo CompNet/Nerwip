@@ -61,6 +61,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpModelNam
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalaisLanguage;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -233,9 +234,10 @@ public class SvmCombiner extends AbstractCombiner
 		
 		// OpenCalais
 		{	logger.log("Init OpenCalais");
+			OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 			boolean ignorePronouns = true;
 			boolean exclusionOn = false;
-			OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+			OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 			recognizers.add(openCalais);
 		}
 		

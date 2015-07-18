@@ -42,7 +42,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -55,7 +54,6 @@ import de.unihd.dbs.heideltime.standalone.HeidelTimeStandalone;
 import de.unihd.dbs.heideltime.standalone.OutputType;
 import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
-
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -99,6 +97,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelN
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalaisLanguage;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
@@ -470,9 +469,10 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(url);
 
+		OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setCacheEnabled(false);
 
 		// only the specified article
@@ -501,9 +501,10 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
+		OpenCalaisLanguage lang = OpenCalaisLanguage.FR;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setOutputRawResults(true);
 		openCalais.setCacheEnabled(false);
 		openCalais.process(article);
@@ -1299,10 +1300,14 @@ public class Test
 			new Nero(NeroTagger.FST, true, true, false),
 			new Nero(NeroTagger.FST, true, true, true),
 			
-			new OpenCalais(false, false),
-			new OpenCalais(false, true),
-			new OpenCalais(true,  false),	// (DATE), LOC, ORG, PERS	
-			new OpenCalais(true,  true),
+//			new OpenCalais(OpenCalaisLanguage.EN, false, false),
+//			new OpenCalais(OpenCalaisLanguage.EN, false, true),
+//			new OpenCalais(OpenCalaisLanguage.EN, true,  false),	// (DATE), LOC, ORG, PERS	
+//			new OpenCalais(OpenCalaisLanguage.EN, true,  true),
+			new OpenCalais(OpenCalaisLanguage.FR, false, false),
+			new OpenCalais(OpenCalaisLanguage.FR, false, true),
+			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
+			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
 			new OpeNer(false, false, false),
 			new OpeNer(false, false, true),

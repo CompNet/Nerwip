@@ -71,14 +71,17 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	 * Builds and sets up an object representing
 	 * an OpenCalais NER tool.
 	 * 
+	 * @param lang
+	 * 		Selected language.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop-words should be excluded from the detection.
 	 */
-	public OpenCalais(boolean ignorePronouns, boolean exclusionOn)
+	public OpenCalais(OpenCalaisLanguage lang, boolean ignorePronouns, boolean exclusionOn)
 	{	super(false,ignorePronouns,exclusionOn);
 		
+		selectedLanguage = lang;
 		setIgnoreNumbers(false);
 		
 		// init converter
