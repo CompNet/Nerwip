@@ -72,8 +72,8 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	/**
 	 * Builds and sets up an object representing the Nero tool.
 	 * 
-	 * @param tagger
-	 * 		Tagger used by Nero (CRF or FST).
+	 * @param neroTagger
+	 * 		NeroTagger used by Nero (CRF or FST).
 	 * @param flat
 	 * 		Whether entities can contain other entities ({@code false}) or
 	 * 		are mutually exclusive ({@code true}).
@@ -83,10 +83,10 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	 *      Whether or not stop words should be excluded from the
 	 *      detection.
 	 */
-	public Nero(Tagger tagger, boolean flat, boolean ignorePronouns, boolean exclusionOn)
+	public Nero(NeroTagger neroTagger, boolean flat, boolean ignorePronouns, boolean exclusionOn)
 	{	super(false, ignorePronouns, exclusionOn);
 		
-		this.tagger = tagger;
+		this.neroTagger = neroTagger;
 		this.flat = flat;
 		
 		setIgnoreNumbers(false);
@@ -110,7 +110,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	public String getFolder()
 	{	String result = getName().toString();
 
-		result = result + "_" + "tagger=" + tagger;
+		result = result + "_" + "neroTagger=" + neroTagger;
 		result = result + "_" + "ignPro=" + ignorePronouns;
 		result = result + "_" + "exclude=" + exclusionOn;
 
@@ -155,18 +155,18 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	/////////////////////////////////////////////////////////////////
 	// TAGGER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Tagger used by Nero */
-	private Tagger tagger = null;
+	/** NeroTagger used by Nero */
+	private NeroTagger neroTagger = null;
 	
 	/**
-	 * Represents the tagger used by Nero.
+	 * Represents the neroTagger used by Nero.
 	 * 
 	 * @author Vincent Labatut
 	 */
-	public enum Tagger
-	{	/** Use the Conditional Random Fields tagger */
+	public enum NeroTagger
+	{	/** Use the Conditional Random Fields neroTagger */
 		CRF,
-		/** Use the Finite State Transducer tagger */
+		/** Use the Finite State Transducer neroTagger */
 		FST;
 	}
 
@@ -223,7 +223,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 				Runtime rt = Runtime.getRuntime();
 				String mainCommand = "cat " + tempPath + " | " 
 					+ "." + File.separator + FileNames.FO_NERO_SCRIPTS + File.separator 
-					+ FileNames.FI_NERO_BASH + " " + tagger.toString();
+					+ FileNames.FI_NERO_BASH + " " + neroTagger.toString();
 			    if(!flat)
 			    	mainCommand = mainCommand + " " + FLAT_SWITCH;
 		    	String[] commands = 

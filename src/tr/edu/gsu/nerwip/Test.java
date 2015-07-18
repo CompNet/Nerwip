@@ -80,7 +80,7 @@ import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
-import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero.NeroTagger;
 import tr.edu.gsu.nerwip.recognition.external.tagen.TagEn;
 import tr.edu.gsu.nerwip.recognition.external.tagen.TagEnModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
@@ -529,11 +529,11 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
-		Tagger tagger = Tagger.CRF;
+		NeroTagger neroTagger = NeroTagger.CRF;
 		boolean flat = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
+		Nero nero = new Nero(neroTagger, flat, ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
 		
@@ -1282,22 +1282,22 @@ public class Test
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  false),	// 
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  true),	// LOC, ORG, PERS
 			
-//			new Nero(Tagger.CRF, false, false, false),
-//			new Nero(Tagger.CRF, false, false, true),
-//			new Nero(Tagger.CRF, false, true, false),
-//			new Nero(Tagger.CRF, false, true, true),
-			new Nero(Tagger.CRF, true, false, false),
-			new Nero(Tagger.CRF, true, false, true),
-			new Nero(Tagger.CRF, true, true, false),
-			new Nero(Tagger.CRF, true, true, true),
-//			new Nero(Tagger.FST, false, false, false),
-//			new Nero(Tagger.FST, false, false, true),
-//			new Nero(Tagger.FST, false, true, false),
-//			new Nero(Tagger.FST, false, true, true),
-			new Nero(Tagger.FST, true, false, false),
-			new Nero(Tagger.FST, true, false, true),
-			new Nero(Tagger.FST, true, true, false),
-			new Nero(Tagger.FST, true, true, true),
+//			new Nero(NeroTagger.CRF, false, false, false),
+//			new Nero(NeroTagger.CRF, false, false, true),
+//			new Nero(NeroTagger.CRF, false, true, false),
+//			new Nero(NeroTagger.CRF, false, true, true),
+			new Nero(NeroTagger.CRF, true, false, false),
+			new Nero(NeroTagger.CRF, true, false, true),
+			new Nero(NeroTagger.CRF, true, true, false),
+			new Nero(NeroTagger.CRF, true, true, true),
+//			new Nero(NeroTagger.FST, false, false, false),
+//			new Nero(NeroTagger.FST, false, false, true),
+//			new Nero(NeroTagger.FST, false, true, false),
+//			new Nero(NeroTagger.FST, false, true, true),
+			new Nero(NeroTagger.FST, true, false, false),
+			new Nero(NeroTagger.FST, true, false, true),
+			new Nero(NeroTagger.FST, true, true, false),
+			new Nero(NeroTagger.FST, true, true, true),
 			
 			new OpenCalais(false, false),
 			new OpenCalais(false, true),
