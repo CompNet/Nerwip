@@ -54,6 +54,7 @@ import de.unihd.dbs.heideltime.standalone.OutputType;
 import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.edition.EntityEditor;
@@ -61,6 +62,7 @@ import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
+import tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools.NLDistance;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
@@ -96,6 +98,7 @@ import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.dbpedia.DbIdTools;
 import tr.edu.gsu.nerwip.tools.dbpedia.DbTypeTools;
+import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbIdTools;
@@ -133,14 +136,17 @@ public class Test
 		
 //		URL url = new URL("http://en.wikipedia.org/wiki/John_Zorn");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Fleur_Pellerin");
-		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
+//		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		
-		String name = "Émilien_Brigault";
-//		String name = "Albert_Chauly";
+//		String name = "Émilien_Brigault";
+     	String name = "Albert_Chauly";
 //		String name = "Gilles_Marcel_Cachin";
 //		String name = "Barack_Obama";
+     	
+     	String S = "1919";
+     	String T = "1887";
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
@@ -152,8 +158,12 @@ public class Test
 //		testHeidelTimeRaw();
 //		testWikiIdRetriever();
 //		testWikiTypeRetriever();
-		testDbIdRetriever();
-		testDbTypeRetriever();
+//		testDbIdRetriever();
+//		testDbTypeRetriever();
+//		testOpeNer(name);
+//		testSpotlight(name);
+     	testNLDistance(S, T);
+		
 
 //		testDateExtractor(url);
 //		testHeidelTime(url);
@@ -260,6 +270,65 @@ public class Test
 	
 	/**
 	 * Tests the feature allowing to automatically
+	 * retrieve DBpediaSpotlight ids and types of entities.
+	 * 
+	 * * @param name
+	 * 		name of the article to parse.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong...
+	 */
+	private static void testSpotlight(String name) throws Exception
+	{	logger.setName("Test-Spotlight");
+		logger.log("Start testing Spotlight");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+		
+		
+		/*Tagger tagger = Tagger.CRF;
+		boolean flat = false;
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
+		nero.setOutputRawResults(true);
+		nero.setCacheEnabled(false);
+		
+		// only the specified article
+		Entities entities = nero.process(article);*/
+		
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
+		opener.setOutputRawResults(true);
+		opener.setCacheEnabled(true);
+		
+		
+		Entities entities = opener.process(article);
+	
+		/*String test = "<annotation text=\"Barack Obama est né à Honolulu Hawaï en 1961\">"
+			     + "<surfaceForm name=\"Barack Obama\" offset=\"0\"/>"
+			     + "<surfaceForm name=\"est\" offset=\"13\"/>"
+			     + "<surfaceForm name=\"Honolulu\" offset=\"22\"/>"
+			     + "<surfaceForm name=\"Hawaï\" offset=\"31\"/>"
+			     + "</annotation>";*/
+		//List<AbstractEntity<?>> entityList = entities.getEntities();
+		//logger.log("entity0=" + entityList.get(0).getStringValue());
+
+		String xmlText = SpotlightTools.process(entities, article);
+		String answer = SpotlightTools.disambiguate(xmlText);
+		SpotlightTools.getEntitySpotlight(answer);
+		SpotlightTools.getIdSpotlight(answer);
+		SpotlightTools.getTypeSpotlight(answer);
+		
+
+		logger.decreaseOffset();
+	}
+
+	
+	/**
+	 * Tests the feature allowing to automatically
 	 * retrieve DBpedia ids of entities.
 	 * 
 	 * @throws Exception
@@ -290,6 +359,15 @@ public class Test
 		DbTypeTools.getAllTypes("Barack_Obama");
 		logger.decreaseOffset();
 	}
+	
+	
+	private static void testNLDistance(String S, String T) 
+	{	logger.setName("Test-NLDistance");
+		logger.increaseOffset();
+		NLDistance.getLevNorm(S, T);
+		logger.decreaseOffset();
+	}
+	
 	
 	
 	/**
