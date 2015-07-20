@@ -51,7 +51,7 @@ public class FileNames
 //	public final static String FO_OUTPUT = "out";	//actual folder
 	
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
-//	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
+//	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "C:/Temp";
 	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
@@ -124,6 +124,8 @@ public class FileNames
 	public final static String FI_HELP_PAGE = "help" + FileNames.EX_HTML;
 	/** XML schema file used to store category maps */
 	public final static String FI_CATMAP_SCHEMA = "categorymaps" + FileNames.EX_SCHEMA;
+	/** XML schema file used for graphml  */
+	public final static String FI_GRAPHML_SCHEMA = "graphml" + FileNames.EX_SCHEMA;
 	/** XML schema file used to record entities  */
 	public final static String FI_ENTITY_SCHEMA = "entities" + FileNames.EX_SCHEMA;
 	/** XML schema file used to store keys */
