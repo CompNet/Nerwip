@@ -183,8 +183,9 @@ public class Test
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
+		testStraightCombiner(name);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -1143,6 +1144,35 @@ public class Test
 			logger.log("Done with specific="+specific);
 			logger.decreaseOffset();
 		}
+		
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testStraightCombiner(String name) throws Exception
+	{	logger.setName("Test-StraightCombiner");
+		logger.log("Start testing StraightCombiner");
+		logger.increaseOffset();
+		
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+		
+		StraightCombiner straightCombiner = new StraightCombiner();
+		straightCombiner.setCacheEnabled(false);
+		
+		// only the specified article
+//		opener.process(article);
+		
+		// all the corpus
+		testAllCorpus(straightCombiner,0);
 		
 		logger.decreaseOffset();
 	}
