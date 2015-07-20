@@ -210,7 +210,7 @@ public class Graph
 			{	String pName = entry.getKey();
 				String type = entry.getValue();
 				String value = selectInitValue(type);
-				result.setProperty(pName, value);
+				result.properties.put(pName, value);
 			}
 		}
 		return result;
@@ -317,7 +317,7 @@ public class Graph
 				{	String name = entry.getKey();
 					String type = entry.getValue();
 					String value = selectInitValue(type);
-					result.setProperty(name, value);
+					result.properties.put(name, value);
 				}
 			}
 		}

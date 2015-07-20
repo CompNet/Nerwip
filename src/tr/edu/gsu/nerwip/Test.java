@@ -148,9 +148,9 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		
-		String name = "Émilien_Brigault";
+//		String name = "Émilien_Brigault";
 //		String name = "Albert_Chauly";
-//		String name = "Gilles_Marcel_Cachin";
+		String name = "Gilles_Marcel_Cachin";
 //		String name = "Barack_Obama";
 		
 //		testArticleRetriever(url);
@@ -183,9 +183,9 @@ public class Test
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
-		testStraightCombiner(name);
+//		testStraightCombiner(name);
 		
-//		testEvaluator();
+		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -541,10 +541,10 @@ public class Test
 		nero.setCacheEnabled(false);
 		
 		// only the specified article
-//		nero.process(article);
+		nero.process(article);
 
 		// all the corpus
-		testAllCorpus(nero,0);
+//		testAllCorpus(nero,0);
 		
 		logger.decreaseOffset();
 	}

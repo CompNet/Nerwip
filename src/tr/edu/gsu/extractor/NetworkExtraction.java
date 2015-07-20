@@ -53,6 +53,7 @@ import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
@@ -108,13 +109,16 @@ public class NetworkExtraction
 	 * 		Problem while accessing a file.
 	 */
 	private static void extractNetwork(AbstractRecognizer recognizer) throws RecognizerException, ParseException, SAXException, IOException, ReaderException
-	{	// init graph
+	{	logger.log("Extract entity network");
+		
+		// init graph
 		Graph graph = new Graph("All Entities", false);
 		graph.addNodeProperty("Occurrences","xsd:integer");
 		graph.addNodeProperty("Type","xsd:string");
 		graph.addLinkProperty("Weight","xsd:integer");
 		
 		logger.log("Read all article entities");
+		logger.increaseOffset();
 		ArticleList folders = ArticleLists.getArticleList();
 		int i = 0;
 		for(File folder: folders)
@@ -133,6 +137,7 @@ public class NetworkExtraction
 			Entities entities = recognizer.process(article);
 			
 			// process each sentence
+			logger.log("Process each sentence");
 			Set<String> conEntities = new TreeSet<String>();
 			Map<String,Map<EntityType,Integer>> conTypes = new HashMap<String, Map<EntityType,Integer>>();
 			List<Integer> sentencePos = StringTools.getSentencePositions(rawText);
@@ -151,7 +156,7 @@ public class NetworkExtraction
 							Map<EntityType,Integer> map = conTypes.get(str);
 							if(map==null)
 							{	map = new HashMap<EntityType, Integer>();
-								conTypes.put(name,map);
+								conTypes.put(str,map);
 							}
 							Integer count = map.get(type);
 							if(count==null)
@@ -166,7 +171,8 @@ public class NetworkExtraction
 			List<String> connectedEntities = new ArrayList<String>(conEntities);
 			
 			// insert the entities into the graph
-			for(int j=0;j<connectedEntities.size()-1;j++)
+			logger.log("Insert "+connectedEntities.size()+" entities into graph");
+			for(int j=0;j<connectedEntities.size();j++)
 			{	// name
 				String entName = connectedEntities.get(j);
 				Node node = graph.retrieveNode(entName);
@@ -175,7 +181,7 @@ public class NetworkExtraction
 				// type
 				Map<EntityType,Integer> map = conTypes.get(entName);
 				EntityType type = getMaxKey(map);
-				node.setProperty("Occurrences",type.toString());
+				node.setProperty("Type",type.toString());
 			}
 			
 			// insert the links into the graph
@@ -191,6 +197,14 @@ public class NetworkExtraction
 			logger.decreaseOffset();
 			i++;
 		}
+		logger.decreaseOffset();
+		
+		logger.log("Export graph as XML");
+		String netPath = FileNames.FO_OUTPUT + File.separator + "all-entities.graphml";
+		File netFile = new File(netPath);
+		graph.writeToXml(netFile);
+			
+		logger.decreaseOffset();
 	}
 	
 	/**
