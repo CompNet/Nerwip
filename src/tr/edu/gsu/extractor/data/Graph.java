@@ -195,10 +195,23 @@ public class Graph
 	 * 		Node of interest. 
 	 */
 	public Node retrieveNode(String name)
-	{	Node result = nodesByName.get(name);
+	{	// look for an existing node with the specified name
+		Node result = nodesByName.get(name);
+		
+		// if none, create it
 		if(result==null)
 		{	result = new Node(name);
+		
+			// add to local map
 			nodesByName.put(name,result);
+			
+			// set node properties
+			for(Entry<String,String> entry: nodePropertyTypes.entrySet())
+			{	String pName = entry.getKey();
+				String type = entry.getValue();
+				String value = selectInitValue(type);
+				result.setProperty(pName, value);
+			}
 		}
 		return result;
 	}
@@ -274,10 +287,19 @@ public class Graph
 					}
 				}
 				
+				// add to local maps
 				Node s = result.getSource();
 				linksBySource.put(s,result);
 				Node t = result.getTarget();
 				linksByTarget.put(t,result);
+				
+				// set link properties
+				for(Entry<String,String> entry: linkPropertyTypes.entrySet())
+				{	String name = entry.getKey();
+					String type = entry.getValue();
+					String value = selectInitValue(type);
+					result.setProperty(name, value);
+				}
 			}
 		}
 		
