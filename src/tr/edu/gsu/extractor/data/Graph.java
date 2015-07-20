@@ -249,7 +249,26 @@ public class Graph
 	/**
 	 * Retrieve the link between the specified nodes.
 	 * If no such link exist, it is first created
-	 * then returned.
+	 * then returned. The nodes must exist.
+	 * 
+	 * @param sourceName
+	 * 		Name of the source node of the link.
+	 * @param targetName
+	 * 		Name of the target node of the link.
+	 * @return
+	 * 		Link connecting the source to the target nodes.
+	 */
+	public Link retrieveLink(String sourceName, String targetName)
+	{	Node source = nodesByName.get(sourceName);
+		Node target = nodesByName.get(targetName);
+		Link result = retrieveLink(source, target);
+		return result;
+	}
+	
+	/**
+	 * Retrieve the link between the specified nodes.
+	 * If no such link exist, it is first created
+	 * then returned. The nodes must exist.
 	 * 
 	 * @param source
 	 * 		Source node of the link.

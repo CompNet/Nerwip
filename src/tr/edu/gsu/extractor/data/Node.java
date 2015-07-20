@@ -121,6 +121,21 @@ public class Node implements Comparable<Node>
 		properties.put(name, value);
 	}
 	
+	/**
+	 * Increments the value of the specified property.
+	 * The property must already exist, and it must
+	 * be an integer.
+	 * 
+	 * @param name
+	 * 		Name of the property.
+	 */
+	public void incrementIntProperty(String name)
+	{	String valueStr = properties.get(name);
+		int value = Integer.parseInt(valueStr) + 1;
+		valueStr = Integer.toString(value);
+		properties.put(name, valueStr);
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// GRAPHML			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
