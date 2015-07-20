@@ -151,7 +151,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 		if(key==null)
 			throw new NullPointerException("In order to use OpenCalais, you first need to set up your user key in file res/misc/keys.xml using the exact name \"OpenCalais\".");
 		
-		// we need to break down the text: OpenCalais can't handle more than 100000 chars at once
+		// we need to break down the text: OpenCalais can't handle more than 10000 chars at once
 //		List<String> parts = new ArrayList<String>();
 //		while(text.length()>95000)
 //		{	int index = text.indexOf("\n",90000) + 1;
