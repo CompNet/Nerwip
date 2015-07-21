@@ -120,6 +120,7 @@ public class NetworkExtraction
 		logger.log("Read all article entities");
 		logger.increaseOffset();
 		ArticleList folders = ArticleLists.getArticleList();
+		Map<String,Map<EntityType,Integer>> mainTypes = new HashMap<String, Map<EntityType,Integer>>();
 		int i = 0;
 		for(File folder: folders)
 		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
@@ -138,14 +139,13 @@ public class NetworkExtraction
 			
 			// process each sentence
 			logger.log("Process each sentence");
-			Set<String> conEntities = new TreeSet<String>();
-			Map<String,Map<EntityType,Integer>> conTypes = new HashMap<String, Map<EntityType,Integer>>();
 			List<Integer> sentencePos = StringTools.getSentencePositions(rawText);
 			sentencePos.add(rawText.length()); // to mark the end of the last sentence
 			int sp = -1;
 			for(int ep: sentencePos)
 			{	if(sp>=0)
-				{	List<AbstractEntity<?>> list = entities.getEntitiesIn(sp, ep);
+				{	Set<String> conEntities = new TreeSet<String>();
+					List<AbstractEntity<?>> list = entities.getEntitiesIn(sp, ep);
 					for(AbstractEntity<?> entity: list)
 					{	if(!(entity instanceof EntityDate)) // we don't need the dates
 						{	// entity name
@@ -153,10 +153,10 @@ public class NetworkExtraction
 							conEntities.add(str);
 							// entity type
 							EntityType type = entity.getType();
-							Map<EntityType,Integer> map = conTypes.get(str);
+							Map<EntityType,Integer> map = mainTypes.get(str);
 							if(map==null)
 							{	map = new HashMap<EntityType, Integer>();
-								conTypes.put(str,map);
+								mainTypes.put(str,map);
 							}
 							Integer count = map.get(type);
 							if(count==null)
@@ -165,38 +165,53 @@ public class NetworkExtraction
 							map.put(type, count);
 						}
 					}
+					List<String> connectedEntities = new ArrayList<String>(conEntities);
+					
+					// insert the entities into the graph
+					int s = connectedEntities.size();
+					logger.log("Insert/update "+s+" nodes in the graph");
+					for(int j=0;j<connectedEntities.size();j++)
+					{	// name
+						String entName = connectedEntities.get(j);
+						Node node = graph.retrieveNode(entName);
+						// occurrences
+						node.incrementIntProperty("Occurrences");
+					}
+					
+					// insert the links into the graph
+					logger.log("Insert/update "+(s*(s-1)/2)+" links in the graph");
+					for(int j=0;j<connectedEntities.size()-1;j++)
+					{	String source = connectedEntities.get(j);
+						for(int k=j+1;k<connectedEntities.size();k++)
+						{	String target = connectedEntities.get(k);
+							Link link = graph.retrieveLink(source, target);
+							link.incrementIntProperty("Weight");
+						}
+					}
 				}
+			
 				sp = ep;
-			}
-			List<String> connectedEntities = new ArrayList<String>(conEntities);
-			
-			// insert the entities into the graph
-			logger.log("Insert "+connectedEntities.size()+" entities into graph");
-			for(int j=0;j<connectedEntities.size();j++)
-			{	// name
-				String entName = connectedEntities.get(j);
-				Node node = graph.retrieveNode(entName);
-				// occurrences
-				node.incrementIntProperty("Occurrences");
-				// type
-				Map<EntityType,Integer> map = conTypes.get(entName);
-				EntityType type = getMaxKey(map);
-				node.setProperty("Type",type.toString());
-			}
-			
-			// insert the links into the graph
-			for(int j=0;j<connectedEntities.size()-1;j++)
-			{	String source = connectedEntities.get(j);
-				for(int k=j+1;k<connectedEntities.size();k++)
-				{	String target = connectedEntities.get(k);
-					Link link = graph.retrieveLink(source, target);
-					link.incrementIntProperty("Weight");
-				}
 			}
 			
 			logger.decreaseOffset();
 			i++;
 		}
+		
+		// setup majority entity types
+		for(Node node: graph.getAllNodes())
+		{	String name = node.getName();
+			Map<EntityType,Integer> map = mainTypes.get(name);
+			EntityType type = getMaxKey(map);
+			node.setProperty("Type",type.toString());
+		}
+		
+		logger.log("Article processing complete.");
+		int n = graph.getNodeSize();
+		int m = graph.getLinkSize();
+		logger.log("Total number of nodes in the graph: "+n+" ("+mainTypes.size()+")");	
+		logger.log("Total number of links in the graph: "+m);
+		float d = m / (n*(n-1f)/2);
+		logger.log("Graph density: "+d);	
 		logger.decreaseOffset();
 		
 		logger.log("Export graph as XML");
