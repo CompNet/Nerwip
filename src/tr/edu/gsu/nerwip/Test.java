@@ -57,12 +57,14 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.event.Event;
 import tr.edu.gsu.nerwip.edition.EntityEditor;
 import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
 import tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools.NLDistance;
+import tr.edu.gsu.nerwip.eventextraction.EventExtraction;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
@@ -140,13 +142,13 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		
-//		String name = "Émilien_Brigault";
-     	String name = "Albert_Chauly";
+		String name = "Émilien_Brigault";
+//    	String name = "Albert_Chauly";
 //		String name = "Gilles_Marcel_Cachin";
 //		String name = "Barack_Obama";
      	
-     	String S = "1919";
-     	String T = "1887";
+     	String S = "journaliste";
+     	String T = "socialiste";
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
@@ -163,6 +165,7 @@ public class Test
 //		testOpeNer(name);
 //		testSpotlight(name);
      	testNLDistance(S, T);
+     	testEventsExtraction(name);
 		
 
 //		testDateExtractor(url);
@@ -186,6 +189,7 @@ public class Test
 //		testEditor();
 		
 		logger.close();
+		
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -368,6 +372,34 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
+	//List<Event> extractEvents(Article article, Entities entities)
+	private static void testEventsExtraction(String name) throws Exception
+	{   logger.setName("Test-EventsExtraction");
+	    logger.increaseOffset();
+	    //List<Event> events = new ArrayList<Event>();
+	    
+	    
+	    ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		boolean exclusionOn = false;
+		boolean ignorePronouns = false;
+		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
+		opener.setOutputRawResults(true);
+		opener.setCacheEnabled(true);
+		Entities entities = opener.process(article);
+		logger.log("entities test = " + entities.toString());
+		
+		//logger.log("entities = " + entities.getEntities().toString());
+		logger.log("entity 0 = " + entities.getEntityAt(0).getStringValue());
+		
+		EventExtraction.extractEvents(article, entities);
+		
+		
+		
+		
+		
+	}
 	
 	
 	/**

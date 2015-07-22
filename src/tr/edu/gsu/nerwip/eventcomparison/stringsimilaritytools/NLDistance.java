@@ -75,7 +75,7 @@ public class NLDistance
 		longestStringLength = Math.max(S.length(), T.length());
 		
 		//logger.log("longestStringLength : " + longestStringLength);
-	    //logger.log("Levenshtein Distance between " + S + " and " + T + ":" + levDistance);
+	    logger.log("Levenshtein Distance between " + S + " and " + T + ":" + levDistance);
 		
 		levNorm = (double) levDistance / longestStringLength ;
 		logger.log("The Normalized Levenshtein Distance between " + S + " and " + T + " =  " + levNorm);
