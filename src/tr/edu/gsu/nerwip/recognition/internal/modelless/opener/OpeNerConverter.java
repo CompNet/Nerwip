@@ -17,6 +17,7 @@ import org.jdom2.output.XMLOutputter;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.EntityDate;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -41,9 +42,15 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * 
 	 * @param nerFolder
 	 * 		Folder used to stored the results of the NER tool.
+	 * @param parenSplit 
+	 * 		Indicates whether mentions containing parentheses
+	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is plit 
+	 * 		in two distinct entities).
 	 */
-	public OpeNerConverter(String nerFolder)
+	public OpeNerConverter(String nerFolder, boolean parenSplit)
 	{	super(RecognizerName.OPENER, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	
+		this.parenSplit = parenSplit;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -116,6 +123,9 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Indicates if mentions containing parentheses should be split */
+	private boolean parenSplit = true;
+	
 	@Override
 	public Entities convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
@@ -167,7 +177,15 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 					for(Element entityElt: entityElts)
 					{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
 						if(entity!=null)
-							result.addEntity(entity);
+						{	// possibly split in two distinct, smaller entities when containing parentheses
+							AbstractEntity<?>[] temp = processParentheses(entity);
+							if(temp==null)
+								result.addEntity(entity);
+							else
+							{	for(AbstractEntity<?> t: temp)
+									result.addEntity(t);
+							}
+						}
 					}
 				}
 				
@@ -203,7 +221,8 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * @param part
 	 * 		Part of the original text currently processed. 
 	 * @return
-	 * 		The resulting entity.
+	 * 		The resulting entity, or {@code null} if its
+	 * 		type is not supported.
 	 */
 	private AbstractEntity<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
 	{	AbstractEntity<?> result = null;
@@ -288,7 +307,56 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 		
 		return result;
 	}
+	
+	/**
+	 * On strings such as "Limoges (Haute-Vienne)", OpeNer tends to detect a single entity
+	 * when there are actually two ("Limoges" and "Haute-Vienne"). This method allows to
+	 * post-process such results, in order to get both entities.
+	 * 
+	 * @param entity
+	 * 		The original entity, containing both mentions.
+	 * @return
+	 * 		An array containing the two smaller mentions, or {@code null} if
+	 * 		the specified entity was not of the desired form.
+	 */
+	private AbstractEntity<?>[] processParentheses(AbstractEntity<?> entity)
+	{	AbstractEntity<?>[] result = null;
+		
+		if(parenSplit && !(entity instanceof EntityDate))
+		{	// get entity info
+			String original = entity.getStringValue();
+			int startPos = entity.getStartPos();
+			EntityType type = entity.getType();
+			RecognizerName source = entity.getSource();
+	
+			// analyze the original string
+			int startPar = original.lastIndexOf('(');
+			int endPar = original.lastIndexOf(')');
+			if(startPar!=-1 && endPar!=-1 && startPar<endPar  // we need both opening and closing parentheses
+					&& !(startPar==0 && endPar==original.length()-1)) // to avoid treating things like "(Paris)" 
+			{	// first entity
+				String valueStr1 = original.substring(0,startPar);
+				int startPos1 = startPos;
+				int endPos1 = startPos + startPar;
+				AbstractEntity<?> entity1 = AbstractEntity.build(type, startPos1, endPos1, source, valueStr1);
+//if(valueStr1.isEmpty())
+//	System.out.print("");
 
+				// second entity
+				String valueStr2 = original.substring(startPar+1,endPar);
+				int startPos2 = startPos + startPar + 1;
+				int endPos2 = startPos + endPar;
+				AbstractEntity<?> entity2 = AbstractEntity.build(type, startPos2, endPos2, source, valueStr2);
+//if(valueStr2.isEmpty())
+//	System.out.print("");
+				
+				result = new AbstractEntity<?>[]{entity1,entity2};
+			}
+		}
+		
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// RAW				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

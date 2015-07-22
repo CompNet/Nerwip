@@ -56,7 +56,7 @@ public class EntityOrganization extends AbstractEntity<String>
 	}
 	
 	/**
-	 * Builds a new date organization without a value.
+	 * Builds a new organization without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.

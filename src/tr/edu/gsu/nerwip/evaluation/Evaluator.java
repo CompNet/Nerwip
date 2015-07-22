@@ -36,6 +36,7 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
+import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
@@ -224,7 +225,7 @@ public class Evaluator
 	private List<AbstractMeasure> processArticle(File folder) throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
 	{	logger.increaseOffset();
 		List<AbstractMeasure> result = new ArrayList<AbstractMeasure>();
-	
+		
 		// get article
 		logger.log("Retrieve the article");
 		String name = folder.getName();
@@ -267,7 +268,7 @@ public class Evaluator
 			}
 		}
 		logger.decreaseOffset();
-			
+		
 		logger.decreaseOffset();
 		return result;
 	}
@@ -347,7 +348,7 @@ public class Evaluator
 			File oldFile = new File(FileNames.FO_OUTPUT + File.separator + measure.getFileName());
 			AbstractRecognizer recognizer = recognizers.get(i);
 			String newName = FileNames.FO_OUTPUT + File.separator 
-				+ TimeFormatting.formatCurrentTime()
+				+ TimeFormatting.formatCurrentFileTime()
 				+ "." + recognizer.getFolder()
 				+ "." + measure.getFileName(); 
 			File newFile = new File(newName);

@@ -480,8 +480,10 @@ public class Article
 		if(result.propertiesFile.exists())
 			result.readProperties();
 		else
-			// if the file does not exist, we create it
+		{	// if the file does not exist, we create it
+			result.initRetrievalDate();
 			result.writeProperties();
+		}
 		
 		// original page
 		if(result.originalFile.exists())

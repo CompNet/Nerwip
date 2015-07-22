@@ -50,18 +50,16 @@ public class FileNames
 	/** Output folder */
 //	public final static String FO_OUTPUT = "out";	//actual folder
 	
-//	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
-//	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
-//	public final static String FO_OUTPUT = "C:/Temp";
+
 
 //	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
+
 //	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-	public final static String FO_OUTPUT = "D:/Data2";
-//	public final static String FO_OUTPUT = "/home/sabrine/Data2";
+//	public final static String FO_OUTPUT = "D:/Data2";
+	public final static String FO_OUTPUT = "/home/sabrine/Data2";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
 	
@@ -71,8 +69,12 @@ public class FileNames
 		public final static String FO_CACHE = FO_RESOURCES + File.separator + "cache";
 			/** Folder used to store Freebase cached files */
 			public final static String FO_CACHE_FREEBASE = FO_CACHE + File.separator + "freebase";
+		/** Folder used to store images */
+		public final static String FO_IMAGES = FO_RESOURCES + File.separator + "images";
 		/** Folder used to store various data */
 		public final static String FO_MISC = FO_RESOURCES + File.separator + "misc";
+		/** Language XML files for the GUI */
+		public final static String FO_LANGUAGE = FO_RESOURCES + File.separator + "language";
 		/** Ner-related resources */
 		public final static String FO_NER = FO_RESOURCES + File.separator + "ner";
 			/** Folder of custom resources */
@@ -118,9 +120,11 @@ public class FileNames
 	// FILES		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** HTML file containing the "index" text */
-	public final static String FI_HELP_PAGE = "help" + FileNames.EX_WEB;
+	public final static String FI_HELP_PAGE = "help" + FileNames.EX_HTML;
 	/** XML schema file used to store category maps */
 	public final static String FI_CATMAP_SCHEMA = "categorymaps" + FileNames.EX_SCHEMA;
+	/** XML schema file used for graphml  */
+	public final static String FI_GRAPHML_SCHEMA = "graphml" + FileNames.EX_SCHEMA;
 	/** XML schema file used to record entities  */
 	public final static String FI_ENTITY_SCHEMA = "entities" + FileNames.EX_SCHEMA;
 	/** XML schema file used to store keys */
@@ -130,7 +134,7 @@ public class FileNames
 	/** File containing the properties of the article */
 	public final static String FI_PROPERTIES = "properties" + FileNames.EX_XML;
 	/** File containing original page */
-	public final static String FI_ORIGINAL_PAGE = "original" + FileNames.EX_WEB;
+	public final static String FI_ORIGINAL_PAGE = "original" + FileNames.EX_HTML;
 	/** File containing the raw text */
 	public final static String FI_RAW_TEXT = "raw" + FileNames.EX_TEXT;
 	/** File containing the text with hyperlinks */
@@ -139,7 +143,9 @@ public class FileNames
 	public final static String FI_REFERENCE_TEXT = "reference" + FileNames.EX_TEXT;
 	/** File containing the entities estimated by a NER tool, in a normalized format */
 	public final static String FI_ENTITY_LIST = "entities" + FileNames.EX_XML;
-	/** XML schema file used to store keys */
+	/** XML schema file used to store GUI texts */
+	public final static String FI_LANGUAGE = "language" + FileNames.EX_SCHEMA;
+	/** XML file used to store keys */
 	public final static String FI_KEY_LIST = "keys" + FileNames.EX_XML;
 	/** File containing the entities estimated by a NER tool, in a tool-specific format */
 	public final static String FI_OUTPUT_TEXT = "output" + FileNames.EX_TEXT;
@@ -161,6 +167,35 @@ public class FileNames
 	public final static String FI_CONFIGURATION_SCHEMA = "edconfig" + FileNames.EX_SCHEMA;
 	/** Main script of the Nero tool */
 	public final static String FI_NERO_BASH = "irisa_ne" + FileNames.EX_BASH;
+	/** Main program of the TagEn tool */
+	public final static String FI_TAGEN_EXE = "tagen";
+	
+	/** Application icon */
+	public final static String FI_ICON_APP = "icon" + FileNames.EX_PNG;
+	/** Icon for add */
+	public final static String FI_ICON_ADD = "plus" + FileNames.EX_PNG;
+	/** Icon for remove */
+	public final static String FI_ICON_REMOVE = "remove" + FileNames.EX_PNG;
+	/** Icon for show */
+	public final static String FI_ICON_SHOW = "view" + FileNames.EX_PNG;
+	/** Icon for next */
+	public final static String FI_ICON_NEXT = "next" + FileNames.EX_PNG;
+	/** Icon for previous */
+	public final static String FI_ICON_PREVIOUS = "previous" + FileNames.EX_PNG;
+	/** Icon for larger font */
+	public final static String FI_ICON_LARGER = "larger" + FileNames.EX_PNG;
+	/** Icon for smaller font */
+	public final static String FI_ICON_SMALLER = "smaller" + FileNames.EX_PNG;
+	/** Icon for saving file */
+	public final static String FI_ICON_SAVE = "disk" + FileNames.EX_PNG;
+	/** Icon for opening file */
+	public final static String FI_ICON_OPEN = "folder" + FileNames.EX_PNG;
+	
+	/** Laboratory logo */
+	public final static String FI_LOGO_LAB = "lia" + FileNames.EX_JPEG;
+	/** University logo */
+	public final static String FI_LOGO_UNIV = "uapv" + FileNames.EX_GIF;
+	
 	
 //	/**
 //	 * Returns the filename used to store the
@@ -181,8 +216,16 @@ public class FileNames
 	/////////////////////////////////////////////////////////////////
 	/** Bash file extension */
 	public final static String EX_BASH = ".bash";
+	/** Comma-separated values (CSV) file extension */
+	public final static String EX_CSV = ".csv";
 	/** PDF file extension */
 	public final static String EX_PDF = ".pdf";
+	/** PNG image format */
+	public final static String EX_PNG = ".png";
+	/** JPEG image format */
+	public final static String EX_JPEG = ".jpeg";
+	/** GIF image format */
+	public final static String EX_GIF = ".gif";
 	/** XML Schema file extension */
 	public final static String EX_SCHEMA = ".xsd";
 	/** Text file extension */
@@ -190,5 +233,5 @@ public class FileNames
 	/** XML file extension */
 	public final static String EX_XML = ".xml";
 	/** HTML file extension */
-	public final static String EX_WEB = ".html";
+	public final static String EX_HTML = ".html";
 }

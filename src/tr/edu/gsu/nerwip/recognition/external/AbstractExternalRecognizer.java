@@ -122,9 +122,9 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 				
 				// possibly remove the raw output file
 				if(outRawResults)
-					logger.log("Keep the file procuded by the external NER tool");
+					logger.log("Keep the file produced by the external NER tool");
 				else
-				{	logger.log("Delete the file procuded by the external NER tool");
+				{	logger.log("Delete the file produced by the external NER tool");
 					converter.deleteRawFile(article);
 				}
 			}

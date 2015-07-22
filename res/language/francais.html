@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Aide de EntityEditor</title>
+	</head>
+
+	<body>
+		<h1>Présentation</h1>
+		<i>EntityEditor</i> est un logiciel développé pour faciliter l'annotation manuelle d'entités nommées, 
+		ainsi que pour visualiser les entités nommées identifiées automatiquement par des logiciels spécialisés.
+		Ce logiciel est destiné à être utilisé avec <i>Nerwip</i>i>, une plateforme permettant l'intégration de n'importe
+		quel outil de détection d'entités nommées et son évaluation.
+		<br/>
+		Ce document décrit les bases de son utilisation. Notez que les instructions données ici se concentrent sur les
+		menus, mais que les principales fonctionnalités sont également accessibles via les boutons de la barre d'outils.
+		
+		
+		<h1>Démarrage et options</h1>
+		Lors du premier démarrage, <i>EntityEditor</i> demande à l'utilisateur d'indiquer son nom ainsi que le chemin
+		du dossier contenant le corpus de textes à annoter ou visualiser. Le nom sera utilisé en cas d'annotation :
+		<i>EntityEditor</i> l'enregistrera dans le fichier XML contenant les mentions d'entités, afin de pouvoir facilement
+		corriger des erreurs systématiques dans le cadre d'un processus d'annotation à plusieurs personnes. Les deux
+		informations (le nom et l'emplacement du corpus) peuvent être modifiées par la suite, en allant dans le menu 
+		<i>Options</i> du programme.
+		<br/>
+		Par défaut, à chaque démarrage, le logiciel tente de charger le dernier article traité, et se place dans le
+		dernier corpus sélectionné. L'utilisateur peut modifier cela dans les <i>Options</i> du programme.
+		<br>
+		Les <i>Options</i> permettent également à l'utilisateur de modifier la langue de l'interface graphique. À noter que
+		cela ne modifie pas les raccourcis clavier, et nécessite un redémarrage du logiciel.
+		<br/> 
+		Par défaut, il est possible d'éditer le texte de référence. Ces modifications sont automatiquement appliquées
+		aux positions des entitées annotées manuellement (onglet <i>Reference</i>), ainsi qu'à celles déjà annotées automatiquement 
+		(autres onglets, le cas échéant). Cette fonctionnalité peut être désactivée dans le menu <i>Options</i>, afin
+		d'éviter toute modification intempestive du texte. 
+		
+		
+		<h1>Navigation</h1>
+		Comme indiqué précédemment, l'utilisateur peut changer à sa guise le dossier principal du corpus en allant
+		dans les <i>Options</i> du programme. Celui-ci charge alors automatiquement le premier article disponible dans le corpus.
+		À partir du menu <i>Fichier</i>, l'utilisateur peut alors sélectionner un autre article à éditer, soit en le chargeant 
+		directement, soit en allant à l'article suivant/précédent.
+		<br/>
+		Le même menu <i>Fichier</i> permet aussi d'enregistrer les modications effectuées sur le texte ou les annotations, 
+		d'enregistrer les annotations dans un nouveau fichier, et de quitter le logiciel. L'option <i>Générer la liste des articles</i>
+		permet de produire un fichier CSV (i.e. que l'on peut ouvrir dans un tableur) listant les articles du corpus qui ont été
+		annotés (ou qui sont en cours d'annotation), ainsi que la personne qui les a annotés.
+		<br/>
+		Dans la partie principale du logiciel, plusieurs onglets affichent différentes annotations. Celles associées à l'onglet
+		<i>Reference</i> correspondent à celles qui ont été définies manuellement. Les autres onglets affichent les résultats
+		obtenus par différents outils de détection d'entités nommées, et ne sont pas éditables. Toute modification du texte de
+		référence est toutefois répercuté sur les annotations présentées dans les autres onglets.
+		<br/>
+		La barre de statut (en bas) affiche les informations suivantes (dans cet ordre) :
+		<ul>
+			<li>Paramètres de l'outil de détection d'entités nommées dont l'onglet est actuellement sélectionné (ou rien si c'est la référence).</li>
+			<li>Numéro de l'article dans le corpus.</li>
+			<li>Identité de l'éditeur courant.</li>
+			<li>Identité de l'éditeur ayant annoté la référence (ou rien si la référence n'a pas été annotée).</li>
+			<li>Position du curseur dans l'article, exprimée en caractères.</li>
+		</ul>
+		
+		
+		<h1>Entités</h1>
+		Pour plus de lisibilité, chaque type d'entité est associé à une couleur unique, reprise dans chaque élément
+		de l'interface graphique permettant de contrôler ou d'afficher ce type d'entité. Tout d'abord, les entités
+		sont surlignées de cette couleur dans le texte. Chaque type peut être masqué indépendamment des autres à
+		partir du menu <i>Affichage</i>. Lorsqu'un type est masqué, il ne peut plus être traité : on ne peut plus
+		créer de nouvelle annotations de ce type, ni supprimer les annotations existantes.
+		<br/>
+		La création d'entités se fait en sélectionnant le texte à traiter et en utilisant le menu <i>Édition</i>. Le texte
+		concerné est alors surligné de la couleur du type, afin d'indiquer la présence d'une entité. Pour supprimer une entité, 
+		il suffit de placer le curseur dedans, ou d'en sélectionner une partie, et d'utiliser le menu <i>Édition</i>.
+		<br/>
+		<b>Attention : </b>quand deux annotations se superposent, l'une d'entre elles ne sera pas visible car masquée par
+		l'autre. Elle n'en existe pas moins, comme on peut le vérifier en consultant le fichier XML correspondant.  
+		
+		
+		<h1>Affichage</h1>
+		Mis à part l'affichage/masquage des entités en fonction de leur type, il est également possible de modifier d'autres
+		aspects graphiques du logiciel. Le menu <i>Affichage</i> permet tout d'abord d'augmenter ou de diminuer la taille
+		de la police de caractères utilisée pour afficher le texte. Il offre également la possibilité d'afficher/masquer les
+		liens hypertextes du document (si celui-ci en contient).
+		<br/>
+		Le menu <i>Affichage</i> propose enfin une option permettant de basculer entre un affichage dans lequel les couleurs 
+		des annotations représentent les types des entités, et un autre dans lequel seules trois couleurs sont utilisées pour
+		comparer les estimation d'un outil de détection d'entités nommées avec la référence annotée manuellement. Ces trois
+		couleurs sont les suivantes :
+		<ul>
+			<li><i>Vert</i> pour les parties des annotations qui respectent la référence (vrais positifs),</li>
+			<li><i>Jaune</i> pour celles qui existent dans l'estimation mais pas dans la référence (faux positifs),</li>
+			<li><i>Rouge</i> pour celles qui existent dans la référence mais pas dans l'estimation (faux négatifs).</li>
+		</ul>
+		Le but de cette dernière option est de permettre une comparaison visuelle rapide des résultats avec la référence,
+		et de faire apparaitre clairement les erreurs commises.
+	</body>
+</html>

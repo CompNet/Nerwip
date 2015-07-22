@@ -38,20 +38,30 @@ public class XmlNames
 	public static final String ATT_ARTICLE = "article";
 	/** Represents a corpus */
 	public static final String ATT_CORPUS = "corpus";
-	/** Represents... a date! */
-	public static final String ATT_DATE = "date";
+	/** Represents a creation date */
+	public static final String ATT_CREATION = "creation";
+//	/** Represents... a date! */
+//	public static final String ATT_DATE = "date";
+	/** Whether the text can be edited, or not */
+	public static final String ATT_EDITABLE = "editable";
 	/** Person who originally annotated an article */
 	public static final String ATT_EDITOR = "editor";
 	/** Entity end position */
 	public static final String ATT_END = "end";
+	/** Font size */
+	public static final String ATT_FONT_SIZE = "fontSize";
 	/** Id associated to some key */
 	public static final String ATT_KEYID = "id";
+	/** Represents a modification date */
+	public static final String ATT_MODIFICATION = "modification";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
 	/** NER tool used to detect the entity */
 	public static final String ATT_SOURCE = "source";
 	/** Entity start position */
 	public static final String ATT_START = "start";
+	/** GUI tooltip */
+	public static final String ATT_TOOLTIP = "tooltip";
 	/** Entity type */
 	public static final String ATT_TYPE = "type";
 	/** Some value (generally associated to a name or key) */
@@ -84,6 +94,8 @@ public class XmlNames
 	public static final String ELT_ENTITIES = "entities";
 	/** An entity in a list of entities */
 	public static final String ELT_ENTITY = "entity";
+	/** A group of GUI texts */
+	public static final String ELT_GROUP = "group";
 	/** Some text key */
 	public static final String ELT_KEY = "key";
 	/** Language of an article */
@@ -104,6 +116,8 @@ public class XmlNames
 	public static final String ELT_STARTS_WITH = "startsWith";
 	/** String describing an entity */
 	public static final String ELT_STRING = "string";
+	/** Text properties in the editor */
+	public static final String ELT_TEXT = "text";
 	/** Title of an article */
 	public static final String ELT_TITLE = "title";
 	/** Address of an article */

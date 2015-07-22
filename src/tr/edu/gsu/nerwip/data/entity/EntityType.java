@@ -24,8 +24,6 @@ package tr.edu.gsu.nerwip.data.entity;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Color;
-
 /**
  * Type of the entities.
  * 
@@ -36,47 +34,23 @@ import java.awt.Color;
 public enum EntityType
 {	
 	/** A Date or any temporal entity (Christmas...) */
-	DATE(Color.PINK),
+	DATE,
 	
 	/** The role associated to a title: general, president, king, pope... */
-	FUNCTION(Color.GRAY),
+	FUNCTION,
 	
 	/** The name of a geographical place, artificial place, etc. */
-	LOCATION(Color.ORANGE),
+	LOCATION,
+	
+	/** Any congress, conference... */
+	MEETING,
 	
 	/** Any organization name: institution, company, assocation... */
-	ORGANIZATION(Color.CYAN),
+	ORGANIZATION,
 	
 	/** Any real or fiction person or animal, or any group of those */
-	PERSON(Color.YELLOW),
+	PERSON,
 	
 	/** A human production: works, buildings, awards, etc. */
-	PRODUCTION(Color.GREEN); 
-	
-	/**
-	 * Builds an entity type.
-	 * 
-	 * @param color
-	 * 		Color associated to the entity in the GUI.
-	 */
-	EntityType(Color color)
-	{	this.color = color;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// COLOR			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Color associated to the entity in the GUI */
-	private Color color;
-	
-	/**
-	 * Returns the color associated to the entity
-	 * in the GUI.
-	 * 
-	 * @return
-	 * 		Color associated to the entity.
-	 */
-	public Color getColor()
-	{	return color;
-	}
+	PRODUCTION; 
 }

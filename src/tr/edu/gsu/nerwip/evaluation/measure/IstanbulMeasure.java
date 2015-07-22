@@ -200,7 +200,7 @@ public class IstanbulMeasure extends AbstractMeasure
 		processPartialPositives(reference, estimation, categories);
 		processFalsePositives(estimation, categories);
 		processFalseNegatives(reference, categories);
-
+		
 		// update counts
 		updateCounts(categories);
 	}

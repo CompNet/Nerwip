@@ -2,7 +2,6 @@ package tr.edu.gsu.nerwip;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
-
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
  * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
  * Copyright 2013 Samet Atdağ & Vincent Labatut
@@ -43,8 +42,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.Text;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
@@ -54,37 +55,49 @@ import de.unihd.dbs.heideltime.standalone.OutputType;
 import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 import tr.edu.gsu.nerwip.data.article.Article;
+
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
+
+import tr.edu.gsu.nerwip.data.article.ArticleList;
+
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.event.Event;
 import tr.edu.gsu.nerwip.edition.EntityEditor;
-import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
+import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
+import tr.edu.gsu.nerwip.evaluation.measure.IstanbulMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
 import tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools.NLDistance;
 import tr.edu.gsu.nerwip.eventextraction.EventExtraction;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
+import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner.CombineMode;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmTrainer;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteTrainer;
+import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
-import tr.edu.gsu.nerwip.recognition.external.nero.Nero.Tagger;
-import tr.edu.gsu.nerwip.recognition.external.tagen.TagEN;
+import tr.edu.gsu.nerwip.recognition.external.nero.Nero.NeroTagger;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEn;
+import tr.edu.gsu.nerwip.recognition.external.tagen.TagEnModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTime;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.heideltime.HeidelTimeModelName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.Illinois;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisTrainer;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipe;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe.LingPipeTrainer;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlp;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpModelName;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.opennlp.OpenNlpTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.Stanford;
@@ -92,6 +105,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelN
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalaisLanguage;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
@@ -142,9 +156,11 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		
+
 		String name = "Émilien_Brigault";
 //    	String name = "Albert_Chauly";
 //		String name = "Gilles_Marcel_Cachin";
+
 //		String name = "Barack_Obama";
      	
      	String S = "journaliste";
@@ -155,11 +171,14 @@ public class Test
 //		testCategoryRetriever();
 //		testFbidRetriever();
 //		testTypeRetriever();
+//		testDbIdRetriever();
+//		testDbTypeRetriever();
+//		testWikiIdRetriever();
+//		testWikiTypeRetriever();
 		
 //		testTreeTagger();
 //		testHeidelTimeRaw();
-//		testWikiIdRetriever();
-//		testWikiTypeRetriever();
+
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
@@ -167,6 +186,9 @@ public class Test
      	testNLDistance(S, T);
      	testEventsExtraction(name);
 		
+
+
+//		testTagEnRaw();
 
 //		testDateExtractor(url);
 //		testHeidelTime(url);
@@ -179,13 +201,14 @@ public class Test
 //	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
-//		testTagEN(name);
+//		testTagEn(name);
 //		testWikipediaDater(url);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
+//		testStraightCombiner(name);
 		
-//		testEvaluator();
+		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -302,9 +325,10 @@ public class Test
 		// only the specified article
 		Entities entities = nero.process(article);*/
 		
+		boolean parenSplit = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
+		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
 		opener.setCacheEnabled(true);
 		
@@ -381,10 +405,12 @@ public class Test
 	    
 	    ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
-
+        
+		boolean parenSplit = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
+		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
+		//OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
 		opener.setCacheEnabled(true);
 		Entities entities = opener.process(article);
@@ -568,11 +594,17 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(url);
 
+		OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setCacheEnabled(false);
-		openCalais.process(article);
+
+		// only the specified article
+//		openCalais.process(article);
+
+		// all the corpus
+		testAllCorpus(openCalais,0);
 
 		logger.decreaseOffset();
 	}
@@ -594,9 +626,10 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
+		OpenCalaisLanguage lang = OpenCalaisLanguage.FR;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setOutputRawResults(true);
 		openCalais.setCacheEnabled(false);
 		openCalais.process(article);
@@ -622,19 +655,19 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
-		Tagger tagger = Tagger.CRF;
-		boolean flat = false;
+		NeroTagger neroTagger = NeroTagger.CRF;
+		boolean flat = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		Nero nero = new Nero(tagger, flat, ignorePronouns, exclusionOn);
+		Nero nero = new Nero(neroTagger, flat, ignorePronouns, exclusionOn);
 		nero.setOutputRawResults(true);
 		nero.setCacheEnabled(false);
 		
 		// only the specified article
-//		nero.process(article);
+		nero.process(article);
 
 		// all the corpus
-		testAllCorpus(nero,150);
+//		testAllCorpus(nero,0);
 		
 		logger.decreaseOffset();
 	}
@@ -648,7 +681,7 @@ public class Test
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testTagEN(String name) throws Exception
+	private static void testTagEn(String name) throws Exception
 	{	logger.setName("Test-TagEN");
 		logger.log("Start testing TagEN");
 		logger.increaseOffset();
@@ -656,12 +689,18 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
+		TagEnModelName model = TagEnModelName.MUC_MODEL;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		TagEN tagen = new TagEN(ignorePronouns, exclusionOn);
+		TagEn tagen = new TagEn(model,ignorePronouns, exclusionOn);
 		tagen.setOutputRawResults(true);
 		tagen.setCacheEnabled(false);
-		tagen.process(article);
+		
+		// only the specified article
+//		tagen.process(article);
+		
+		// all the corpus
+		testAllCorpus(tagen,0);
 
 		logger.decreaseOffset();
 	}
@@ -683,11 +722,12 @@ public class Test
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 		
+		boolean parenSplit = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
+		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
-		opener.setCacheEnabled(true);
+		opener.setCacheEnabled(false);
 		
 		// only the specified article
 //		opener.process(article);
@@ -980,14 +1020,12 @@ public class Test
 			boolean doIntervalTagging = false;
 			HeidelTime heidelTime = new HeidelTime(modelName, true, doIntervalTagging);
 			heidelTime.setCacheEnabled(false);
-//			heidelTime.process(article);
 			
-			ArticleList folders= ArticleLists.getArticleList();
-			for(File folder: folders)
-			{	String name = folder.getName();
-				article = retriever.process(name);
-				heidelTime.process(article);
-			}
+			// only the specified article
+//			heidelTime.process(article);
+
+			// all the corpus
+			testAllCorpus(heidelTime,0);
 		}
 		
 		logger.decreaseOffset();
@@ -1234,6 +1272,35 @@ public class Test
 	}
 	
 	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testStraightCombiner(String name) throws Exception
+	{	logger.setName("Test-StraightCombiner");
+		logger.log("Start testing StraightCombiner");
+		logger.increaseOffset();
+		
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+		
+		StraightCombiner straightCombiner = new StraightCombiner();
+		straightCombiner.setCacheEnabled(false);
+		
+		// only the specified article
+//		opener.process(article);
+		
+		// all the corpus
+		testAllCorpus(straightCombiner,0);
+		
+		logger.decreaseOffset();
+	}
+	
+	/**
 	 * Applies the specified NER tool to the 
 	 * whole corpus.
 	 * 
@@ -1254,7 +1321,7 @@ public class Test
 		for(File folder: folders)
 		{	if(i>=start)
 			{	// get the results
-				logger.log("Process article "+folder.getName());
+				logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
 				logger.increaseOffset();
 				
 					// get article
@@ -1291,9 +1358,12 @@ public class Test
 		// set types
 		List<EntityType> types = Arrays.asList(
 			EntityType.DATE,
+			EntityType.FUNCTION,
 			EntityType.LOCATION,
+			EntityType.MEETING,
 			EntityType.ORGANIZATION,
-			EntityType.PERSON
+			EntityType.PERSON,
+			EntityType.PRODUCTION
 		);
 		logger.log("Processed types: ");
 		logger.increaseOffset();
@@ -1308,6 +1378,19 @@ public class Test
 //			new DateExtractor(),
 //			new WikipediaDater(),
 			
+			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, false),	
+			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, true),	
+			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, false),	
+			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_COLLOQUIAL, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_COLLOQUIAL, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NARRATIVES, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NARRATIVES, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NEWS, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_NEWS, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_SCIENTIFIC, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.ENGLISH_SCIENTIFIC, loadOnDemand, true),	
+				
 //			new Illinois(IllinoisModelName.CONLL_MODEL, loadOnDemand, false, false, false),
 //			new Illinois(IllinoisModelName.CONLL_MODEL, loadOnDemand, false, false, true),	// LOC, ORG, PERS
 //			new Illinois(IllinoisModelName.CONLL_MODEL, loadOnDemand, false, true,  false),
@@ -1354,10 +1437,40 @@ public class Test
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  false),	// 
 //			new LingPipe(LingPipeModelName.NERWIP_MODEL, loadOnDemand, true,  true,  true,  true),	// LOC, ORG, PERS
 			
-//			new OpenCalais(false, false),
-//			new OpenCalais(false, true),
-//			new OpenCalais(true,  false),	// (DATE), LOC, ORG, PERS	
-//			new OpenCalais(true,  true),	
+//			new Nero(NeroTagger.CRF, false, false, false),
+//			new Nero(NeroTagger.CRF, false, false, true),
+//			new Nero(NeroTagger.CRF, false, true, false),
+//			new Nero(NeroTagger.CRF, false, true, true),
+			new Nero(NeroTagger.CRF, true, false, false),
+			new Nero(NeroTagger.CRF, true, false, true),
+			new Nero(NeroTagger.CRF, true, true, false),
+			new Nero(NeroTagger.CRF, true, true, true),
+//			new Nero(NeroTagger.FST, false, false, false),
+//			new Nero(NeroTagger.FST, false, false, true),
+//			new Nero(NeroTagger.FST, false, true, false),
+//			new Nero(NeroTagger.FST, false, true, true),
+			new Nero(NeroTagger.FST, true, false, false),
+			new Nero(NeroTagger.FST, true, false, true),
+			new Nero(NeroTagger.FST, true, true, false),
+			new Nero(NeroTagger.FST, true, true, true),
+			
+//			new OpenCalais(OpenCalaisLanguage.EN, false, false),
+//			new OpenCalais(OpenCalaisLanguage.EN, false, true),
+//			new OpenCalais(OpenCalaisLanguage.EN, true,  false),	// (DATE), LOC, ORG, PERS	
+//			new OpenCalais(OpenCalaisLanguage.EN, true,  true),
+			new OpenCalais(OpenCalaisLanguage.FR, false, false),
+			new OpenCalais(OpenCalaisLanguage.FR, false, true),
+			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
+			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
+			
+			new OpeNer(false, false, false),
+			new OpeNer(false, false, true),
+			new OpeNer(false, true, false),
+			new OpeNer(false, true, true),
+			new OpeNer(true, false, false),
+			new OpeNer(true, false, true),
+			new OpeNer(true, true, false),
+			new OpeNer(true, true, true),
 			
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,false),
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,true),
@@ -1417,6 +1530,25 @@ public class Test
 //			new Subee(true,true,true,false,true),
 //			new Subee(true,true,true,true,false),
 //			new Subee(true,true,true,true,true),
+			
+			new TagEn(TagEnModelName.MUC_MODEL, false, false),
+			new TagEn(TagEnModelName.MUC_MODEL, false, true),
+			new TagEn(TagEnModelName.MUC_MODEL, true, false),
+			new TagEn(TagEnModelName.MUC_MODEL, true, true),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, true),
+//			new TagEn(TagEnModelName.WIKI_MODEL, false, false),
+//			new TagEn(TagEnModelName.WIKI_MODEL, false, true),
+//			new TagEn(TagEnModelName.WIKI_MODEL, true, false),
+//			new TagEn(TagEnModelName.WIKI_MODEL, true, true),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, false, false),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, false, true),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, true, false),
+//			new TagEn(TagEnModelName.MEDICEN_MODEL, true, true),
+			
+////////////////////			
 			
 //			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false, SubeeMode.NONE),
 //			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false, SubeeMode.SINGLE),
@@ -1553,9 +1685,11 @@ public class Test
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-				
-			new FullCombiner(Combiner.SVM),
-			new FullCombiner(Combiner.VOTE)
+			
+//			new FullCombiner(Combiner.SVM),
+//			new FullCombiner(Combiner.VOTE),
+			
+			new StraightCombiner()
 		};
 		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed NER tools: ");
@@ -1577,8 +1711,8 @@ public class Test
 //			new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
 //		);
 //		ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-//		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
-		ArticleList folders = ArticleLists.getArticleList();
+		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
+//		ArticleList folders = ArticleLists.getArticleList();
 //		ArticleList folders = new ArticleList("test", Arrays.asList(new File(FileNames.FO_OUTPUT).listFiles(FileTools.FILTER_DIRECTORY)));
 		logger.log("Processed articles: ");
 		logger.increaseOffset();
@@ -1587,8 +1721,8 @@ public class Test
 		logger.decreaseOffset();
 		
 		// set evaluation measure
-		AbstractMeasure evaluation = new MucMeasure(null);
-//		AbstractMeasure evaluation = new LilleMeasure(null);
+//		AbstractMeasure evaluation = new MucMeasure(null);
+		AbstractMeasure evaluation = new LilleMeasure(null);
 //		AbstractMeasure evaluation = new IstanbulMeasure(null);
 		logger.log("Using assmessment measure "+evaluation.getClass().getName());
 
@@ -1729,12 +1863,12 @@ public class Test
 	// OTHER STUFF	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Testing the NERO named entity recognition tool.
+	 * Testing the Nero named entity recognition tool.
 	 * 
 	 * @throws Exception
 	 * 		Some problem occurred...
 	 */
-	private static void nero() throws Exception
+	private static void testNeroRaw() throws Exception
 	{	String neroKey = KeyHandler.KEYS.get("Nero");
 		String neroId = KeyHandler.IDS.get("Nero");
 	
@@ -1822,5 +1956,42 @@ public class Test
 	    	sb.append(line + "\n");
 	    System.out.println(sb);
 	}
-}
 
+	/**
+	 * Test the installation of TagEn.
+	 * 
+	 * @exception Exception
+	 * 		Some problem occurred...
+	 */
+	private static void testTagEnRaw() throws Exception
+	{	String[] commands = 
+		{	"/bin/sh", "-c", 
+//			"ls -l res/ner/tagen"
+//			"./res/ner/tagen/tagen --help"
+			"./res/ner/tagen/tagen :mucfr -aVy ./res/ner/tagen/input.txt"
+		};
+		Process p = Runtime.getRuntime().exec(commands);
+		
+//		Process p = Runtime.getRuntime().exec("/bin/sh -c ls -l res/ner/tagen");
+		int res = p.waitFor();
+		System.out.println("return code="+res);
+	 
+		// error output
+		{	BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+	    	StringBuffer sb = new StringBuffer();
+	    	String line = "";			
+		    while((line=reader.readLine()) != null)
+		    	sb.append(line + "\n");
+		    System.out.println(sb);
+		}
+		
+		// standard output
+	    {	BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	    	StringBuffer sb = new StringBuffer();
+	    	String line = "";			
+	    	while ((line = reader.readLine())!= null)
+	    		sb.append(line + "\n");
+	    	System.out.println(sb);
+	    }
+	}
+}

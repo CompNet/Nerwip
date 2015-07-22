@@ -1,5 +1,29 @@
 package tr.edu.gsu.nerwip.recognition.internal.modelless.opener;
 
+/*
+ * Nerwip - Named Entity Extraction in Wikipedia Pages
+ * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
+ * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
+ * Copyright 2013 Samet Atdağ & Vincent Labatut
+ * Copyright 2014-15 Vincent Labatut
+ * 
+ * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is free software: you can 
+ * redistribute it and/or modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
+ * License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +56,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * <br/>
  * Recommended parameter values:
  * <ul>
+ * 		<li>{@code parenSplit}: {@code true}</li>
  * 		<li>{@code ignorePronouns}: {@code true}</li>
  * 		<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
@@ -43,6 +68,9 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * <b>Notes:</b> the English version is able to recognize mentions
  * referring to the same entity, and to resolve coreferences. The 
  * tool also seems to be able to do entity linking (vs. a knowledge base).
+ * <br/>
+ * TODO OpeNer is available as a set of Java libraries. We could directly 
+ * integrate them in Nerwip.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
@@ -53,18 +81,25 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 * Builds and sets up an object representing
 	 * the OpeNer NER tool.
 	 * 
+	 * @param parenSplit 
+	 * 		Indicates whether mentions containing parentheses
+	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is plit 
+	 * 		in two distinct entities).
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 */
-	public OpeNer(boolean ignorePronouns, boolean exclusionOn)
-	{	super(false,ignorePronouns,exclusionOn);
+	public OpeNer(boolean parenSplit, boolean ignorePronouns, boolean exclusionOn)
+	{	// it seems necessary to clean entities with OpeNer,
+		// other wise it sometimes includes punctation in the entities.
+		super(true,ignorePronouns,exclusionOn);
 		
 		setIgnoreNumbers(false);
+		this.parenSplit = parenSplit;
 		
 		// init converter
-		converter = new OpeNerConverter(getFolder());
+		converter = new OpeNerConverter(getFolder(),parenSplit);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -76,12 +111,19 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	}
 
 	/////////////////////////////////////////////////////////////////
+	// CONVERTER		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Indicates if mentions containing parentheses should be split */
+	private boolean parenSplit = true;
+	
+	/////////////////////////////////////////////////////////////////
 	// FOLDER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
 	{	String result = getName().toString();
 		
+		result = result + "_" + "parenSplit=" + parenSplit;
 		result = result + "_" + "ignPro=" + ignorePronouns;
 		result = result + "_" + "exclude=" + exclusionOn;
 		
@@ -132,9 +174,9 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	private static final String PARSER_URL = SERVICE_URL + "/constituent-parser";
 	/** Entity recognizer URL */
 	private static final String RECOGNIZER_URL = SERVICE_URL + "/ner";
-	/** Maximal request size for OpenNer */
-	private static final int MAX_SIZE = 5000; //TODO wasn't it possible to use a value larger than 1000?
-//	/** Sleep periods (in ms) */
+	/** Maximal request size for OpenNer (the doc recomands 1000, but it works fine with 5000 chars) */
+	private static final int MAX_SIZE = 5000;
+//	/** Sleep periods (in ms) */ // this is actually not needed
 //	private static final long SLEEP_PERIOD = 5000;
 	
 	@Override
@@ -155,20 +197,20 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 			try
 			{	// tokenize the text
 				String tokenizedText = performTokenization(part);
-//				Thread.sleep(SLEEP_PERIOD); //TODO is it really necessary to sleep like this ?
+//				Thread.sleep(SLEEP_PERIOD); // not needed
 
 				// detect part-of-speech
 				String taggedText = performTagging(tokenizedText);
-//				Thread.sleep(SLEEP_PERIOD);
+//				Thread.sleep(SLEEP_PERIOD); // not needed
 				
 				// apply the constituent parser
 				String parsedText = performParsing(taggedText);
-//				Thread.sleep(SLEEP_PERIOD);
+//				Thread.sleep(SLEEP_PERIOD); // not needed
 				
 				// perform the NER
 				String nerText = performRecognition(parsedText);
 
-				// clean the resulting XML //TODO why that?
+				// clean the resulting XML // unnecessary
 //				String kafOld ="<KAF xml:lang=\"fr\" version=\"v1.opener\">";
 //		        String kafNew = "<KAF>";
 //				nerText = nerText.replaceAll(kafOld, kafNew);
@@ -382,9 +424,53 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		String result = sb.toString();
 		return result;
 	}
+
+//	/////////////////////////////////////////////////////////////////
+//	// CLEANING		 		/////////////////////////////////////////
+//	/////////////////////////////////////////////////////////////////
+//    /** Whether or not the beginings and ends of entities should be cleaned from any non-letter/digit chars */
+//    protected boolean trim = false;
+//
+//    /*
+//     * We need to overide this method, because OpeNer sometimes
+//     * include expressions between parentheses inside the entity
+//     * mention. We want to keep the closing parenthesis.
+//     * For instance, in "Limoges (Haute-Vienne)", we want to keep
+//     * the last character for consistency.
+//     */
+//    @Override
+//	public boolean cleanEntityEnds(AbstractEntity<?> entity)
+//	{	String valueStr = entity.getStringValue();
+//		char c;
+//		
+//		// trim beginning
+//		int startPos = entity.getStartPos();
+//		c = valueStr.charAt(0);
+//		while(!valueStr.isEmpty() && !Character.isLetterOrDigit(c))
+//		{	startPos++;
+//			valueStr = valueStr.substring(1,valueStr.length());
+//			if(!valueStr.isEmpty())
+//				c = valueStr.charAt(0);
+//		}
+//		
+//		// trim ending
+//		int endPos = entity.getEndPos();
+//		if(!valueStr.isEmpty())
+//		{	c = valueStr.charAt(valueStr.length()-1);
+//			while(!valueStr.isEmpty() && !Character.isLetterOrDigit(c) 
+//					&& (c!=')' || !valueStr.contains("("))) // this is the additional condition for OpenNer
+//			{	endPos--;
+//				valueStr = valueStr.substring(0,valueStr.length()-1);
+//				if(!valueStr.isEmpty())
+//					c = valueStr.charAt(valueStr.length()-1);
+//			}
+//		}
+//		
+//		entity.setStringValue(valueStr);
+//		entity.setStartPos(startPos);
+//		entity.setEndPos(endPos);
+//		
+//		boolean result = !valueStr.isEmpty();
+//		return result;
+//	}
 }
-
-// TODO some entities seem merged (especially when the second contain parenthesis) >> because they are flatten?
-// TODO also check flattening in Nero
-
-// TODO OpeNer is available as a set of Java libraries. We could directly integrate them in Nerwip.

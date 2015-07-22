@@ -230,7 +230,7 @@ public class ArticleRetriever
 			result = process(url);
 		}
 		
-		// the string is not a URL, it's name
+		// the string is not a URL, it's a name
 		catch(MalformedURLException e)
 		{	logger.log("This name is not a URL, so trying to retrieve it directly from cache");
 			result = Article.read(name);

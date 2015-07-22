@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.evaluation;
+package tr.edu.gsu.nerwip.data.article;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages

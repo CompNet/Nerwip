@@ -94,6 +94,8 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Header we need to remove before parsing the output text */
+	private static final String ORIGINAL_DOCTYPE = "<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">";
 	/** Value of the TIMEX3 attribute "type" for a calendar date */
 	private static final String TYPE_DATE = "DATE";
 	/** Value of the TIMEX3 attribute "type" for a day time (and possibly date) */
@@ -128,7 +130,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 		logger.log("Parsing the XML source previously produced by HeidelTime");
 		Element root;
 		try
-		{	String xmlSource = data.replace("<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">", "");
+		{	String xmlSource = data.replace(ORIGINAL_DOCTYPE, "");
 			xmlSource = xmlSource.replaceAll("&", "&amp;"); // needed to handle possible "&" chars (we suppose the original text does not contain any entity)
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(xmlSource));

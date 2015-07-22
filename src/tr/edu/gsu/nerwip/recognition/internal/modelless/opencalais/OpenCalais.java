@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -66,19 +65,23 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Vincent Labatut
  */
 public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>,OpenCalaisConverter>
-{	
+{	// user guide: http://new.opencalais.com/wp-content/uploads/2015/06/Thomson-Reuters-Open-Calais-API-User-Guide-v3.pdf
+	
 	/**
 	 * Builds and sets up an object representing
 	 * an OpenCalais NER tool.
 	 * 
+	 * @param lang
+	 * 		Selected language.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop-words should be excluded from the detection.
 	 */
-	public OpenCalais(boolean ignorePronouns, boolean exclusionOn)
+	public OpenCalais(OpenCalaisLanguage lang, boolean ignorePronouns, boolean exclusionOn)
 	{	super(false,ignorePronouns,exclusionOn);
 		
+		selectedLanguage = lang;
 		setIgnoreNumbers(false);
 		
 		// init converter
@@ -109,31 +112,21 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	/////////////////////////////////////////////////////////////////
 	// ENTITIES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities detected by this recognizer */
-	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
-	(	EntityType.DATE,
-		EntityType.LOCATION,
-		EntityType.ORGANIZATION,
-		EntityType.PERSON
-	);
-	
 	@Override
 	public List<EntityType> getHandledEntityTypes()
-	{	return HANDLED_TYPES;
+	{	List<EntityType> result = selectedLanguage.getHandledTypes(); 
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of languages this recognizer can treat */
-	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
-		ArticleLanguage.EN,
-		ArticleLanguage.FR
-	);
-
+	/** Language we want OpenCalais to process */
+	private OpenCalaisLanguage selectedLanguage;
+	
 	@Override
 	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = HANDLED_LANGUAGES.contains(language);
+	{	boolean result = selectedLanguage.handlesLanguage(language);
 		return result;
 	}
 	
@@ -158,7 +151,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 		if(key==null)
 			throw new NullPointerException("In order to use OpenCalais, you first need to set up your user key in file res/misc/keys.xml using the exact name \"OpenCalais\".");
 		
-		// we need to break down the text: OpenCalais can't handle more than 100000 chars at once
+		// we need to break down the text: OpenCalais can't handle more than 10000 chars at once
 //		List<String> parts = new ArrayList<String>();
 //		while(text.length()>95000)
 //		{	int index = text.indexOf("\n",90000) + 1;

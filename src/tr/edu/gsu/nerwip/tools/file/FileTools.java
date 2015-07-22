@@ -38,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -450,6 +451,36 @@ public class FileTools
 		};
 		File files[] = ff.listFiles(filter);
 		List<File> result =  new ArrayList<File>(Arrays.asList(files));
+		Collections.sort(result);
+		return result;
+	}
+
+	/**
+	 * Returns a list of files whose name ends with the specified
+	 * suffix, and which are located in the specified folder.
+	 *  
+	 * @param folder
+	 * 		Folder directly containing the files.
+	 * @param suffix
+	 * 		End of the file name.
+	 * @return
+	 * 		A list of files contained in the folder and whose name ends like the suffix.
+	 */
+	public static List<File> getFilesEndingWith(String folder, String suffix)
+	{	final String sfx = suffix.toLowerCase(Locale.ENGLISH);
+		File ff = new File(folder);
+		FileFilter filter = new FileFilter()
+		{	@Override
+			public boolean accept(File file)
+			{	String fileName = file.getName().toLowerCase(Locale.ENGLISH);
+				boolean result = fileName.endsWith(sfx);
+				result = result && !file.isDirectory();
+				return result;
+			}
+		};
+		File files[] = ff.listFiles(filter);
+		List<File> result =  new ArrayList<File>(Arrays.asList(files));
+		Collections.sort(result);
 		return result;
 	}
 }
