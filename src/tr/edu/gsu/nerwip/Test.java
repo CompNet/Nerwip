@@ -410,7 +410,7 @@ public class Test
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
 		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
-		//OpeNer opener = new OpeNer(ignorePronouns, exclusionOn);
+		
 		opener.setOutputRawResults(true);
 		opener.setCacheEnabled(true);
 		Entities entities = opener.process(article);
