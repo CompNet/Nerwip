@@ -183,8 +183,9 @@ public class Test
 //		testDbTypeRetriever();
 //		testOpeNer(name);
 //		testSpotlight(name);
-     	testNLDistance(S, T);
+//     	testNLDistance(S, T);
      	testEventsExtraction(name);
+
 		
 
 
@@ -208,7 +209,7 @@ public class Test
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();

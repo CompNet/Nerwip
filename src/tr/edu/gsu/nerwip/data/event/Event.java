@@ -237,5 +237,21 @@ public class Event {
 	{	this.date = date;
 	}
 	
+	@Override
+	public String toString()
+	{	String result = "EVENT(";
+		result = result + "PERSON=" + getPerson();
+		result = result + ", LOCATION=" + getLocation();
+		result = result + ", ORGANIZATION=" + getOrganization();
+		result = result + ", FUNCTION=" + getFunction();
+		result = result + ", LOCATION=" + getLocation();
+		result = result + ", DATE=" + getDate();
+
+		return result;
+	}
+	
+	
+	
+	
 
 }
