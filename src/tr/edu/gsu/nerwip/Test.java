@@ -171,7 +171,7 @@ public class Test
 //		testCategoryRetriever();
 //		testFbidRetriever();
 //		testTypeRetriever();
-//		testDbIdRetriever();
+		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testWikiIdRetriever();
 //		testWikiTypeRetriever();
@@ -184,7 +184,7 @@ public class Test
 //		testOpeNer(name);
 //		testSpotlight(name);
 //     	testNLDistance(S, T);
-     	testEventsExtraction(name);
+//    	testEventsExtraction(name);
 
 		
 
@@ -336,17 +336,13 @@ public class Test
 		
 		Entities entities = opener.process(article);
 	
-		/*String test = "<annotation text=\"Barack Obama est né à Honolulu Hawaï en 1961\">"
-			     + "<surfaceForm name=\"Barack Obama\" offset=\"0\"/>"
-			     + "<surfaceForm name=\"est\" offset=\"13\"/>"
-			     + "<surfaceForm name=\"Honolulu\" offset=\"22\"/>"
-			     + "<surfaceForm name=\"Hawaï\" offset=\"31\"/>"
-			     + "</annotation>";*/
+		
 		//List<AbstractEntity<?>> entityList = entities.getEntities();
 		//logger.log("entity0=" + entityList.get(0).getStringValue());
 
 		String xmlText = SpotlightTools.process(entities, article);
 		String answer = SpotlightTools.disambiguate(xmlText);
+		logger.log("answer = " + answer);
 		SpotlightTools.getEntitySpotlight(answer);
 		SpotlightTools.getIdSpotlight(answer);
 		SpotlightTools.getTypeSpotlight(answer);

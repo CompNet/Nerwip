@@ -1,20 +1,46 @@
 package tr.edu.gsu.nerwip.tools.dbspotlight;
 
+/*
+ * Nerwip - Named Entity Extraction in Wikipedia Pages
+ * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
+ * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
+ * Copyright 2013 Samet Atdağ & Vincent Labatut
+ * Copyright 2014-15 Vincent Labatut
+ * 
+ * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is free software: you can 
+ * redistribute it and/or modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
+ * License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.jdom2.Attribute;
@@ -28,14 +54,15 @@ import org.jdom2.output.XMLOutputter;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
-
-
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
-
-
-@SuppressWarnings("javadoc")
+/**
+ * This class acts as an interface with the Dbpedia Spotlight Web service.
+ * 
+ * @author Sabrine Ayachi
+ * @author Vincent Labatut
+ */
 public class SpotlightTools {
 	
 /////////////////////////////////////////////////////////////////
@@ -60,6 +87,12 @@ private final static String ATT_NAME = "surfaceForm";
 private final static String ATT_TYPE = "types";
 /** Attribute representing the id of an entity */
 private final static String ATT_URI = "URI";
+
+/////////////////////////////////////////////////////////////////
+// PROCESSING	 		/////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+/** Web service URL */
+private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/disambiguate";
 
 /////////////////////////////////////////////////////////////////
 // PROCESS			/////////////////////////////////////////////
@@ -118,11 +151,11 @@ private final static String ATT_URI = "URI";
 	   
 	    	XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 	    	String xmlText = outputter.outputString(document);
-	    	logger.log("xmlText " + xmlText);
+	    	//logger.log("xmlText " + xmlText);
 	    	  
 	    	String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	    	xmlText = xmlText.replace(xml, "");
-	    	logger.log("xmlText " + xmlText);
+	    	//logger.log("xmlText " + xmlText);
 	    	
 	    	logger.log("end of processing");
 	    	return xmlText;
@@ -142,61 +175,60 @@ private final static String ATT_URI = "URI";
 	public static String disambiguate(String text)
 	
 	{
-		//URI Spotlight disambiguation
-        String service= "http://spotlight.dbpedia.org/rest/disambiguate";
-        //double CONFIDENCE = 0.0;
-   	    //int SUPPORT = 0;
-        //String ID = null;
-        String answer = null;
-        
-        try 
-        {
-        	HttpClient httpclient = new DefaultHttpClient();
-   	        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-   	        //params.add(new BasicNameValuePair("confidence", "0.1")); 
-   	        //params.add(new BasicNameValuePair("support", "10")); 
-   	   
-   	        params.add(new BasicNameValuePair("Accept", "application/json"));
-   	        params.add(new BasicNameValuePair("output", "xml"));
-   	   
-   	        params.add(new BasicNameValuePair("text", text));
-   	        params.add(new BasicNameValuePair("url", service));
-    
-   	        HttpGet httpget = new HttpGet(service+"?"+URLEncodedUtils.format(params, "utf-8"));
-   	  
-   	        HttpResponse response = httpclient.execute(httpget);
-   	        logger.log( response.toString());
-   	   
-   	        InputStream stream = response.getEntity().getContent();
-   		    InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
-   		    BufferedReader bufferedReader = new BufferedReader(streamReader);
-   		
-   		    // read Spotlight response
-   		    logger.log("Spotlight answer");
-   		    StringBuilder builder = new StringBuilder();
-   		    String line;
-   		    while((line = bufferedReader.readLine())!=null)
-   		    {
-   		    	builder.append(line+"\n");
-   			    logger.log("Line:" +line);
-   			    
-   		    }
-   		    answer = builder.toString();
-        }
-        
-        catch (ClientProtocolException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	    } catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    		
-    	    }
+		String spotlightResponse = null;
+
+		try {
+			logger.log("Define HTTP message for spotlight");
 		
-		 
-        
-        logger.log("end of disambiguation");
-        return answer;
+		    HttpPost method = new HttpPost(SERVICE_URL);
+		    List<NameValuePair> params = new ArrayList<NameValuePair>();
+		    params.add(new BasicNameValuePair("confidence", "0.1")); 
+	        params.add(new BasicNameValuePair("support", "10")); 
+	        params.add(new BasicNameValuePair("Accept", "application/json"));
+	        params.add(new BasicNameValuePair("output", "xml"));
+            params.add(new BasicNameValuePair("text", text));
+	        params.add(new BasicNameValuePair("url", SERVICE_URL));
+            method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+	
+		    logger.log("Send message to service");
+		    HttpClient client = new DefaultHttpClient();
+		    HttpResponse response;
+	        response = client.execute(method);
+	        int responseCode = response.getStatusLine().getStatusCode();
+		    logger.log("Response Code : " + responseCode);
+		
+		    //read service answer
+			logger.log("Read the spotlight answer");
+			HttpEntity entity = response.getEntity();
+			InputStream inputStream = entity.getContent();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
+			StringBuffer sb = new StringBuffer();
+			String line;
+		    while((line = reader.readLine()) != null)
+			{
+		    	//logger.log(line);
+			    sb.append(line+"\n");
+			    
+			}
+		    
+		    spotlightResponse = sb.toString();
+		    
+		}
+		
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return spotlightResponse;
+		
 	
 	}
 	

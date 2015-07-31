@@ -2,6 +2,7 @@ package tr.edu.gsu.nerwip.data.event;
 
 import tr.edu.gsu.nerwip.data.entity.EntityFunction;
 import tr.edu.gsu.nerwip.data.entity.EntityLocation;
+import tr.edu.gsu.nerwip.data.entity.EntityMeeting;
 import tr.edu.gsu.nerwip.data.entity.EntityOrganization;
 import tr.edu.gsu.nerwip.data.entity.EntityPerson;
 import tr.edu.gsu.nerwip.data.entity.EntityProduction;
@@ -31,6 +32,8 @@ public class Event {
 	private EntityFunction function;
 	/** Production type entity */
 	private EntityProduction production;
+	/** Meeting type entity */
+	private EntityMeeting meeting;
 	/** Date type entity */
 	private EntityDate date;
 	
@@ -88,6 +91,16 @@ public class Event {
 	 */
 	public void addProduction(EntityProduction prod)
 	{ production = prod;
+	}
+	
+	/**
+	 * Add meeting type to an event.
+	 * 
+	 * @param m
+	 * 		Meeting type entity.
+	 */
+	public void addMeeting(EntityMeeting m)
+	{ meeting = m;
 	}
 	
 	/**
@@ -216,6 +229,28 @@ public class Event {
 	}
 	
 	/**
+	 * Returns the meeting type of an
+	 * event.
+	 * 
+	 * @return
+	 * 		Meeting Type of the event.
+	 */
+	public EntityMeeting getMeeting()
+	{	return meeting;
+	}
+	
+	/**
+	 * Returns the meeting type of an
+	 * event.
+	 * 
+	  * @param m
+	 * 		New meeting type of the event.
+	 */
+	public void setMeeting(EntityMeeting m)
+	{	this.meeting = m;
+	}
+	
+	/**
 	 * Returns the date type of an
 	 * event.
 	 * 
@@ -244,14 +279,32 @@ public class Event {
 		result = result + ", LOCATION=" + getLocation();
 		result = result + ", ORGANIZATION=" + getOrganization();
 		result = result + ", FUNCTION=" + getFunction();
-		result = result + ", LOCATION=" + getLocation();
+		result = result + ", PRODUCTION=" + getProduction();
+		result = result + ", Meeting=" + getMeeting();
 		result = result + ", DATE=" + getDate();
 
 		return result;
 	}
 	
 	
+	/*public Event clone(Event evt)
+	{
+		this.location = evt.location;
+		this.organization = evt.organization;
+		this.function = evt.function;
+		this.person = evt.person;
+		this.date = evt.date;
+		return this; */
+		
+	}
+		
+		
+	
+	
+	
+	
+	
 	
 	
 
-}
+

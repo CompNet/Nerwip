@@ -97,8 +97,7 @@ public class DbIdTools
     		   "<http://fr.dbpedia.org/resource/" + entity + ">" +  
                "dbpedia-owl:wikiPageID ?wikiPageID." +
                "}";
-     
-       //String query = "SELECT ?wikiPageID WHERE { <http://fr.dbpedia.org/resource/Paris> dbpedia-owl:wikiPageID ?wikiPageID. }";
+       
  
       try {
 	   

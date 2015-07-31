@@ -274,6 +274,7 @@ public class EventExtraction {
 	    
 	    sp = ep;
 	    
+	    
 	    }
 	    logger.decreaseOffset();
 		logger.log("Event extraction complete: "+eventNbr+" events are detected in " + article.getName());
