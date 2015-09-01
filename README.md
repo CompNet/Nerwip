@@ -11,7 +11,7 @@ Nerwip is free software: you can redistribute it and/or modify it under the term
 
 * Lab site: http://bit.gsu.edu.tr/compnet
 * GitHub repo: https://github.com/CompNet/Nerwip
-* Contact: vlabatut@gsu.edu.tr
+* Contact: Vincent Labatut <vincent.labatut@univ-avignon.fr>
  
 -----------------------------------------------------------------------
 
