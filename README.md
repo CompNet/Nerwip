@@ -9,7 +9,7 @@ Nerwip v4
 
 Nerwip is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see `licence.txt`
 
-* **Lab site:** http://bit.gsu.edu.tr/compnet
+* **Lab site:** http://lia.univ-avignon.fr
 * **GitHub repo:** https://github.com/CompNet/Nerwip
 * **Contact:** Vincent Labatut <vincent.labatut@univ-avignon.fr>
  
