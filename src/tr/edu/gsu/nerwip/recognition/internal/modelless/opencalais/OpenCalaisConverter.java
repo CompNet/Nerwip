@@ -32,11 +32,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -83,15 +83,29 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Company", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Continent", EntityType.LOCATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Country", EntityType.LOCATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/EntertainmentAwardEvent", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Facility", EntityType.LOCATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Holiday", EntityType.DATE);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Movie", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/MusicAlbum", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/MusicGroup", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/NaturalFeature", EntityType.LOCATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/OperatingSystem", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Organization", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Person", EntityType.PERSON);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/PharmaceuticalDrug", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Position", EntityType.FUNCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Product", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/ProgrammingLanguage", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/ProvinceOrState", EntityType.LOCATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/PublishedMedium", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/RadioProgram", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/RadioStation", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/Region", EntityType.LOCATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/SportsEvent", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/SportsLeague", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/TVShow", EntityType.PRODUCTION);
+		CONVERSION_MAP.put("http://s.opencalais.com/1/type/em/e/TVStation", EntityType.ORGANIZATION);
 	}
 	
 //	/** Pattern previously used to adjust entity positions */ 
@@ -136,11 +150,10 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	@SuppressWarnings("unchecked")
 	@Override
 	public Entities convert(Article article, List<String> text) throws ConverterException
 	{	logger.increaseOffset();
-		Entities result = new Entities(recognizerName);		
+		Entities result = new Entities(recognizerName);
 
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = text.iterator();

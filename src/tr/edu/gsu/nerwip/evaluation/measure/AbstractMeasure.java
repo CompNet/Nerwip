@@ -764,7 +764,7 @@ return temp;
 		// write header
 		pw.println("# tool evaluated: "+recognizer.getFolder());
 		pw.println("# evaluation data: "+dataName);
-		pw.println("# date of evaluation: "+TimeFormatting.formatCurrentTime());
+		pw.println("# date of evaluation: "+TimeFormatting.formatCurrentFileTime());
 		pw.println("# evaluation measure: "+getName());
 		pw.println();
 		

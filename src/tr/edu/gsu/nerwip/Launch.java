@@ -31,9 +31,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.edition.EntityEditor;
-import tr.edu.gsu.nerwip.evaluation.ArticleList;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
@@ -59,6 +59,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordModelN
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.stanford.StanfordTrainer;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtractor;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalaisLanguage;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
@@ -481,9 +482,10 @@ public class Launch
 		// get the first article in the corpus
 		Article article = getFirstArticle();
 		
+		OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 		boolean ignorePronouns = false;
 		boolean exclusionOn = false;
-		OpenCalais openCalais = new OpenCalais(ignorePronouns, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setCacheEnabled(false);
 		openCalais.process(article);
 
@@ -628,7 +630,7 @@ public class Launch
 			new WikipediaDater(),
 			new Illinois(IllinoisModelName.CONLL_MODEL, true, true, false, false),
 			new LingPipe(LingPipeModelName.APPROX_DICTIONARY, true, true, true, false, false),
-			new OpenCalais(false, false),
+			new OpenCalais(OpenCalaisLanguage.EN, false, false),
 			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL, true, false, false),
 			new Stanford(StanfordModelName.CONLLMUC_MODEL, true, false, false),
 			new Subee(true, true, true, true, true)

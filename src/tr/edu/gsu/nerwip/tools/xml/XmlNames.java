@@ -34,18 +34,34 @@ public class XmlNames
 	/////////////////////////////////////////////////////////////////
 	// CUSTOM ATTRIBUTES	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Represents... a date! */
-	public static final String ATT_DATE = "date";
+	/** Represents an article */
+	public static final String ATT_ARTICLE = "article";
+	/** Represents a corpus */
+	public static final String ATT_CORPUS = "corpus";
+	/** Represents a creation date */
+	public static final String ATT_CREATION = "creation";
+//	/** Represents... a date! */
+//	public static final String ATT_DATE = "date";
+	/** Whether the text can be edited, or not */
+	public static final String ATT_EDITABLE = "editable";
+	/** Person who originally annotated an article */
+	public static final String ATT_EDITOR = "editor";
 	/** Entity end position */
 	public static final String ATT_END = "end";
+	/** Font size */
+	public static final String ATT_FONT_SIZE = "fontSize";
 	/** Id associated to some key */
 	public static final String ATT_KEYID = "id";
+	/** Represents a modification date */
+	public static final String ATT_MODIFICATION = "modification";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
 	/** NER tool used to detect the entity */
 	public static final String ATT_SOURCE = "source";
 	/** Entity start position */
 	public static final String ATT_START = "start";
+	/** GUI tooltip */
+	public static final String ATT_TOOLTIP = "tooltip";
 	/** Entity type */
 	public static final String ATT_TYPE = "type";
 	/** Some value (generally associated to a name or key) */
@@ -56,24 +72,36 @@ public class XmlNames
 	/////////////////////////////////////////////////////////////////
 	/** Set of texts to be associated to categories */
 	public static final String ELT_ACCEPT = "accept";
+	/** Represents an article */
+	public static final String ELT_ARTICLE = "article";
 	/** Author of an article */
 	public static final String ELT_AUTHOR = "author";
 	/** List of article authors */
 	public static final String ELT_AUTHORS = "authors";
 	/** Category of article (military, scientist, etc.) */
 	public static final String ELT_CATEGORY = "category";
+	/** Editor configuration */
+	public static final String ELT_CONFIGURATION = "configuration";
+	/** Represents a corpus */
+	public static final String ELT_CORPUS = "corpus";
 	/** Dates associated to an article */
 	public static final String ELT_DATES = "dates";
+	/** Editor name */
+	public static final String ELT_EDITOR = "editor";
 	/** Text expressions which must be ignored because of how they end, when retreiving categories */
 	public static final String ELT_ENDS_WITH = "endsWith";
 	/** A list of entities */
 	public static final String ELT_ENTITIES = "entities";
 	/** An entity in a list of entities */
 	public static final String ELT_ENTITY = "entity";
+	/** A group of GUI texts */
+	public static final String ELT_GROUP = "group";
 	/** Some text key */
 	public static final String ELT_KEY = "key";
 	/** Language of an article */
 	public static final String ELT_LANGUAGE = "language";
+	/** Last loaded values (editor) */
+	public static final String ELT_LAST = "last";
 	/** Date of modification of an article */
 	public static final String ELT_MODIFICATION_DATE = "modification";
 	/** Date of publishing of an article */
@@ -88,10 +116,14 @@ public class XmlNames
 	public static final String ELT_STARTS_WITH = "startsWith";
 	/** String describing an entity */
 	public static final String ELT_STRING = "string";
+	/** Text properties in the editor */
+	public static final String ELT_TEXT = "text";
 	/** Title of an article */
 	public static final String ELT_TITLE = "title";
 	/** Address of an article */
 	public static final String ELT_URL = "url";
+	/** Whether or not to use the last value */
+	public static final String ELT_USE = "use";
 	/** Actual value of an entity (might differ from its textual representation */
 	public static final String ELT_VALUE = "value";
 }

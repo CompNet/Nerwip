@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="../../schemas/language.xsd">
+<!-- 
+	Nerwip - Named Entity Extraction in Wikipedia Pages
+	Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
+	Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
+	Copyright 2013 Samet Atdağ & Vincent Labatut
+	Copyright 2014-15 Vincent Labatut
+	
+	This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
+	
+	Nerwip - Named Entity Extraction in Wikipedia Pages is free software: you can 
+	redistribute it and/or modify it under the terms of the GNU General Public License 
+	as published by the Free Software Foundation, either version 2 of the License, or
+	(at your option) any later version.
+	 
+	Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
+	that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+	of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
+	License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
+	If not, see <http://www.gnu.org/licenses/>.
+ -->
+	
+	<group name="Entity" >
+		<text name="Date" value="Date" tooltip="Dates" />
+		<text name="Function" value="Function" tooltip="Functions" />
+		<text name="Location" value="Location" tooltip="Locations" />
+		<text name="Meeting" value="Meeting" tooltip="Meetings" />
+		<text name="Organization" value="Organization" tooltip="Organizations" />
+		<text name="Person" value="Person" tooltip="Persons" />
+		<text name="Production" value="Production" tooltip="Productions" />
+	</group>
+
+	<group name="Menu" >
+		<text name="File" value="File" />
+		<text name="Edit" value="Edit" />
+		<text name="View" value="View" />
+		<text name="Settings" value="Settings" />
+		<text name="Help" value="Help" />
+		<text name="Language" value="Language" tooltip="Change the language of the graphical user interface to" />
+	</group>
+
+	<group name="Action" >
+		<text name="Load" value="Open article" tooltip="Load the files related to an article" />
+		<text name="Previous" value="Previous article" tooltip="Go to the previous article" />
+		<text name="Next" value="Next article" tooltip="Go to the next article" />
+		<text name="Save" value="Save" tooltip="Record the modified text and entities" />
+		<text name="Copy" value="Save copy of reference" tooltip="Save a copy of the reference entities" />
+		<text name="Quit" value="Quit" tooltip="Quit" />
+		<text name="ArticleAnnotatedList" value="List annotated articles" tooltip="Generate a file listing all annotated articles" />
+		<text name="ArticleNonAnnotatedList" value="List non-annotated articles" tooltip="Generate a file listing all articles not annotated yet" />
+		
+		<text name="Insert" value="Insert" tooltip="Insert or convert an entity of type" />
+		<text name="Remove" value="Remove entity" tooltip="Remove an entity" />
+		
+		<text name="Display" value="View" tooltip="Display/hide entities of type" />
+		<text name="ModeTypes" value="Types" tooltip="Display entity types" />
+		<text name="ModeComp" value="Comparison" tooltip="Compare the detected entities to those of the reference" />
+		<text name="Links" value="Hyperlinks" tooltip="Show/Hide the article hyperlinks" />
+		<text name="Larger" value="Larger font" tooltip="Increase the font size" />
+		<text name="Smaller" value="Smaller font" tooltip="Decrease the font size" />
+		
+		<text name="Corpus" value="Corpus folder" tooltip="Change the main folder containing the corpus" />
+		<text name="Editor" value="Editor's name" tooltip="Change the name of the person currently editing the article" />
+		<text name="LastCorpus" value="Last corpus" tooltip="Try to access the last corpus at startup" />
+		<text name="LastArticle" value="Last article" tooltip="Try to load the last article at startup" />
+		<text name="Editable" value="Editable reference" tooltip="Enable/disable reference text modification" />
+		
+		<text name="About" value="About" tooltip="Display general information about" />
+		<text name="Index" value="Index" tooltip="Display basic instructions regarding how to use" />
+	</group>
+
+	<group name="Dialog" >
+		<text name="ArticleChooser" value="Select an article folder" />
+		<text name="ReferenceChooser" value="Select the new reference file" />
+		
+		<text name="CorpusChooser" value="Select the main corpus folder" />
+		<text name="CorpusError" value="No article found" tooltip="The selected folder does not contain any article." />
+		<text name="SetCorpus" value="Corpus required" tooltip="No corpus has been set, or the previously set corpus cannot be accessed anymore." />
+		<text name="SetCorpusSelect" value="For this reason, you are now going to be asked to select the main folder of the corpus." />
+	
+		<text name="ProposeSaving" value="Reference modified" tooltip="The reference has been modified. Do you want to record these changes?" />
+		<text name="Index" value="Help with" tooltip="Click OK to close" />
+		<text name="About" value="About" />
+		
+		<text name="ArticleList" value="Operation completed" tooltip="The following file was created:" />
+		<text name="ArticleListError" value="Error" tooltip="A problem occured while creating the file:" />
+		
+		<text name="LanguageError" value="Language error" tooltip="Error while loading the language file" />
+		<text name="LanguageErrorEnd" value="The previously selected language is therefore kept." />
+		<text name="Restart" value="Restart required" tooltip="You need to restart the software for the change to become effective." />
+		<text name="ChangeEditor" value="Editor's name" tooltip="Enter the name of the person currently editing entities (i.e. you):" />
+		
+		<text name="FirstLaunch" value="First launch" tooltip="This is the first launch of" />
+		<text name="FirstLaunchAsked" value="For this time only, you are now going to be asked to:" />
+		<text name="FirstLaunchName" value="Enter your name (as the editor)" />
+		<text name="FirstLaunchFolder" value="Select the main folder of the corpus" />
+		<text name="FirstLaunchWarning" value="Warning:" />
+		<text name="FirstLaunchMain" value="the main folder, not some article folder" />
+	</group>
+
+	<group name="Misc" >
+		<text name="EditorArticle" value="Art. edt.:" tooltip="Name of the origial editor of this article" />
+		<text name="EditorCurrent" value="Edt.:" tooltip="Name of the current editor (you)" />
+		
+		<text name="NerDetails" value=" " tooltip="Parameters of the considered NER tool" />
+		<text name="ArticleNumber" value="/" tooltip="Rank of the article in the considered corpus" />
+		<text name="Position" value="Pos.:" tooltip="Position of the carret in the text, expressed in characters" />
+	</group>
+</language>

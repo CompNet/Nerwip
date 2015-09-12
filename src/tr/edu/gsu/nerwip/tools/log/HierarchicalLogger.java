@@ -2,7 +2,6 @@ package tr.edu.gsu.nerwip.tools.log;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
-
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
  * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
  * Copyright 2013 Samet Atdağ & Vincent Labatut
@@ -26,7 +25,6 @@ package tr.edu.gsu.nerwip.tools.log;
  */
 
 import java.io.File;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -76,7 +74,6 @@ public class HierarchicalLogger
 	HierarchicalLogger(String name)
 	{	this.name = name;
 	}
-	
 
     /////////////////////////////////////////////////////////////////
 	// ACTIVE		/////////////////////////////////////////////////
@@ -144,7 +141,7 @@ public class HierarchicalLogger
 				
 				// file handler
 				String filename = FileNames.FO_LOG + File.separator 
-					+ TimeFormatting.formatCurrentTime() + "."
+					+ TimeFormatting.formatCurrentFileTime() + "."
 					+  loggerName + "." 
 					+ "%g"								// replaced by the file number during runtime
 					+ LOG_EXTENSION;

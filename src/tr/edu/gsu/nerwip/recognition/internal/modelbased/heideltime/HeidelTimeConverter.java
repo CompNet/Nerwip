@@ -30,13 +30,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import org.jdom.Content;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Text;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Content;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Text;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -94,6 +94,8 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Header we need to remove before parsing the output text */
+	private static final String ORIGINAL_DOCTYPE = "<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">";
 	/** Value of the TIMEX3 attribute "type" for a calendar date */
 	private static final String TYPE_DATE = "DATE";
 	/** Value of the TIMEX3 attribute "type" for a day time (and possibly date) */
@@ -119,7 +121,6 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	/** Begining of the value string when only the date is specified */
 	private static final String TIME_PREFIX = "XXXX-XX-XX";
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Entities convert(Article article, String data) throws ConverterException
 	{	logger.increaseOffset();
@@ -129,7 +130,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 		logger.log("Parsing the XML source previously produced by HeidelTime");
 		Element root;
 		try
-		{	String xmlSource = data.replace("<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">", "");
+		{	String xmlSource = data.replace(ORIGINAL_DOCTYPE, "");
 			xmlSource = xmlSource.replaceAll("&", "&amp;"); // needed to handle possible "&" chars (we suppose the original text does not contain any entity)
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(xmlSource));
@@ -191,7 +192,6 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	 * 		The created entity, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	@SuppressWarnings("unchecked")
 	private EntityDate convertElement(Element element, int index)
 	{	logger.increaseOffset();
 		EntityDate result = null;
@@ -210,7 +210,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 				String text = element.getText();
 				Date date = parseTimex3Value(valueStr,text);
 				if(date==null)
-					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); 
+					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); //TODO WARNING: 
 				else
 				{	int length = text.length();
 					result = (EntityDate) AbstractEntity.build(EntityType.DATE, index, index+length, recognizerName, text);
@@ -317,7 +317,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 			
 			// build date object
 			if(year!=0)
-				result = new Date(year,month,day);
+				result = new Date(day,month,year);
 		}
 		
 		return result;

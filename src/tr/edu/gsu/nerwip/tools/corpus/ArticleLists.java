@@ -26,17 +26,28 @@ package tr.edu.gsu.nerwip.tools.corpus;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
-import tr.edu.gsu.nerwip.evaluation.ArticleList;
+import org.xml.sax.SAXException;
+
+import tr.edu.gsu.nerwip.data.article.ArticleList;
+import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -65,6 +76,10 @@ public class ArticleLists
 		
 //		generateArticleList();
 		
+		File corpus = new File(FileNames.FO_OUTPUT);
+		File output = new File(FileNames.FO_OUTPUT+File.separator+"annotated.txt");
+		generateAnnotatedArticleList(corpus,output);
+	
 		logger.close();
 	}
 	
@@ -75,7 +90,7 @@ public class ArticleLists
 	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
 	/////////////////////////////////////////////////////////////////
-	// ARTICLELIST		/////////////////////////////////////////////
+	// ARTICLE LISTS	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Returns the list of all articles in
@@ -101,10 +116,14 @@ public class ArticleLists
 	 */
 	public static ArticleList getArticleList(File corpusFolder)
 	{	logger.log("Retrieving the list of articles");
-		File articles[] = corpusFolder.listFiles(FileTools.FILTER_DIRECTORY);
-		List<File> list = Arrays.asList(articles);
-		Collections.sort(list);
-		ArticleList result = new ArticleList("all", list);
+		ArticleList result = null;
+//		File articles[] = corpusFolder.listFiles(FileTools.FILTER_DIRECTORY);
+		File articles[] = corpusFolder.listFiles(FileTools.FILTER_ARTICLES);
+		if(articles!=null)
+		{	List<File> list = Arrays.asList(articles);
+			Collections.sort(list);
+			result = new ArticleList("all", list);
+		}
 		return result;
 	}
 	
@@ -162,7 +181,8 @@ public class ArticleLists
 		
 		// get the full list
 		File folder = new File(FileNames.FO_OUTPUT);
-		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+//		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+		File articles[] = folder.listFiles(FileTools.FILTER_ARTICLES);
 		List<File> list = Arrays.asList(articles);
 		Collections.sort(list);
 		
@@ -174,7 +194,133 @@ public class ArticleLists
 			result = new ArticleList("half2", list.subList(list.size()/2+1,list.size()));
 		return result;
 	}
-
+	
+	/////////////////////////////////////////////////////////////////
+	// FILE LISTS		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Format last modification date */
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	
+	/**
+	 * Returns the list of the corpus articles which have been annotated
+	 * manually, as well as other details (name of the editor, size in 
+	 * chars, etc.).
+	 * 
+	 * @param corpus
+	 * 		Main folder of the considered corpus.
+	 * @param output
+	 * 		Ouput file (a text file).
+	 *  
+	 * @throws ParseException
+	 * 		Problem while reading the entity file. 
+	 * @throws IOException 
+	 * 		Problem while accessing a file. 
+	 * @throws SAXException 
+	 * 		Problem while accessing a file. 
+	 */
+	public static void generateAnnotatedArticleList(File corpus, File output) throws SAXException, IOException, ParseException
+	{	String sep = ",";
+		// open output file
+		PrintWriter pw = FileTools.openTextFileWrite(output);
+		pw.println("Number"+sep+"Title"+sep+"Size"+sep+"Date"+sep+"Editor"+sep+"Count");
+		
+		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
+		FilenameFilter ffRaw = FileTools.createFilter(FileNames.FI_RAW_TEXT);
+		Map<String,Integer> counts = new HashMap<String, Integer>();
+			
+		// get the list of articles
+		ArticleList list = getArticleList(corpus);
+		int i = 1;
+		for(File folder: list)
+		{	String name = folder.getName();
+			File files[] = folder.listFiles(ffEnt);
+			if(files.length>0)
+			{	File file = files[0];
+				Entities entities = Entities.readFromXml(file);
+				String editor = entities.getEditor();
+				if(editor!=null)
+				{	files = folder.listFiles(ffRaw);
+					if(files.length>0)
+					{	file = files[0];
+						Date date = entities.getModificationDate();
+						String dateStr = DATE_FORMAT.format(date);
+						String rawText = FileTools.readTextFile(file);
+						int size = rawText.length();
+						Integer count = counts.get(editor);
+						if(count==null)
+							count = 0;
+						count++;
+						counts.put(editor, count);
+						pw.println(i+sep+name+sep+size+sep+dateStr+sep+editor+sep+count);
+					}
+				}
+			}
+			i++;
+		}
+		
+		// close output file
+		pw.close();
+	}
+	
+	/**
+	 * Returns the list of the corpus articles which have <i>not</i>been annotated
+	 * manually, as well as other details (size in chars, etc.).
+	 * 
+	 * @param corpus
+	 * 		Main folder of the considered corpus.
+	 * @param output
+	 * 		Ouput file (a text file).
+	 *  
+	 * @throws ParseException
+	 * 		Problem while reading the entity file. 
+	 * @throws IOException 
+	 * 		Problem while accessing a file. 
+	 * @throws SAXException 
+	 * 		Problem while accessing a file. 
+	 */
+	public static void generateNonAnnotatedArticleList(File corpus, File output) throws SAXException, IOException, ParseException
+	{	String sep = ",";
+		// open output file
+		PrintWriter pw = FileTools.openTextFileWrite(output);
+		pw.println("Number"+sep+"Title"+sep+"Size");
+		
+		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
+		FilenameFilter ffRaw = FileTools.createFilter(FileNames.FI_RAW_TEXT);
+			
+		// get the list of articles
+		ArticleList list = getArticleList(corpus);
+		int i = 1;
+		for(File folder: list)
+		{	String name = folder.getName();
+			
+			File files[] = folder.listFiles(ffRaw);
+			if(files.length>0)
+			{	boolean treat = false;
+				File file = files[0];
+				String rawText = FileTools.readTextFile(file);
+				int size = rawText.length();
+				
+				files = folder.listFiles(ffEnt);
+				if(files.length==0)
+					treat = true;
+				else
+				{	file = files[0];
+					Entities entities = Entities.readFromXml(file);
+					String editor = entities.getEditor();
+					if(editor==null)
+						treat = true;
+				}
+				
+				if(treat)
+					pw.println(i+sep+name+sep+size);
+			}
+			i++;
+		}
+		
+		// close output file
+		pw.close();
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// URL				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -188,7 +334,8 @@ public class ArticleLists
 	public static List<URL> getArticleUrlList()
 	{	logger.log("Retrieving the list of article URLs");
 		File folder = new File(FileNames.FO_OUTPUT);
-		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+//		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
+		File articles[] = folder.listFiles(FileTools.FILTER_ARTICLES);
 		List<File> files = new ArrayList<File>(Arrays.asList(articles));
 		Collections.sort(files);
 
@@ -207,7 +354,7 @@ public class ArticleLists
 		
 		return result;
 	}
-
+	
 	/**
 	 * Creates a text file containing the list of all
 	 * article names from the corpus.

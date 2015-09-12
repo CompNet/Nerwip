@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -39,12 +40,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.input.DOMBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Content;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
+import org.jdom2.Text;
+import org.jdom2.input.DOMBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -238,5 +241,37 @@ public class XmlTools
 	    
 	    // close the stream
 	    outBuf.close();
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// CONTENT			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the complete text contained directly or indirectly
+	 * in the specified element. This means the result includes
+	 * text containing by its descendants.
+	 * 
+	 * @param element
+	 * 		Element whose containt must be processed.
+	 * @return
+	 * 		The concatenation of all text nodes under the specified element.
+	 */
+	public static String getRecText(Element element)
+	{	String result = "";
+		
+		List<Content> children = element.getContent();
+		for(Content child: children)
+		{	if(child instanceof Text)
+			{	Text text = (Text)child;
+				result = result + text.getText();
+			}
+			else if(child instanceof Element)
+			{	Element elt = (Element)child;
+				String temp = getRecText(elt);
+				result = result + temp;
+			}
+		}
+		
+		return result;
 	}
 }

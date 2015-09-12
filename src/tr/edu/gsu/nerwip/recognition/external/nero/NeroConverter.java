@@ -1,5 +1,29 @@
 package tr.edu.gsu.nerwip.recognition.external.nero;
 
+/*
+ * Nerwip - Named Entity Extraction in Wikipedia Pages
+ * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
+ * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
+ * Copyright 2013 Samet Atdağ & Vincent Labatut
+ * Copyright 2014-15 Vincent Labatut
+ * 
+ * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is free software: you can 
+ * redistribute it and/or modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * Nerwip - Named Entity Extraction in Wikipedia Pages is distributed in the hope 
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
+ * License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -44,7 +68,8 @@ public class NeroConverter extends AbstractExternalConverter
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
 	/** List of ignored entity types */
 	private final static List<String> IGNORED_TYPES = Arrays.asList(
-		"amount"
+		"amount",
+		"unk"
 	);
 	
 	/** Initialization of the conversion map */
@@ -177,78 +202,6 @@ public class NeroConverter extends AbstractExternalConverter
 						throw new ConverterException("Found an untreatable character:\n"+msg1+"\n"+msg2);
 					}
 				}
-				
-				
-//				// different chars, but space in the original text
-//				else if(c1==' ')
-//				{	// Nero probably ate a space
-//					// >> go to next char in the original text only
-//					i1++; 
-//				}
-//				
-//				// different chars, but space in the annotated text
-//				else if(c2==' ')
-//				{	// if the very end or beginning of the annotated text, 
-//					// Nero probably added a space
-//					// >> go to next char in the annotated text
-//					if(i2==0 || i2==data.length()-1)
-//					{	i2++;
-//					}
-//					else
-//					{	// if right before or right after a tag (in the annotated text), 
-//						// or right before a new line,
-//						// or right before or after another space, 
-//						// then Nero probably added a space
-//						// >> go to next char in the annotated text
-//						int before = data.codePointAt(i2-1);
-//						int after = data.codePointAt(i2+1);
-//						if(before=='>' || after=='<' 
-//								|| after=='\n'
-//								|| before=='\''
-//								|| before==' ' || after==' ')
-//						{	i2++; 
-//						}
-//						// otherwise, if punctuation in the original text, 
-//						// Nero probably ate this punctuation mark
-//						// >> go to next char in the original text
-//						else if(StringTools.isPunctuation(c1))// && originalText.charAt(i1+1)==' ')
-//						{	i1++;
-//							if(c1=='-')
-//								i2++;
-//						}
-//						// else, we have a problem!
-//						else
-//						{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
-//							String msg2 = StringTools.highlightPosition(i2, data, 20);
-//							throw new ConverterException("Problem at position :\n"+msg1+"\n"+msg2);
-//						}
-//					}
-//				}
-//				
-//				// different chars, and punctuation in the original text
-//				// Nero probably ate the punctuation
-//				// >> go to next char in the original text
-//				else if(StringTools.isPunctuation(c1))
-//				{	i1++;
-//					if(StringTools.isPunctuation(c2))
-//						i2++;
-//				}
-//				
-//				// different chars, and punctuation in the annotated text
-//				// Nero probably moved some punctuation
-//				// >> go to next char in the annotated text
-//				else if(StringTools.isPunctuation(c2))
-//				{	i2++;
-//				}
-//				
-//				// problem : display a specific error message
-//				else
-//				{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
-//					String msg2 = StringTools.highlightPosition(i2, data, 20);
-//					throw new ConverterException("Found a untreatable supernumerary character:\n"+msg1+"\n"+msg2);
-//				}
-				
-				
 			}
 		}
 		

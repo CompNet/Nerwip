@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import tr.edu.gsu.nerwip.evaluation.ArticleList;
+import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.file.FileTools;

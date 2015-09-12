@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.entity.Entities;
@@ -480,8 +480,10 @@ public class Article
 		if(result.propertiesFile.exists())
 			result.readProperties();
 		else
-			// if the file does not exist, we create it
+		{	// if the file does not exist, we create it
+			result.initRetrievalDate();
 			result.writeProperties();
+		}
 		
 		// original page
 		if(result.originalFile.exists())
@@ -517,7 +519,6 @@ public class Article
 	 * @throws IOException
 	 * 		Problem while accessing the file.
 	 */
-	@SuppressWarnings("unchecked")
 	private void readProperties() throws ParseException, SAXException, IOException
 	{	// schema file
 		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_PROPERTY_SCHEMA;

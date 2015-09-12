@@ -2,7 +2,6 @@ package tr.edu.gsu.nerwip.tools.log;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
-
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
  * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
  * Copyright 2013 Samet Atdağ & Vincent Labatut
@@ -26,7 +25,6 @@ package tr.edu.gsu.nerwip.tools.log;
  */
 
 import java.util.Collection;
-
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
@@ -95,7 +93,7 @@ public class HierarchicalFormatter extends SimpleFormatter
 			int offset = (Integer)parameters[1];
 			
 			// init
-			String hour = TimeFormatting.formatTime(record.getMillis())+" ";
+			String hour = TimeFormatting.formatFileTime(record.getMillis())+" ";
 			int length = hour.length();
 			String space = "";
 			for(int i=0;i<length;i++)

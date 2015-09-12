@@ -24,8 +24,8 @@ package tr.edu.gsu.nerwip.data.entity;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.jdom.Attribute;
-import org.jdom.Element;
+import org.jdom2.Attribute;
+import org.jdom2.Element;
 
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
@@ -56,7 +56,7 @@ public class EntityOrganization extends AbstractEntity<String>
 	}
 	
 	/**
-	 * Builds a new date organization without a value.
+	 * Builds a new organization without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.

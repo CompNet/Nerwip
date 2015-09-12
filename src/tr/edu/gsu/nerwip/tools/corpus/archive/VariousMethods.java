@@ -25,12 +25,14 @@ package tr.edu.gsu.nerwip.tools.corpus.archive;
  */
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
 import org.xml.sax.SAXException;
 
+import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
@@ -75,7 +77,9 @@ public class VariousMethods
 	
 //		convertReferences(new SmaConversion());
 	
-		resetReferenceValues();
+//		resetReferenceValues();
+	
+		updateReferenceFiles();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -285,5 +289,34 @@ public class VariousMethods
 
 		logger.decreaseOffset();
 		logger.log("Conversion over");
+	}
+	
+	/**
+	 * Fix the dates from the reference files in the
+	 * old corpus.
+	 * 
+	 * @throws SAXException
+	 * 		Problem while reading/writing entities. 
+	 * @throws IOException
+	 * 		Problem while reading/writing entities. 
+	 * @throws ParseException
+	 * 		Problem while reading/writing entities. 
+	 */
+	private static void updateReferenceFiles() throws SAXException, IOException, ParseException
+	{	File corpusFolder = new File("C:/Users/Vincent/Documents/Dropbox/Nerwip2/out");
+		ArticleList list = ArticleLists.getArticleList(corpusFolder);
+		boolean flag = false;
+		for(File folder: list)
+		{	String name = folder.getName();
+			if(name.equals("Ozias_Leduc"))
+				flag = true;
+			else if(flag)
+			{	String xmlPath = folder.getPath() + File.separator + FileNames.FI_ENTITY_LIST;
+				File file = new File(xmlPath);
+				Entities entities = Entities.readFromXml(file);
+				entities.setModificationDate(entities.getCreationDate());
+				entities.writeToXml(file);
+			}
+		}
 	}
 }
