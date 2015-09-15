@@ -82,6 +82,8 @@ public class NLDistance
 		
         return levNorm;
         
+        
 	}
 	
 }
+
