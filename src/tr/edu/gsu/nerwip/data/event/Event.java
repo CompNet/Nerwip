@@ -287,15 +287,8 @@ public class Event {
 	}
 	
 	
-	/*public Event clone(Event evt)
-	{
-		this.location = evt.location;
-		this.organization = evt.organization;
-		this.function = evt.function;
-		this.person = evt.person;
-		this.date = evt.date;
-		return this; */
-		
+
+	
 	}
 		
 		

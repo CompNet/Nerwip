@@ -59,12 +59,13 @@ public class FileNames
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
 
-	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/test";
+//	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/test";
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/Data";
-
-//	public final static String FO_OUTPUT = "/home/sabrine/Data2";
+    
+	public final static String FO_OUTPUT = "/home/sabrine/Data2";
+//	public final static String FO_OUTPUT = "/home/sabrine/Data";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
+
 	
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
