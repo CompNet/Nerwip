@@ -25,6 +25,7 @@ package tr.edu.gsu.nerwip.tools.dbspotlight;
  */
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,8 +53,13 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
+import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
+import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
@@ -61,7 +67,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * This class acts as an interface with the Dbpedia Spotlight Web service.
  * 
  * @author Sabrine Ayachi
- * @author Vincent Labatut
+ * 
  */
 public class SpotlightTools {
 	
@@ -98,18 +104,18 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 // PROCESS			/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-/**
- * Receives an article and entities and
- * construct the xml text needed for 
- * desambiguation.
- *  
- * @param entities
- * 		Entities detected in the article.
- * @param article
- * 		Article to process.
- * @return
- * 		The xml text.
- */
+   /**
+    * Receives an article and entities and
+    * construct the xml text needed for 
+    * disambiguation.
+    *  
+    * @param entities
+    * 		Entities detected in the article.
+    * @param article
+    * 		Article to process.
+    * @return
+    * 		The xml text.
+    */
 	public static String process(Entities entities, Article article) 
 	{   logger.increaseOffset();
 	    String textt = article.getRawText();
@@ -162,6 +168,72 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 	    
 	}
 	
+	// preprocessing before the disambiguation
+	public static String annotate(Article article)
+	{
+		logger.increaseOffset();
+	    String textt = article.getRawText();
+		String spotlightResponse = null;
+
+		try {
+			logger.log("Define HTTP message for spotlight annotation");
+		
+		    HttpPost method = new HttpPost("http://spotlight.dbpedia.org/rest/annotate");
+		    List<NameValuePair> params = new ArrayList<NameValuePair>();
+		    params.add(new BasicNameValuePair("content-type", "application/x-www-form-urlencoded"));
+		    //params.add(new BasicNameValuePair("disambiguator", "Default")); 
+		    params.add(new BasicNameValuePair("confidence", "0.1")); 
+	        params.add(new BasicNameValuePair("support", "1")); 
+	        params.add(new BasicNameValuePair("Accept", "application/json"));
+	        //params.add(new BasicNameValuePair("output", "xml"));
+            params.add(new BasicNameValuePair("text", textt));
+	        params.add(new BasicNameValuePair("url", "http://spotlight.dbpedia.org/rest/annotate"));
+            method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+	
+		    logger.log("Send message to service");
+		    HttpClient client = new DefaultHttpClient();
+		    HttpResponse response;
+	        response = client.execute(method);
+	        int responseCode = response.getStatusLine().getStatusCode();
+		    logger.log("Response Code : " + responseCode);
+		
+		    //read service answer
+			logger.log("Read the spotlight annotation answer");
+			HttpEntity entity = response.getEntity();
+			InputStream inputStream = entity.getContent();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
+			StringBuffer sb = new StringBuffer();
+			String line;
+		    while((line = reader.readLine()) != null)
+			{
+		    	//logger.log(line);
+			    sb.append(line+"\n");
+			    
+			}
+		    
+		    spotlightResponse = sb.toString();
+		    
+		}
+		
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return spotlightResponse;
+		
+		
+		
+		
+	}
+	
 	/**
 	 * Receives the xml text and
 	 * return the result of disambiguation.
@@ -188,6 +260,7 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 	        params.add(new BasicNameValuePair("output", "xml"));
             params.add(new BasicNameValuePair("text", text));
 	        params.add(new BasicNameValuePair("url", SERVICE_URL));
+	        //params.add(new BasicNameValuePair("sparql", "CuttingEdge"));
             method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 	
 		    logger.log("Send message to service");
@@ -232,9 +305,102 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 	
 	}
 	
+	/**
+	 * This method applies spotlight on all 
+	 * the biographic corpus and return all the
+	 * disambiguated entities in the corpus.
+	 * @throws Exception
+	 * 		When something goes wrong.
+	 */
+	public static String SpotlightAllCorpus() throws Exception
+	{
+		String spotlightAnswer = null;
+		ArticleList folders = ArticleLists.getArticleList();
+		Article article;
+		Entities entities;
+		int i = 0;
+		for(File folder: folders)
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+		    AbstractRecognizer recognizer = new StraightCombiner();
+		    ArticleRetriever retriever = new ArticleRetriever();
+		    article = retriever.process(name);
+		    String rawText = article.getRawText();
+		    // retrieve the entities
+		   logger.log("Retrieve the entities");
+		   entities = recognizer.process(article);
+		   
+		   logger.log("start applying Spotlight to " + name);
+		   String xmlText = SpotlightTools.process(entities, article);
+		   //logger.log("xmltext = " + xmlText);
+		    String answer = SpotlightTools.disambiguate(xmlText);
+			//logger.log("answer = " + answer);
+			spotlightAnswer = spotlightAnswer + answer;
+		}
+		
+		return spotlightAnswer;
+		
+		
+	}
 	
 	
-	public static List<String> getEntitySpotlight(String text)
+	/**
+	 * Receives the response of spotlight
+	 *and returns the list of offsets of disambiguated entities.
+	 *  
+	 * @param text
+	 * 		the response of spotlight.
+	 * @return
+	 * 		List of offsets.
+	 */
+	public static List<String> getOffsetSpotlight(String text)
+	
+	{   ArrayList<String> offsetList = new ArrayList<String>();
+		
+		try
+		{	// build DOM
+			logger.log("Build DOM");
+			SAXBuilder sb = new SAXBuilder();
+			Document doc = sb.build(new StringReader(text));
+			Element root = doc.getRootElement();
+			
+			Element resources = root.getChild(ELT_RESOURCES);
+			List<Element> wordElts = resources.getChildren(ELT_RESOURCE);
+			
+
+			for(Element wordElt: wordElts)
+			{	
+			    String entityOffset = wordElt.getAttributeValue("offset");
+			    //logger.log("entityOffset= " + entityOffset);
+			    offsetList.add(entityOffset);
+			}
+			logger.log("offsetList " + offsetList.toString());
+		}
+        
+        catch (JDOMException e)
+		{	e.printStackTrace();
+		}
+		catch (IOException e)
+		{	e.printStackTrace();
+		}
+        
+        return offsetList;
+
+	}
+	
+	/**
+	 * Receives the response of spotlight
+	 *and returns the list of disambiguated entities.
+	 *  
+	 * @param text
+	 * 		the response of spotlight.
+	 * @return
+	 * 		List of entities disambiguated by spotlight.
+	 */
+    public static List<String> getEntitySpotlight(String text)
 	
 	{   ArrayList<String> entityList = new ArrayList<String>();
 		
@@ -254,6 +420,10 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 			    String entityName = wordElt.getAttributeValue(ATT_NAME);
 			    //logger.log("entityName= " + entityName);
 			    entityList.add(entityName);
+			    
+			    String entityOffset = wordElt.getAttributeValue("offset");
+			    //logger.log("entityOffset= " + entityOffset);
+			    entityList.add(entityOffset);
 			}
 			logger.log("entityList " + entityList.toString());
 		}
@@ -271,6 +441,16 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 	
 	
 	
+    /**
+	 * Receives the response of spotlight
+	 *and returns the list of uri of 
+	 *disambiguated entities.
+	 *  
+	 * @param text
+	 * 		the response of spotlight.
+	 * @return
+	 * 		List of uri.
+	 */
 	public static List<String> getIdSpotlight(String text)
 	{
 		
@@ -304,7 +484,15 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
         return idList;
 	}
 	
-	
+	/**
+	 * Receives the response of spotlight
+	 *and returns the list of types of disambiguated entities.
+	 *  
+	 * @param text
+	 * 		the response of spotlight.
+	 * @return
+	 * 		List of types.
+	 */
 	public static List<List<String>> getTypeSpotlight(String text)
 	{
 		List<List<String>> entityTypes = new ArrayList<List<String>>();
