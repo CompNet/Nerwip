@@ -163,7 +163,7 @@ public class StraightCombiner extends AbstractCombiner
 	{	logger.increaseOffset();
 	
 		// HeidelTime
-		{	logger.log("Init HeidelTime (Dates only)");
+	      {	logger.log("Init HeidelTime (Dates only)");
 			HeidelTimeModelName modelName = HeidelTimeModelName.FRENCH_NARRATIVES;
 			boolean loadModelOnDemand = true;
 			boolean doIntervalTagging = false;
@@ -172,7 +172,7 @@ public class StraightCombiner extends AbstractCombiner
 		}
 		
 		// Nero
-		{	logger.log("Init Nero");
+		  {	logger.log("Init Nero");
 			NeroTagger neroTagger = NeroTagger.CRF;
 			boolean flat = true;
 			boolean ignorePronouns = false;
@@ -182,7 +182,7 @@ public class StraightCombiner extends AbstractCombiner
 		}
 		
 		// OpenCalais
-		{	logger.log("Init OpenCalais");
+		  {	logger.log("Init OpenCalais");
 			OpenCalaisLanguage lang = OpenCalaisLanguage.FR;
 			boolean ignorePronouns = false;
 			boolean exclusionOn = false;
@@ -191,7 +191,7 @@ public class StraightCombiner extends AbstractCombiner
 		}
 		
 		// OpeNer
-		{	logger.log("Init OpeNer");
+		  {	logger.log("Init OpeNer");
 			boolean parenSplit = true;
 			boolean ignorePronouns = false;
 			boolean exclusionOn = false;
@@ -200,7 +200,7 @@ public class StraightCombiner extends AbstractCombiner
 		}
 		
 		// TagEn
-		{	logger.log("Init TagEn");
+		  {	logger.log("Init TagEn");
 			TagEnModelName model = TagEnModelName.MUC_MODEL;
 			boolean ignorePronouns = false;
 			boolean exclusionOn = false;

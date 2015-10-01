@@ -342,6 +342,22 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 		return result;
 	}
 	
+	/**
+	 * Checks if the specified position is
+	 * located before this entity (i.e. before
+	 * its own starting position).
+	 * 
+	 * @param position
+	 * 		Position to be checked.
+	 * @return
+	 * 		{@code true} iff the position is located
+	 * 		before, and out of, this entity.
+	 */
+	public boolean succeedesPosition(int position)
+	{	boolean result = position<startPos;
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// SOURCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

@@ -283,7 +283,9 @@ public class Entities
 	{	List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
 		
 		for(AbstractEntity<?> entity: entities)
-		{	if(entity.containsPosition(startPos) || entity.containsPosition(endPos-1))
+		{	if(entity.containsPosition(startPos) || entity.containsPosition(endPos-1)
+				|| (entity.startPos>=startPos && entity.startPos<endPos)
+				|| (entity.endPos>=startPos && entity.endPos<endPos))
 				result.add(entity);
 		}
 		

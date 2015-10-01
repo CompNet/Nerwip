@@ -32,6 +32,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
@@ -55,15 +57,20 @@ import de.unihd.dbs.heideltime.standalone.OutputType;
 import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.event.Event;
 import tr.edu.gsu.nerwip.edition.EntityEditor;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.IstanbulMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
+import tr.edu.gsu.nerwip.eventcomparison.EventComparison;
+import tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools.NLDistance;
+import tr.edu.gsu.nerwip.eventextraction.EventExtraction;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
@@ -107,6 +114,7 @@ import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.dbpedia.DbIdTools;
 import tr.edu.gsu.nerwip.tools.dbpedia.DbTypeTools;
+import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbIdTools;
@@ -144,14 +152,21 @@ public class Test
 		
 //		URL url = new URL("http://en.wikipedia.org/wiki/John_Zorn");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Fleur_Pellerin");
-		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
+//		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 		
+
 //		String name = "Émilien_Brigault";
-//		String name = "Albert_Chauly";
-		String name = "Gilles_Marcel_Cachin";
+//		String name = "Aimé Piton";
+ //   	String name = "Albert_Chauly";
+//    	String name = "Achille_Eugène_Fèvre";
+//		String name = "Gilles_Marcel_Cachin";
+
 //		String name = "Barack_Obama";
+     	
+//     	String S = "journaliste";
+//     	String T = "socialiste";
 		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
@@ -165,8 +180,25 @@ public class Test
 		
 //		testTreeTagger();
 //		testHeidelTimeRaw();
-//		testTagEnRaw();
+
+//		testDbIdRetriever();
+//		testDbTypeRetriever();
+//		testOpeNer(name);
+//		testSpotlight();
+//     	testNLDistance(S, T);
 		
+ //  	    testEventsExtraction();
+//		testEventComparison();
+	//	testFunction();
+//		test2();
+		testSpotlightAllCorpus();
+//		testEventExtraction();
+
+		
+
+
+//		testTagEnRaw();
+
 //		testDateExtractor(url);
 //		testHeidelTime(url);
 //		testIllinois(url);
@@ -185,10 +217,11 @@ public class Test
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();
+		
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -271,6 +304,207 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
+	private static void testEventExtraction() throws Exception
+	{
+		logger.setName("Test-EventExtraction");
+		logger.log("Start testing EventExtraction");
+		logger.increaseOffset();
+		Article article;
+		Entities entities;
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		List<Event> allEventsList = new ArrayList<Event>();
+		for(File folder: folders)
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+		    AbstractRecognizer recognizer = new StraightCombiner();
+		    ArticleRetriever retriever = new ArticleRetriever();
+		    article = retriever.process(name);
+		    String rawText = article.getRawText();
+		    // retrieve the entities
+		   logger.log("Retrieve the entities");
+		   entities = recognizer.process(article);
+		   
+		   List<Event> extractedEvents = EventExtraction.extractEvents(article, entities); 
+		   allEventsList.addAll(extractedEvents);
+		
+		}
+		int size = allEventsList.size();
+		logger.log("size of allEvientslist " + size);
+		for (int k=0; k<= size -1; k++)
+		{ String name = allEventsList.get(k).getPerson().getStringValue();
+		logger.log("name " + k + name);
+		//String date = allEventsList.get(k).getDate().getStringValue();
+		//logger.log("date " + k + date);
+		}
+		
+	}
+	
+	private static void testEventComparison() throws Exception
+	{
+		logger.setName("Test-EventComparison");
+		logger.log("Start testing EventComparison");
+		logger.increaseOffset();
+		Article article;
+		Entities entities;
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		for(File folder: folders)
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+		    AbstractRecognizer recognizer = new StraightCombiner();
+		    ArticleRetriever retriever = new ArticleRetriever();
+		    article = retriever.process(name);
+		    String rawText = article.getRawText();
+		    // retrieve the entities
+		   logger.log("Retrieve the entities");
+		   entities = recognizer.process(article);
+	    
+		   //event comparison
+		List<Event> extractedEvents = EventExtraction.extractEvents(article, entities);
+		String xmlText = SpotlightTools.process(entities, article);
+		logger.log("xmltext = " + xmlText);
+		String answer = SpotlightTools.disambiguate(xmlText);
+		logger.log("answer = " + answer);
+		
+		int size = extractedEvents.size();
+		logger.log("size is " + size);
+		
+		
+		if (extractedEvents.size() > 1)
+		{
+			logger.log("starting event comparison");
+			EventComparison.compareAllPairsOfEvents(extractedEvents, answer);
+		}
+		else logger.log("no events found");
+		
+		}
+				
+	}
+	
+	/*@SuppressWarnings("null")
+	private static void test2() throws Exception
+	{
+		Article article;
+		Entities entities = null;
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		//List<AbstractEntity<?>> allEntitiesList = null;
+		Entities allEntities =  new Entities();
+		int i = 0;
+		for(File folder: folders)
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+		    AbstractRecognizer recognizer = new StraightCombiner();
+		    ArticleRetriever retriever = new ArticleRetriever();
+		    article = retriever.process(name);
+		    String rawText = article.getRawText();
+		    // retrieve the entities
+		   logger.log("Retrieve the entities");
+		   entities = recognizer.process(article);
+		   //logger.log("SIZE OF ENTITIES OF ARTICLE " + name + entities.getEntities().size());
+		   
+		   //allEntities = allEntities.addEntities(entities);
+		  // allEntities = allEntities.addEntities(entities);
+		   allEntities.addEntities(entities);
+		   
+		
+		}
+		int n = allEntities.getEntities().size();
+		logger.log("all folders size + " + n );
+		List<AbstractEntity<?>> personEntities = new ArrayList<AbstractEntity<?>>();
+		   
+		@SuppressWarnings("null")
+		List<AbstractEntity<?>> ent = allEntities.getEntities();
+		for(AbstractEntity<?> e: ent)
+		{ EntityType entityType = e.getType();
+		  String type = entityType.toString();
+		  //logger.log("type = " + type);
+		  if (type == "PERSON")
+		  { logger.log("add this person to list " + e.getStringValue());
+			  personEntities.add(e);
+		  }
+		}
+		
+		int p = personEntities.size();
+		
+		logger.log("personEntities size " + p);
+		logger.log("size personEntities pour est " + p);
+		for (int j=0; j<p; j++)
+		{logger.log("entityname " + personEntities.get(j).getStringValue());}
+		
+		
+	}*/
+	
+	private static void testSpotlightAllCorpus() throws Exception
+	{ String spotlightAnswer = SpotlightTools.SpotlightAllCorpus();
+	   logger.log("SpotlightAnswer " + spotlightAnswer);
+
+	   //List<String> entityList = SpotlightTools.getEntitySpotlight(spotlightAnswer);
+	   //logger.log("entityList " + entityList);
+
+	}
+	
+	/**
+	 * Tests the feature allowing to automatically
+	 * retrieve DBpediaSpotlight ids and types of entities.
+	 * 
+	 * * @param name
+	 * 		name of the article to parse.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong...
+	 */
+	private static void testSpotlight() throws Exception
+	{	logger.setName("Test-Spotlight");
+		logger.log("Start testing Spotlight");
+		logger.increaseOffset();
+	    
+		Article article;
+		Entities entities;
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		for(File folder: folders)
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+		    AbstractRecognizer recognizer = new StraightCombiner();
+		    ArticleRetriever retriever = new ArticleRetriever();
+		    article = retriever.process(name);
+		    String rawText = article.getRawText();
+		    // retrieve the entities
+		   logger.log("Retrieve the entities");
+		   entities = recognizer.process(article);
+		   logger.log("start applying Spotlight to " + name);
+		   String xmlText = SpotlightTools.process(entities, article);
+		   //logger.log("xmltext = " + xmlText);
+		   String answer = SpotlightTools.disambiguate(xmlText);
+			logger.log("answer = " + answer);
+			
+			//SpotlightTools.getEntitySpotlight(answer);
+			//SpotlightTools.getIdSpotlight(answer);
+			//SpotlightTools.getTypeSpotlight(answer);
+			logger.decreaseOffset();
+		}
+		
+	}
+	
+	
+	
 	/**
 	 * Tests the feature allowing to automatically
 	 * retrieve DBpedia ids of entities.
@@ -284,7 +518,7 @@ public class Test
 		logger.increaseOffset();
 		
 		
-		DbIdTools.getId("Tunisie");
+		DbIdTools.getId("Paris");
 		
 		logger.decreaseOffset();
 	}
@@ -302,6 +536,47 @@ public class Test
 		logger.increaseOffset();
 		DbTypeTools.getAllTypes("Barack_Obama");
 		logger.decreaseOffset();
+	}
+	
+	
+	private static void testNLDistance(String S, String T) 
+	{	logger.setName("Test-NLDistance");
+		logger.increaseOffset();
+		NLDistance.getLevNorm(S, T);
+		logger.decreaseOffset();
+	}
+	
+	//List<Event> extractEvents(Article article, Entities entities)
+	private static void testEventsExtraction() throws Exception
+	{   logger.setName("Test-EventComparison");
+	    logger.log("Start testing EventComparison");
+	    logger.increaseOffset();
+	    Article article;
+	    Entities entities;
+	
+	    ArticleList folders = ArticleLists.getArticleList();
+	    int i = 0;
+	    for(File folder: folders)
+	    {	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+		    logger.increaseOffset();
+		    // get the article texts
+		    logger.log("Retrieve the article");
+		    String name = folder.getName();
+	        AbstractRecognizer recognizer = new StraightCombiner();
+	        ArticleRetriever retriever = new ArticleRetriever();
+	        article = retriever.process(name);
+	        String rawText = article.getRawText();
+	        // retrieve the entities
+	       logger.log("Retrieve the entities");
+	       entities = recognizer.process(article);
+	   
+		   
+	
+		   List<Event> extractedEvents = EventExtraction.extractEvents(article, entities);
+		   int p = extractedEvents.size();
+		   logger.log("size of eventsList " + p);
+		   }
+	    
 	}
 	
 	
@@ -1872,3 +2147,6 @@ public class Test
 	    }
 	}
 }
+
+
+

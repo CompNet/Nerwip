@@ -123,6 +123,24 @@ public class Link implements Comparable<Link>
 		properties.put(name, valueStr);
 	}
 	
+	/**
+	 * Increments the value of the specified property 
+	 * with an incrementation value equal to similarity.
+	 * The property must already exist.
+	 * 
+	 * @param name
+	 * 		Name of the property.
+	 * @param similarity
+	 *      The incrementation value
+	 */
+	public void incrementIntProperty(String name, Double similarity)
+	{	String valueStr = properties.get(name);
+		Double value = Integer.parseInt(valueStr) + similarity;
+		valueStr = Double.toString(value);
+		properties.put(name, valueStr);
+	}
+	
+	
 	/////////////////////////////////////////////////////////////////
 	// GRAPHML			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

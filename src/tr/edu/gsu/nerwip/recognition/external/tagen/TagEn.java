@@ -43,7 +43,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
- * This class acts as an interface with TagEn.
+ * This class acts as an interface with TagEN.
  * <br/>
  * Recommended parameter values:
  * <ul>
@@ -52,8 +52,6 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * 	<li>{@code ignorePronouns}: {@code true}</li>
  * 	<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
- * <br/>
- * TagEn was tested only on Linux system.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
@@ -176,25 +174,6 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 		return result; 
 	}
 	
-	/**
-	 * Some characters must be cleaned from the text to be annotated by
-	 * Nero, otherwise it outputs additional characters which makes the
-	 * conversion much harder.
-	 * 
-	 * @param text
-	 * 		Original text.
-	 * @return
-	 * 		Cleaned text.
-	 */
-	private String cleanText(String text)
-	{	String result = text;
-		
-		result = result.replaceAll("«", "\"");
-		result = result.replaceAll("»", "\"");
-		
-		return result;
-	}
-	
 	@Override
 	protected String detectEntities(Article article) throws RecognizerException
 	{	logger.increaseOffset();
@@ -203,7 +182,6 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
         try
         {	// write article raw text in a file
         	String text = article.getRawText();
-        	text = cleanText(text);
 			String inputPath = getTempFile(article);
 			File inputFile = new File(inputPath);
 			logger.log("Copying the article content in input file "+inputFile);

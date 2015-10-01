@@ -50,19 +50,22 @@ public class FileNames
 	/** Output folder */
 //	public final static String FO_OUTPUT = "out";	//actual folder
 	
-//	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
-//	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
-//	public final static String FO_OUTPUT = "C:/Temp";
-	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
+
+
+//	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
+
 //	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "D:/Data2";
-//	public final static String FO_OUTPUT = "/home/sabrine/Data2";
+
+//	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/test";
+//	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/Data";
+    
+	public final static String FO_OUTPUT = "/home/sabrine/Data2";
+//	public final static String FO_OUTPUT = "/home/sabrine/Data";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data2";
+
 	
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
@@ -236,3 +239,4 @@ public class FileNames
 	/** HTML file extension */
 	public final static String EX_HTML = ".html";
 }
+
