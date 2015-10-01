@@ -111,7 +111,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	public String getFolder()
 	{	String result = getName().toString();
 
-		result = result + "_" + "neroTagger=" + neroTagger;
+		result = result + "_" + "tagger=" + neroTagger;
 		result = result + "_" + "ignPro=" + ignorePronouns;
 		result = result + "_" + "exclude=" + exclusionOn;
 
