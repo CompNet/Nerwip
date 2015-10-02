@@ -81,11 +81,11 @@ public class NeroConverter extends AbstractExternalConverter
 		CONVERSION_MAP.put("prod", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("time", EntityType.DATE);
 	}
-	/** Ignored characters */
-	private final static List<Character> IGNORED_CHARS = Arrays.asList(
+//	/** Ignored characters */
+//	private final static List<Character> IGNORED_CHARS = Arrays.asList(
 //		'œ','Œ', //this was put in the method used to clean article content
 //		'æ','Æ'
-	);
+//	);
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS 			/////////////////////////////////////////////
@@ -108,14 +108,18 @@ public class NeroConverter extends AbstractExternalConverter
 //if(c1==65279) //debug
 //	System.out.print("");
 		// possibly pass a starting newline character 
-		if(c2=='\n' && c1!='\n')
-		{	i2++;
-			c2 = data.codePointAt(i2);
-		}
+//		if(c2=='\n' && c1!='\n')
+//		{	i2++;
+//			c2 = data.codePointAt(i2);
+//		}
+		data = data.trim() + " "; // ugly workaround
+		originalText = originalText + " "; // same thing
 		
 		while(i1<originalText.length() && i2<data.length())
 		{	c1 = originalText.codePointAt(i1);
 			c2 = data.codePointAt(i2);
+if(i2>2800)
+	System.out.print("");
 			
 			// beginning of a tag
 			if(c2=='<')
@@ -178,7 +182,8 @@ public class NeroConverter extends AbstractExternalConverter
 //	System.out.print("");
 
 				// similar characters
-				if(IGNORED_CHARS.contains((char)c1) || StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)
+				if(//IGNORED_CHARS.contains((char)c1) || 
+						StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)
 				{	// everything's normal
 					// >> go to next chars in both texts
 					i1++; 
@@ -212,20 +217,32 @@ public class NeroConverter extends AbstractExternalConverter
 		
 		// check if we actually processed the whole texts
 		if(i1<originalText.length())
-		{	// possibly consume the final newline chars
-			do
-			{	c1 = originalText.codePointAt(i1);
+		{	
+//			// possibly consume the final newline chars
+//			do
+//			{	c1 = originalText.codePointAt(i1);
+//				i1++;
+//			}
+//			while(i1<originalText.length() && (c1=='\n' || c1==' '));
+			
+			// possibly consume all non-letter ch
+			while(i1<originalText.length() && !Character.isLetterOrDigit(originalText.codePointAt(i1)))
 				i1++;
-			}
-			while(i1<originalText.length() && (c1=='\n' || c1==' '));
+			
 			if(i1<originalText.length())
 			{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
 				throw new ConverterException("Didn't reach the end of the original text\n"+msg1);
 			}
 		}
 		else if(i2<data.length())
-		{	String msg2 = StringTools.highlightPosition(i2, data, 20);
-			throw new ConverterException("Didn't reach the end of the annotated text\n"+msg2);
+		{	// possibly consume all non-letter ch
+			while(i2<data.length() && !Character.isLetterOrDigit(data.codePointAt(i2)))
+				i2++;
+			
+			if(i2<data.length())
+			{	String msg2 = StringTools.highlightPosition(i2, data, 20);
+				throw new ConverterException("Didn't reach the end of the annotated text\n"+msg2);
+			}
 		}
 		
 		return result;

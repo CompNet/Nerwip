@@ -2145,4 +2145,11 @@ public class Test
 }
 
 
-
+/**
+ * TODO
+ * - apply nero to all articles, which will also normalize the texts
+ * - manually review all text to see which ones need to be fixed
+ * - apply all tools again
+ * - perform evaluation
+ * - compare nero new results with the previous ones
+ */

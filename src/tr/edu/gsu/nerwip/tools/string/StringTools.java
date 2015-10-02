@@ -280,6 +280,12 @@ public class StringTools
 			output = output.replaceAll(" »", "\"");
 			output = output.replaceAll("»", "\"");
 			output = output.replaceAll("’","'");
+			output = output.replaceAll("‒","-");	// \u2012
+			output = output.replaceAll("–","-");	// \u2013
+			output = output.replaceAll("—","-");	// \u2014
+			output = output.replaceAll("―","-");	// \u2015
+			output = output.replaceAll("⁓","-");	// \u2053
+			
 		}
 		while(!output.equals(previous));
 		

@@ -494,12 +494,12 @@ public class Article
 				}
 				else
 				{	rt.append(c);
-					c = lt.charAt(j); 
+					c = linkedText.charAt(j); 
 					if(c=='<')
 					{	do
 						{	lt.append(c);
 							j++;
-							c = lt.charAt(j); 
+							c = linkedText.charAt(j); 
 						}
 						while(c!='>');
 					}
