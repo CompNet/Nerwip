@@ -736,15 +736,11 @@ if(endPos>document.getLength())
 	}
 	
 	/**
-	 * Remove an entity from the list
-	 * represented in this panel.
-	 * The entity at the current carret
-	 * position is removed, if there
-	 * is any. All entities in the selection
-	 * are removed, if some text is selected.
+	 * Remove an entity from the list represented in this panel.
+	 * The entity at the current carret position is removed, if there
+	 * is any. All entities in the selection are removed, if some text is selected.
 	 * <br/>
-	 * Entities not currently displayed
-	 * are ignored.
+	 * Entities not currently displayed are ignored.
 	 * 
 	 * @return
 	 * 		The removed entities, under the form of a list.
@@ -769,8 +765,7 @@ if(endPos>document.getLength())
 	}
 	
 	/**
-	 * Removes the first entity found
-	 * at the specified position.
+	 * Removes the first entity found at the specified position.
 	 * 
 	 * @param position
 	 * 		Position of the entity to remove.
@@ -812,11 +807,9 @@ if(endPos>document.getLength())
 	}
 	
 	/**
-	 * Remove all entities intersecting
-	 * the current selection.
+	 * Remove all entities intersecting the current selection.
 	 * <br/>
-	 * Entities not currently displayed
-	 * are ignored.
+	 * Entities not currently displayed are ignored.
 	 * 
 	 * @param start 
 	 * 		Start of the selection.
@@ -883,6 +876,64 @@ if(endPos>document.getLength())
 //		updateHighlighting();
 //	}
 	
+	/**
+	 * Shift the entities located after the current cursor position.
+	 * The shift direction depends on the parameter sign: negative for
+	 * left and positive for right.
+	 * <br/>
+	 * Entities not currently displayed are ignored.
+	 * 
+	 * @param offset
+	 * 		Magnitude and direction of the shifting.
+	 * @return
+	 * 		The shifted entities, under the form of a list.
+	 */
+	public List<AbstractEntity<?>> shiftEntities(int offset)
+	{	// get the current cursor position
+		int position = textPane.getCaretPosition();
+		String rawText = null;
+		try
+		{	Document document = textPane.getDocument();
+			rawText = document.getText(0, document.getLength());
+		}
+		catch (BadLocationException e)
+		{	e.printStackTrace();
+		}
+		
+		List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		List<AbstractEntity<?>> entityList = entities.getEntities();
+		
+		Iterator<AbstractEntity<?>> it = entityList.iterator();
+		while(it.hasNext())
+		{	// get the entity
+			AbstractEntity<?> entity = it.next();
+			int startPos = entity.getStartPos();
+			int endPos = entity.getEndPos();
+			// check its type: only move visible entities
+			EntityType type = entity.getType();
+			if(entitySwitches.get(type))
+			{	// upadte entity position
+				boolean keep;
+				if(offset<0)
+					keep = entities.leftShiftEntityPosition(entity, position, -offset, rawText);
+				else
+					keep = entities.rightShiftEntityPosition(entity, position, offset, rawText);
+				if(!keep)
+				{	it.remove();
+					result.add(entity);
+				}
+				else
+				{	if(startPos!=entity.getStartPos() || endPos!=entity.getEndPos())
+						result.add(entity);
+				}
+				// update display
+				updateHighlighting();
+			}
+		}
+		
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// TEXT EDITION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -914,7 +965,6 @@ if(endPos>document.getLength())
 		catch (BadLocationException e)
 		{	e.printStackTrace();
 		}
-	
 	}
 	
 	/**

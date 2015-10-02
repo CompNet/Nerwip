@@ -65,9 +65,23 @@ public class Article
 	public Article(String name)
 	{	this.name = name;
 		
-		initFiles();
+		initFiles(FileNames.FO_OUTPUT);
 	}
-
+	
+	/**
+	 * Creates a new article.
+	 * 
+	 * @param name
+	 * 		Name of the article, also the name of its folder.
+	 * @param corpusFolder
+	 * 		Folder containing the corpus.
+	 */
+	public Article(String name, String corpusFolder)
+	{	this.name = name;
+		
+		initFiles(corpusFolder);
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -350,11 +364,13 @@ public class Article
 	private File propertiesFile = null;
 	
 	/**
-	 * Initializes all file-related
-	 * variables.
+	 * Initializes all file-related variables.
+	 * 
+	 * @param corpusFolder
+	 * 		Folder containing the corpus.
 	 */
-	private void initFiles()
-	{	folderPath = FileNames.FO_OUTPUT + File.separator + name;
+	private void initFiles(String corpusFolder)
+	{	folderPath = corpusFolder + File.separator + name;
 		originalFile = new File(folderPath + File.separator + FileNames.FI_ORIGINAL_PAGE);
 		rawFile = new File(folderPath + File.separator + FileNames.FI_RAW_TEXT);
 		linkedFile = new File(folderPath + File.separator + FileNames.FI_LINKED_TEXT);
@@ -429,6 +445,76 @@ public class Article
 	}
 
 	/////////////////////////////////////////////////////////////////
+	// CONTENT			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Cleans both texts (raw and linked) of the article, in order to
+	 * remove non-standard space characters, punctuation, ligatures, which
+	 * could complicate the task of the NER tools, or any subsequent 
+	 * processing.
+	 * <br/>
+	 * This method is called when reading an Article from file, and when
+	 * retrieving an article from the Web. It should not be called if
+	 * the article has already been annotated (be it manually or automatically), 
+	 * because it does <i>not</i> update the position of entities in
+	 * the corresponding files. Consequently, if some characters are added
+	 * or removed during the cleaning, the position of certain entities
+	 * can become incorrect.
+	 */
+	public void cleanContent()
+	{	// raw text	
+		rawText = StringTools.cleanText(rawText);
+				
+		// linked text
+		linkedText = StringTools.cleanText(linkedText);
+		
+		// remove < and > signs
+		removeTagSigns();
+	}
+	
+	/**
+	 * Parses both raw and linked texts in order to remove the remaining {@code <} and
+	 * {@code >} signs (not belonging to an hyperlink, in the case of the linked text).
+	 */
+	private void removeTagSigns()
+	{	if(rawText.contains("<") || rawText.contains(">"))
+		{	StringBuffer rt = new StringBuffer();
+			StringBuffer lt = new StringBuffer();
+			int i = 0;
+			int j = 0;
+			while(i<rawText.length())
+			{	char c = rawText.charAt(i);
+				if(c=='<')
+				{	rt.append('(');
+					lt.append('(');
+				}
+				else if(c=='>')
+				{	rt.append(')');
+					lt.append(')');
+				}
+				else
+				{	rt.append(c);
+					c = lt.charAt(j); 
+					if(c=='<')
+					{	do
+						{	lt.append(c);
+							j++;
+							c = lt.charAt(j); 
+						}
+						while(c!='>');
+					}
+					lt.append(c);
+				}
+				i++;
+				j++;
+			}
+			
+			rawText = rt.toString();
+			linkedText = rt.toString();
+		}
+	}
+	
+	/////////////////////////////////////////////////////////////////
 	// READ				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
@@ -459,12 +545,13 @@ public class Article
 	/**
 	 * Reads an article from file. The location
 	 * of the article is automatically inferred
-	 * from its name/title.
+	 * from its name/title. The article is read
+	 * in the default corpus folder.
 	 * 
 	 * @param name
 	 * 		Name/title of the article.
 	 * @return
-	 * 		The corresponding Article object.
+	 * 		The corresponding {@code Article} object.
 	 * 
 	 * @throws ParseException
 	 * 		Problem while accessing the article files.
@@ -475,8 +562,50 @@ public class Article
 	 */
 	public static Article read(String name) throws ParseException, SAXException, IOException
 	{	Article result = new Article(name);
-		
-		// properties
+		read(result);
+		return result;
+	}
+	/**
+	 * Reads an article from file. The location
+	 * of the article is automatically inferred
+	 * from its name/title. The article is read
+	 * in the specified corpus folder.
+	 * 
+	 * @param name
+	 * 		Name/title of the article.
+	 * @param corpusFolder
+	 * 		Folder containing the corpus.
+	 * @return
+	 * 		The corresponding {@code Article} object.
+	 * 
+	 * @throws ParseException
+	 * 		Problem while accessing the article files.
+	 * @throws SAXException
+	 * 		Problem while accessing the article files.
+	 * @throws IOException
+	 * 		Problem while accessing the article files.
+	 */
+	public static Article read(String name, String corpusFolder) throws ParseException, SAXException, IOException
+	{	Article result = new Article(name,corpusFolder);
+		read(result);
+		return result;
+	}
+	
+	/**
+	 * Method actually performing the article reading.
+	 * 
+	 * @param result
+	 * 		Blank article, to be filled with the read data.
+	 * 
+	 * @throws ParseException
+	 * 		Problem while accessing the article files.
+	 * @throws SAXException
+	 * 		Problem while accessing the article files.
+	 * @throws IOException
+	 * 		Problem while accessing the article files.
+	 */
+	private static void read(Article result) throws ParseException, SAXException, IOException
+	{	// properties
 		if(result.propertiesFile.exists())
 			result.readProperties();
 		else
@@ -493,19 +622,23 @@ public class Article
 		
 		// raw text
 		String rawText = FileTools.readTextFile(result.rawFile);
-		rawText = StringTools.replaceSpaces(rawText);
+		rawText = rawText.trim();
 		result.setRawText(rawText);
 		
 		// raw text with hyperlinks
+		String linkedText = rawText;
 		if(result.linkedFile.exists())
-		{	String linkedText = FileTools.readTextFile(result.linkedFile);
-			linkedText = StringTools.replaceSpaces(linkedText);
-			result.setLinkedText(linkedText);
+		{	linkedText = FileTools.readTextFile(result.linkedFile);
+			linkedText = linkedText.trim();
 		}
-		else
-			result.setLinkedText(rawText);
+		result.setLinkedText(linkedText);
 		
-		return result;
+		// clean the texts
+		result.cleanContent();
+		// possibly re-record the article if its content was changed due to cleaning
+		boolean changed = !rawText.equals(result.getRawText()) || !linkedText.equals(result.getLinkedText());
+		if(changed)
+			result.write();
 	}
 	
 	/**

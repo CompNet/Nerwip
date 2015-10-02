@@ -99,6 +99,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
+import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
@@ -547,7 +548,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/** Frame to contain tabs and entities */
 	private JFrame frame;
 	/** Version of this application */
-	private static final String APP_VERSION = "v2.33";
+	private static final String APP_VERSION = "v2.34";
 	/** Name of this application */
 	private static final String APP_NAME = "Entity Editor";
 	/** Title of this application */
@@ -1272,6 +1273,10 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JMenuItem miRemove;
 	/** Menu item of the entity views */
 	private Map<EntityType,JCheckBoxMenuItem> entityViewCheck = null;
+	/** Menu item of the left-shift entities action */
+	private JMenuItem miShiftLeft;
+	/** Menu item of the right-shift entities action */
+	private JMenuItem miShiftRight;
 	/** Menu item of the type display mode */
 	private JRadioButtonMenuItem riTypes;
 	/** Menu item of the comparison display mode */
@@ -1408,6 +1413,29 @@ public class EntityEditor implements WindowListener, ChangeListener
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
 				miRemove.setIcon(new ImageIcon(img));
 				menu.add(miRemove);
+			}
+			
+			menu.addSeparator();
+
+			// shift entities
+			{	// left shift
+				{	miShiftLeft = new JMenuItem(entityShiftLeftAction);
+					String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LEFT;
+					File iconFile = new File(iconPath);
+					Image img = ImageIO.read(iconFile);
+					img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+					miShiftLeft.setIcon(new ImageIcon(img));
+					menu.add(miShiftLeft);
+				}
+				// right shift
+				{	miShiftRight = new JMenuItem(entityShiftRightAction);
+					String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_RIGHT;
+					File iconFile = new File(iconPath);
+					Image img = ImageIO.read(iconFile);
+					img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
+					miShiftRight.setIcon(new ImageIcon(img));
+					menu.add(miShiftRight);
+				}
 			}
 		}
 		
@@ -1619,6 +1647,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private final static  String ACTION_REMOVE = "ActionRemove";
 	/** Action allowing to delete an entity */
 	private Action entityDeleteAction = null;
+	/** String used for action definition */
+	private final static  String ACTION_SHIFT_LEFT = "ActionShiftLeft";
+	/** Action allowing to left-shift entities */
+	private Action entityShiftLeftAction = null;
+	/** String used for action definition */
+	private final static  String ACTION_SHIFT_RIGHT = "ActionShiftRight";
+	/** Action allowing to r-shift entities */
+	private Action entityShiftRightAction = null;
 
 	/**
 	 * Initializes actions related to the
@@ -1660,6 +1696,35 @@ public class EntityEditor implements WindowListener, ChangeListener
 			action.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_INSERT)+" "+typeStr);
 			action.setEnabled(false);
 		}
+		
+		// shift entities
+		{	// shift left
+			{	String name = language.getText(ACTION_SHIFT_LEFT);
+				entityShiftLeftAction = new AbstractAction(name)
+				{	/** Class id */
+					private static final long serialVersionUID = 1L;
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{	shiftEntities(-1);
+					}
+				};
+				entityShiftLeftAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SHIFT_LEFT));
+				entityShiftLeftAction.setEnabled(false);
+			}
+			// shift right
+			{	String name = language.getText(ACTION_SHIFT_RIGHT);
+				entityShiftRightAction = new AbstractAction(name)
+				{	/** Class id */
+					private static final long serialVersionUID = 1L;
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{	shiftEntities(+1);
+					}
+				};
+				entityShiftRightAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SHIFT_RIGHT));
+				entityShiftRightAction.setEnabled(false);
+			}
+		}
 	}
 
 	/**
@@ -1696,18 +1761,43 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Remove the entity in the
-	 * currently selected tab, and therefore
+	 * Remove the entity in the currently selected tab, and therefore
 	 * the corresponding text.
 	 * <br/>
-	 * The concerned entity is the one at
-	 * the current position of the cursor.
-	 * If the cursor is not included in
-	 * any entity, then none is removed.
+	 * The concerned entity is the one at the current position of the cursor.
+	 * If the cursor is not included in any entity, then none is removed.
 	 */
 	private void removeEntity()
 	{	EntityEditorPanel tab = (EntityEditorPanel)tabbedPane.getSelectedComponent();
 		List<AbstractEntity<?>> entityList = tab.removeEntities();
+		if(!entityList.isEmpty())
+		{	// update title
+			updateSaved(1);
+			updateTitle();
+			
+			// update article author
+			updateArticleEditor();
+			
+			int size = tabbedPane.getTabCount();
+			for(int i=0;i<size;i++)
+			{	EntityEditorPanel pane = (EntityEditorPanel)tabbedPane.getComponentAt(i);
+//				pane.removeReferences(entities);
+				pane.updateHighlighting();
+			}
+		}
+	}
+	
+	/**
+	 * Shift all the entities located after the current position.
+	 * The shift direction depends on the parameter sign: negative
+	 * for left, positive for right.
+	 * 
+	 * @param offset
+	 * 		Magnitude and direction of the shift.
+	 */
+	private void shiftEntities(int offset)
+	{	EntityEditorPanel tab = (EntityEditorPanel)tabbedPane.getSelectedComponent();
+		List<AbstractEntity<?>> entityList = tab.shiftEntities(offset);
 		if(!entityList.isEmpty())
 		{	// update title
 			updateSaved(1);
@@ -2699,6 +2789,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 				action.setEnabled(activation);
 			}
 			entityDeleteAction.setEnabled(activation);
+			entityShiftLeftAction.setEnabled(activation);
+			entityShiftRightAction.setEnabled(activation);
 			//saveAction.setEnabled(activation);
 			copyAction.setEnabled(activation);
 			
@@ -3254,13 +3346,20 @@ public class EntityEditor implements WindowListener, ChangeListener
 			currentIndex = articles.indexOf(f);
 		
 			// retrieve texts
-			File rawFile = new File(articlePath + File.separator + FileNames.FI_RAW_TEXT);
-			currentRawText = FileTools.readTextFile(rawFile);
-			File linkedFile = new File(articlePath + File.separator + FileNames.FI_LINKED_TEXT);
-			if(linkedFile.exists())
-				currentLinkedText = FileTools.readTextFile(linkedFile);
-			else
-				currentLinkedText = FileTools.readTextFile(rawFile);
+			File tempFile = new File(articlePath);
+			String tempName = tempFile.getName();
+			String tempFolder = tempFile.getParent();
+			Article article = Article.read(tempName, tempFolder);
+			currentRawText = article.getRawText();
+			currentLinkedText = article.getLinkedText();
+			// old version (directly read the texts)
+//			File rawFile = new File(articlePath + File.separator + FileNames.FI_RAW_TEXT);
+//			currentRawText = FileTools.readTextFile(rawFile);
+//			File linkedFile = new File(articlePath + File.separator + FileNames.FI_LINKED_TEXT);
+//			if(linkedFile.exists())
+//				currentLinkedText = FileTools.readTextFile(linkedFile);
+//			else
+//				currentLinkedText = FileTools.readTextFile(rawFile);
 			
 			// get article name
 			File temp = new File(articlePath);

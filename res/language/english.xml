@@ -57,6 +57,8 @@
 		
 		<text name="Insert" value="Insert" tooltip="Insert or convert an entity of type" />
 		<text name="Remove" value="Remove entity" tooltip="Remove an entity" />
+		<text name="ShiftLeft" value="Left-shift entities" tooltip="Left-shift by 1 character all the entities located after the cursor" />
+		<text name="ShiftRight" value="Right-shift entities" tooltip="Right-shift by 1 character all the entities located after the cursor" />
 		
 		<text name="Display" value="View" tooltip="Display/hide entities of type" />
 		<text name="ModeTypes" value="Types" tooltip="Display entity types" />

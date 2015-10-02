@@ -409,23 +409,55 @@ public class Entities
 	 * 		to update the entity string values.
 	 */
 	public void rightShiftEntityPositions(int start, int length, String text)
-	{	for(AbstractEntity<?> entity: entities)
-		{	// start position
-			int startPos = entity.getStartPos();
-			if(start<=startPos)
-				startPos = startPos + length;
-			
-			// end position
-			int endPos = entity.getEndPos();
-			if(start<endPos)
-				endPos = endPos + length;
-			
-			// update entity
+	{	Iterator<AbstractEntity<?>> it = entities.iterator();
+		while(it.hasNext())
+		{	AbstractEntity<?> entity = it.next();
+			boolean keep = rightShiftEntityPosition(entity, start, length, text);
+			if(!keep)
+				it.remove();
+		}
+	}
+	
+	/**
+	 * Shifts the specified entity by {@code length} characters 
+	 * to the right, provided it is located after position 
+	 * {@code start}, 
+	 * 
+	 * @param entity
+	 * 		The entity which should be shifted.
+	 * @param start
+	 * 		Starting position of the right shifting.
+	 * @param length
+	 * 		Magnitude of the shifting, in characters.
+	 * @param text
+	 * 		Full text of the concerned article (used
+	 * 		to update the entity string value.
+	 * @return
+	 * 		Whether the entity is still valid ({@code true}) or is now empty ({@code false}).
+	 */
+	public boolean rightShiftEntityPosition(AbstractEntity<?> entity, int start, int length, String text)
+	{	boolean result = false;
+	
+		// start position
+		int startPos = entity.getStartPos();
+		if(start<=startPos)
+			startPos = startPos + length;
+		
+		// end position
+		int endPos = entity.getEndPos();
+		if(start<endPos)
+			endPos = endPos + length;
+		
+		// update entity
+		if(startPos<endPos)
+		{	result = true;
 			entity.setStartPos(startPos);
 			entity.setEndPos(endPos);
 			String valueStr = text.substring(startPos,endPos);
 			entity.setStringValue(valueStr);
 		}
+		
+		return result;
 	}
 	
 	/**
@@ -444,29 +476,54 @@ public class Entities
 	{	Iterator<AbstractEntity<?>> it = entities.iterator();
 		while(it.hasNext())
 		{	AbstractEntity<?> entity = it.next();
-			
-			// start position
-			int startPos = entity.getStartPos();
-			if(start<=startPos)
-				startPos = Math.max(startPos-length, start);
-			
-			// end position
-			int endPos = entity.getEndPos();
-			if(start<endPos)
-				endPos = Math.max(endPos-length, start);
-			
-			// update entity
-			if(startPos==endPos)
+			boolean keep = leftShiftEntityPosition(entity, start, length, text);
+			if(!keep)
 				it.remove();
-			else
-			{	entity.setStartPos(startPos);
-				entity.setEndPos(endPos);
-				String valueStr = text.substring(startPos,endPos);
-				entity.setStringValue(valueStr);
-			}
 		}
 	}
 
+	/**
+	 * Shifts the specified entity by {@code length} characters 
+	 * to the left, provided it is located after position 
+	 * {@code start}, 
+	 * 
+	 * @param entity
+	 * 		The entity which should be shifted.
+	 * @param start
+	 * 		Starting position of the left shifting.
+	 * @param length
+	 * 		Magnitude of the shifting, in characters.
+	 * @param text
+	 * 		Full text of the concerned article (used
+	 * 		to update the entity string value.
+	 * @return
+	 * 		Whether the entity is still valid ({@code true}) or is now empty ({@code false}).
+	 */
+	public boolean leftShiftEntityPosition(AbstractEntity<?> entity, int start, int length, String text)
+	{	boolean result = false;
+		
+		// start position
+		int startPos = entity.getStartPos();
+		if(start<=startPos)
+			startPos = Math.max(startPos-length, start);
+		
+		// end position
+		int endPos = entity.getEndPos();
+		if(start<endPos)
+			endPos = Math.max(endPos-length, start);
+		
+		// update entity
+		if(startPos<endPos)
+		{	result = true;
+			entity.setStartPos(startPos);
+			entity.setEndPos(endPos);
+			String valueStr = text.substring(startPos,endPos);
+			entity.setStringValue(valueStr);
+		}
+		
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// ENTITY COMPARISON	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

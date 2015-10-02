@@ -192,55 +192,99 @@ public class StringTools
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// SPACES			/////////////////////////////////////////////
+	// CLEAN			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Process the specified string in order to remove
-	 * space character-related problems.
-	 *  
-	 * @param string
-	 * 		The original string (not modified).
+	 * Cleans the specified string, in order to remove characters
+	 * causing problems when detecting named entities.
+	 *    
+	 * @param input
+	 * 		The string to process.
 	 * @return
-	 * 		Modified version of the input string.
+	 * 		Cleaned string.
 	 */
-	public static String cleanSpaces(String string)
-	{	String result = string;
+	public static String cleanText(String input)
+	{	String output = input;
 		
-		if(result!=null)
-		{	// replace all white spaces by regular spaces
-			result = result.replaceAll("\\s", " ");
+		String previous = output;
+		do
+		{	previous = output;
 			
-			// replace all consecutive spaces by a single one
-			result = result.replaceAll(" +", " ");
-			
-			// remove initial/final spaces
-			result = result.trim();
-		}
-		
-		return result;
-	}
-
-	/**
-	 * Process the specified string in order to replace
-	 * non-standard whitespace characters. The number
-	 * of characters in the text is not modified
-	 * (unlike {@link #cleanSpaces(String)}).
-	 *  
-	 * @param string
-	 * 		The original string (not modified).
-	 * @return
-	 * 		Modified version of the input string.
-	 */
-	public static String replaceSpaces(String string)
-	{	String result = string;
-		
-		if(result!=null)
-		{	// replace all white spaces by regular spaces
+			// replace all white spaces by regular spaces
 			// new line and tabs are not affected
-			result = result.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces than \s
+			output = output.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces than \s
+			
+			// move punctuation out of hyperlinks
+			String punctuation = "[ \\n\\.,;]";
+			output = output.replaceAll("<a ([^>]*?)>("+punctuation+"*)([^<]*?)("+punctuation+"*)</a>","$2<a $1>$3</a>$4");
+			output = output.replaceAll("<a ([^>]*?)>(\\()([^<]*?)(\\))</a>","$2<a $1>$3</a>$4");
+			output = output.replaceAll("<a ([^>]*?)>(\\[)([^<]*?)(\\])</a>","$2<a $1>$3</a>$4");
+			
+			// replace multiple consecutive spaces by a single one 
+			output = output.replaceAll("( )+", " ");
+			
+			// replace multiple consecutive newlines by a single one 
+			output = output.replaceAll("(\\n)+", "\n");
+			
+			// remove spaces at the end of lines 
+			output = output.replaceAll(" \\n", "\n");
+			
+			// replace multiple space-separated punctuations by single ones 
+//			output = output.replaceAll("; ;", ";");
+//			output = output.replaceAll(", ,", ",");
+//			output = output.replaceAll(": :", ":");
+//			output = output.replaceAll("\\. \\.", "\\.");
+			
+			// replace multiple consecutive punctuation marks by a single one 
+			output = output.replaceAll("([\\.,;:] )[\\.,;:]", "$1");
+	
+			// remove spaces before dots 
+			output = output.replaceAll(" \\.", ".");
+			
+			// remove spaces after opening parenthesis
+			output = output.replaceAll("\\( +", "(");
+			// remove spaces before closing parenthesis
+			output = output.replaceAll(" +\\)", ")");
+			
+			// remove various combinations of punctuation marks
+			output = output.replaceAll("\\(;", "(");
+	
+			// remove empty square brackets and parentheses
+			output = output.replaceAll("\\[\\]", "");
+			output = output.replaceAll("\\(\\)", "");
+			
+			// adds a final dot when it is missing at the end of a sentence (itself detected thanks to the new line)
+//			output = output.replaceAll("([^(\\.|\\-)])\\n", "$1.\n");
+			
+			// insert a space after a coma, when missing
+//			output = output.replaceAll(",([^ _])", ", $1");
+	
+			// insert a space after a semi-column, when missing
+//			output = output.replaceAll(";([^ _])", "; $1");
+			
+			// replace 2 single quotes by double quotes
+			output = output.replaceAll("''+", "\"");
+			
+			// replace ligatures by two characters
+			// note : the normalizer does not seem to work well for most ligature
+			// cf. http://stackoverflow.com/questions/7171377/separating-unicode-ligature-characters
+			output = output.replaceAll("œ", "oe");
+			output = output.replaceAll("Œ", "Oe");
+			output = output.replaceAll("æ", "ae");
+			output = output.replaceAll("Æ", "Ae");
+			output = output.replaceAll("ﬁ", "fi");
+			
+			// replace certain punctuation marks
+			output = output.replaceAll("« ", "\"");
+			output = output.replaceAll("«", "\"");
+			output = output.replaceAll(" »", "\"");
+			output = output.replaceAll("»", "\"");
+			output = output.replaceAll("’","'");
 		}
+		while(!output.equals(previous));
 		
-		return result;
+		output = output.trim();
+		return output;
 	}
 	
 	/////////////////////////////////////////////////////////////////

@@ -57,6 +57,8 @@
 		
 		<text name="Insert" value="Insérer" tooltip="Insérer ou convertir une entité de type" />
 		<text name="Remove" value="Supprimer une entité" tooltip="Supprimer une entité existante" />
+		<text name="ShiftLeft" value="Reculer les entités" tooltip="Décaler d'un caractère à gauche toutes les entités situées après le curseur" />
+		<text name="ShiftRight" value="Avancer les entités" tooltip="Décaler d'un caractère à droite toutes les entités situées après le curseur" />
 		
 		<text name="Display" value="Afficher" tooltip="Afficher/masquer les entités de type" />
 		<text name="ModeTypes" value="Types" tooltip="Afficher les types des entités" />
