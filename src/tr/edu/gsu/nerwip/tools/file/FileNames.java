@@ -49,23 +49,18 @@ public class FileNames
 	public final static String FO_LOG = "log";
 	/** Output folder */
 //	public final static String FO_OUTPUT = "out";	//actual folder
-	
 
-
-//	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
-
+	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
-
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/test";
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/Data";
     
-	public final static String FO_OUTPUT = "/home/sabrine/Data2";
+//	public final static String FO_OUTPUT = "/home/sabrine/Data2";
 //	public final static String FO_OUTPUT = "/home/sabrine/Data";
 //	public final static String FO_OUTPUT = "/home/sabrine/Dropbox/NetExtraction/Data";
-
 	
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
@@ -194,6 +189,10 @@ public class FileNames
 	public final static String FI_ICON_SAVE = "disk" + FileNames.EX_PNG;
 	/** Icon for opening file */
 	public final static String FI_ICON_OPEN = "folder" + FileNames.EX_PNG;
+	/** Icon for left shift */
+	public final static String FI_ICON_LEFT = "left" + FileNames.EX_PNG;
+	/** Icon for right shift */
+	public final static String FI_ICON_RIGHT = "right" + FileNames.EX_PNG;
 	
 	/** Laboratory logo */
 	public final static String FI_LOGO_LAB = "lia" + FileNames.EX_JPEG;
