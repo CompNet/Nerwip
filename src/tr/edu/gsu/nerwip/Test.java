@@ -155,9 +155,8 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
-		
 
-//		String name = "Émilien_Brigault";
+		String name = "Émilien_Brigault";
 //		String name = "Aimé Piton";
  //   	String name = "Albert_Chauly";
 //    	String name = "Achille_Eugène_Fèvre";
@@ -187,15 +186,12 @@ public class Test
 //		testSpotlight();
 //     	testNLDistance(S, T);
 		
- //  	    testEventsExtraction();
+//		testEventsExtraction();
 //		testEventComparison();
-	//	testFunction();
+//		testFunction();
 //		test2();
-		testSpotlightAllCorpus();
+//		testSpotlightAllCorpus();
 //		testEventExtraction();
-
-		
-
 
 //		testTagEnRaw();
 
@@ -203,7 +199,7 @@ public class Test
 //		testHeidelTime(url);
 //		testIllinois(url);
 //		testLingPipe(url);
-//		testNero(name);
+		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 //		testOpeNer(name);
@@ -816,10 +812,10 @@ public class Test
 		nero.setCacheEnabled(false);
 		
 		// only the specified article
-		nero.process(article);
+//		nero.process(article);
 
 		// all the corpus
-//		testAllCorpus(nero,0);
+		testAllCorpus(nero,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1530,10 +1526,10 @@ public class Test
 //			new DateExtractor(),
 //			new WikipediaDater(),
 			
-			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, false),	
-			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, true),	
-			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, false),	
-			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, true),	
+//			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, false),	
+//			new HeidelTime(HeidelTimeModelName.FRENCH_NEWS, loadOnDemand, true),	
 //			new HeidelTime(HeidelTimeModelName.ENGLISH_COLLOQUIAL, loadOnDemand, false),	
 //			new HeidelTime(HeidelTimeModelName.ENGLISH_COLLOQUIAL, loadOnDemand, true),	
 //			new HeidelTime(HeidelTimeModelName.ENGLISH_NARRATIVES, loadOnDemand, false),	
@@ -1610,19 +1606,19 @@ public class Test
 //			new OpenCalais(OpenCalaisLanguage.EN, false, true),
 //			new OpenCalais(OpenCalaisLanguage.EN, true,  false),	// (DATE), LOC, ORG, PERS	
 //			new OpenCalais(OpenCalaisLanguage.EN, true,  true),
-			new OpenCalais(OpenCalaisLanguage.FR, false, false),
-			new OpenCalais(OpenCalaisLanguage.FR, false, true),
-			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
-			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
+//			new OpenCalais(OpenCalaisLanguage.FR, false, false),
+//			new OpenCalais(OpenCalaisLanguage.FR, false, true),
+//			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
+//			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
-			new OpeNer(false, false, false),
-			new OpeNer(false, false, true),
-			new OpeNer(false, true, false),
-			new OpeNer(false, true, true),
-			new OpeNer(true, false, false),
-			new OpeNer(true, false, true),
-			new OpeNer(true, true, false),
-			new OpeNer(true, true, true),
+//			new OpeNer(false, false, false),
+//			new OpeNer(false, false, true),
+//			new OpeNer(false, true, false),
+//			new OpeNer(false, true, true),
+//			new OpeNer(true, false, false),
+//			new OpeNer(true, false, true),
+//			new OpeNer(true, true, false),
+//			new OpeNer(true, true, true),
 			
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,false),
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,true),
@@ -1683,10 +1679,10 @@ public class Test
 //			new Subee(true,true,true,true,false),
 //			new Subee(true,true,true,true,true),
 			
-			new TagEn(TagEnModelName.MUC_MODEL, false, false),
-			new TagEn(TagEnModelName.MUC_MODEL, false, true),
-			new TagEn(TagEnModelName.MUC_MODEL, true, false),
-			new TagEn(TagEnModelName.MUC_MODEL, true, true),
+//			new TagEn(TagEnModelName.MUC_MODEL, false, false),
+//			new TagEn(TagEnModelName.MUC_MODEL, false, true),
+//			new TagEn(TagEnModelName.MUC_MODEL, true, false),
+//			new TagEn(TagEnModelName.MUC_MODEL, true, true),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),
@@ -1841,7 +1837,7 @@ public class Test
 //			new FullCombiner(Combiner.SVM),
 //			new FullCombiner(Combiner.VOTE),
 			
-			new StraightCombiner()
+//			new StraightCombiner()
 		};
 		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed NER tools: ");

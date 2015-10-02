@@ -81,7 +81,12 @@ public class NeroConverter extends AbstractExternalConverter
 		CONVERSION_MAP.put("prod", EntityType.PRODUCTION);
 		CONVERSION_MAP.put("time", EntityType.DATE);
 	}
-
+	/** Ignored characters */
+	private final static List<Character> IGNORED_CHARS = Arrays.asList(
+//		'œ','Œ', //this was put in the method used to clean article content
+//		'æ','Æ'
+	);
+	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -169,11 +174,11 @@ public class NeroConverter extends AbstractExternalConverter
 			// other character (than '<')
 			else
 			{	
-//if(c1=='[') // debug
+//if(c1=='œ') // debug
 //	System.out.print("");
 
 				// similar characters
-				if(StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)
+				if(IGNORED_CHARS.contains((char)c1) || StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)
 				{	// everything's normal
 					// >> go to next chars in both texts
 					i1++; 

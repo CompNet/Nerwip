@@ -26,8 +26,11 @@ package tr.edu.gsu.nerwip.recognition.external.nero;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -230,7 +233,17 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 				String tempPath = getTempFile(article,i);
 				File tempFile = new File(tempPath);
 				logger.log("Copying the article content in partial temp file "+tempFile);
-				FileTools.writeTextFile(tempFile, part);
+				// UTF-8
+//					FileTools.writeTextFile(tempFile, part);
+				// ISO
+					File folder = tempFile.getParentFile();
+					if(!folder.exists())
+						folder.mkdirs();
+					FileOutputStream fos = new FileOutputStream(tempFile);
+					OutputStreamWriter osw = new OutputStreamWriter(fos,"ISO-8859-1");
+					PrintWriter pw = new PrintWriter(osw);
+					pw.print(part);
+					pw.close();
 				
 				// invoke the external tool and retrieve its output
 				logger.log("Invoking Nero: ");
@@ -252,7 +265,8 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 			
 				// standard error
 				String error = "";
-				{	BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+				{	//BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+					BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream(),"ISO-8859-1"));
 					String line;
 					while((line=stdError.readLine()) != null)
 					{	System.out.println(line);
@@ -269,7 +283,8 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 				// standard output
 				if(error.isEmpty())
 				{	String res = "";
-					BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+					//BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+					BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream(),"ISO-8859-1"));
 					String line;
 					while((line=stdInput.readLine()) != null)
 					{	System.out.println(line);
@@ -323,9 +338,6 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 		
 		result = result.replaceAll("ë", "e");
 		result = result.replaceAll("û", "u");
-		
-		result = result.replaceAll("«", "\"");
-		result = result.replaceAll("»", "\"");
 		
 		return result;
 	}
