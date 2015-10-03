@@ -441,12 +441,12 @@ public class Entities
 		// start position
 		int startPos = entity.getStartPos();
 		if(start<=startPos)
-			startPos = startPos + length;
+			startPos = Math.min(startPos+length, text.length());
 		
 		// end position
 		int endPos = entity.getEndPos();
 		if(start<endPos)
-			endPos = endPos + length;
+			endPos = Math.min(endPos+length, text.length());
 		
 		// update entity
 		if(startPos<endPos)

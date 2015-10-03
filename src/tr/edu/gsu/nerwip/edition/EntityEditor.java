@@ -3333,6 +3333,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	public void setArticle(String articlePath) throws SAXException, IOException, ParseException
 	{	boolean action = true;
+//System.out.println(articlePath);	//TODO disable this (debug)
 		if(changed>0)
 			action = proposeSaving();
 		if(action)
