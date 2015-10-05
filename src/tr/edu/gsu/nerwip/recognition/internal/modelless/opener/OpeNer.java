@@ -174,8 +174,8 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	private static final String PARSER_URL = SERVICE_URL + "/constituent-parser";
 	/** Entity recognizer URL */
 	private static final String RECOGNIZER_URL = SERVICE_URL + "/ner";
-	/** Maximal request size for OpenNer (the doc recomands 1000, but it works fine with 5000 chars) */
-	private static final int MAX_SIZE = 5000;
+	/** Maximal request size for OpenNer (the doc recomands 1000) */
+	private static final int MAX_SIZE = 1000;
 //	/** Sleep periods (in ms) */ // this is actually not needed
 //	private static final long SLEEP_PERIOD = 5000;
 	
@@ -375,6 +375,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 		
 		// send to recognizer and retrieve answer
+System.out.println(parsedText);		
 		String result = sendReceiveRequest(method);
 		
 		logger.decreaseOffset();

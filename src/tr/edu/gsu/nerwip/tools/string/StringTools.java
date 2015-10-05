@@ -394,9 +394,30 @@ public class StringTools
 			
 			int curEnd = matcher.end();
 			if(curEnd-start > maxSize)
-			{	if(start==prevEnd)
-					// TODO we could force-split between words, it's better than nothing
-					throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+sentence.length()+" chars) is too long to be split using maxSize="+maxSize);
+			{	// sentence too long for maxSize
+				if(start==prevEnd)
+				{	// we look for semicolons
+					int from = start;
+					List<Integer> idxs = new ArrayList<Integer>();
+					do
+					{	int idx = sentence.indexOf(';', from+1);
+						from = idx;
+						if(idx!=-1)
+							idxs.add(idx);
+					}
+					while(from!=-1 && from<sentence.length());
+					if(idxs.isEmpty())
+					{	// TODO we could force-split between words, it's better than nothing
+						throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+sentence.length()+" chars) is too long to be split using maxSize="+maxSize);
+					}
+					else
+					{	int idx = idxs.get(idxs.size()/2) + 1; // we take the midle ';'
+						if(sentence.charAt(idx)==' ')
+							idx++;
+						prevEnd = start + idx;
+					}
+				}
+				
 				String chunk = text.substring(start, prevEnd);
 				result.add(chunk);
 				start = prevEnd;

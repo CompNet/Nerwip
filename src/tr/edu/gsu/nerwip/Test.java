@@ -199,7 +199,7 @@ public class Test
 //		testHeidelTime(url);
 //		testIllinois(url);
 //		testLingPipe(url);
-		testNero(name);
+//		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 //		testOpeNer(name);
@@ -213,7 +213,7 @@ public class Test
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-//		testEvaluator();
+		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -1589,18 +1589,18 @@ public class Test
 //			new Nero(NeroTagger.CRF, false, false, true),
 //			new Nero(NeroTagger.CRF, false, true, false),
 //			new Nero(NeroTagger.CRF, false, true, true),
-			new Nero(NeroTagger.CRF, true, false, false),
-			new Nero(NeroTagger.CRF, true, false, true),
-			new Nero(NeroTagger.CRF, true, true, false),
-			new Nero(NeroTagger.CRF, true, true, true),
+//			new Nero(NeroTagger.CRF, true, false, false),
+//			new Nero(NeroTagger.CRF, true, false, true),
+//			new Nero(NeroTagger.CRF, true, true, false),
+//			new Nero(NeroTagger.CRF, true, true, true),
 //			new Nero(NeroTagger.FST, false, false, false),
 //			new Nero(NeroTagger.FST, false, false, true),
 //			new Nero(NeroTagger.FST, false, true, false),
 //			new Nero(NeroTagger.FST, false, true, true),
-			new Nero(NeroTagger.FST, true, false, false),
-			new Nero(NeroTagger.FST, true, false, true),
-			new Nero(NeroTagger.FST, true, true, false),
-			new Nero(NeroTagger.FST, true, true, true),
+//			new Nero(NeroTagger.FST, true, false, false),
+//			new Nero(NeroTagger.FST, true, false, true),
+//			new Nero(NeroTagger.FST, true, true, false),
+//			new Nero(NeroTagger.FST, true, true, true),
 			
 //			new OpenCalais(OpenCalaisLanguage.EN, false, false),
 //			new OpenCalais(OpenCalaisLanguage.EN, false, true),
@@ -1611,14 +1611,14 @@ public class Test
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
-//			new OpeNer(false, false, false),
-//			new OpeNer(false, false, true),
-//			new OpeNer(false, true, false),
-//			new OpeNer(false, true, true),
-//			new OpeNer(true, false, false),
-//			new OpeNer(true, false, true),
-//			new OpeNer(true, true, false),
-//			new OpeNer(true, true, true),
+			new OpeNer(false, false, false),
+			new OpeNer(false, false, true),
+			new OpeNer(false, true, false),
+			new OpeNer(false, true, true),
+			new OpeNer(true, false, false),
+			new OpeNer(true, false, true),
+			new OpeNer(true, true, false),
+			new OpeNer(true, true, true),
 			
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,false),
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,true),
@@ -1859,8 +1859,8 @@ public class Test
 //			new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
 //		);
 //		ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
-//		ArticleList folders = ArticleLists.getArticleList();
+//		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
+		ArticleList folders = ArticleLists.getArticleList();
 //		ArticleList folders = new ArticleList("test", Arrays.asList(new File(FileNames.FO_OUTPUT).listFiles(FileTools.FILTER_DIRECTORY)));
 		logger.log("Processed articles: ");
 		logger.increaseOffset();
@@ -2147,8 +2147,6 @@ public class Test
 
 /**
  * TODO
- * - apply nero to all articles, which will also normalize the texts
- * - manually review all text to see which ones need to be fixed
  * - apply all tools again
  * - perform evaluation
  * - compare nero new results with the previous ones

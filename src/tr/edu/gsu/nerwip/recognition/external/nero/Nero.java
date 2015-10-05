@@ -184,7 +184,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	/** Name of the temporary file generated for Nero */
 	private static final String TEMP_NAME = "temp";
 	/** Maximal size of text part processed at once */
-	private static final int MAX_SIZE = 50000;
+	private static final int MAX_SIZE = 25000;
 
 	/**
 	 * Returns the path of the temporary file

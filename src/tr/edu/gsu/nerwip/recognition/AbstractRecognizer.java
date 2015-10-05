@@ -500,10 +500,16 @@ public abstract class AbstractRecognizer
 			while(it.hasNext())
 			{	AbstractEntity<?> entity = it.next();
 				String str = entity.toString();
-				boolean temp = cleanEntityEnds(entity);
-				if(!temp)
+				if(!str.isEmpty())
 				{	it.remove();
-					logger.log("Entity "+str+" was empty after trimming >> removed");
+					logger.log("WARNING: Entity "+str+" was empty before trimming >> removed");
+				}
+				else 
+				{	boolean temp = cleanEntityEnds(entity);
+					if(!temp)
+					{	it.remove();
+						logger.log("Entity "+str+" was empty after trimming >> removed");
+					}
 				}
 			}
 			logger.decreaseOffset();
