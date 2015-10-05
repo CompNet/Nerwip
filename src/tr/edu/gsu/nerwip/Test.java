@@ -206,14 +206,14 @@ public class Test
 //	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
-//		testTagEn(name);
+		testTagEn(name);
 //		testWikipediaDater(url);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -845,10 +845,10 @@ public class Test
 		tagen.setCacheEnabled(false);
 		
 		// only the specified article
-//		tagen.process(article);
+		tagen.process(article);
 		
 		// all the corpus
-		testAllCorpus(tagen,0);
+//		testAllCorpus(tagen,0);
 
 		logger.decreaseOffset();
 	}
@@ -1859,8 +1859,8 @@ public class Test
 //			new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
 //		);
 //		ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-//		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
-		ArticleList folders = ArticleLists.getArticleList();
+		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
+//		ArticleList folders = ArticleLists.getArticleList();
 //		ArticleList folders = new ArticleList("test", Arrays.asList(new File(FileNames.FO_OUTPUT).listFiles(FileTools.FILTER_DIRECTORY)));
 		logger.log("Processed articles: ");
 		logger.increaseOffset();

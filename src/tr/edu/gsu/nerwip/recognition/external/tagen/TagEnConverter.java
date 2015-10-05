@@ -153,10 +153,14 @@ public class TagEnConverter extends AbstractExternalConverter
 			// elements are processed individually
 			else if(child instanceof Element)
 			{	Element e = (Element)child;
-				String str = e.getText();
-				int length = str.length();
-				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
 				List<AbstractEntity<?>> entList = convertElement(e, index);
+				int length = 0;
+				if(!entList.isEmpty())
+				{	AbstractEntity<?> first = entList.get(0);
+					AbstractEntity<?> last = entList.get(entList.size()-1);
+					length = last.getEndPos() - first.getStartPos();
+				}
+				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
 				result.addEntities(entList);
 				for(AbstractEntity<?> entity: entList)
 					logger.log(entity.toString());
