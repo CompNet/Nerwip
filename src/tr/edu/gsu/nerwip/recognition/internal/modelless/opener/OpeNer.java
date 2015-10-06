@@ -176,8 +176,8 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	private static final String RECOGNIZER_URL = SERVICE_URL + "/ner";
 	/** Maximal request size for OpenNer (the doc recomands 1000) */
 	private static final int MAX_SIZE = 1000;
-//	/** Sleep periods (in ms) */ // this is actually not needed
-//	private static final long SLEEP_PERIOD = 5000;
+	/** Sleep periods (in ms) */ // this is actually not needed
+	private static final long SLEEP_PERIOD = 100;
 	
 	@Override
 	protected List<String> detectEntities(Article article) throws RecognizerException
@@ -197,18 +197,19 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 			try
 			{	// tokenize the text
 				String tokenizedText = performTokenization(part);
-//				Thread.sleep(SLEEP_PERIOD); // not needed
+				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
 
 				// detect part-of-speech
 				String taggedText = performTagging(tokenizedText);
-//				Thread.sleep(SLEEP_PERIOD); // not needed
+				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
 				
 				// apply the constituent parser
 				String parsedText = performParsing(taggedText);
-//				Thread.sleep(SLEEP_PERIOD); // not needed
+				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
 				
 				// perform the NER
 				String nerText = performRecognition(parsedText);
+				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
 
 				// clean the resulting XML // unnecessary
 //				String kafOld ="<KAF xml:lang=\"fr\" version=\"v1.opener\">";
@@ -231,10 +232,10 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 			{	//e.printStackTrace();
 				throw new RecognizerException(e.getMessage());
 			}
-//			catch (InterruptedException e)
-//			{	//e.printStackTrace();
-//				throw new RecognizerException(e.getMessage());
-//			}
+			catch (InterruptedException e)
+			{	//e.printStackTrace();
+				throw new RecognizerException(e.getMessage());
+			}
 			
 			logger.decreaseOffset();
 		}
@@ -375,8 +376,9 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 		
 		// send to recognizer and retrieve answer
-System.out.println(parsedText);		
+		//System.out.println(parsedText);	
 		String result = sendReceiveRequest(method);
+		//System.out.println(result);
 		
 		logger.decreaseOffset();
 		return result;
@@ -425,53 +427,4 @@ System.out.println(parsedText);
 		String result = sb.toString();
 		return result;
 	}
-
-//	/////////////////////////////////////////////////////////////////
-//	// CLEANING		 		/////////////////////////////////////////
-//	/////////////////////////////////////////////////////////////////
-//    /** Whether or not the beginings and ends of entities should be cleaned from any non-letter/digit chars */
-//    protected boolean trim = false;
-//
-//    /*
-//     * We need to overide this method, because OpeNer sometimes
-//     * include expressions between parentheses inside the entity
-//     * mention. We want to keep the closing parenthesis.
-//     * For instance, in "Limoges (Haute-Vienne)", we want to keep
-//     * the last character for consistency.
-//     */
-//    @Override
-//	public boolean cleanEntityEnds(AbstractEntity<?> entity)
-//	{	String valueStr = entity.getStringValue();
-//		char c;
-//		
-//		// trim beginning
-//		int startPos = entity.getStartPos();
-//		c = valueStr.charAt(0);
-//		while(!valueStr.isEmpty() && !Character.isLetterOrDigit(c))
-//		{	startPos++;
-//			valueStr = valueStr.substring(1,valueStr.length());
-//			if(!valueStr.isEmpty())
-//				c = valueStr.charAt(0);
-//		}
-//		
-//		// trim ending
-//		int endPos = entity.getEndPos();
-//		if(!valueStr.isEmpty())
-//		{	c = valueStr.charAt(valueStr.length()-1);
-//			while(!valueStr.isEmpty() && !Character.isLetterOrDigit(c) 
-//					&& (c!=')' || !valueStr.contains("("))) // this is the additional condition for OpenNer
-//			{	endPos--;
-//				valueStr = valueStr.substring(0,valueStr.length()-1);
-//				if(!valueStr.isEmpty())
-//					c = valueStr.charAt(valueStr.length()-1);
-//			}
-//		}
-//		
-//		entity.setStringValue(valueStr);
-//		entity.setStartPos(startPos);
-//		entity.setEndPos(endPos);
-//		
-//		boolean result = !valueStr.isEmpty();
-//		return result;
-//	}
 }

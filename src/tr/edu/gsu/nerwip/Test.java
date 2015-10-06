@@ -780,8 +780,13 @@ public class Test
 		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setOutputRawResults(true);
 		openCalais.setCacheEnabled(false);
+		
+		// only the specified article
 		openCalais.process(article);
-
+		
+		// all the corpus
+//		testAllCorpus(openCalais,0);
+		
 		logger.decreaseOffset();
 	}
 	
@@ -1611,14 +1616,14 @@ public class Test
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
-//			new OpeNer(false, false, false),
-//			new OpeNer(false, false, true),
-//			new OpeNer(false, true, false),
-//			new OpeNer(false, true, true),
-//			new OpeNer(true, false, false),
-//			new OpeNer(true, false, true),
-//			new OpeNer(true, true, false),
-//			new OpeNer(true, true, true),
+			new OpeNer(false, false, false),
+			new OpeNer(false, false, true),
+			new OpeNer(false, true, false),
+			new OpeNer(false, true, true),
+			new OpeNer(true, false, false),
+			new OpeNer(true, false, true),
+			new OpeNer(true, true, false),
+			new OpeNer(true, true, true),
 			
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,false),
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,true),
@@ -1679,10 +1684,10 @@ public class Test
 //			new Subee(true,true,true,true,false),
 //			new Subee(true,true,true,true,true),
 			
-			new TagEn(TagEnModelName.MUC_MODEL, false, false),
-			new TagEn(TagEnModelName.MUC_MODEL, false, true),
-			new TagEn(TagEnModelName.MUC_MODEL, true, false),
-			new TagEn(TagEnModelName.MUC_MODEL, true, true),
+//			new TagEn(TagEnModelName.MUC_MODEL, false, false),
+//			new TagEn(TagEnModelName.MUC_MODEL, false, true),
+//			new TagEn(TagEnModelName.MUC_MODEL, true, false),
+//			new TagEn(TagEnModelName.MUC_MODEL, true, true),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),

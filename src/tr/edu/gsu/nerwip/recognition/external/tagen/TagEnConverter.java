@@ -88,6 +88,8 @@ public class TagEnConverter extends AbstractExternalConverter
 	private final static String ELT_NUMEX = "numex";	// percent...
 	/** Use to represent range of values, inside entity elements */
 	private final static String ELT_RANGE = "range";	// ...
+	/** Use to represent a time of the day */
+	private final static String ELT_TIME = "time";	// ...
 	/** Map of String to entity type conversion */
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
 	static
@@ -100,6 +102,10 @@ public class TagEnConverter extends AbstractExternalConverter
 	private final static List<String> ELEMENT_BLACKLIST = Arrays.asList
 	(	ELT_NUMEX,
 		ELT_RANGE
+	);
+	/** List of ignored timex elements */
+	private final static List<String> TIMEX_BLACKLIST = Arrays.asList
+	(	ELT_TIME
 	);
 	
 	/////////////////////////////////////////////////////////////////
@@ -271,9 +277,10 @@ public class TagEnConverter extends AbstractExternalConverter
 		String originalStr = element.getText();
 		EntityType type = CONVERSION_MAP.get(name);
 		if(type==null)
-			logger.log("WARNING: could not find the entity type associated to tag "+xo.outputString(element));
-//			logger.log("Element not describing a date/time (ignored): "+xo.outputString(element));
-		
+		{	if(!TIMEX_BLACKLIST.contains(name))
+				logger.log("WARNING: could not find the entity type associated to tag "+xo.outputString(element));
+//				logger.log("Element not describing a date/time (ignored): "+xo.outputString(element));
+		}
 		// we only focus on dates and date-times
 		else
 		{	List<String> valuesStr = new ArrayList<String>();
@@ -299,10 +306,33 @@ public class TagEnConverter extends AbstractExternalConverter
 							for(String str: tmp)
 								valuesStr.add(str);
 						}
-						// form "De 1920 à 1927" (FR)
-						else if((text.startsWith("De ") || text.startsWith("de ")) && text.contains(" à "))
+						// enumeration (not a range) "1928, 1931"
+						else if(text.contains(", "))
+						{	String tmp[] = text.split(", ");
+							for(String str: tmp)
+								valuesStr.add(str);
+						}
+						// form "De 1920 à 1927" / "De 1920 au 15 février 1927" (FR)
+						else if((text.startsWith("De ") || text.startsWith("de ")))
 						{	text = text.substring(3);
-							String tmp[] = text.split(" à ");
+							String expr = null;
+							if(text.contains(" à "))
+								expr = " à ";
+							else if(text.contains(" au "))
+								expr = " au ";
+							String tmp[] = text.split(expr);
+							for(String str: tmp)
+								valuesStr.add(str);
+						}
+						// form "Du 3 au 8 décembre 1899" / "Du 3 septembre à décembre 1899" (FR)
+						else if((text.startsWith("Du ") || text.startsWith("du ")))
+						{	text = text.substring(3);
+							String expr = null;
+							if(text.contains(" au "))
+								expr = " au ";
+							else if(text.contains(" à "))
+								expr = " à ";
+							String tmp[] = text.split(expr);
 							for(String str: tmp)
 								valuesStr.add(str);
 						}

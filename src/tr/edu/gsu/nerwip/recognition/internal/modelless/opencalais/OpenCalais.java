@@ -139,6 +139,8 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	public static final String KEY_NAME = "OpenCalais";
 	/** Maximal request size */
 	private static final int MAX_SIZE = 10000;
+	/** Delay between two remote invocations (4 queries per second max) */
+	private static final long DELAY = 1000;
 	
 	@Override
 	protected List<String> detectEntities(Article article) throws RecognizerException
@@ -192,13 +194,21 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 				while((line = bufferedReader.readLine())!=null)
 				{	builder.append(line+"\n");
 					nbr++;
-					//logger.log("Line:" +line);
+					logger.log("Line:" +line);
 				}
 				logger.log("Lines read: "+nbr);
 				
 				String answer = builder.toString();
 				result.add(part);
 				result.add(answer);
+				
+				// sleep a bit
+	            try
+	            {	Thread.sleep(DELAY);
+				}
+	            catch (InterruptedException e)
+	            {	e.printStackTrace();
+				}
 			}
 			catch (UnsupportedEncodingException e)
 			{	e.printStackTrace();

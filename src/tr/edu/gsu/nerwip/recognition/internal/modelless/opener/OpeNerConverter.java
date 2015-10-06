@@ -255,7 +255,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 					int startPos2 = -1;
 					int endPos2 = 0;
 					for(Element targetElt2: targetElts2)
-					{	// get the refered word id
+					{	// get the referred word id
 						String id2 = targetElt2.getAttributeValue(ATT_ID);
 						// get the corresponding word element
 						Element wordElt = wordMap.get(id2);

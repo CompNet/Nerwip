@@ -430,21 +430,17 @@ public abstract class AbstractRecognizer
     protected boolean trim = false;
 
     /**
-	 * Some NER tools let punctuation/space at 
-	 * the begining/end of the entity. This
-	 * function appropriately trims the entity
-	 * to remove this noise.
+	 * Some NER tools let punctuation/space at the begining/end of the entity. This
+	 * function trims the entity to remove this noise.
 	 * <br/>
-	 * If the consecutive trimmings remove
-	 * all characters from the entity, then
-	 * this method returns {@code false},
-	 * and {@code true} otherwise (non-empty
+	 * If the consecutive trimmings remove all characters from the entity, then
+	 * this method returns {@code false}, and {@code true} otherwise (non-empty
 	 * string for the entity).
 	 * 
 	 * @param entity
 	 * 		Entity to be processed.
 	 * @return
-	 * 		{@code true} if the entity survived the trimming.
+	 * 		{@code true} iff the entity is not empty after the trimming.
 	 */
 	public boolean cleanEntityEnds(AbstractEntity<?> entity)
 	{	String valueStr = entity.getStringValue();
@@ -503,16 +499,16 @@ public abstract class AbstractRecognizer
 			Iterator<AbstractEntity<?>> it = entityList.iterator();
 			while(it.hasNext())
 			{	AbstractEntity<?> entity = it.next();
-				String str = entity.toString();
-				if(!str.isEmpty())
+				String str = entity.getStringValue();
+				if(str.isEmpty())
 				{	it.remove();
-					logger.log("WARNING: Entity "+str+" was empty before trimming >> removed");
+					logger.log("WARNING: Entity "+entity+" was empty before trimming >> removed");
 				}
 				else 
 				{	boolean temp = cleanEntityEnds(entity);
 					if(!temp)
 					{	it.remove();
-						logger.log("Entity "+str+" was empty after trimming >> removed");
+						logger.log("Entity "+entity+" was empty after trimming >> removed");
 					}
 				}
 			}
