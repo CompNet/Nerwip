@@ -759,7 +759,7 @@ return temp;
 	 */
 	public void writeNumbers(File folder, String dataName) throws FileNotFoundException, UnsupportedEncodingException
 	{	String filePath = folder.getPath() + File.separator + getFileName();
-		PrintWriter pw = FileTools.openTextFileWrite(filePath);
+		PrintWriter pw = FileTools.openTextFileWrite(filePath,"UTF-8");
 		
 		// write header
 		pw.println("# tool evaluated: "+recognizer.getFolder());
@@ -863,30 +863,36 @@ return temp;
 
 		// open file
 		String filePath = folder.getPath() + File.separator + getFileName();
-		Scanner scanner = FileTools.openTextFileRead(filePath);
-		
-		// retrieve data
-		@SuppressWarnings("unused")
-		String line;
-		line = scanner.nextLine();
-		line = scanner.nextLine();
-		line = scanner.nextLine();
-		line = scanner.nextLine();
-		line = scanner.nextLine();
-		readCounts(scanner, getCountNames(), result.countsAll, result.countsByType, result.countsByCategory);
-		scanner.nextLine();
-		result.scoresAll = new HashMap<String,Float>();
-		result.scoresByType = new HashMap<String,Map<EntityType,Float>>();
-		result.scoresByCategory = new HashMap<String,Map<ArticleCategory,Float>>();
-		for(String score: getScoreNames())
-		{	Map<EntityType,Float> scoresByTypeMap = new HashMap<EntityType,Float>();
-			result.scoresByType.put(score,scoresByTypeMap);
-			Map<ArticleCategory,Float> scoresByCategoryMap = new HashMap<ArticleCategory,Float>();
-			result.scoresByCategory.put(score, scoresByCategoryMap);
+		try
+		{	Scanner scanner = FileTools.openTextFileRead(filePath,"UTF-8");
+			
+			// retrieve data
+			@SuppressWarnings("unused")
+			String line;
+			line = scanner.nextLine();
+			line = scanner.nextLine();
+			line = scanner.nextLine();
+			line = scanner.nextLine();
+			line = scanner.nextLine();
+			readCounts(scanner, getCountNames(), result.countsAll, result.countsByType, result.countsByCategory);
+			scanner.nextLine();
+			result.scoresAll = new HashMap<String,Float>();
+			result.scoresByType = new HashMap<String,Map<EntityType,Float>>();
+			result.scoresByCategory = new HashMap<String,Map<ArticleCategory,Float>>();
+			for(String score: getScoreNames())
+			{	Map<EntityType,Float> scoresByTypeMap = new HashMap<EntityType,Float>();
+				result.scoresByType.put(score,scoresByTypeMap);
+				Map<ArticleCategory,Float> scoresByCategoryMap = new HashMap<ArticleCategory,Float>();
+				result.scoresByCategory.put(score, scoresByCategoryMap);
+			}
+			readScores(scanner, getScoreNames(), result.scoresAll, result.scoresByType, result.scoresByCategory);
+			
+			scanner.close();
 		}
-		readScores(scanner, getScoreNames(), result.scoresAll, result.scoresByType, result.scoresByCategory);
+		catch (UnsupportedEncodingException e)
+		{	e.printStackTrace();
+		}
 		
-		scanner.close();
 		return result;
 	}
 

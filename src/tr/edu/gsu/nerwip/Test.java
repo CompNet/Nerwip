@@ -156,10 +156,10 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 
-		String name = "Émilien_Brigault";
+//		String name = "Émilien_Brigault";
 //		String name = "Aimé Piton";
  //   	String name = "Albert_Chauly";
-//    	String name = "Achille_Eugène_Fèvre";
+    	String name = "Achille_Eugène_Fèvre";
 //		String name = "Gilles_Marcel_Cachin";
 
 //		String name = "Barack_Obama";
@@ -1135,7 +1135,7 @@ public class Test
 		boolean doIntervalTagging = false;
 		HeidelTimeStandalone nerTool = new HeidelTimeStandalone(language, typeToProcess, outputType, configPath, posTagger, doIntervalTagging);
 		String fileName = FileNames.FO_HEIDELTIME+File.separator+"test-fr.txt";
-		String document = FileTools.readTextFile(fileName);
+		String document = FileTools.readTextFile(fileName, "UTF-8");
 		String result = nerTool.process(document);
 		System.out.println(result);
 		result = result.replace("<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">", "");
@@ -1611,14 +1611,14 @@ public class Test
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
-			new OpeNer(false, false, false),
-			new OpeNer(false, false, true),
-			new OpeNer(false, true, false),
-			new OpeNer(false, true, true),
-			new OpeNer(true, false, false),
-			new OpeNer(true, false, true),
-			new OpeNer(true, true, false),
-			new OpeNer(true, true, true),
+//			new OpeNer(false, false, false),
+//			new OpeNer(false, false, true),
+//			new OpeNer(false, true, false),
+//			new OpeNer(false, true, true),
+//			new OpeNer(true, false, false),
+//			new OpeNer(true, false, true),
+//			new OpeNer(true, true, false),
+//			new OpeNer(true, true, true),
 			
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,false),
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,true),
@@ -1679,10 +1679,10 @@ public class Test
 //			new Subee(true,true,true,true,false),
 //			new Subee(true,true,true,true,true),
 			
-//			new TagEn(TagEnModelName.MUC_MODEL, false, false),
-//			new TagEn(TagEnModelName.MUC_MODEL, false, true),
-//			new TagEn(TagEnModelName.MUC_MODEL, true, false),
-//			new TagEn(TagEnModelName.MUC_MODEL, true, true),
+			new TagEn(TagEnModelName.MUC_MODEL, false, false),
+			new TagEn(TagEnModelName.MUC_MODEL, false, true),
+			new TagEn(TagEnModelName.MUC_MODEL, true, false),
+			new TagEn(TagEnModelName.MUC_MODEL, true, true),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
 //			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),

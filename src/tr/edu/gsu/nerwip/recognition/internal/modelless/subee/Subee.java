@@ -604,6 +604,9 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 		catch (FileNotFoundException e)
 		{	throw new RecognizerException(e.getMessage());
 		}
+		catch (UnsupportedEncodingException e) 
+		{	e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -615,8 +618,10 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing one of the map files.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle encoding.
 	 */
-	private synchronized void loadTypeMaps() throws FileNotFoundException
+	private synchronized void loadTypeMaps() throws FileNotFoundException, UnsupportedEncodingException
 	{	if(TYPE_MAP.isEmpty())
 		{	logger.log("Loading type maps");
 			logger.increaseOffset();
@@ -634,7 +639,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 					name = type.toString().toLowerCase();
 				String filePath = base + FILE_PREFIX + name + FileNames.EX_TEXT;
 				logger.log("Processing file "+filePath);
-				Scanner scanner = FileTools.openTextFileRead(filePath);
+				Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 				
 				// read the content and add to the conversion map
 				while(scanner.hasNextLine())
@@ -732,7 +737,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 			
 			// retrieve existing unknown types
 			try
-			{	Scanner scanner = FileTools.openTextFileRead(file);
+			{	Scanner scanner = FileTools.openTextFileRead(file, "UTF-8");
 				while(scanner.hasNextLine())
 				{	String line = scanner.nextLine().trim();
 					UNKNOWN_TYPES.add(line);
@@ -740,6 +745,9 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 				scanner.close();
 			}
 			catch (FileNotFoundException e)
+			{	e.printStackTrace();
+			}
+			catch (UnsupportedEncodingException e)
 			{	e.printStackTrace();
 			}
 			
@@ -922,7 +930,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 			
 			// retrieve demonyms
 			try
-			{	Scanner scanner = FileTools.openTextFileRead(file);
+			{	Scanner scanner = FileTools.openTextFileRead(file, "UTF-8");
 				while(scanner.hasNextLine())
 				{	String line = scanner.nextLine().trim();
 					DEMONYMS.add(line);
@@ -930,6 +938,9 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 				scanner.close();
 			}
 			catch (FileNotFoundException e)
+			{	e.printStackTrace();
+			}
+			catch (UnsupportedEncodingException e)
 			{	e.printStackTrace();
 			}
 			

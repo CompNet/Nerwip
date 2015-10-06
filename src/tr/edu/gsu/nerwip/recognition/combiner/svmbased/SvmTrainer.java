@@ -374,7 +374,7 @@ public class SvmTrainer
 	{	logger.increaseOffset();
 		
 		// open file
-		PrintWriter printWriter = FileTools.openTextFileWrite(dataFile);
+		PrintWriter printWriter = FileTools.openTextFileWrite(dataFile,"UTF-8");
 		
 		// record data
 		for(int i=0;i<data.l;i++)

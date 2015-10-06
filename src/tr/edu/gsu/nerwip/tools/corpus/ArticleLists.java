@@ -145,23 +145,29 @@ public class ArticleLists
 		logger.increaseOffset();
 		
 		logger.log("Opening the file");
+		ArticleList result = null;
 		File file = new File(path);
-		Scanner scanner = FileTools.openTextFileRead(file);
-		
-		ArticleList result = new ArticleList(listFile);
-		while(scanner.hasNextLine())
-		{	String line = scanner.nextLine().trim();
-			if(!line.isEmpty())
-			{	String fn = FileNames.FO_OUTPUT + File.separator + line;
-				File f = new File(fn);
-				result.add(f);
+		try
+		{	Scanner scanner = FileTools.openTextFileRead(file, "UTF-8");
+			result = new ArticleList(listFile);
+			while(scanner.hasNextLine())
+			{	String line = scanner.nextLine().trim();
+				if(!line.isEmpty())
+				{	String fn = FileNames.FO_OUTPUT + File.separator + line;
+					File f = new File(fn);
+					result.add(f);
+				}
 			}
+			logger.log("Articles in the list: "+result.size());
+			
+			logger.log("Closing the file");
+			scanner.close();
+			Collections.sort(result);
 		}
-		logger.log("Articles in the list: "+result.size());
+		catch (UnsupportedEncodingException e)
+		{	e.printStackTrace();
+		}
 		
-		logger.log("Closing the file");
-		scanner.close();
-		Collections.sort(result);
 		return result;
 	}
 	
@@ -221,7 +227,7 @@ public class ArticleLists
 	public static void generateAnnotatedArticleList(File corpus, File output) throws SAXException, IOException, ParseException
 	{	String sep = ",";
 		// open output file
-		PrintWriter pw = FileTools.openTextFileWrite(output);
+		PrintWriter pw = FileTools.openTextFileWrite(output, "UTF-8");
 		pw.println("Number"+sep+"Title"+sep+"Size"+sep+"Date"+sep+"Editor"+sep+"Count");
 		
 		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
@@ -244,7 +250,7 @@ public class ArticleLists
 					{	file = files[0];
 						Date date = entities.getModificationDate();
 						String dateStr = DATE_FORMAT.format(date);
-						String rawText = FileTools.readTextFile(file);
+						String rawText = FileTools.readTextFile(file, "UTF-8");
 						int size = rawText.length();
 						Integer count = counts.get(editor);
 						if(count==null)
@@ -281,7 +287,7 @@ public class ArticleLists
 	public static void generateNonAnnotatedArticleList(File corpus, File output) throws SAXException, IOException, ParseException
 	{	String sep = ",";
 		// open output file
-		PrintWriter pw = FileTools.openTextFileWrite(output);
+		PrintWriter pw = FileTools.openTextFileWrite(output, "UTF-8");
 		pw.println("Number"+sep+"Title"+sep+"Size");
 		
 		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
@@ -297,7 +303,7 @@ public class ArticleLists
 			if(files.length>0)
 			{	boolean treat = false;
 				File file = files[0];
-				String rawText = FileTools.readTextFile(file);
+				String rawText = FileTools.readTextFile(file, "UTF-8");
 				int size = rawText.length();
 				
 				files = folder.listFiles(ffEnt);
@@ -372,7 +378,7 @@ public class ArticleLists
 		Collections.sort(list);
 		
 		String filePath = FileNames.FO_OUTPUT + File.separator + "generated.list.txt";
-		PrintWriter pw = FileTools.openTextFileWrite(filePath);
+		PrintWriter pw = FileTools.openTextFileWrite(filePath, "UTF-8");
 		
 		for(File file: list)
 		{	String name = file.getName();

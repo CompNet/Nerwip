@@ -633,6 +633,6 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		FileTools.writeTextFile(file, results);
+		FileTools.writeTextFile(file, results, "UTF-8");
 	}
 }

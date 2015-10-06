@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -68,8 +69,10 @@ public class TextDialog extends JDialog implements ActionListener
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while loading the text file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	public TextDialog(JFrame parentFrame, String title, String tooltip, String textFile) throws FileNotFoundException
+	public TextDialog(JFrame parentFrame, String title, String tooltip, String textFile) throws FileNotFoundException, UnsupportedEncodingException
 	{	// call the parent
 		super(parentFrame);
 
@@ -115,8 +118,10 @@ public class TextDialog extends JDialog implements ActionListener
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while loading the text file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	private JScrollPane initContent(String textFile, String tooltip) throws FileNotFoundException
+	private JScrollPane initContent(String textFile, String tooltip) throws FileNotFoundException, UnsupportedEncodingException
 	{	textPane = new JEditorPane();
 		textPane.setContentType("text/html");
 		JScrollPane result = new JScrollPane(textPane);
@@ -124,7 +129,7 @@ public class TextDialog extends JDialog implements ActionListener
 		textPane.setEditable(false);
 
 		// get file content
-		String text = FileTools.readTextFile(textFile);
+		String text = FileTools.readTextFile(textFile, "UTF-8");
 		textPane.setText(text);
 		
 		return result;

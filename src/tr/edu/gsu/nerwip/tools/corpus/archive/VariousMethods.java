@@ -180,7 +180,7 @@ public class VariousMethods
 			logger.log("Retrieve reference entities");
 			String refPath = folder.getPath() + File.separator + FileNames.FI_REFERENCE_TEXT;
 			File refFile = new File(refPath);
-			String references = FileTools.readTextFile(refFile);
+			String references = FileTools.readTextFile(refFile, "UTF-8");
 			Entities entities = converter.convert(null,references);
 
 			logger.log("Record our XML format");

@@ -102,7 +102,7 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		FileTools.writeTextFile(file, results);
+		FileTools.writeTextFile(file, results, "UTF-8");
 	}
 
 	/**

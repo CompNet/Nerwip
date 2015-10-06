@@ -26,6 +26,7 @@ package tr.edu.gsu.nerwip.tools.corpus.archive;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
@@ -84,8 +85,10 @@ public class ArticleComparison
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing a file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle encoding.
 	 */
-	private static int compareAll(boolean processAnnotated) throws FileNotFoundException
+	private static int compareAll(boolean processAnnotated) throws FileNotFoundException, UnsupportedEncodingException
 	{	logger.log("Process all articles in the out folder");
 		logger.increaseOffset();
 		int result = 0;
@@ -117,8 +120,10 @@ public class ArticleComparison
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while reading the files.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle encoding.
 	 */
-	private static boolean compareVersions(File article, boolean processAnnotated) throws FileNotFoundException
+	private static boolean compareVersions(File article, boolean processAnnotated) throws FileNotFoundException, UnsupportedEncodingException
 	{	String name = article.getName();
 		logger.log("Comparing two versions of the same article "+name);
 		logger.increaseOffset();
@@ -126,20 +131,20 @@ public class ArticleComparison
 		// retrieve raw text
 		String rawPath = article.getPath() + File.separator + FileNames.FI_RAW_TEXT;
 		logger.log("Retrieve raw text: "+rawPath);
-		String raw = FileTools.readTextFile(rawPath);
+		String raw = FileTools.readTextFile(rawPath, "UTF-8");
 		
 		// retrieve annotated text
 		String annotatedPath = article.getPath() + File.separator + FileNames.FI_REFERENCE_TEXT;
 		String annotated = null;
 		if(processAnnotated)
 		{	logger.log("Retrieve annotated text: "+annotatedPath);
-			annotated = FileTools.readTextFile(annotatedPath);
+			annotated = FileTools.readTextFile(annotatedPath, "UTF-8");
 		}
 		
 		// retrieve linked text
 		String linkedPath = article.getPath() + File.separator + FileNames.FI_LINKED_TEXT;
 		logger.log("Retrieve linked text: "+linkedPath);
-		String linked = FileTools.readTextFile(linkedPath);
+		String linked = FileTools.readTextFile(linkedPath, "UTF-8");
 		
 		// compare content
 		boolean result = compareContent(raw, annotated, linked);

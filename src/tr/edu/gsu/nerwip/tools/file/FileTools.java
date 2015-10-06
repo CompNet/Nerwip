@@ -108,15 +108,19 @@ public class FileTools
 	 * 
 	 * @param filePath 
 	 * 		File to open.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * @return 
 	 * 		Scanner object ready to read the file.
 	 * 
 	 * @throws FileNotFoundException 
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException 
+	 * 		Could not handle the encoding.
 	 */
-	public static Scanner openTextFileRead(String filePath) throws FileNotFoundException
+	public static Scanner openTextFileRead(String filePath, String encoding) throws FileNotFoundException, UnsupportedEncodingException
 	{	File file = new File(filePath);
-		Scanner result = openTextFileRead(file);
+		Scanner result = openTextFileRead(file, encoding);
 		return result;
 	}
 	
@@ -125,16 +129,20 @@ public class FileTools
 	 * 
 	 * @param file
 	 * 		File to open.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * @return 
 	 * 		Scanner object ready to read the file.
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	public static Scanner openTextFileRead(File file) throws FileNotFoundException
+	public static Scanner openTextFileRead(File file, String encoding) throws FileNotFoundException, UnsupportedEncodingException
 	{	FileInputStream fis = new FileInputStream(file);
 //		InputStreamReader isr = new InputStreamReader(fis,"UTF-8");
-		InputStreamReader isr = new InputStreamReader(fis);
+		InputStreamReader isr = new InputStreamReader(fis, encoding);
 		Scanner result = new Scanner(isr);
 		return result;
 	}
@@ -144,15 +152,19 @@ public class FileTools
 	 * 
 	 * @param file
 	 * 		File to be read.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * @return
 	 * 		String corresponding to the file content.
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException 
+	 * 		Could not handle the encoding.
 	 */
-	public static String readTextFile(File file) throws FileNotFoundException
+	public static String readTextFile(File file, String encoding) throws FileNotFoundException, UnsupportedEncodingException
 	{	StringBuffer temp = new StringBuffer();
-		Scanner scanner = FileTools.openTextFileRead(file);
+		Scanner scanner = FileTools.openTextFileRead(file, encoding);
 		
 		while(scanner.hasNextLine())
 		{	String line = scanner.nextLine();
@@ -169,16 +181,20 @@ public class FileTools
 	 * 
 	 * @param filePath
 	 * 		Path of the file to be read.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * @return
 	 * 		String corresponding to the file content.
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException 
+	 * 		Could not handle the encoding.
 	 */
-	public static String readTextFile(String filePath) throws FileNotFoundException
+	public static String readTextFile(String filePath, String encoding) throws FileNotFoundException, UnsupportedEncodingException
 	{	File file = new File(filePath);
 		
-		String result = readTextFile(file);
+		String result = readTextFile(file, encoding);
 		return result;
 	}
 	
@@ -186,40 +202,44 @@ public class FileTools
 	// WRITE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Open the file at the specified path,
-	 * for writing.
+	 * Open the file at the specified path, for writing.
 	 * 
 	 * @param filePath
 	 * 		File to open.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * @return 
 	 * 		PrintWriter object ready to write in the file.
 	 * 
-	 * @throws UnsupportedEncodingException
-	 * 		Problem while accessing the file.
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	public static PrintWriter openTextFileWrite(String filePath) throws UnsupportedEncodingException, FileNotFoundException
+	public static PrintWriter openTextFileWrite(String filePath, String encoding) throws UnsupportedEncodingException, FileNotFoundException
 	{	File file = new File(filePath);
-		PrintWriter result = openTextFileWrite(file);
+		PrintWriter result = openTextFileWrite(file, encoding);
 		return result;
 	}
+	
 	/**
 	 * Open the specified file for writing.
 	 * 
 	 * @param file
 	 * 		File to open.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * @return 
 	 * 		PrintWriter object ready to write in the file.
 	 * 
-	 * @throws UnsupportedEncodingException
-	 * 		Problem while accessing the file.
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	public static PrintWriter openTextFileWrite(File file) throws UnsupportedEncodingException, FileNotFoundException
+	public static PrintWriter openTextFileWrite(File file, String encoding) throws UnsupportedEncodingException, FileNotFoundException
 	{	FileOutputStream fos = new FileOutputStream(file);
-		OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
+		OutputStreamWriter osw = new OutputStreamWriter(fos,encoding); //"UTF-8" "ISO-8859-1"
 		PrintWriter result = new PrintWriter(osw);
 		return result;
 	}
@@ -231,16 +251,18 @@ public class FileTools
 	 * 		File to be created.
 	 * @param content
 	 * 		String corresponding to the file content.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * 
 	 * @throws IOException
 	 * 		Problem while accessing the file.
 	 */
-	public static void writeTextFile(File file, String content) throws IOException
+	public static void writeTextFile(File file, String content, String encoding) throws IOException
 	{	File folder = file.getParentFile();
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		PrintWriter pw = FileTools.openTextFileWrite(file);
+		PrintWriter pw = FileTools.openTextFileWrite(file,encoding);
 		
 		pw.print(content);
 		
@@ -254,13 +276,15 @@ public class FileTools
 	 * 		Path of the file to be created.
 	 * @param content
 	 * 		String corresponding to the file content.
+	 * @param encoding
+	 * 		Encoding of the text file.
 	 * 
 	 * @throws IOException
 	 * 		Problem while accessing the file.
 	 */
-	public static void writeTextFile(String filePath, String content) throws IOException
+	public static void writeTextFile(String filePath, String content, String encoding) throws IOException
 	{	File file = new File(filePath);
-		writeTextFile(file, content);
+		writeTextFile(file, content, encoding);
 	}
 	
 	/////////////////////////////////////////////////////////////////

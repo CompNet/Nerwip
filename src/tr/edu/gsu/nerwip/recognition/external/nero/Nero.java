@@ -26,11 +26,8 @@ package tr.edu.gsu.nerwip.recognition.external.nero;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -233,17 +230,8 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 				String tempPath = getTempFile(article,i);
 				File tempFile = new File(tempPath);
 				logger.log("Copying the article content in partial temp file "+tempFile);
-				// UTF-8
-//					FileTools.writeTextFile(tempFile, part);
-				// ISO
-					File folder = tempFile.getParentFile();
-					if(!folder.exists())
-						folder.mkdirs();
-					FileOutputStream fos = new FileOutputStream(tempFile);
-					OutputStreamWriter osw = new OutputStreamWriter(fos,"ISO-8859-1");
-					PrintWriter pw = new PrintWriter(osw);
-					pw.print(part);
-					pw.close();
+//				FileTools.writeTextFile(tempFile, part, "UTF-8");
+				FileTools.writeTextFile(tempFile, part, "ISO-8859-1");
 				
 				// invoke the external tool and retrieve its output
 				logger.log("Invoking Nero: ");
@@ -300,7 +288,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 					if(outRawResults)
 					{	File rrF = converter.getRawFile(article);
 						logger.log("Writing the raw results in file "+rrF);
-						FileTools.writeTextFile(rrF, res);
+						FileTools.writeTextFile(rrF, res, "UTF-8");
 					}
 				}
 				else

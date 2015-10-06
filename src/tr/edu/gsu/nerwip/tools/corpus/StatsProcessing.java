@@ -175,7 +175,7 @@ public class StatsProcessing
 		// record stats
 		logger.log("Record statistics");
 		String path = FileNames.FO_OUTPUT + File.separator + FileNames.FI_STATS_TEXT;
-		PrintWriter pw = FileTools.openTextFileWrite(path);
+		PrintWriter pw = FileTools.openTextFileWrite(path, "UTF-8");
 		{	String header = "Name\tWords\tChars";
 			for(EntityType type: EntityType.values())
 				header = header + "\t" + type.toString();

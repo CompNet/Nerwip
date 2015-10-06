@@ -185,7 +185,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 			String inputPath = getTempFile(article);
 			File inputFile = new File(inputPath);
 			logger.log("Copying the article content in input file "+inputFile);
-			FileTools.writeTextFile(inputFile, text);
+			FileTools.writeTextFile(inputFile, text, "UTF-8");
 			
 			// invoke the external tool and retrieve its output
 			logger.log("Invoking TagEn: ");
@@ -224,7 +224,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 			if(outRawResults)
 			{	String consolePath = getConsoleFile(article);
 				logger.log("Writing the console output in file "+consolePath);
-				FileTools.writeTextFile(consolePath, console);
+				FileTools.writeTextFile(consolePath, console, "UTF-8");
 			}
 			
 			// possibly remove the temp file
@@ -232,7 +232,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 				inputFile.delete();
 			
 	        // read the result file
-			result = FileTools.readTextFile(outputPath);
+			result = FileTools.readTextFile(outputPath, "UTF-8");
         }
 		catch (IOException e)
 		{	//e.printStackTrace();

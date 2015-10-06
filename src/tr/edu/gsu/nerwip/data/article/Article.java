@@ -616,19 +616,19 @@ public class Article
 		
 		// original page
 		if(result.originalFile.exists())
-		{	String originalPage = FileTools.readTextFile(result.originalFile);
+		{	String originalPage = FileTools.readTextFile(result.originalFile,"UTF-8");
 			result.setOriginalPage(originalPage);
 		}
 		
 		// raw text
-		String rawText = FileTools.readTextFile(result.rawFile);
+		String rawText = FileTools.readTextFile(result.rawFile,"UTF-8");
 		rawText = rawText.trim();
 		result.setRawText(rawText);
 		
 		// raw text with hyperlinks
 		String linkedText = rawText;
 		if(result.linkedFile.exists())
-		{	linkedText = FileTools.readTextFile(result.linkedFile);
+		{	linkedText = FileTools.readTextFile(result.linkedFile,"UTF-8");
 			linkedText = linkedText.trim();
 		}
 		result.setLinkedText(linkedText);
@@ -753,13 +753,13 @@ public class Article
 	{	// original html code
 // now already done in the reader class
 //		if(originalPage!=null)
-//			FileTools.writeTextFile(originalFile,originalPage);
+//			FileTools.writeTextFile(originalFile,originalPage,"UTF-8");
 
 		// raw text only
-		FileTools.writeTextFile(rawFile,rawText);
+		FileTools.writeTextFile(rawFile,rawText,"UTF-8");
 		
 		// raw text with hyperlinks
-		FileTools.writeTextFile(linkedFile,linkedText);
+		FileTools.writeTextFile(linkedFile,linkedText,"UTF-8");
 		
 		// properties
 		writeProperties();

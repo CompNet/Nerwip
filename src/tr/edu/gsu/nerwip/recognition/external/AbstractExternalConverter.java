@@ -26,6 +26,7 @@ package tr.edu.gsu.nerwip.recognition.external;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.Entities;
@@ -91,11 +92,13 @@ public abstract class AbstractExternalConverter extends AbstractConverter
 	 * 
 	 * @throws FileNotFoundException 
 	 * 		Problem while reading the file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	protected String readRawResults(Article article) throws FileNotFoundException
+	protected String readRawResults(Article article) throws FileNotFoundException, UnsupportedEncodingException
 	{	File file = getRawFile(article);
 	
-		String result = FileTools.readTextFile(file);
+		String result = FileTools.readTextFile(file, "UTF-8");
 		return result;
 	}
 }

@@ -235,7 +235,7 @@ public abstract class ArticleReader
 		File originalFile = new File(folderPath + File.separator + FileNames.FI_ORIGINAL_PAGE);
 		if(cache && originalFile.exists())
 		{	logger.log("Cache enabled and HTML already retrieved >> we use the cached file ("+originalFile.getName()+")");
-			String sourceCode = FileTools.readTextFile(originalFile);
+			String sourceCode = FileTools.readTextFile(originalFile, "UTF-8");
 			result = Jsoup.parse(sourceCode);
 		}
 		
@@ -284,7 +284,7 @@ public abstract class ArticleReader
 				String sourceCode = result.toString();
 				
 				// cache html source code
-				FileTools.writeTextFile(originalFile, sourceCode);
+				FileTools.writeTextFile(originalFile, sourceCode, "UTF-8");
 			}
 		}
 

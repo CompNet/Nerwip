@@ -201,11 +201,13 @@ public class CategoryProportions extends HashMap<ArticleCategory,Float>
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding. 
 	 */
-	public static CategoryProportions loadCategoryProportions(String filePath) throws FileNotFoundException
+	public static CategoryProportions loadCategoryProportions(String filePath) throws FileNotFoundException, UnsupportedEncodingException
 	{	CategoryProportions result = new CategoryProportions();
 		
-		Scanner scanner = FileTools.openTextFileRead(filePath);
+		Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 		while(scanner.hasNextLine())
 		{	String line = scanner.nextLine();
 			String temp[] = line.split("\t");
@@ -227,10 +229,10 @@ public class CategoryProportions extends HashMap<ArticleCategory,Float>
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
 	 * @throws UnsupportedEncodingException 
-	 * 		Problem while accessing the file.
+	 * 		Could not handle the encoding.
 	 */
 	public void recordCategoryProportion(String filePath) throws UnsupportedEncodingException, FileNotFoundException
-	{	PrintWriter writer = FileTools.openTextFileWrite(filePath);
+	{	PrintWriter writer = FileTools.openTextFileWrite(filePath, "UTF-8");
 		TreeSet<ArticleCategory> categories = new TreeSet<ArticleCategory>(keySet());
 		for(ArticleCategory category: categories)
 		{	float proportion = get(category);

@@ -56,8 +56,10 @@ public class FbCache
 	 * 
 	 * @throws FileNotFoundException 
 	 * 		Problem while accessing the cache file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	public FbCache(String fileName) throws FileNotFoundException
+	public FbCache(String fileName) throws FileNotFoundException, UnsupportedEncodingException
 	{	super();
 		
 		// setting up the cache file
@@ -80,9 +82,11 @@ public class FbCache
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while loading the cache.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	private void loadCache() throws FileNotFoundException
-	{	Scanner scanner = FileTools.openTextFileRead(file);
+	private void loadCache() throws FileNotFoundException, UnsupportedEncodingException
+	{	Scanner scanner = FileTools.openTextFileRead(file, "UTF-8");
 		
 		while(scanner.hasNextLine())
 		{	String line = scanner.nextLine();

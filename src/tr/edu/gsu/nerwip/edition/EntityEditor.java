@@ -2233,10 +2233,10 @@ public class EntityEditor implements WindowListener, ChangeListener
 				}
 			}
 			
-			// record raw text
+			// record raw text //TODO we should use the Article method instead
 			File rawFile = new File(currentArticle + File.separator + FileNames.FI_RAW_TEXT);
 			try
-			{	FileTools.writeTextFile(rawFile, currentRawText);
+			{	FileTools.writeTextFile(rawFile, currentRawText, "UTF-8");
 			}
 			catch (IOException e)
 			{	e.printStackTrace();
@@ -2245,7 +2245,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 			// record linked text
 			File linkedFile = new File(currentArticle + File.separator + FileNames.FI_LINKED_TEXT);
 			try
-			{	FileTools.writeTextFile(linkedFile, currentLinkedText);
+			{	FileTools.writeTextFile(linkedFile, currentLinkedText, "UTF-8");
 			}
 			catch (IOException e)
 			{	e.printStackTrace();
@@ -2654,6 +2654,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 			indexDialog.setVisible(true);
 		}
 		catch (FileNotFoundException e)
+		{	e.printStackTrace();
+		}
+		catch (UnsupportedEncodingException e)
 		{	e.printStackTrace();
 		}
 	}

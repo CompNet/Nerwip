@@ -26,6 +26,7 @@ package tr.edu.gsu.nerwip.tools.corpus.archive;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -127,9 +128,9 @@ if(typeStr.equals("/LOCATION"))
 	// RAW				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected String readRawResults(Article article) throws FileNotFoundException
+	protected String readRawResults(Article article) throws FileNotFoundException, UnsupportedEncodingException
 	{	File file = getRawFile(article);
-		Scanner scanner = FileTools.openTextFileRead(file); //used to force UTF-8 >> necessary ?
+		Scanner scanner = FileTools.openTextFileRead(file, "UTF-8"); //used to force UTF-8 >> necessary ?
 		
 		StringBuffer temp = new StringBuffer();
 		while(scanner.hasNextLine())

@@ -230,15 +230,17 @@ public class VoteWeights
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
+	 * @throws UnsupportedEncodingException
+	 * 		Could not handle the encoding.
 	 */
-	public static VoteWeights loadVoteWeights(String filePath, List<AbstractRecognizer> recognizers) throws FileNotFoundException
+	public static VoteWeights loadVoteWeights(String filePath, List<AbstractRecognizer> recognizers) throws FileNotFoundException, UnsupportedEncodingException
 	{	logger.log("Loading vote weights");
 		logger.increaseOffset();
 		
 		VoteWeights result = new VoteWeights(recognizers);
 		List<ArticleCategory> categories = new ArrayList<ArticleCategory>();
 	
-		Scanner scanner = FileTools.openTextFileRead(filePath);
+		Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 		
 		// process each NER tool
 		for(AbstractRecognizer recognizer: recognizers)
@@ -303,13 +305,13 @@ public class VoteWeights
 	 * @throws FileNotFoundException
 	 * 		Problem while accessing the file.
 	 * @throws UnsupportedEncodingException 
-	 * 		Problem while accessing the file.
+	 * 		Could not handle the encoding.
 	 */
 	public void recordVoteWeights(String filePath) throws UnsupportedEncodingException, FileNotFoundException
 	{	logger.log("Recording vote weights");
 		logger.increaseOffset();
 		
-		PrintWriter writer = FileTools.openTextFileWrite(filePath);
+		PrintWriter writer = FileTools.openTextFileWrite(filePath, "UTF-8");
 
 		// get category list
 		TreeSet<ArticleCategory> categories = new TreeSet<ArticleCategory>();

@@ -165,7 +165,7 @@ public class DataProcessing
 		File file = new File(FileNames.FO_CUSTOM_LISTS + File.separator + outputStr);	
 		File folder = file.getParentFile();
 		if(!folder.exists()) folder.mkdirs();
-		PrintWriter pw = FileTools.openTextFileWrite(file);
+		PrintWriter pw = FileTools.openTextFileWrite(file, "UTF-8");
 		for(String string: content)
 			pw.println(string);
 		pw.close();

@@ -116,18 +116,18 @@ public class ArticleCleaning
 		// retrieve text content
 		String rawPath = article.getPath() + File.separator + FileNames.FI_RAW_TEXT;
 		logger.log("Retrieve raw text: "+rawPath);
-		String raw = FileTools.readTextFile(rawPath);
+		String raw = FileTools.readTextFile(rawPath, "UTF-8");
 		String linkedPath = article.getPath() + File.separator + FileNames.FI_LINKED_TEXT;
 		logger.log("Retrieve linked text: "+linkedPath);
 		File linkedFile = new File(linkedPath);
 		String linked = raw;
 		if(linkedFile.exists())
-			FileTools.readTextFile(linkedPath);
+			FileTools.readTextFile(linkedPath, "UTF-8");
 		String annotatedPath = article.getPath() + File.separator + FileNames.FI_REFERENCE_TEXT;
 		String annotated = null;
 		if(processAnnotated)
 		{	logger.log("Retrieve annotated text: "+annotatedPath);
-			annotated = FileTools.readTextFile(annotatedPath);
+			annotated = FileTools.readTextFile(annotatedPath, "UTF-8");
 			annotated = annotated.replaceAll("<tag name=\"MISC\" value=\"start\"/>", "");
 			annotated = annotated.replaceAll("<tag name=\"MISC\" value=\"end\"/>", "");
 		}
@@ -146,10 +146,10 @@ public class ArticleCleaning
 			tab[1] = linked.substring(1);
 		
 		// record new texts
-		FileTools.writeTextFile(rawPath, tab[0]);
-		FileTools.writeTextFile(linkedPath, tab[1]);
+		FileTools.writeTextFile(rawPath, tab[0], "UTF-8");
+		FileTools.writeTextFile(linkedPath, tab[1], "UTF-8");
 		if(processAnnotated)
-			FileTools.writeTextFile(annotatedPath, tab[2]);
+			FileTools.writeTextFile(annotatedPath, tab[2], "UTF-8");
 		
 		logger.log("Cleaning over for article "+name);
 		logger.decreaseOffset();

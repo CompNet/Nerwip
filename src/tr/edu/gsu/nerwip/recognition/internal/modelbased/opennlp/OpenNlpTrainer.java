@@ -237,7 +237,7 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 		for(EntityType type: getHandledEntityTypes())
 		{	logger.log("Processing entity type "+type.toString());
 			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TEXT;
-			Scanner scanner = FileTools.openTextFileRead(filePath);
+			Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 			
 			List<String> list = new ArrayList<String>();
 			result.put(type,list);
@@ -265,7 +265,7 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 		for(EntityType type: data.keySet())
 		{	logger.log("Processing entity type "+type.toString());
 			String filePath = dataFile.getAbsolutePath() + "." + type.toString().toLowerCase() + FileNames.EX_TEXT;
-			PrintWriter printWriter = FileTools.openTextFileWrite(filePath);
+			PrintWriter printWriter = FileTools.openTextFileWrite(filePath, "UTF-8");
 			
 			List<String> text = data.get(type);
 			for(String line: text)

@@ -26,6 +26,7 @@ package tr.edu.gsu.nerwip.recognition;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -221,7 +222,7 @@ public abstract class AbstractRecognizer
 			List<String> list = new ArrayList<String>();
 			map.put(language, list);
 			try
-			{	Scanner scanner = FileTools.openTextFileRead(file);
+			{	Scanner scanner = FileTools.openTextFileRead(file, "UTF-8");
 				while(scanner.hasNextLine())
 				{	String line = scanner.nextLine().trim();
 					if(!line.isEmpty())
@@ -230,6 +231,9 @@ public abstract class AbstractRecognizer
 				scanner.close();
 			}
 			catch (FileNotFoundException e)
+			{	e.printStackTrace();
+			}
+			catch (UnsupportedEncodingException e)
 			{	e.printStackTrace();
 			}
 		}
