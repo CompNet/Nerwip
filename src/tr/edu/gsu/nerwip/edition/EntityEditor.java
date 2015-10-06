@@ -50,6 +50,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2666,9 +2667,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void displayHelpAbout()
 	{	File labFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_LAB);
-		String labPath = "file:/" + labFile.getAbsolutePath().replaceAll("\\\\", "/");
+		String labPath = "file://" + labFile.getAbsolutePath().replaceAll("\\\\", "/");
 		File uniFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_UNIV);
-		String uniPath = "file:/" + uniFile.getAbsolutePath().replaceAll("\\\\", "/");
+		String uniPath = "file://" + uniFile.getAbsolutePath().replaceAll("\\\\", "/");
 		
 		String string = "<html>"
 			+"<h1>"+TITLE+"</h1><br/>"
