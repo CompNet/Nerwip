@@ -2667,15 +2667,25 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void displayHelpAbout()
 	{	File labFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_LAB);
-		String labPath = "file://" + labFile.getAbsolutePath().replaceAll("\\\\", "/");
 		File uniFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_UNIV);
-		String uniPath = "file://" + uniFile.getAbsolutePath().replaceAll("\\\\", "/");
+		String labStr = labFile.getAbsolutePath();
+		String uniStr = uniFile.getAbsolutePath();
+		if(labStr.contains("\\"))
+		{	labStr = labStr.replaceAll("\\\\", "/");
+			uniStr = uniStr.replaceAll("\\\\", "/");
+		}
+		else
+		{	labStr = labStr + "/";
+			uniStr = uniStr + "/";
+		}
+		String labPath = "file:/" + labStr;
+		String uniPath = "file:/" + uniStr;
 		
 		String string = "<html>"
 			+"<h1>"+TITLE+"</h1><br/>"
-			+"<img src=\""+uniPath+"\" alt=\"Logo LIA\" height=\"200\" width=\"115\" />"
+			+"<img src=\""+uniPath+"\" alt=\"Logo UAPV\" height=\"200\" width=\"115\" />"
 			+ "&nbsp;"
-			+"<img src=\""+labPath+"\" alt=\"Logo UAPV\" height=\"200\" width=\"342\" /><br/>"
+			+"<img src=\""+labPath+"\" alt=\"Logo LIA\" height=\"200\" width=\"342\" /><br/>"
 			+ "Université d'Avignon<br/>"
 			+ "Laboratoire Informatique d'Avignon (LIA)<br/>"
 			+ "<a href=\"http://lia.univ-avignon.fr\">http://lia.univ-avignon.fr</a><br/>"
