@@ -48,6 +48,7 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 
 /**
  * This class is the converter associated to TagEN.
@@ -154,12 +155,8 @@ public class TagEnConverter extends AbstractExternalConverter
 			else if(child instanceof Element)
 			{	Element e = (Element)child;
 				List<AbstractEntity<?>> entList = convertElement(e, index);
-				int length = 0;
-				if(!entList.isEmpty())
-				{	AbstractEntity<?> first = entList.get(0);
-					AbstractEntity<?> last = entList.get(entList.size()-1);
-					length = last.getEndPos() - first.getStartPos();
-				}
+				String str = XmlTools.getRecText(e);
+				int length = str.length();
 				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
 				result.addEntities(entList);
 				for(AbstractEntity<?> entity: entList)
@@ -296,13 +293,22 @@ public class TagEnConverter extends AbstractExternalConverter
 						logger.log("WARNING: detected an unknown element: <"+name2+"> in "+xo.outputString(element));
 					else
 					{	String text = element2.getText();
-						if(!text.contains("-"))
-							logger.log("WARNING: detected an unknown form of <range> content in "+xo.outputString(element));
-						else
+						// form "1920-1927"
+						if(text.contains("-"))
 						{	String tmp[] = text.split("-");
 							for(String str: tmp)
 								valuesStr.add(str);
 						}
+						// form "De 1920 à 1927" (FR)
+						else if((text.startsWith("De ") || text.startsWith("de ")) && text.contains(" à "))
+						{	text = text.substring(3);
+							String tmp[] = text.split(" à ");
+							for(String str: tmp)
+								valuesStr.add(str);
+						}
+						// other forms (could be completed later)
+						else
+							logger.log("WARNING: detected an unknown form of <range> content in "+xo.outputString(element));
 					}
 				}
 			}

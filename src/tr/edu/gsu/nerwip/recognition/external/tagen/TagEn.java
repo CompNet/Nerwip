@@ -185,7 +185,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 			String inputPath = getTempFile(article);
 			File inputFile = new File(inputPath);
 			logger.log("Copying the article content in input file "+inputFile);
-			FileTools.writeTextFile(inputFile, text, "UTF-8");
+			FileTools.writeTextFile(inputFile, text, "ISO-8859-1"); //"UTF-8" or "ISO-8859-1"
 			
 			// invoke the external tool and retrieve its output
 			logger.log("Invoking TagEn: ");
@@ -232,7 +232,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 				inputFile.delete();
 			
 	        // read the result file
-			result = FileTools.readTextFile(outputPath, "UTF-8");
+			result = FileTools.readTextFile(outputPath, "ISO-8859-1");
         }
 		catch (IOException e)
 		{	//e.printStackTrace();

@@ -206,14 +206,14 @@ public class Test
 //	    testOpenNlp(url);
 //		testStanford(url);
 //		testSubee(url);
-		testTagEn(name);
+//		testTagEn(name);
 //		testWikipediaDater(url);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-//		testEvaluator();
+		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -827,7 +827,7 @@ public class Test
 	 * 		Name of the (already cached) article.
 	 * 
 	 * @throws Exception
-	 * 		Something went wrong... 
+	 * 		Something went wrong...
 	 */
 	private static void testTagEn(String name) throws Exception
 	{	logger.setName("Test-TagEN");
@@ -1848,7 +1848,7 @@ public class Test
 		
 		// cache/no cache at the recognizer level
 		for(AbstractRecognizer recognizer: recognizers)
-		{	recognizer.setCacheEnabled(true);	//TODO
+		{	recognizer.setCacheEnabled(false);	//TODO
 //			((AbstractCombiner)recognizer).setSubCacheEnabled(true);	//just to check combiner subcache
 		}
 		
@@ -1859,8 +1859,8 @@ public class Test
 //			new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
 //		);
 //		ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
-//		ArticleList folders = ArticleLists.getArticleList();
+//		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
+		ArticleList folders = ArticleLists.getArticleList();
 //		ArticleList folders = new ArticleList("test", Arrays.asList(new File(FileNames.FO_OUTPUT).listFiles(FileTools.FILTER_DIRECTORY)));
 		logger.log("Processed articles: ");
 		logger.increaseOffset();

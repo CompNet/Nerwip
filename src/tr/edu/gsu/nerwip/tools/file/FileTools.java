@@ -109,7 +109,8 @@ public class FileTools
 	 * @param filePath 
 	 * 		File to open.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * @return 
 	 * 		Scanner object ready to read the file.
 	 * 
@@ -130,7 +131,8 @@ public class FileTools
 	 * @param file
 	 * 		File to open.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * @return 
 	 * 		Scanner object ready to read the file.
 	 * 
@@ -153,7 +155,8 @@ public class FileTools
 	 * @param file
 	 * 		File to be read.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * @return
 	 * 		String corresponding to the file content.
 	 * 
@@ -182,7 +185,8 @@ public class FileTools
 	 * @param filePath
 	 * 		Path of the file to be read.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * @return
 	 * 		String corresponding to the file content.
 	 * 
@@ -207,7 +211,8 @@ public class FileTools
 	 * @param filePath
 	 * 		File to open.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * @return 
 	 * 		PrintWriter object ready to write in the file.
 	 * 
@@ -228,7 +233,8 @@ public class FileTools
 	 * @param file
 	 * 		File to open.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * @return 
 	 * 		PrintWriter object ready to write in the file.
 	 * 
@@ -239,7 +245,7 @@ public class FileTools
 	 */
 	public static PrintWriter openTextFileWrite(File file, String encoding) throws UnsupportedEncodingException, FileNotFoundException
 	{	FileOutputStream fos = new FileOutputStream(file);
-		OutputStreamWriter osw = new OutputStreamWriter(fos,encoding); //"UTF-8" "ISO-8859-1"
+		OutputStreamWriter osw = new OutputStreamWriter(fos,encoding);
 		PrintWriter result = new PrintWriter(osw);
 		return result;
 	}
@@ -252,7 +258,8 @@ public class FileTools
 	 * @param content
 	 * 		String corresponding to the file content.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * 
 	 * @throws IOException
 	 * 		Problem while accessing the file.
@@ -277,7 +284,8 @@ public class FileTools
 	 * @param content
 	 * 		String corresponding to the file content.
 	 * @param encoding
-	 * 		Encoding of the text file.
+	 * 		Encoding of the text file, generally {@code "UTF-8"} 
+	 * 		or {@code "ISO-8859-1"}.
 	 * 
 	 * @throws IOException
 	 * 		Problem while accessing the file.
