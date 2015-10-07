@@ -2675,8 +2675,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 			uniStr = uniStr.replaceAll("\\\\", "/");
 		}
 		else
-		{	labStr = labStr + "/";
-			uniStr = uniStr + "/";
+		{	labStr = "/" + labStr;
+			uniStr = "/" + uniStr;
 		}
 		String labPath = "file:/" + labStr;
 		String uniPath = "file:/" + uniStr;

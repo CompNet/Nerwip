@@ -134,13 +134,14 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Web service URL */
-	private static final String SERVICE_URL = "http://api.opencalais.com/tag/rs/enrich";
+//	private static final String SERVICE_URL = "http://api.opencalais.com/tag/rs/enrich"; // old version (pre 08/2015)
+	private static final String SERVICE_URL = "https://api.thomsonreuters.com/permid/calais";
 	/** Key name for OpenCalais */
 	public static final String KEY_NAME = "OpenCalais";
 	/** Maximal request size */
 	private static final int MAX_SIZE = 10000;
-	/** Delay between two remote invocations (4 queries per second max) */
-	private static final long DELAY = 1000;
+	/** Delay between two remote invocations (4 queries per second max, as of 08/2015) */
+	private static final long DELAY = 250;
 	
 	@Override
 	protected List<String> detectEntities(Article article) throws RecognizerException
@@ -173,9 +174,11 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 			{	// define HTTP message
 				logger.log("Build OpenCalais HTTP message");
 				HttpPost method = new HttpPost(SERVICE_URL);
-				method.setHeader("x-calais-licenseID", key);
+//				method.setHeader("x-calais-licenseID", key);	// old version (pre 08/2015)
+				method.setHeader("x-ag-access-token", key);
 				method.setHeader("Content-Type", "text/raw; charset=UTF-8");
-				method.setHeader("Accept", "xml/rdf");
+//				method.setHeader("Accept", "xml/rdf");			// old version (pre 08/2015)
+				method.setHeader("outputFormat", "xml/rdf");				
 				method.setEntity(new StringEntity(part, "UTF-8"));
 				
 				// send to open calais

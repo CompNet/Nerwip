@@ -418,8 +418,15 @@ public class StringTools
 					}
 				}
 				
-				String chunk = text.substring(start, prevEnd);
-				result.add(chunk);
+				// force the inclusion of a possible ending space
+				char c = text.charAt(prevEnd);
+				while(c==' ' || c=='\n' || c=='\t')
+				{	prevEnd++;
+					c = text.charAt(prevEnd);
+				}
+				// add the part of text to the result list
+				String part = text.substring(start, prevEnd);
+				result.add(part);
 				start = prevEnd;
 			}
 			
@@ -427,7 +434,9 @@ public class StringTools
 		}
 		
 		if(start<text.length())
-			result.add(text.substring(start,text.length()));
+		{	String part = text.substring(start);
+			result.add(part);
+		}
 		
 		// for debug
 //		System.out.println("result:\n"+result);
@@ -505,7 +514,8 @@ public class StringTools
 			result = result + "[...]";
 		result = result + string.substring(beginIndex, endIndex);
 		if(endIndex<string.length())
-			result = result + "[...]\n";
+			result = result + "[...]";
+		result = result + "\n";
 
 		for(int i=0;i<pos-beginIndex+5;i++)
 			result = result + " ";

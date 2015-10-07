@@ -159,8 +159,9 @@ public class Test
 //		String name = "Émilien_Brigault";
 //		String name = "Aimé Piton";
  //   	String name = "Albert_Chauly";
-    	String name = "Achille_Eugène_Fèvre";
+//    	String name = "Achille_Eugène_Fèvre";
 //		String name = "Gilles_Marcel_Cachin";
+    	String name = "Alexandre_Bracke";
 
 //		String name = "Barack_Obama";
      	
@@ -883,10 +884,10 @@ public class Test
 		opener.setCacheEnabled(false);
 		
 		// only the specified article
-//		opener.process(article);
+		opener.process(article);
 		
 		// all the corpus
-		testAllCorpus(opener,0);
+//		testAllCorpus(opener,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1853,7 +1854,7 @@ public class Test
 		
 		// cache/no cache at the recognizer level
 		for(AbstractRecognizer recognizer: recognizers)
-		{	recognizer.setCacheEnabled(false);	//TODO
+		{	recognizer.setCacheEnabled(true);	//TODO
 //			((AbstractCombiner)recognizer).setSubCacheEnabled(true);	//just to check combiner subcache
 		}
 		
@@ -1864,8 +1865,8 @@ public class Test
 //			new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
 //		);
 //		ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-//		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
-		ArticleList folders = ArticleLists.getArticleList();
+		ArticleList folders = ArticleLists.getArticleList("testing.set.txt");
+//		ArticleList folders = ArticleLists.getArticleList();
 //		ArticleList folders = new ArticleList("test", Arrays.asList(new File(FileNames.FO_OUTPUT).listFiles(FileTools.FILTER_DIRECTORY)));
 		logger.log("Processed articles: ");
 		logger.increaseOffset();

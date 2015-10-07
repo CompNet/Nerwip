@@ -105,15 +105,15 @@ public class NeroConverter extends AbstractExternalConverter
 		int c1 = originalText.codePointAt(i1);
 		int c2 = data.codePointAt(i2);
 		
-//if(c1==65279) //debug
-//	System.out.print("");
-		// possibly pass a starting newline character 
-//		if(c2=='\n' && c1!='\n')
-//		{	i2++;
-//			c2 = data.codePointAt(i2);
-//		}
-		data = data.trim() + " "; // ugly workaround
-		originalText = originalText + " "; // same thing
+		// possibly pass starting newline characters 
+		while(c1=='\n')
+		{	i1++;
+			c1 = data.codePointAt(i1);
+		}
+		while(c2=='\n')
+		{	i2++;
+			c2 = data.codePointAt(i2);
+		}
 		
 		while(i1<originalText.length() && i2<data.length())
 		{	c1 = originalText.codePointAt(i1);
@@ -225,9 +225,13 @@ if(i2>2800)
 //			}
 //			while(i1<originalText.length() && (c1=='\n' || c1==' '));
 			
-			// possibly consume all non-letter ch
-			while(i1<originalText.length() && !Character.isLetterOrDigit(originalText.codePointAt(i1)))
-				i1++;
+			// possibly consume all non-letter characters
+			c1 = originalText.codePointAt(i1);
+			while(i1<originalText.length() && !Character.isLetterOrDigit(c1))
+			{	i1++;
+				if(i1<originalText.length())
+					c1 = originalText.codePointAt(i1);
+			}
 			
 			if(i1<originalText.length())
 			{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
@@ -235,9 +239,18 @@ if(i2>2800)
 			}
 		}
 		else if(i2<data.length())
-		{	// possibly consume all non-letter ch
-			while(i2<data.length() && !Character.isLetterOrDigit(data.codePointAt(i2)))
+		{	// possibly consume all non-letter characters
+			boolean insideTag = false;
+			c2 = data.codePointAt(i2);
+			while(i2<data.length() && (!Character.isLetterOrDigit(c2)) || insideTag)
+			{	if(c2=='<')
+					insideTag = true;
+				else if(c2=='>')
+					insideTag = false;
 				i2++;
+				if(i2<data.length())
+					c2 = data.codePointAt(i2);
+			}
 			
 			if(i2<data.length())
 			{	String msg2 = StringTools.highlightPosition(i2, data, 20);

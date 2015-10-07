@@ -128,7 +128,7 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 				logger.log("Convert entities to internal representation");
 				result = converter.convert(article,intRes);
 	
-				// check if the entity is consistent
+				// check if the entities are consistent
 				String text = article.getRawText();
 				for(AbstractEntity<?> entity: result.getEntities())
 				{	if(!entity.checkText(article))

@@ -193,7 +193,9 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		{	logger.log("Processing OpeNer part #"+(i+1)+"/"+parts.size());
 			logger.increaseOffset();
 			String part = parts.get(i);
-		
+if(i==18)
+	System.out.print("");
+			
 			try
 			{	// tokenize the text
 				String tokenizedText = performTokenization(part);
@@ -376,9 +378,9 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 		
 		// send to recognizer and retrieve answer
-		//System.out.println(parsedText);	
+//		System.out.println(parsedText);	
 		String result = sendReceiveRequest(method);
-		//System.out.println(result);
+//		System.out.println(result);
 		
 		logger.decreaseOffset();
 		return result;
