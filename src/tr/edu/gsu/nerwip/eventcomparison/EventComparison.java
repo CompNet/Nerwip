@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import tr.edu.gsu.nerwip.data.event.Event;
+import tr.edu.gsu.extractor.data.event.Event;
 import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
@@ -75,7 +75,7 @@ public class EventComparison
 	 * This method verifies if a specific 
 	 * location type entity is disambiguated by spotlight
 	 * 
-	 * @param e1
+	 * @param e
 	 * 		The event which contains the Organization entity. 
 	 * entity type.
 	 * @param text
@@ -104,7 +104,7 @@ public class EventComparison
  	 * This method verifies if a specific 
 	 * Production type entity is disambiguated by spotlight
 	 * 
-	 * @param e1
+	 * @param e
 	 * 		The event which contains the Production entity. 
 	 * entity type.
 	 * @param text
@@ -133,7 +133,7 @@ public class EventComparison
 	 * This method verifies if a specific 
 	 * Meeting type entity is disambiguated by spotlight
 	 * 
-	 * @param e1
+	 * @param e
 	 * 		The event which contains the Meeting entity. 
 	 * entity type.
 	 * @param text
@@ -162,7 +162,7 @@ public class EventComparison
 	 * This method verifies if a specific 
 	 * Person type entity is disambiguated by spotlight
 	 * 
-	 * @param e1
+	 * @param e
 	 * 		The event which contains the Person entity. 
 	 * entity type.
 	 * @param text
@@ -191,7 +191,7 @@ public class EventComparison
      * This method verifies if a specific 
      * Function type entity is disambiguated by spotlight
      * 
-     * @param e1
+     * @param e
      * 		The event which contains the Function entity. 
      * entity type.
      * @param text
@@ -333,6 +333,8 @@ public class EventComparison
 	 * 		The first event.
 	 * @param e2
 	 *      The second event.
+	 * @param text
+	 *      ???
 	 * @return
 	 * 		The similarity between these events.
 	 */
@@ -479,9 +481,12 @@ public class EventComparison
 	}
 	
 	/**
+	 * ???????
 	 * 
 	 * @param events
+	 * 		????????????
 	 * @param text
+	 * 		????????????
 	 */
 	public static void compareAllPairsOfEvents( List<Event> events, String text)
 	{	double similarity=0;

@@ -1,4 +1,7 @@
-package tr.edu.gsu.nerwip.data.event;
+package tr.edu.gsu.extractor.data.event;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 import tr.edu.gsu.nerwip.data.entity.EntityFunction;
 import tr.edu.gsu.nerwip.data.entity.EntityLocation;
@@ -10,33 +13,32 @@ import tr.edu.gsu.nerwip.data.entity.EntityDate;
 
 
 /**
- * This class represents an event.
+ * This class represents an event, i.e. a set of related entities.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class Event {
-	
-	 
-	
-    /////////////////////////////////////////////////////////////////
-    // ATTRIBUTES			/////////////////////////////////////////////
+public class Event
+{	
+	/////////////////////////////////////////////////////////////////
+    // PERSONS			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
 	/** Person type entity */
-	private EntityPerson person;
+	private Set<EntityPerson> persons = new TreeSet<EntityPerson>();
 	/** Location type entity */
-	private EntityLocation location;
+	private Set<EntityLocation> location;
 	/** Organization type entity */
-	private EntityOrganization organization;
+	private Set<EntityOrganization> organization;
 	/** Function type entity */
-	private EntityFunction function;
+	private Set<EntityFunction> function;
 	/** Production type entity */
-	private EntityProduction production;
+	private Set<EntityProduction> production;
 	/** Meeting type entity */
-	private EntityMeeting meeting;
+	private Set<EntityMeeting> meeting;
 	/** Date type entity */
-	private EntityDate date;
+	private Set<EntityDate> date;
 	
+	//TODO question : how to compare the entities >> need to distinguish mentions and entities
 	
 	/**
 	* Constructor for an event.

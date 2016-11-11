@@ -68,6 +68,10 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 		this.value = value;
 	}
 	
+	
+	//TODO we need to add some id in order to allow unique identification, and therefore coreference resolution
+	//or rename this Entity class to something like "instance" or "mention" 
+	
 	/**
 	 * Builds an entity of the specified type.
 	 * 

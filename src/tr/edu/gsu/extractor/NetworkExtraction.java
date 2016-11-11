@@ -37,9 +37,9 @@ import java.util.TreeSet;
 
 import org.xml.sax.SAXException;
 
-import tr.edu.gsu.extractor.data.Graph;
-import tr.edu.gsu.extractor.data.Link;
-import tr.edu.gsu.extractor.data.Node;
+import tr.edu.gsu.extractor.data.graph.Graph;
+import tr.edu.gsu.extractor.data.graph.Link;
+import tr.edu.gsu.extractor.data.graph.Node;
 import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.EntityDate;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
