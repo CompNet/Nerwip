@@ -41,7 +41,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
  * Class representing the predefined model used by HeidelTime for 
- * detecting entities.
+ * detecting mentions.
  * 
  * @author Vincent Labatut
  */
@@ -192,7 +192,7 @@ public enum HeidelTimeModelName
 	
 	/**
 	 * Indicates if this model requires the specification of a reference
-	 * date when seaching for temporal entities.
+	 * date when seaching for temporal mentions.
 	 * 
 	 * @return
 	 * 		{@code true} iff this model needs a reference date.

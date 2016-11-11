@@ -50,7 +50,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
  * Class representing the method used
- * by LinkPipe for detecting entities.
+ * by LinkPipe for detecting mentions.
  * 
  * @author Samet Atdağ
  * @author Vincent Labatut

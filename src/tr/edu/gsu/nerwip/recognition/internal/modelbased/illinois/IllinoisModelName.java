@@ -29,11 +29,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import LBJ2.learn.SparseNetworkLearner;
-
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Parameters;
-
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -43,7 +41,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 /**
  * Class representing the predefined
  * model used by Illinois for 
- * detecting entities.
+ * detecting mentions.
  * 
  * @author Vincent Labatut
  */

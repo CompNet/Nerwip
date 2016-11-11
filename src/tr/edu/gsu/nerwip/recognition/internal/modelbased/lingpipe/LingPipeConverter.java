@@ -27,9 +27,9 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased.lingpipe;
 import java.io.IOException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -65,8 +65,8 @@ public class LingPipeConverter extends AbstractInternalConverter<Chunking>
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities convert(Article article, Chunking chunking) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, Chunking chunking) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 		
 		String text = chunking.charSequence().toString();
 		for(Chunk chunk: chunking.chunkSet())
@@ -74,8 +74,8 @@ public class LingPipeConverter extends AbstractInternalConverter<Chunking>
 			int startPos = chunk.start();
 			int endPos = chunk.end();
 			String valueStr = text.substring(startPos,endPos);
-			AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
-			result.addEntity(entity);
+			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+			result.addMention(mention);
 		}
 		
 		return result;
@@ -87,10 +87,10 @@ public class LingPipeConverter extends AbstractInternalConverter<Chunking>
 	@Override
 	protected void writeRawResults(Article article, Chunking chunking) throws IOException
 	{	// convert to string
-		StringBuffer entities = new StringBuffer();
+		StringBuffer mentions = new StringBuffer();
 		for(Chunk chunk: chunking.chunkSet())
-			entities.append(chunk.toString()+"\n");
-		String text = entities.toString();
+			mentions.append(chunk.toString()+"\n");
+		String text = mentions.toString();
 		
 		//record
 		super.writeRawResultsStr(article, text);

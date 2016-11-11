@@ -62,7 +62,7 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 	 * an HeidelTime NER tool.
 	 * 
 	 * @param modelName
-	 * 		Predefined mainModel used for entity detection.
+	 * 		Predefined mainModel used for mention detection.
 	 * @param loadModelOnDemand
 	 * 		Whether or not the mainModel should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
@@ -134,7 +134,7 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 	/////////////////////////////////////////////////////////////////
 	// MODELS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Model used by HeidelTime to detect entities */
+	/** Model used by HeidelTime to detect mentions */
 	private HeidelTimeStandalone mainModel;
 	/** Alternative mainModel, in case we have to deal with news */
 	private HeidelTimeStandalone altModel;
@@ -165,7 +165,7 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected String detectEntities(Article article) throws RecognizerException
+	protected String detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		String result = null;
 		

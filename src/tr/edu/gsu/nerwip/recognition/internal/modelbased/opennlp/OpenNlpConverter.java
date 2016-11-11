@@ -30,11 +30,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import opennlp.tools.util.Span;
-
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -66,23 +65,23 @@ public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,L
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities convert(Article article, Map<EntityType,List<Span>> data) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, Map<EntityType,List<Span>> data) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 		
 		String rawText = article.getRawText();
 		for(Entry<EntityType,List<Span>> entry: data.entrySet())
 		{	EntityType type = entry.getKey();
 			List<Span> spans = entry.getValue();
 			for(Span span: spans)
-			{	// build internal representation of the entity
+			{	// build internal representation of the mention
 				int startPos = span.getStart();
 				int endPos = span.getEnd();
 				String valueStr = rawText.substring(startPos,endPos);
-				AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 				
-				// ignore overlapping entities
-//				if(!result.hasEntity(entity))	//TODO don't remember if i'm supposed to change that, or what?
-					result.addEntity(entity);
+				// ignore overlapping mentions
+//				if(!result.hasMention(mention))	//TODO don't remember if i'm supposed to change that, or what?
+					result.addMention(mention);
 			}
 		}	
 
@@ -101,7 +100,7 @@ public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,L
 		{	EntityType type = entry.getKey();
 			List<Span> spans = entry.getValue();
 			for(Span span: spans)
-			{	// build internal representation of the entity
+			{	// build internal representation of the mention
 				int startPos = span.getStart();
 				int endPos = span.getEnd();
 				String valueStr = rawText.substring(startPos,endPos);

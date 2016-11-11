@@ -30,7 +30,6 @@ import java.util.List;
 
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
-
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -61,7 +60,7 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 	 * a Stanford NER tool.
 	 * 
 	 * @param modelName
-	 * 		Predefined classifier used for entity detection.
+	 * 		Predefined classifier used for mention detection.
 	 * @param loadModelOnDemand
 	 * 		Whether or not the model should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
@@ -167,7 +166,7 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<List<CoreLabel>> detectEntities(Article article) throws RecognizerException
+	protected List<List<CoreLabel>> detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		List<List<CoreLabel>> result = null;
 		

@@ -47,9 +47,9 @@ import opennlp.tools.util.Span;
 import opennlp.tools.util.TrainingParameters;
 import opennlp.tools.util.featuregen.AdaptiveFeatureGenerator;
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
@@ -122,7 +122,7 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 	}
 
 	@Override
-	protected Map<EntityType,List<String>> convertData(Article article, Entities entities)
+	protected Map<EntityType,List<String>> convertData(Article article, Mentions mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		Map<EntityType,List<String>> result = new HashMap<EntityType, List<String>>();
@@ -143,10 +143,10 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 			
 			// reset text stuff
 			text = article.getRawText();
-			Iterator<AbstractEntity<?>> it = entities.getEntities().iterator();
-			AbstractEntity<?> currentEntity = null;
+			Iterator<AbstractMention<?>> it = mentions.getMentions().iterator();
+			AbstractMention<?> currentMention = null;
 			if(it.hasNext())
-				currentEntity = it.next();
+				currentMention = it.next();
 			
 			// copy each line while inserting the appropriate tags
 	    	for(Span sentenceSpan: sentenceSpans)
@@ -159,31 +159,31 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 				int pos = startSentPos;
 				String taggedSentence = "";
 				boolean goOn = true;
-				while(currentEntity!=null && goOn)
-				{	int startEnt = currentEntity.getStartPos();
-					int endEnt = currentEntity.getEndPos();
+				while(currentMention!=null && goOn)
+				{	int startEnt = currentMention.getStartPos();
+					int endEnt = currentMention.getEndPos();
 					if(startEnt<endSentPos)
 					{	if(endEnt<=endSentPos)
-						{	EntityType t = currentEntity.getType();
+						{	EntityType t = currentMention.getType();
 							if(t==type)
 							{	String startSentence = text.substring(pos,startEnt);
 								taggedSentence = taggedSentence + startSentence + startTag;
-								String entityStr = text.substring(startEnt,endEnt);
-								taggedSentence = taggedSentence + entityStr + endTag;
+								String mentionStr = text.substring(startEnt,endEnt);
+								taggedSentence = taggedSentence + mentionStr + endTag;
 								pos = endEnt;
 							}
 							if(it.hasNext())
-								currentEntity = it.next();
+								currentMention = it.next();
 							else
-								currentEntity = null;
+								currentMention = null;
 						}
 						else
-						{	// the entity is in-between chunks (ie the sentence detector is wrong)
+						{	// the mention is in-between chunks (ie the sentence detector is wrong)
 							// we just ignore it, since the same thing will happen during normal annotation
 							if(it.hasNext())
-								currentEntity = it.next();
+								currentMention = it.next();
 							else
-								currentEntity = null;
+								currentMention = null;
 							goOn = false;
 						}
 					}

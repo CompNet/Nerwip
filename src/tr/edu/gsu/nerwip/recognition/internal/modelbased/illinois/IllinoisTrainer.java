@@ -37,7 +37,6 @@ import LBJ2.learn.BatchTrainer;
 import LBJ2.learn.SparseNetworkLearner;
 import LBJ2.parse.LinkedVector;
 import LBJ2.parse.Parser;
-
 import edu.illinois.cs.cogcomp.LbjNer.ExpressiveFeatures.ExpressiveFeaturesAnnotator;
 import edu.illinois.cs.cogcomp.LbjNer.ExpressiveFeatures.TwoLayerPredictionAggregationFeatures;
 import edu.illinois.cs.cogcomp.LbjNer.InferenceMethods.PredictionsAndEntitiesConfidenceScores;
@@ -54,11 +53,10 @@ import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.LearningCurveMultiDataset.Sample
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.PlainTextReader;
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.TaggedDataReader;
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.TaggedDataWriter;
-
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
@@ -130,7 +128,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 	}
 
 	@Override
-	protected Data convertData(Article article, Entities entities)
+	protected Data convertData(Article article, Mentions mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		
@@ -149,10 +147,10 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
     	sentences = document.sentences;
     	Iterator<LinkedVector> itSent = sentences.iterator();
     	
-    	// if there're no entities at all in the reference (shouldn't be the case, though)
-    	entities.sortByPosition();
-    	List<AbstractEntity<?>> entityList = entities.getEntities();
-    	if(entityList.isEmpty())
+    	// if there're no mention at all in the reference (shouldn't be the case, though)
+    	mentions.sortByPosition();
+    	List<AbstractMention<?>> mentionList = mentions.getMentions();
+    	if(mentionList.isEmpty())
     	{	while(itSent.hasNext())
 	    	{	LinkedVector sentence = itSent.next();
     			for(int i=0;i<sentence.size();i++)
@@ -164,16 +162,16 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
     	
     	// otherwise
     	else
-    	{	// entity stuff
-    		Iterator<AbstractEntity<?>> itEnt = entityList.iterator();
-	    	AbstractEntity<?> currentEntity = itEnt.next();
-			EntityType currentType = currentEntity.getType();
+    	{	// mention stuff
+    		Iterator<AbstractMention<?>> itEnt = mentionList.iterator();
+	    	AbstractMention<?> currentMention = itEnt.next();
+			EntityType currentType = currentMention.getType();
 			String currentLabel = "B-"+CONVERSION_MAP.get(currentType);
 			
 			// complete each word with the appropriate annotation
 	    	int currentPosition = 0;
 	    	// process each sentence in the document
-	    	while(itSent.hasNext() && currentEntity!=null)
+	    	while(itSent.hasNext() && currentMention!=null)
 	    	{	LinkedVector sentence = itSent.next();
 	    		// process each word in the sentence
 	    		int i = 0; 
@@ -183,19 +181,19 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 	    			String wStr = word.form;
 	    			currentPosition = rawText.indexOf(wStr, currentPosition);
 	    			
-	    			// compare position to entity, possibly go to next entity (theretically not more than once)
-	    			while(currentEntity!=null && currentEntity.precedesPosition(currentPosition))
+	    			// compare position to mention, possibly go to next mention (theretically not more than once)
+	    			while(currentMention!=null && currentMention.precedesPosition(currentPosition))
 	    			{	if(itEnt.hasNext())
-	    				{	currentEntity = itEnt.next();
-	        				currentType = currentEntity.getType();
+	    				{	currentMention = itEnt.next();
+	        				currentType = currentMention.getType();
 	        				currentLabel = "B-"+CONVERSION_MAP.get(currentType);
 	    				}
 	    				else
-	    					currentEntity = null;
+	    					currentMention = null;
 	    			}
 	    			
-	    			// check if word belongs to entity
-	    			if(currentEntity!=null && currentEntity.containsPosition(currentPosition))
+	    			// check if word belongs to mention
+	    			if(currentMention!=null && currentMention.containsPosition(currentPosition))
 	    			{	word.neLabel = currentLabel;
 	    				if(currentLabel.startsWith("B"))
 	    					currentLabel = "I" + currentLabel.substring(1);

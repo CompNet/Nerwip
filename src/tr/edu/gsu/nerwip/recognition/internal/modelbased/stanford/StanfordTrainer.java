@@ -38,11 +38,10 @@ import java.util.Properties;
 
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
-
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -112,7 +111,7 @@ public class StanfordTrainer extends AbstractTrainer<List<List<CoreLabel>>>
 	}
 
 	@Override
-	protected List<List<CoreLabel>> convertData(Article article, Entities entities)
+	protected List<List<CoreLabel>> convertData(Article article, Mentions mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		
@@ -124,25 +123,25 @@ public class StanfordTrainer extends AbstractTrainer<List<List<CoreLabel>>>
     	String rawText = article.getRawText();
    		int pos = 0;
    		
-   		// add each entity under the form of a Stanford object
-    	entities.sortByPosition();
-    	List<AbstractEntity<?>> entList = entities.getEntities();
-    	for(AbstractEntity<?> entity: entList)
-    	{	// process the text located before the entity (and after the previous entity)
-    		int start = entity.getStartPos();
+   		// add each mention under the form of a Stanford object
+    	mentions.sortByPosition();
+    	List<AbstractMention<?>> entList = mentions.getMentions();
+    	for(AbstractMention<?> mention: entList)
+    	{	// process the text located before the mention (and after the previous mention)
+    		int start = mention.getStartPos();
     		if(start>pos)
     		{	String before = rawText.substring(pos,start);
     			List<CoreLabel> temp = extractCoreLabels(before, null);
     			list.addAll(temp);
     		}
     		
-    		// process the current entity
-    		{	String entityStr = entity.getStringValue();
-    			EntityType type = entity.getType();
-    			List<CoreLabel> temp = extractCoreLabels(entityStr, type);
+    		// process the current mention
+    		{	String mentionStr = mention.getStringValue();
+    			EntityType type = mention.getType();
+    			List<CoreLabel> temp = extractCoreLabels(mentionStr, type);
     			list.addAll(temp);
     		}
-    		pos = entity.getEndPos();
+    		pos = mention.getEndPos();
     	}
     	
     	// possibly process the rest of the text

@@ -30,7 +30,6 @@ import java.util.Vector;
 
 import LBJ2.learn.SparseNetworkLearner;
 import LBJ2.parse.LinkedVector;
-
 import edu.illinois.cs.cogcomp.LbjNer.ExpressiveFeatures.ExpressiveFeaturesAnnotator;
 import edu.illinois.cs.cogcomp.LbjNer.InferenceMethods.Decoder;
 import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
@@ -38,7 +37,6 @@ import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
 import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.PlainTextReader;
-
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -69,12 +67,12 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 	 * a Illinois NET tool.
 	 * 
 	 * @param modelName
-	 * 		Predefined model used for entity detection.
+	 * 		Predefined model used for mention detection.
 	 * @param loadModelOnDemand
 	 * 		Whether or not the model should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
 	 * @param trim
-	 * 		Whether or not the beginings and ends of entities should be 
+	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
@@ -176,7 +174,7 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Data detectEntities(Article article) throws RecognizerException
+	protected Data detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		Data result = null;
 		String text = article.getRawText();

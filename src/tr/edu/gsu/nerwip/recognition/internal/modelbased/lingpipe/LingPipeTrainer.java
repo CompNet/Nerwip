@@ -45,9 +45,9 @@ import com.aliasi.tokenizer.TokenizerFactory;
 import com.aliasi.util.AbstractExternalizable;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractTrainer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -132,7 +132,7 @@ public class LingPipeTrainer extends AbstractTrainer<Chunking>
 	}
 
 	@Override
-	protected Chunking convertData(Article article, Entities entities)
+	protected Chunking convertData(Article article, Mentions mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		
@@ -140,13 +140,13 @@ public class LingPipeTrainer extends AbstractTrainer<Chunking>
 		String rawText = article.getRawText();
     	ChunkingImpl result = new ChunkingImpl(rawText);
 				
-    	// add each entity under the form of a Chunk object
-    	entities.sortByPosition();
-    	List<AbstractEntity<?>> entList = entities.getEntities();
-    	for(AbstractEntity<?> entity: entList)
-    	{	int start = entity.getStartPos();
-    		int end = entity.getEndPos();
-    		EntityType type = entity.getType();
+    	// add each mention under the form of a Chunk object
+    	mentions.sortByPosition();
+    	List<AbstractMention<?>> entList = mentions.getMentions();
+    	for(AbstractMention<?> mention: entList)
+    	{	int start = mention.getStartPos();
+    		int end = mention.getEndPos();
+    		EntityType type = mention.getType();
     		String typeStr = CONVERSION_MAP.get(type);
     		Chunk chunk = ChunkFactory.createChunk(start, end, typeStr);
     		result.add(chunk);

@@ -35,11 +35,10 @@ import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.OriginalTextAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations.BeforeAnnotation;
-
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -73,8 +72,8 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 	/////////////////////////////////////////////////////////////////
 	/** Map of Stanford type to entity type conversion */
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
-	/** This name denotes token which are not entities */
-	private final static String NOT_ENTITY = "O";
+	/** This name denotes token which are not mentions */
+	private final static String NOT_MENTION = "O";
 	
 	/** Initialization of the conversion map */
 	static
@@ -87,17 +86,17 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-//	/** Pattern used to find entities in the NER output */
+//	/** Pattern used to find mentions in the NER output */
 //	private final static Pattern SEARCH_PATTERN = Pattern.compile("<(.+?)>(.+?)</.+?>",Pattern.DOTALL);
 	
 // old version	
 //	@Override
-//	public Entities convert(List<List<CoreLabel>> data) throws ConverterException
-//	{	Entities result = new Entities(recognizerName);
+//	public Mentions convert(List<List<CoreLabel>> data) throws ConverterException
+//	{	Mentions result = new Mentions(recognizerName);
 //				
-//		// extract entities from text
+//		// extract mentions from text
 //		Matcher matcher = SEARCH_PATTERN.matcher(text);
-//		List<AbstractEntity<?>> entities = result.getEntities();
+//		List<AbstractMention<?>> mentions = result.getMentions();
 //		while(matcher.find())
 //		{	String typeStr = matcher.group(1);
 //			ArticleCategory type = CONVERSION_MAP.get(typeStr);
@@ -105,39 +104,39 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 //			int endPos = matcher.end();
 //			String valueStr = matcher.group();
 //			String value = matcher.group(2);
-//			AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr, value);
-//			entities.add(entity);
+//			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, value);
+//			mentions.add(mention);
 //		}
 //		
-//		// adjust the positions of entities
-//		fixPositions(entities);
+//		// adjust the positions of mentions
+//		fixPositions(mentions);
 //
 //		return result;
 //	}
 
 	@Override
-	public Entities convert(Article article, List<List<CoreLabel>> data) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, List<List<CoreLabel>> data) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 		
-		// consecutive words with the same type are not considered as a single entity by Stanford
+		// consecutive words with the same type are not considered as a single mention by Stanford
 		// (at least in the default models)
 		// ex: John Zorn will be recognized as two persons (John and Zorn) 
 		// some specific process must be conducted, in order to merge them
 
 		// process each sentence separately
 		for(List<CoreLabel> sentence: data)
-		{	// reset previously detected entity info
+		{	// reset previously detected mention info
 			EntityType prevType = null;
-			AbstractEntity<?> lastEntity = null;
+			AbstractMention<?> lastMention = null;
 			
 			// process each word separately, trying to merge them
 			for(CoreLabel word: sentence)
 			{	String typeStr = word.get(CoreAnnotations.AnswerAnnotation.class);
 				EntityType type = CONVERSION_MAP.get(typeStr);
 				
-				// ignore entities whose type was not recognized
+				// ignore mentions whose type was not recognized
 				if(type!=null)
-				{	// get the potential entity data
+				{	// get the potential mention data
 					int startPos = word.get(CharacterOffsetBeginAnnotation.class);
 					int endPos = word.get(CharacterOffsetEndAnnotation.class);
 					String valueStr = word.get(OriginalTextAnnotation.class);
@@ -145,22 +144,22 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 //					String value = word.get(TextAnnotation.class);
 					String before = word.get(BeforeAnnotation.class);
 					
-					// check for continuity with the previous entity
+					// check for continuity with the previous mention
 					if(type!=prevType)
-					{	// case where we start a new entity
-						AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
-						result.addEntity(entity);
-						lastEntity = entity;
+					{	// case where we start a new mention
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						result.addMention(mention);
+						lastMention = mention;
 					}
 					
 					else //if(prevType==type)
-					{	// case where we update (recreate, actually) the previous entity
-						startPos = lastEntity.getStartPos();
-						valueStr = lastEntity.getStringValue() + before + valueStr;
-						AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
-						result.addEntity(entity);
-						result.removeEntity(lastEntity);
-						lastEntity = entity;
+					{	// case where we update (recreate, actually) the previous mention
+						startPos = lastMention.getStartPos();
+						valueStr = lastMention.getStringValue() + before + valueStr;
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						result.addMention(mention);
+						result.removeMention(lastMention);
+						lastMention = mention;
 					}
 				}
 				prevType = type;
@@ -171,35 +170,35 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 	}
 	
 	/**
-	 * Corrects the position of the entities.
+	 * Corrects the position of the mentions.
 	 * This method was used when we were using
 	 * the string output of the Stanford tool.
 	 * Now, we use directly objects representing
-	 * entities, and we don't need it anymore.
+	 * mentions, and we don't need it anymore.
 	 * Kept for archive purposes.
 	 * 
-	 * @param entities
-	 * 		List of entities whose positions must be fixed.
+	 * @param mentions
+	 * 		List of mentions whose positions must be fixed.
 	 * 
 	 * @deprecated 
 	 * 		We now directly use the objects outputed
 	 * 		by Stanford, and not a single String any more.
 	 */
 	@SuppressWarnings("unused")
-	private void fixPositions(List<AbstractEntity<?>> entities)
+	private void fixPositions(List<AbstractMention<?>> mentions)
 	{	int rollingCount = 0;
 		
-		for(AbstractEntity<?> entity: entities)
-		{	int startPos = entity.getStartPos() - rollingCount;
-			int endPos = entity.getEndPos() - rollingCount;
+		for(AbstractMention<?> mention: mentions)
+		{	int startPos = mention.getStartPos() - rollingCount;
+			int endPos = mention.getEndPos() - rollingCount;
 			
 			int length = endPos - startPos;
-			int shift = length - entity.getStringValue().length();
+			int shift = length - mention.getStringValue().length();
 			rollingCount = rollingCount + shift;
 			endPos = endPos - shift;
 
-			entity.setStartPos(startPos);
-			entity.setEndPos(endPos);
+			mention.setStartPos(startPos);
+			mention.setEndPos(endPos);
 		}
 	}
 	
@@ -214,7 +213,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 		{	for(CoreLabel expression: sentence)
 			{	String typeStr = expression.get(CoreAnnotations.AnswerAnnotation.class);
 				// we ignore tokens without type
-				if(!typeStr.equals(NOT_ENTITY))
+				if(!typeStr.equals(NOT_MENTION))
 				{	String string = expression.toString();
 					buffer.append(string+"\n");
 				}

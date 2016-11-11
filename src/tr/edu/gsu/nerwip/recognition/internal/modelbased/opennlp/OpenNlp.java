@@ -64,7 +64,7 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 	 * an OpenNLP NER tool.
 	 * 
 	 * @param modelName
-	 * 		Predefined model used for entity detection.
+	 * 		Predefined model used for mention detection.
 	 * @param loadModelOnDemand
 	 * 		Whether or not the model should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
@@ -131,7 +131,7 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 	private SentenceDetectorME sentenceDetector;
 	/** Object used to split sentences into words */
 	private Tokenizer tokenizer;
-	/** Models used by OpenNLP to detect entities */
+	/** Models used by OpenNLP to detect mentions */
 	private Map<NameFinderME,EntityType> models;
 
     @Override
@@ -174,11 +174,11 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Order in which the entities should be processed */
+	/** Order in which the mentions should be processed */
 	private static final List<EntityType> TYPE_PRIORITIES = Arrays.asList(EntityType.ORGANIZATION,EntityType.PERSON,EntityType.LOCATION,EntityType.DATE);
 
 	@Override
-	protected Map<EntityType,List<Span>> detectEntities(Article article) throws RecognizerException
+	protected Map<EntityType,List<Span>> detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		Map<EntityType,List<Span>> result = new HashMap<EntityType, List<Span>>();
 		
@@ -207,7 +207,7 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 				for(Entry<NameFinderME,EntityType> entry: models.entrySet())
 				{	EntityType t = entry.getValue();
 					if(type==t)
-					{	// detect entities
+					{	// detect mentions
 						NameFinderME model = entry.getKey();
 						Span nameSpans[] = model.find(tokens);
 						

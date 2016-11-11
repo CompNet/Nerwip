@@ -34,9 +34,9 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -46,13 +46,13 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * This abstract class is a frame for implementing
  * a training process, for NER tools supporting it.
  * First, the training set is parsed to retrieve
- * entities and convert them to a format suitable
+ * mentions and convert them to a format suitable
  * for training. These data are cached in a single file.
  * Then, the training is performed, resulting in
  * the production of one or several model files
  * (depending on the NER tool), located in a pre-specified
  * folder. New models can then be used normally
- * to identify named entities.
+ * to identify named entity mentions.
  * 
  * @param <T>
  * 		Type of the data needed by the NER for training. 
@@ -158,13 +158,13 @@ public abstract class AbstractTrainer<T>
 				ArticleRetriever retriever = new ArticleRetriever();
 				Article article = retriever.process(name);
 					
-				// get reference entities
-				Entities entities = article.getReferenceEntities();
+				// get reference mentions
+				Mentions mentions = article.getReferenceMentions();
 				// keep only those allowed for this training
-				filterReferenceEntities(entities);
+				filterReferenceMentions(mentions);
 				
 				// convert
-				T conv = convertData(article,entities);
+				T conv = convertData(article,mentions);
 				result = mergeData(result,conv);
 			}
 			
@@ -195,23 +195,23 @@ public abstract class AbstractTrainer<T>
 	protected abstract T mergeData(T data1, T data2);
 	
 	/**
-	 * Convert the specified entities to a format 
+	 * Convert the specified mentions to a format 
 	 * which is suitable for training.
 	 * 
 	 * @param article
 	 * 		Article to process.
-	 * @param entities
-	 * 		Reference entities.
+	 * @param mentions
+	 * 		Reference mentions.
 	 * @return
-	 * 		Entities represented using a format suitable for training.
+	 * 		Mentions represented using a format suitable for training.
 	 */
-	protected abstract T convertData(Article article, Entities entities);
+	protected abstract T convertData(Article article, Mentions mentions);
 	
 //	/**
 //	 * Completes the specified data object using
-//	 * the specified reference entity type and estimated
-//	 * entities. The reference type can be {@code null}, 
-//	 * if no entity actually exists. 
+//	 * the specified reference mention type and estimated
+//	 * mentions. The reference type can be {@code null}, 
+//	 * if no mention actually exists. 
 //	 * 
 //	 * @param data
 //	 * 		SVM data object to be completed.
@@ -222,12 +222,12 @@ public abstract class AbstractTrainer<T>
 //	 * @param recognizers
 //	 * 		List of concerned NER tools.
 //	 * @param refType
-//	 * 		Type of the reference entity, 
-//	 * 		or {@code null} if no referenec entity. 
-//	 * @param estEntities
-//	 * 		Corresponding estimated entities.
+//	 * 		Type of the reference mention, 
+//	 * 		or {@code null} if no reference mention. 
+//	 * @param estMentions
+//	 * 		Corresponding estimated mentions.
 //	 */
-//	protected abstract void convertData(svm_problem data, int index, Article article, List<AbstractRecognizer> recognizers, EntityType refType, Map<AbstractRecognizer,AbstractEntity<?>> estEntities);
+//	protected abstract void convertData(svm_problem data, int index, Article article, List<AbstractRecognizer> recognizers, EntityType refType, Map<AbstractRecognizer,AbstractMention<?>> estMentions);
 	
 	/**
 	 * Verifies if the specified data file(s) already exist.
@@ -273,16 +273,16 @@ public abstract class AbstractTrainer<T>
 	 * only those allowed for this training
 	 * (based on their types).
 	 * 
-	 * @param entities
+	 * @param mentions
 	 * 		Raw set of entities.
 	 */
-	protected void filterReferenceEntities(Entities entities)
+	protected void filterReferenceMentions(Mentions mentions)
 	{	List<EntityType> typeList = getHandledEntityTypes();
-		List<AbstractEntity<?>> entList = entities.getEntities();
-		Iterator<AbstractEntity<?>> it = entList.iterator();
+		List<AbstractMention<?>> entList = mentions.getMentions();
+		Iterator<AbstractMention<?>> it = entList.iterator();
 		while(it.hasNext())
-		{	AbstractEntity<?> entity = it.next();
-			EntityType type = entity.getType();
+		{	AbstractMention<?> mention = it.next();
+			EntityType type = mention.getType();
 			if(!typeList.contains(type))
 				it.remove();
 		}

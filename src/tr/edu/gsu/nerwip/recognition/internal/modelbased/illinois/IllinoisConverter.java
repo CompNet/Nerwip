@@ -30,16 +30,14 @@ import java.util.Map;
 import java.util.Vector;
 
 import LBJ2.parse.LinkedVector;
-
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NETagPlain;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NEWord;
-
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -89,8 +87,8 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities convert(Article article, Data data) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, Data data) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 	
 		String text = article.getRawText();
 		int position = 0;
@@ -113,7 +111,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	            	words[j] = word.form;
 	            }
 	            
-	            // identifying series of Illinois words corresponding to (single) entities
+	            // identifying series of Illinois words corresponding to (single) mentions
 	            EntityType type = null;
 	            int startPos = -1;
 	            for(int j=0;j<sentence.size();j++)
@@ -123,7 +121,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
     				if(position==-1)
     					throw new ConverterException("Cannot find \""+words[j]+"\" in the text, from position "+temp);
 	            	
-    				// possibly start a new entity if we find a B- marker
+    				// possibly start a new mention if we find a B- marker
 	            	if (predictions[j].startsWith("B-")
 	            			// of if the previous word is internal, but the previous word was of a different type
 	            			|| (j>0 && predictions[j].startsWith("I-") && (!predictions[j-1].endsWith(predictions[j].substring(2)))))
@@ -138,7 +136,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	            	// updating current position in the original text
 	            	position = position + words[j].length();
 	            	
-	            	// complete the current entity (which possibly contains several words)
+	            	// complete the current mention (which possibly contains several words)
 	            	if(open)
 	            	{	boolean close = false;
 	            		if(j==sentence.size()-1)
@@ -153,11 +151,11 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	            				close = true;
 	            		}
 	            		if(close)
-	            		{	// consider all detected words to constitute the entity
+	            		{	// consider all detected words to constitute the mention
 	            			String valueStr = text.substring(startPos,position);
-	            			AbstractEntity<?> entity = AbstractEntity.build(type, startPos, position, recognizerName, valueStr);
-	            			result.addEntity(entity);
-	            			// reset variables to (possibly) start a new entity
+	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, recognizerName, valueStr);
+	            			result.addMention(mention);
+	            			// reset variables to (possibly) start a new mention
 	            			open = false;
 	            			type = null;
 	            			startPos = -1;

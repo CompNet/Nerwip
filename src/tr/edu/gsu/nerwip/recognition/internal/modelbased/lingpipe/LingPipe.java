@@ -70,14 +70,14 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
 	 * a LingPipe NER tool.
 	 * 
 	 * @param chunkingMethod
-	 * 		Method used to detect entity.
+	 * 		Method used to detect mentions.
 	 * @param loadChunkerOnDemand
 	 * 		Whether or not the chunker should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
 	 * @param splitSentences
 	 * 		Whether or not the text should be processed one sentence at once.
 	 * @param trim
-	 * 		Whether or not the beginings and ends of entities should be 
+	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
@@ -145,7 +145,7 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
     private boolean splitSentences;
     /** Object used to detect sentences */
 	private Chunker sentenceChunker;
-	/** Object used to detect entities */
+	/** Object used to detect mentions */
 	private Chunker chunker;
    
     @Override
@@ -187,7 +187,7 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Chunking detectEntities(Article article)
+	protected Chunking detectMentions(Article article)
 	{	logger.increaseOffset();
 		String text = article.getRawText();
 		Chunking result = null;
@@ -208,7 +208,7 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
 				logger.log("Process sentence ["+startIndex+","+endIndex+"]");
 				String sentenceStr = text.substring(startIndex,endIndex);
 				
-				// look for entities
+				// look for mentions
 				Chunking words = chunker.chunk(sentenceStr);
 				logger.log("Found "+words.chunkSet().size()+" raw words");
 				// add them to final result

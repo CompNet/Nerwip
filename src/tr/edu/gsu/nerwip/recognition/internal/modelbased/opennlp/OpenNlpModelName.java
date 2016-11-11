@@ -47,7 +47,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
  * Class representing the predefined model used by OpenNLP for 
- * detecting entities.
+ * detecting mentions.
  * <br/>
  * For now, there is one original model, and one trained on
  * our own Wikipedia corpus.

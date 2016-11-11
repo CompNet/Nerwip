@@ -40,7 +40,7 @@ import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
  * @param <T>
  * 		Class of the converter associated to this recognizer.
  * @param <U>
- * 		Class of the internal representation of the entities resulting from the detection.
+ * 		Class of the internal representation of the mentions resulting from the detection.
  * @param <V>
  * 		Class of the model internal representation (generally an enum type).
  * 		 
@@ -58,7 +58,7 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
 	 * 		Whether or not the model should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
 	 * @param trim
-	 * 		Whether or not the beginings and ends of entities should be 
+	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
@@ -86,13 +86,13 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** List of entities recognized by Illinois */
 	protected List<EntityType> handledTypes;
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return handledTypes;
 	}
 
@@ -106,14 +106,14 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
 	/////////////////////////////////////////////////////////////////
 	// PREDEFINED MODEL 	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Object representing the model used for detecting entities */
+	/** Object representing the model used for detecting mentions */
 	protected V modelName;
 	/** Indicates if the model should be loaded at initialization or only when needed */
 	protected boolean loadModelOnDemand;
 	
     /**
      * Changes the predefined model 
-     * used for detecting entities.
+     * used for detecting mentions.
      * 
      * @param modelName
      * 		Internal representation of the predefined model to use.

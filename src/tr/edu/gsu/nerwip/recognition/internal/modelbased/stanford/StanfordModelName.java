@@ -31,7 +31,6 @@ import java.util.List;
 
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
-
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -41,7 +40,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 /**
  * Class representing the predefined
  * models used by Stanford NER 
- * for detecting entities.
+ * for detecting mentions.
  * 
  * @author Vincent Labatut
  */

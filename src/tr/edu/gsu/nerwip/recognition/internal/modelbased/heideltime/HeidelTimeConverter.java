@@ -39,10 +39,10 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityDate;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -122,16 +122,16 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	private static final String TIME_PREFIX = "XXXX-XX-XX";
 	
 	@Override
-	public Entities convert(Article article, String data) throws ConverterException
+	public Mentions convert(Article article, String data) throws ConverterException
 	{	logger.increaseOffset();
-		Entities result = new Entities(recognizerName);
+		Mentions result = new Mentions(recognizerName);
 		
 		// parse the xml source
 		logger.log("Parsing the XML source previously produced by HeidelTime");
 		Element root;
 		try
 		{	String xmlSource = data.replace(ORIGINAL_DOCTYPE, "");
-			xmlSource = xmlSource.replaceAll("&", "&amp;"); // needed to handle possible "&" chars (we suppose the original text does not contain any entity)
+			xmlSource = xmlSource.replaceAll("&", "&amp;"); // needed to handle possible "&" chars (we suppose the original text does not contain any mention)
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(xmlSource));
 			root = doc.getRootElement();
@@ -168,9 +168,9 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 				String str = e.getText();
 				int length = str.length();
 				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
-				EntityDate entity = convertElement(e, index);
-				if(entity!=null)
-					result.addEntity(entity);
+				MentionDate mention = convertElement(e, index);
+				if(mention!=null)
+					result.addMention(mention);
 				index = index + length;
 			}
 		}
@@ -182,19 +182,19 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	
 	/**
 	 * Receives an XML element, and processes it to
-	 * extract a date entity.
+	 * extract a date mention.
 	 * 
 	 * @param element
 	 * 		Element to process.
 	 * @param index
 	 * 		Current position in the original text (in characters).
 	 * @return
-	 * 		The created entity, or {@code null} if it was not
+	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private EntityDate convertElement(Element element, int index)
+	private MentionDate convertElement(Element element, int index)
 	{	logger.increaseOffset();
-		EntityDate result = null;
+		MentionDate result = null;
 		XMLOutputter xo = new XMLOutputter();
 				
 		// check if the element does not contain any lower element
@@ -213,7 +213,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); //TODO WARNING: 
 				else
 				{	int length = text.length();
-					result = (EntityDate) AbstractEntity.build(EntityType.DATE, index, index+length, recognizerName, text);
+					result = (MentionDate) AbstractMention.build(EntityType.DATE, index, index+length, recognizerName, text);
 					result.setValue(date);
 				}
 			}
