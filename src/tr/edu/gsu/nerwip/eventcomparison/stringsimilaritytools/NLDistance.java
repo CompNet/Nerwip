@@ -24,7 +24,6 @@ package tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Math;
 
@@ -46,14 +45,12 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  */
 public class NLDistance 
 {
-	
     /////////////////////////////////////////////////////////////////
     // LOGGING			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
     /** Common object used for logging */
     protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
-
     /**
     * This method calculate the Normalized Levenshtein  
     * Distance between two strings.
@@ -81,9 +78,5 @@ public class NLDistance
 		logger.log("The Normalized Levenshtein Distance between " + S + " and " + T + " =  " + levNorm);
 		
         return levNorm;
-        
-        
 	}
-	
 }
-

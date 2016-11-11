@@ -1,16 +1,5 @@
 package tr.edu.gsu.nerwip.eventcomparison;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import tr.edu.gsu.nerwip.data.event.Event;
-import tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools.NLDistance;
-import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-
-
 /* Nerwip - Named Entity Extraction in Wikipedia Pages
 
 * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
@@ -35,6 +24,14 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import tr.edu.gsu.nerwip.data.event.Event;
+import tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools.NLDistance;
+import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
+
 /**
  * This class compares pairs of events 
  * which have different persons 
@@ -42,21 +39,19 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * 
  * @author Sabrine Ayachi
  */
-public class EventComparison {
-	
-	
-	/**
-	    * This method verify if a specific 
-	    * location type entity is disambiguated by spotlight
-	    * 
-	    * @param e1
-	    * 		The event which contains the Location entity. 
-	    * entity type.
-	    * @param text
-	    *       The spotlight response.
-	    * @return
-	    * 		The uri of the Location entity if it's disambiguated .
-	    */
+public class EventComparison
+{	/**
+ 	 * This method verifies if a specific 
+     * location type entity is disambiguated by spotlight
+     * 
+     * @param e1
+     * 		The event which contains the Location entity. 
+     * entity type.
+     * @param text
+     *       The spotlight response.
+     * @return
+     * 		The uri of the Location entity if it's disambiguated .
+     */
 	public static String verifyLocation(Event e1, String text)
 	{   String uri = null;
 	    List<String> entityList = new ArrayList<String>();
@@ -72,23 +67,22 @@ public class EventComparison {
 		   System.out.println("uri = " + uri);
 		}
 		System.out.println("uri = " + uri);
+		
 		return uri;
-		
-		
 	}
 	
 	/**
-	    * This method verify if a specific 
-	    * location type entity is disambiguated by spotlight
-	    * 
-	    * @param e1
-	    * 		The event which contains the Organization entity. 
-	    * entity type.
-	    * @param text
-	    *       The spotlight response.
-	    * @return
-	    * 		The uri of the Organization entity if it's disambiguated .
-	    */
+	 * This method verifies if a specific 
+	 * location type entity is disambiguated by spotlight
+	 * 
+	 * @param e1
+	 * 		The event which contains the Organization entity. 
+	 * entity type.
+	 * @param text
+	 *       The spotlight response.
+	 * @return
+	 * 		The uri of the Organization entity if it's disambiguated .
+	 */
 	public static String verifyOrganization(Event e, String text)
 	{   String uri = null;
 	    List<String> entityList = new ArrayList<String>();
@@ -102,23 +96,22 @@ public class EventComparison {
 		   uri = entityList.get(index);
 		   System.out.println("uri = " + uri);
 		}
+		
 		return uri;
-		
-		
 	}
 	
 	/**
-	    * This method verify if a specific 
-	    * Production type entity is disambiguated by spotlight
-	    * 
-	    * @param e1
-	    * 		The event which contains the Production entity. 
-	    * entity type.
-	    * @param text
-	    *       The spotlight response.
-	    * @return
-	    * 		The uri of the Production entity if it's disambiguated .
-	    */
+ 	 * This method verifies if a specific 
+	 * Production type entity is disambiguated by spotlight
+	 * 
+	 * @param e1
+	 * 		The event which contains the Production entity. 
+	 * entity type.
+	 * @param text
+	 *       The spotlight response.
+	 * @return
+	 * 		The uri of the Production entity if it's disambiguated .
+	 */
 	public static String verifyProduction(Event e, String text)
 	{   String uri = null;
 	    List<String> entityList = new ArrayList<String>();
@@ -132,23 +125,22 @@ public class EventComparison {
 		   uri = entityList.get(index);
 		   System.out.println("uri = " + uri);
 		}
+		
 		return uri;
-		
-		
 	}
 	
 	/**
-	    * This method verify if a specific 
-	    * Meeting type entity is disambiguated by spotlight
-	    * 
-	    * @param e1
-	    * 		The event which contains the Meeting entity. 
-	    * entity type.
-	    * @param text
-	    *       The spotlight response.
-	    * @return
-	    * 		The uri of the Meeting entity if it's disambiguated .
-	    */
+	 * This method verifies if a specific 
+	 * Meeting type entity is disambiguated by spotlight
+	 * 
+	 * @param e1
+	 * 		The event which contains the Meeting entity. 
+	 * entity type.
+	 * @param text
+	 *       The spotlight response.
+	 * @return
+	 * 		The uri of the Meeting entity if it's disambiguated .
+	 */
 	public static String verifyMeeting(Event e, String text)
 	{   String uri = null;
 	    List<String> entityList = new ArrayList<String>();
@@ -162,23 +154,22 @@ public class EventComparison {
 		   uri = entityList.get(index);
 		   System.out.println("uri = " + uri);
 		}
+		
 		return uri;
-		
-		
 	}
 	
 	/**
-	    * This method verify if a specific 
-	    * Person type entity is disambiguated by spotlight
-	    * 
-	    * @param e1
-	    * 		The event which contains the Person entity. 
-	    * entity type.
-	    * @param text
-	    *       The spotlight response.
-	    * @return
-	    * 		The uri of the Person entity if it's disambiguated .
-	    */
+	 * This method verifies if a specific 
+	 * Person type entity is disambiguated by spotlight
+	 * 
+	 * @param e1
+	 * 		The event which contains the Person entity. 
+	 * entity type.
+	 * @param text
+	 *       The spotlight response.
+	 * @return
+	 * 		The uri of the Person entity if it's disambiguated .
+	 */
 	public static String verifyPerson(Event e, String text)
 	{   String uri = null;
 	    List<String> entityList = new ArrayList<String>();
@@ -192,13 +183,12 @@ public class EventComparison {
 		   uri = entityList.get(index);
 		   System.out.println("uri = " + uri);
 		}
+		
 		return uri;
-		
-		
 	}
 	
 	/**
-	    * This method verify if a specific 
+	    * This method verifies if a specific 
 	    * Function type entity is disambiguated by spotlight
 	    * 
 	    * @param e1
@@ -222,11 +212,9 @@ public class EventComparison {
 		   uri = entityList.get(index);
 		   System.out.println("uri = " + uri);
 		}
+		
 		return uri;
-		
-		
 	}
-	
 	
 	/**
 	 * convert any string date to date format 
@@ -237,8 +225,7 @@ public class EventComparison {
 	 * 		Date in dd-mm-yyyy format.
 	 */
 	public static String convertDate(String date)
-	{
-		List<String> monthList = new ArrayList<>(Arrays.asList("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "décembre"));
+	{	List<String> monthList = new ArrayList<>(Arrays.asList("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "décembre"));
 		//convert date
 	    //converting dates from yyyy to dd-mm-yyyy
 		if((date.length() == 4) & (monthList.contains(date) == false))
@@ -274,8 +261,8 @@ public class EventComparison {
 		    String year = splits[3];
 		    date = day + "-" + mm + "-" + year;
 	    }
-		return date;
 		
+		return date;
 	}
 	
 	
@@ -291,8 +278,7 @@ public class EventComparison {
 	 * 		The similarity between these dates.
 	 */
 	public static double dateSimilarity(String date1, String date2)
-	{
-		double dateSimilarity =0;
+	{	double dateSimilarity =0;
 		if (date1 == date2)
 		{dateSimilarity = 1;}
 		String c1 = convertDate(date1);
@@ -305,25 +291,25 @@ public class EventComparison {
 		else {dateSimilarity = 0.5;}
 			
 		}
-		else dateSimilarity = 0;
-		return dateSimilarity;
+		else 
+			dateSimilarity = 0;
 		
+		return dateSimilarity;
 	}
 	
 	/**
-	    * This method calculates the number 
-	    * of entity types found on a pair of events.
-	    * 
-	    * @param e1
-	    * 		The first event.
-	    * @param e2
-	    *       The second event.
-	    * @return
-	    * 		The number of entity types found in both events .
-	    */
+	 * This method calculates the number 
+	 * of entity types found on a pair of events.
+	 * 
+	 * @param e1
+	 * 		The first event.
+	 * @param e2
+	 *       The second event.
+	 * @return
+	 * 		The number of entity types found in both events .
+	 */
 	public static int entityTypesNumber(Event e1, Event e2)
-	{
-		int n = 0;
+	{	int n = 0;
 		if ((e1.getPerson() != null) || (e2.getPerson() != null))
 		{n++;}
 		if ((e1.getFunction() != null) || (e2.getFunction() != null))
@@ -340,8 +326,6 @@ public class EventComparison {
 		{n++;}
 		return n;
 	}
-	
-
 	
 	/**
 	 * Calculates the similarity between
@@ -487,32 +471,25 @@ public class EventComparison {
 		
 		
 		return pairSim;
-		
-		
 	}
 	
+	/**
+	 * 
+	 * @param events
+	 * @param text
+	 */
 	public static void compareAllPairsOfEvents( List<Event> events, String text)
-	{
-		double similarity=0;
+	{	double similarity=0;
 		for (int i=0; i<=events.size()-1; i++)
-		{
-			for (int j=0; j<=events.size()-1; j++)
-			{
-				if (i!=j && j>i)
-				{
-					similarity = compareOnePairOfEvents(events.get(i), events.get(j), text);
+		{	for (int j=0; j<=events.size()-1; j++)
+			{	if (i!=j && j>i)
+				{	similarity = compareOnePairOfEvents(events.get(i), events.get(j), text);
 					System.out.println("event " + i + events.get(i));
 					System.out.println("event " + j + events.get(j));
 					
 			        System.out.println("similarity between event " + i + " and event " + j + " = " + similarity);
-			        
 				}
-				
 			}
-			
 		}
-		
 	}
-
 }
-

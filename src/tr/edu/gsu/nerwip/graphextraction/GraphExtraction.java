@@ -1,38 +1,5 @@
 package tr.edu.gsu.nerwip.graphextraction;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.xml.sax.SAXException;
-
-import tr.edu.gsu.extractor.data.Graph;
-import tr.edu.gsu.extractor.data.Link;
-import tr.edu.gsu.extractor.data.Node;
-import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.data.event.Event;
-import tr.edu.gsu.nerwip.eventcomparison.EventComparison;
-import tr.edu.gsu.nerwip.eventextraction.EventExtraction;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
-import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
-import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
-import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
-import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
-import tr.edu.gsu.nerwip.tools.file.FileNames;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
-import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
@@ -57,6 +24,33 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import tr.edu.gsu.extractor.data.Graph;
+import tr.edu.gsu.extractor.data.Link;
+import tr.edu.gsu.extractor.data.Node;
+import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.article.ArticleList;
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
+import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.event.Event;
+import tr.edu.gsu.nerwip.eventcomparison.EventComparison;
+import tr.edu.gsu.nerwip.eventextraction.EventExtraction;
+import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
+import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
+import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
+import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
+import tr.edu.gsu.nerwip.tools.file.FileNames;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
+import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
+
 /**
  * Extract an event  network from a corpus
  * and the corresponding entities. The network
@@ -65,9 +59,8 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * 
  * @author Sabrine Ayachi
  */
-public class GraphExtraction {
-	
-	/**
+public class GraphExtraction
+{	/**
 	 * Launches the extraction process.
 	 * 
 	 * @param args
@@ -96,11 +89,10 @@ public class GraphExtraction {
 	 * 
 	 * @param recognizer
 	 * 		The NER tool to apply (or previously applied).
- * @throws Exception 
+	 * @throws Exception 
 	 */
    private static void extractNetwork(AbstractRecognizer recognizer)  throws Exception
-   {
-	   logger.log("Extract event network");
+   {	logger.log("Extract event network");
 		
 		//init graph
 		Graph graph = new Graph("Entities_Events", false);
@@ -139,86 +131,75 @@ public class GraphExtraction {
 		List<AbstractEntity<?>> personEntities = new ArrayList<AbstractEntity<?>>();
 		List<AbstractEntity<?>> ent = allEntities.getEntities();
 	    for(AbstractEntity<?> e: ent)
-	    { EntityType entityType = e.getType();
-		  String type = entityType.toString();
-		  if (type == "PERSON")
-			  { 
-			  personEntities.add(e);}
-		  }
-	    int p = personEntities.size();
-		logger.log("Inserting nodes in the graph");
-			
-		for(int j=0;j<p;j++)
-		{// name
-			AbstractEntity<?> personEntity = personEntities.get(j);
-			String entName = personEntity.getStringValue();
-			Node node = graph.retrieveNode(entName);
-			node.setProperty("Name", entName);
-			
+	    {	EntityType entityType = e.getType();
+	    	String type = entityType.toString();
+    		if (type == "PERSON")
+    			personEntities.add(e);
 		}
+    	int p = personEntities.size();
+    	logger.log("Inserting nodes in the graph");
 		
-		// insert the links into the graph
-		logger.log("Insert links in the graph"); 
-		List<Event> allEventsList = new ArrayList<Event>(); // list of all events of the corpus
-		for(File folder: folders)
-		{
-			logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+    	for(int j=0;j<p;j++)
+    	{	// name
+    		AbstractEntity<?> personEntity = personEntities.get(j);
+    		String entName = personEntity.getStringValue();
+    		Node node = graph.retrieveNode(entName);
+    		node.setProperty("Name", entName);
+    	}
+    	
+    	// insert the links into the graph
+    	logger.log("Insert links in the graph"); 
+    	List<Event> allEventsList = new ArrayList<Event>(); // list of all events of the corpus
+    	for(File folder: folders)
+    	{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
 			logger.increaseOffset();
-				
+			
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
 			ArticleRetriever retriever = new ArticleRetriever();
 			Article article = retriever.process(name);
 			String rawText = article.getRawText();
-				
+			
 			// retrieve the entities
 			logger.log("Retrieve the entities");
 			entities = recognizer.process(article);
-
+			
 			List<Event> extractedEvents = EventExtraction.extractEvents(article, entities); 
 			allEventsList.addAll(extractedEvents);
-			
+		
 			logger.decreaseOffset();
 			i++;
-			
-		}
-		int nbEvents = allEventsList.size(); // number of events in the corpus
-		for (int k=0; k<= nbEvents -1; k++)
-			{
-			for (int j=0; j<= nbEvents -1; j++)
-			{
-				if (k!=j && j>k)
-				{
-					// text is answer
+    	}
+    	
+    	int nbEvents = allEventsList.size(); // number of events in the corpus
+    	for (int k=0; k<= nbEvents -1; k++)
+		{	for (int j=0; j<= nbEvents -1; j++)
+			{	if (k!=j && j>k)
+				{	// text is answer
 					//String xmlText = SpotlightTools.process(entities, article);
 					//String answer = SpotlightTools.disambiguate(xmlText);
 					//logger.log("answer = " + answer);
 					String answer = SpotlightTools.SpotlightAllCorpus();
 					
-						
 					if (allEventsList.get(k).getPerson().getStringValue() != allEventsList.get(j).getPerson().getStringValue()) 
-					{
-						double similarity = EventComparison.compareOnePairOfEvents(allEventsList.get(k), allEventsList.get(j), answer);
+					{	double similarity = EventComparison.compareOnePairOfEvents(allEventsList.get(k), allEventsList.get(j), answer);
 						logger.log("event " + i + allEventsList.get(k));
 						logger.log("event " + j + allEventsList.get(j));
 						
 				        logger.log("similarity between event " + k + " and event " + j + " = " + similarity);
 				        if (similarity >= 0.5)
-				        {
-				        	String source = allEventsList.get(k).getPerson().getStringValue();
-				        	String target = allEventsList.get(j).getPerson().getStringValue();
-				        	Link link = graph.retrieveLink(source, target);
-				        	link.incrementIntProperty("Weight", similarity);
-				        	nbr ++;
+				        {	String source = allEventsList.get(k).getPerson().getStringValue();
+			        		String target = allEventsList.get(j).getPerson().getStringValue();
+			        		Link link = graph.retrieveLink(source, target);
+			        		link.incrementIntProperty("Weight", similarity);
+			        		nbr ++;
 				        }
-				        
 					}
-					
-					
-				}
 				}
 			}
+		}
+    	
 		int nbr1 = graph.getLinkSize();
 		logger.log("nbr1 = " + nbr1);
 		logger.log(nbr + "links are inserted");
@@ -237,9 +218,8 @@ public class GraphExtraction {
 		graph.writeToXml(netFile);
 					
 		logger.decreaseOffset();
-		
    }
-			
+   
    /**
 	* Returns the key associated to the first
 	* largest value.
@@ -261,14 +241,13 @@ public class GraphExtraction {
 			}
 			else
 			{	if(maxValue.compareTo(value)<0)
-			{	maxValue = value;
-				result = key;
+				{	maxValue = value;
+					result = key;
 				}
 			}
-			}
+		}
 		
 		return result;
-		}
-	
-     }
+	}
+}
    
