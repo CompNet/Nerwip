@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -32,35 +32,36 @@ import java.util.regex.Pattern;
 import org.jdom2.Element;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Abstract class representing a general entity.
+ * Abstract class representing a general mention.
  * 
  * @param <T> 
- * 		Class of the entity value.
+ * 		Class of the mention value.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public abstract class AbstractEntity<T extends Comparable<T>> implements Comparable<AbstractEntity<T>>
+public abstract class AbstractMention<T extends Comparable<T>> implements Comparable<AbstractMention<T>>
 {	
 	/**
-	 * General constructor for an entity.
+	 * General constructor for a mention.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @param value
-	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
+	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public AbstractEntity(int startPos, int endPos, RecognizerName source, String valueStr, T value)
+	public AbstractMention(int startPos, int endPos, RecognizerName source, String valueStr, T value)
 	{	this.startPos = startPos;
 		this.endPos = endPos;
 		this.source = source;
@@ -68,30 +69,26 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 		this.value = value;
 	}
 	
-	
-	//TODO we need to add some id in order to allow unique identification, and therefore coreference resolution
-	//or rename this Entity class to something like "instance" or "mention" 
-	
 	/**
 	 * Builds an entity of the specified type.
 	 * 
 	 * @param <T>
-	 * 		Class of the entity value.
+	 * 		Class of the mention value.
 	 * @param type
-	 * 		Type of the entity.
+	 * 		Type of the mention.
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @return
-	 * 		An object representing the entity.
+	 * 		An object representing the mention.
 	 */
-	public static <T> AbstractEntity<?> build(EntityType type, int startPos, int endPos, RecognizerName source, String valueStr)
-	{	AbstractEntity<?> result = null;
+	public static <T> AbstractMention<?> build(EntityType type, int startPos, int endPos, RecognizerName source, String valueStr)
+	{	AbstractMention<?> result = null;
 
 // debug
 //if(valueStr.equals("1934"))
@@ -99,25 +96,25 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	
 		switch(type)
 		{	case DATE:
-				result = new EntityDate(startPos, endPos, source, valueStr, null);
+				result = new MentionDate(startPos, endPos, source, valueStr, null);
 				break;
 			case FUNCTION:
-				result = new EntityFunction(startPos, endPos, source, valueStr, null);
+				result = new MentionFunction(startPos, endPos, source, valueStr, null);
 				break;
 			case LOCATION:
-				result = new EntityLocation(startPos, endPos, source, valueStr, null);
+				result = new MentionLocation(startPos, endPos, source, valueStr, null);
 				break;
 			case MEETING:
-				result = new EntityMeeting(startPos, endPos, source, valueStr, null);
+				result = new MentionMeeting(startPos, endPos, source, valueStr, null);
 				break;
 			case ORGANIZATION:
-				result = new EntityOrganization(startPos, endPos, source, valueStr, null);
+				result = new MentionOrganization(startPos, endPos, source, valueStr, null);
 				break;
 			case PERSON:
-				result = new EntityPerson(startPos, endPos, source, valueStr, null);
+				result = new MentionPerson(startPos, endPos, source, valueStr, null);
 				break;
 			case PRODUCTION:
-				result = new EntityProduction(startPos, endPos, source, valueStr, null);
+				result = new MentionProduction(startPos, endPos, source, valueStr, null);
 				break;
 		}
 		
@@ -149,41 +146,41 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 		};
 		for(String valueStr: valuesStr)
 		{	int endPos = startPos + valueStr.length();
-			AbstractEntity<?> entity = build(EntityType.PERSON, startPos, endPos, RecognizerName.STANFORD, valueStr); 
-			entity.correctEntitySpan();
-			System.out.println("\""+valueStr + "\"\t\t>>\t\t" + entity);
+			AbstractMention<?> mention = build(EntityType.PERSON, startPos, endPos, RecognizerName.STANFORD, valueStr); 
+			mention.correctMentionSpan();
+			System.out.println("\""+valueStr + "\"\t\t>>\t\t" + mention);
 		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// VALUE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Entity value (depends on its type) */
+	/** Mention value (depends on its type) */
 	protected T value = null;
 	
 	/**
-	 * Returns the actual value of this entity.
-	 * For numeric entity, it should be the numerical value.
-	 * For named entities, it should be a unique representation
+	 * Returns the actual value of this mention.
+	 * For numeric mention, it should be the numerical value.
+	 * For named mentions, it should be a unique representation
 	 * of its semantics. For instance, an ontological concept,
 	 * or an id in Freebase.
 	 * 
 	 * @return
-	 * 		Actual value of this entity.
+	 * 		Actual value of this mention.
 	 */
 	public T getValue()
 	{	return value;
 	}
 
 	/**
-	 * Changes the actual value of this entity.
-	 * For numeric entity, it should be the numerical value.
-	 * For named entities, it should be a unique representation
+	 * Changes the actual value of this mention.
+	 * For numeric mention, it should be the numerical value.
+	 * For named mentions, it should be a unique representation
 	 * of its semantics. For instance, an ontological concept,
 	 * or an id in Freebase.
 	 * 
 	 * @param value
-	 * 		New value of this entity.
+	 * 		New value of this mention.
 	 */
 	public void setValue(T value)
 	{	this.value = value;
@@ -192,15 +189,15 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	/////////////////////////////////////////////////////////////////
 	// STRING			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** String representation of the entity (might also be its value if the entity is named) */
+	/** String representation of the mention (might also be its value if the mention is named) */
 	protected String valueStr = null;
 	
 	/**
 	 * Returns the original string corresponding
-	 * to this entity.
+	 * to this mention.
 	 * 
 	 * @return
-	 * 		Original string representation of this entity. 
+	 * 		Original string representation of this mention. 
 	 */
 	public String getStringValue()
 	{	return valueStr;
@@ -208,10 +205,10 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 
 	/**
 	 * Changes the original string corresponding
-	 * to this entity.
+	 * to this mention.
 	 * 
 	 * @param valueStr
-	 * 		New string representation of this entity.
+	 * 		New string representation of this mention.
 	 */
 	public void setStringValue(String valueStr)
 	{	this.valueStr = valueStr;
@@ -220,17 +217,17 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	/////////////////////////////////////////////////////////////////
 	// CORRECTIONS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Pattern used to check the beginning/end of entity mentions */
+	/** Pattern used to check the beginning/end of mentions */
 	private static final Pattern PATTERN = Pattern.compile("[\\p{Z}\\p{Punct}]");
 	
 	/**
-	 * Checks if the entity starts/ends with certain
+	 * Checks if the mention starts/ends with certain
 	 * characters: punctuation, spaces, etc.
-	 * If it is the case, the entity span is redefined
+	 * If it is the case, the mention span is redefined
 	 * so that these characters are placed outside
-	 * of the entity.
+	 * of the mention.
 	 */
-	public void correctEntitySpan()
+	public void correctMentionSpan()
 	{	boolean found;
 		do
 		{	found = false;
@@ -256,27 +253,27 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	// TYPE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Returns the type of this entity.
+	 * Returns the type of this mention.
 	 * 
 	 * @return 
-	 * 		The type of this entity.
+	 * 		The type of this mention.
 	 */
 	public abstract EntityType getType();
 	
 	/////////////////////////////////////////////////////////////////
 	// POSITION			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Start position of an entity in the text */
+	/** Start position of an mention in the text */
 	protected int startPos = -1;
-	/** End position of an entity in the text */
+	/** End position of an mention in the text */
 	protected int endPos = -1;
 		
 	/**
 	 * Returns the starting position of this
-	 * entity, in the text.
+	 * mention, in the text.
 	 * 
 	 * @return
-	 * 		Starting position of this entity.
+	 * 		Starting position of this mention.
 	 */
 	public int getStartPos()
 	{	return startPos;
@@ -284,10 +281,10 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	
 	/**
 	 * Returns the starting position of this
-	 * entity, in the text.
+	 * mention, in the text.
 	 * 
 	 * @param startPos
-	 * 		New starting position of this entity.
+	 * 		New starting position of this mention.
 	 */
 	public void setStartPos(int startPos)
 	{	this.startPos = startPos;
@@ -295,10 +292,10 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 
 	/**
 	 * Returns the ending position of this
-	 * entity, in the text.
+	 * mention, in the text.
 	 * 
 	 * @return
-	 * 		Ending position of this entity.
+	 * 		Ending position of this mention.
 	 */
 	public int getEndPos()
 	{	return endPos;
@@ -306,10 +303,10 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	
 	/**
 	 * Returns the ending position of this
-	 * entity, in the text.
+	 * mention, in the text.
 	 * 
 	 * @param endPos
-	 * 		New ending position of this entity.
+	 * 		New ending position of this mention.
 	 */
 	public void setEndPos(int endPos)
 	{	this.endPos = endPos;
@@ -317,13 +314,13 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	
 	/**
 	 * Checks if the specified text position
-	 * is contained in this entity.
+	 * is contained in this mention.
 	 * 
 	 * @param position
 	 * 		Position to be checked.
 	 * @return
 	 * 		{@code true} iff the specified position
-	 * 		is contained in this entity.
+	 * 		is contained in this mention.
 	 */
 	public boolean containsPosition(int position)
 	{	boolean result = position>=startPos && position <=endPos;
@@ -332,14 +329,14 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	
 	/**
 	 * Checks if the specified position is
-	 * located after this entity (i.e. after
+	 * located after this mention (i.e. after
 	 * its own ending position).
 	 * 
 	 * @param position
 	 * 		Position to be checked.
 	 * @return
 	 * 		{@code true} iff the position is located
-	 * 		after, and out of, this entity.
+	 * 		after, and out of, this mention.
 	 */
 	public boolean precedesPosition(int position)
 	{	boolean result = position>endPos;
@@ -348,14 +345,14 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	
 	/**
 	 * Checks if the specified position is
-	 * located before this entity (i.e. before
+	 * located before this mention (i.e. before
 	 * its own starting position).
 	 * 
 	 * @param position
 	 * 		Position to be checked.
 	 * @return
 	 * 		{@code true} iff the position is located
-	 * 		before, and out of, this entity.
+	 * 		before, and out of, this mention.
 	 */
 	public boolean succeedesPosition(int position)
 	{	boolean result = position<startPos;
@@ -365,15 +362,15 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	/////////////////////////////////////////////////////////////////
 	// SOURCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Origin of the entity (what detected it) */
+	/** Origin of the mention (what detected it) */
 	protected RecognizerName source;
 	
 	/**
 	 * Returns the NER tool which
-	 * detected this entity.
+	 * detected this mention.
 	 * 
 	 * @return
-	 * 		NER tool having detected this entity.
+	 * 		NER tool having detected this mention.
 	 */
 	public RecognizerName getSource()
 	{	return source;
@@ -381,10 +378,10 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 
 	/**
 	 * Changes the NER tool which
-	 * detected this entity.
+	 * detected this mention.
 	 * 
 	 * @param source
-	 * 		New NER tool having detected this entity.
+	 * 		New NER tool having detected this mention.
 	 */
 	public void setSource(RecognizerName source)
 	{	this.source = source;
@@ -394,19 +391,19 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	// COMPARISON		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 //	/**
-//	 * Checks if the specified entity overlaps
+//	 * Checks if the specified mention overlaps
 //	 * with this one. However, one should not
 //	 * contain the other. Perfect matches are not
 //	 * allowed neither.
 //	 * 
-//	 * @param entity
-//	 * 		Entity to be compared with this one. 
+//	 * @param mention
+//	 * 		Mention to be compared with this one. 
 //	 * @return
 //	 * 		{@code true} only if they partially overlap.
 //	 */
-//	public boolean overlapsStrictlyWith(AbstractEntity<?> entity)
-//	{	int startPos2 = entity.getStartPos();
-//		int endPos2 = entity.getEndPos();
+//	public boolean overlapsStrictlyWith(AbstractMention<?> mention)
+//	{	int startPos2 = mention.getStartPos();
+//		int endPos2 = mention.getEndPos();
 //		
 //		boolean result = (startPos2<endPos && endPos2>endPos)
 //			|| (startPos<endPos2 && endPos>endPos2);
@@ -415,18 +412,18 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 //	}
 	
 	/**
-	 * Checks if the specified entity overlaps
+	 * Checks if the specified mention overlaps
 	 * with this one. Inclusion and perfect match
 	 * are also allowed.
 	 * 
-	 * @param entity
-	 * 		Entity to be compared with this one. 
+	 * @param mention
+	 * 		Mention to be compared with this one. 
 	 * @return
 	 * 		{@code true} only if they partially overlap.
 	 */
-	public boolean overlapsWith(AbstractEntity<?> entity)
-	{	int startPos2 = entity.getStartPos();
-		int endPos2 = entity.getEndPos();
+	public boolean overlapsWith(AbstractMention<?> mention)
+	{	int startPos2 = mention.getStartPos();
+		int endPos2 = mention.getEndPos();
 		
 		boolean result = (startPos2<=endPos && endPos2>=endPos)
 			|| (startPos<=endPos2 && endPos>=endPos2);
@@ -435,40 +432,40 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	}
 
 	/**
-	 * Checks if this entity overlaps with <i>at least</i>
-	 * one of the entities in the specified list. Inclusion 
+	 * Checks if this mention overlaps with <i>at least</i>
+	 * one of the mentions in the specified list. Inclusion 
 	 * and perfect match are also allowed.
 	 * 
-	 * @param entities
-	 * 		List of entities to be compared with this one. 
+	 * @param mentions
+	 * 		List of mentions to be compared with this one. 
 	 * @return
-	 * 		{@code true} only if this entity partially overlaps
-	 * 		with at least one of the listed entities.
+	 * 		{@code true} only if this mention partially overlaps
+	 * 		with at least one of the listed mentions.
 	 */
-	public boolean overlapsWithOne(List<AbstractEntity<?>> entities)
+	public boolean overlapsWithOne(List<AbstractMention<?>> mentions)
 	{	boolean result = false;
-		Iterator<AbstractEntity<?>> it = entities.iterator();
+		Iterator<AbstractMention<?>> it = mentions.iterator();
 		
 		while(!result && it.hasNext())
-		{	AbstractEntity<?> entity = it.next();
-			result = overlapsWith(entity);
+		{	AbstractMention<?> mention = it.next();
+			result = overlapsWith(mention);
 		}
 		
 		return result;
 	}
 
 //	/**
-//	 * Checks if the specified entity is strictly contained
-//	 * in this entity. Perfect matches are not allowed.
+//	 * Checks if the specified mention is strictly contained
+//	 * in this mention. Perfect matches are not allowed.
 //	 * 
-//	 * @param entity
-//	 * 		Entity to be compared with this one. 
+//	 * @param mention
+//	 * 		Mention to be compared with this one. 
 //	 * @return
-//	 * 		{@code true} only if this entity contained the specified one.
+//	 * 		{@code true} only if this mention contained the specified one.
 //	 */
-//	public boolean containsStrictly(AbstractEntity<?> entity)
-//	{	int startPos2 = entity.getStartPos();
-//		int endPos2 = entity.getEndPos();
+//	public boolean containsStrictly(AbstractMention<?> mention)
+//	{	int startPos2 = mention.getStartPos();
+//		int endPos2 = mention.getEndPos();
 //		
 //		boolean result = startPos2>=startPos && endPos2<endPos
 //			|| startPos2>startPos && endPos2<=endPos;
@@ -477,17 +474,17 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 //	}
 
 	/**
-	 * Checks if the specified entity is contained in,
-	 * or matches this entity.
+	 * Checks if the specified mention is contained in,
+	 * or matches this mention.
 	 * 
-	 * @param entity
-	 * 		Entity to be compared with this one. 
+	 * @param mention
+	 * 		Mention to be compared with this one. 
 	 * @return
-	 * 		{@code true} only if this entity contained the specified one.
+	 * 		{@code true} only if this mention contained the specified one.
 	 */
-	public boolean contains(AbstractEntity<?> entity)
-	{	int startPos2 = entity.getStartPos();
-		int endPos2 = entity.getEndPos();
+	public boolean contains(AbstractMention<?> mention)
+	{	int startPos2 = mention.getStartPos();
+		int endPos2 = mention.getEndPos();
 		
 		boolean result = startPos2>=startPos && endPos2<=endPos;
 		
@@ -495,17 +492,17 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	}
 	
 	/**
-	 * Checks if the specified entity matches (spatially)
-	 * exactly this entity.
+	 * Checks if the specified mention matches (spatially)
+	 * exactly this mention.
 	 * 
-	 * @param entity
-	 * 		Entity to be compared with this one. 
+	 * @param mention
+	 * 		Mention to be compared with this one. 
 	 * @return
-	 * 		{@code true} only if this entity matches the specified one.
+	 * 		{@code true} only if this mention matches the specified one.
 	 */
-	public boolean hasSamePosition(AbstractEntity<?> entity)
-	{	int startPos2 = entity.getStartPos();
-		int endPos2 = entity.getEndPos();
+	public boolean hasSamePosition(AbstractMention<?> mention)
+	{	int startPos2 = mention.getStartPos();
+		int endPos2 = mention.getEndPos();
 	
 		boolean result = startPos==startPos2 && endPos==endPos2;
 		
@@ -513,11 +510,11 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	}
 	
 	/**
-	 * Returns the length of this entity,
+	 * Returns the length of this mention,
 	 * calculated from its positions in the text.
 	 * 
 	 * @return
-	 * 		Length of the entity in characters.
+	 * 		Length of the mention in characters.
 	 */
 	public int getLength()
 	{	int result = endPos-startPos;
@@ -525,19 +522,19 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	}
 
 	/**
-	 * Checks if this entity is located before
-	 * the specified entity. Only the starting
+	 * Checks if this mention is located before
+	 * the specified mention. Only the starting
 	 * position is considered. And using a strict
 	 * comparison.
 	 * 
-	 * @param entity
-	 * 		Entity to compare to this one.
+	 * @param mention
+	 * 		Mention to compare to this one.
 	 * @return
 	 * 		{@code true} iff this entity is located 
 	 * 		before the specified one.
 	 */
-	public boolean precedes(AbstractEntity<?> entity)
-	{	int startPos = entity.getStartPos();
+	public boolean precedes(AbstractMention<?> mention)
+	{	int startPos = mention.getStartPos();
 		boolean result = this.startPos < startPos;
 		return result;
 	}
@@ -546,14 +543,14 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	// TEXT				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Checks if the text recorded for this entity
+	 * Checks if the text recorded for this mention
 	 * corresponds to the one found in the article
-	 * at the entity positions.
+	 * at the mention positions.
 	 * 
 	 * @param article
 	 * 		Article of reference. 
 	 * @return 
-	 * 		{@code true} iff the article and entity texts are the same.
+	 * 		{@code true} iff the article and mention texts are the same.
 	 */
 	public boolean checkText(Article article)
 	{	String text = article.getRawText();
@@ -564,7 +561,7 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	
 	@Override
 	public String toString()
-	{	String result = "ENTITY(";
+	{	String result = "MENTION(";
 		result = result + "STRING=\"" + valueStr+"\"";
 		result = result + ", TYPE=" + getType(); 
 		result = result + ", POS=("+startPos+","+endPos+")"; 
@@ -579,51 +576,51 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	// XML				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Returns a representation of this entity
+	 * Returns a representation of this mention
 	 * as an XML element.
 	 * 
 	 * @return
-	 * 		An XML element representing this entity.
+	 * 		An XML element representing this mention.
 	 */
 	public abstract Element exportAsElement();
 	
 	/**
-	 * Builds an entity from the specified
+	 * Builds an mention from the specified
 	 * XML element.
 	 * 
 	 * @param element
-	 * 		XML element representing the entity.
+	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the entity.
+	 * 		Name of the NER tool which detected the mention.
 	 * @return
-	 * 		The entity corresponding to the specified element.
+	 * 		The mention corresponding to the specified element.
 	 */
-	public static AbstractEntity<?> importFromElement(Element element, RecognizerName source)
-	{	AbstractEntity<?> result = null;
+	public static AbstractMention<?> importFromElement(Element element, RecognizerName source)
+	{	AbstractMention<?> result = null;
 		
 		String typeStr = element.getAttributeValue(XmlNames.ATT_TYPE);
 		EntityType type = EntityType.valueOf(typeStr);
 		switch(type)
 		{	case DATE:
-				result = EntityDate.importFromElement(element,source);
+				result = MentionDate.importFromElement(element,source);
 				break;
 			case FUNCTION:
-				result = EntityFunction.importFromElement(element,source);
+				result = MentionFunction.importFromElement(element,source);
 				break;
 			case LOCATION:
-				result = EntityLocation.importFromElement(element,source);
+				result = MentionLocation.importFromElement(element,source);
 				break;
 			case MEETING:
-				result = EntityMeeting.importFromElement(element,source);
+				result = MentionMeeting.importFromElement(element,source);
 				break;
 			case ORGANIZATION:
-				result = EntityOrganization.importFromElement(element,source);
+				result = MentionOrganization.importFromElement(element,source);
 				break;
 			case PERSON:
-				result = EntityPerson.importFromElement(element,source);
+				result = MentionPerson.importFromElement(element,source);
 				break;
 			case PRODUCTION:
-				result = EntityProduction.importFromElement(element,source);
+				result = MentionProduction.importFromElement(element,source);
 				break;
 		}
 		
@@ -634,7 +631,7 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	// COMPARABLE		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public int compareTo(AbstractEntity<T> o)
+	public int compareTo(AbstractMention<T> o)
 	{	
 //if(o==null)
 //	System.out.print("");
@@ -655,17 +652,17 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	}
 	
 	/**
-	 * Compare the value of this entity to that
-	 * of the specified entity. Both entities
+	 * Compare the value of this mention to that
+	 * of the specified mention. Both mentions
 	 * must contain values of the same type.
 	 * 
-	 * @param entity
-	 * 		The other entity.
+	 * @param mention
+	 * 		The other mention.
 	 * @return
 	 * 		An integer classically representing the result of the comparison.
 	 */
-	public int compareValueTo(AbstractEntity<T> entity)
-	{	T value = entity.getValue();
+	public int compareValueTo(AbstractMention<T> mention)
+	{	T value = mention.getValue();
 		int result = this.value.compareTo(value);
 		return result;
 	}
@@ -682,13 +679,13 @@ public abstract class AbstractEntity<T extends Comparable<T>> implements Compara
 	{	boolean result = false;
 		
 		if(obj!=null)
-		{	if(obj instanceof AbstractEntity<?>)
-			{	AbstractEntity<?> entity = (AbstractEntity<?>)obj;
-				int start = entity.getStartPos();
+		{	if(obj instanceof AbstractMention<?>)
+			{	AbstractMention<?> mention = (AbstractMention<?>)obj;
+				int start = mention.getStartPos();
 				if(this.startPos==start)
-				{	int endPos = entity.getEndPos();
+				{	int endPos = mention.getEndPos();
 					if(this.endPos==endPos)
-					{	String valueStr = entity.getStringValue();
+					{	String valueStr = mention.getStringValue();
 						result = this.valueStr.equals(valueStr);
 					}
 				}

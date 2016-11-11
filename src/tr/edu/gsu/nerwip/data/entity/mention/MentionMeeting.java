@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -27,47 +27,48 @@ package tr.edu.gsu.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Class representing an organization entity.
+ * Class representing a meeting mention.
  * 
  * @author Vincent Labatut
  */
-public class EntityOrganization extends AbstractEntity<String>
+public class MentionMeeting extends AbstractMention<String>
 {	
 	/**
-	 * Builds a new organization entity.
+	 * Builds a new organization mention.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @param value
-	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
+	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public EntityOrganization(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public MentionMeeting(int startPos, int endPos, RecognizerName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
 	/**
-	 * Builds a new organization without a value.
+	 * Builds a new meeting without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityOrganization(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionMeeting(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -76,7 +77,7 @@ public class EntityOrganization extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public EntityType getType()
-	{	return EntityType.ORGANIZATION;
+	{	return EntityType.MEETING;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -84,7 +85,7 @@ public class EntityOrganization extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Element exportAsElement()
-	{	Element result = new Element(XmlNames.ELT_ENTITY);
+	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
 		result.setAttribute(startAttr);
@@ -109,17 +110,17 @@ public class EntityOrganization extends AbstractEntity<String>
 	}
 	
 	/**
-	 * Builds an organization entity from the specified
+	 * Builds a meeting mention from the specified
 	 * XML element.
 	 * 
 	 * @param element
-	 * 		XML element representing the entity.
+	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the entity.
+	 * 		Name of the NER tool which detected the mention.
 	 * @return
-	 * 		The organization entity corresponding to the specified element.
+	 * 		The meeting mention corresponding to the specified element.
 	 */
-	public static EntityOrganization importFromElement(Element element, RecognizerName source)
+	public static MentionMeeting importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -134,7 +135,7 @@ public class EntityOrganization extends AbstractEntity<String>
 		if(valueElt!=null)
 			value = valueElt.getText();
 		
-		EntityOrganization result =  new EntityOrganization(startPos, endPos, source, valueStr, value);
+		MentionMeeting result =  new MentionMeeting(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }

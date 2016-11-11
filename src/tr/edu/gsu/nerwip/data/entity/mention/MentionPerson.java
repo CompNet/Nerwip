@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -27,31 +27,32 @@ package tr.edu.gsu.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Class representing a person entity.
+ * Class representing a person mention.
  * 
  * @author Vincent Labatut
  */
-public class EntityPerson extends AbstractEntity<String>
+public class MentionPerson extends AbstractMention<String>
 {	
 	/**
-	 * Builds a new person entity.
+	 * Builds a new person mention.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @param value
-	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
+	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public EntityPerson(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public MentionPerson(int startPos, int endPos, RecognizerName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
@@ -63,11 +64,11 @@ public class EntityPerson extends AbstractEntity<String>
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityPerson(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionPerson(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -84,7 +85,7 @@ public class EntityPerson extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Element exportAsElement()
-	{	Element result = new Element(XmlNames.ELT_ENTITY);
+	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
 		result.setAttribute(startAttr);
@@ -109,17 +110,17 @@ public class EntityPerson extends AbstractEntity<String>
 	}
 
 	/**
-	 * Builds a person entity from the specified
+	 * Builds a person mention from the specified
 	 * XML element.
 	 * 
 	 * @param element
-	 * 		XML element representing the entity.
+	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the entity.
+	 * 		Name of the NER tool which detected the mention.
 	 * @return
-	 * 		The person entity corresponding to the specified element.
+	 * 		The person mention corresponding to the specified element.
 	 */
-	public static EntityPerson importFromElement(Element element, RecognizerName source)
+	public static MentionPerson importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -134,7 +135,7 @@ public class EntityPerson extends AbstractEntity<String>
 		if(valueElt!=null)
 			value = valueElt.getText();
 		
-		EntityPerson result =  new EntityPerson(startPos, endPos, source, valueStr, value);
+		MentionPerson result =  new MentionPerson(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }

@@ -40,7 +40,7 @@ import java.util.Locale;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
@@ -456,9 +456,9 @@ public class Article
 	 * This method is called when reading an Article from file, and when
 	 * retrieving an article from the Web. It should not be called if
 	 * the article has already been annotated (be it manually or automatically), 
-	 * because it does <i>not</i> update the position of entities in
+	 * because it does <i>not</i> update the position of mentions in
 	 * the corresponding files. Consequently, if some characters are added
-	 * or removed during the cleaning, the position of certain entities
+	 * or removed during the cleaning, the position of certain mentions
 	 * can become incorrect.
 	 */
 	public void cleanContent()
@@ -859,14 +859,14 @@ public class Article
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// MENTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Returns the list of reference entities
+	 * Returns the list of reference mentions
 	 * for this article.
 	 * 
 	 * @return
-	 * 		The list of reference entities.
+	 * 		The list of reference mentions.
 	 * 		
 	 * @throws IOException
 	 * 		Problem while accessing the file.
@@ -875,22 +875,22 @@ public class Article
 	 * @throws ParseException 
 	 * 		Problem while accessing the file.
 	 */
-	public Entities getReferenceEntities() throws SAXException, IOException, ParseException
-	{	String path = folderPath + File.separator + FileNames.FI_ENTITY_LIST;
+	public Mentions getReferenceMentions() throws SAXException, IOException, ParseException
+	{	String path = folderPath + File.separator + FileNames.FI_MENTION_LIST;
 		File file = new File(path);
-		Entities result = Entities.readFromXml(file);
+		Mentions result = Mentions.readFromXml(file);
 		return result;
 	}
 	
 	/**
-	 * Returns the list of entities
+	 * Returns the list of mentions
 	 * for this article, as estimated
 	 * by the specified NER tool.
 	 * 
 	 * @param recognizer
 	 * 		Concerned NER tool.
 	 * @return
-	 * 		The list of reference entities.
+	 * 		The list of reference mentions.
 	 * 		
 	 * @throws IOException
 	 * 		Problem while accessing the file.
@@ -899,10 +899,10 @@ public class Article
 	 * @throws ParseException 
 	 * 		Problem while accessing the file.
 	 */
-	public Entities getEstimatedEntities(AbstractRecognizer recognizer) throws SAXException, IOException, ParseException
-	{	String path = folderPath + File.separator + recognizer.getFolder() + File.separator + FileNames.FI_ENTITY_LIST;
+	public Mentions getEstimatedMentions(AbstractRecognizer recognizer) throws SAXException, IOException, ParseException
+	{	String path = folderPath + File.separator + recognizer.getFolder() + File.separator + FileNames.FI_MENTION_LIST;
 		File file = new File(path);
-		Entities result = Entities.readFromXml(file);
+		Mentions result = Mentions.readFromXml(file);
 		return result;
 	}
 }

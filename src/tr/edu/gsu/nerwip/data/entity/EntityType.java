@@ -25,7 +25,7 @@ package tr.edu.gsu.nerwip.data.entity;
  */
 
 /**
- * Type of the entities.
+ * Type of the entities and mentions.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut

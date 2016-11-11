@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -41,8 +41,8 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -51,63 +51,63 @@ import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 
 /**
- * Class representing a list of entities,
+ * Class representing a list of mentions,
  * with some meta-data related to how
  * they were obtained.
  * 
  * @author Vincent Labatut
  */
-public class Entities
+public class Mentions
 {	
 	/**
-	 * Builds an entities object with current
+	 * Builds a Mentions object with current
 	 * date and reference source, and the specified
 	 * editor name.
 	 */
-	public Entities()
+	public Mentions()
 	{	initDates();
 		source = RecognizerName.REFERENCE;
 	}
 	
 	/**
-	 * Builds an entities object with current
+	 * Builds a Mentions object with current
 	 * date and specified source.
 	 * 
 	 * @param source
-	 * 		Source of the entities (a NER tool).
+	 * 		Source of the mentions (a NER tool).
 	 */
-	public Entities(RecognizerName source)
+	public Mentions(RecognizerName source)
 	{	initDates();
 		this.source = source;
 	}
 	
 //	/**
-//	 * Builds an entities object with specified
+//	 * Builds a Mentions object with specified
 //	 * date and source.
 //	 * 
 //	 * @param source
-//	 * 		Source of the entities (a NER tool).
+//	 * 		Source of the mentions (a NER tool).
 //	 * @param date
-//	 * 		Date the entities were detected.
+//	 * 		Date the mentions were detected.
 //	 */
-//	public Entities(RecognizerName source, Date date)
+//	public Mentions(RecognizerName source, Date date)
 //	{	this.creationDate = date;
 //		this.modificationDate = date;
 //		this.source = source;
 //	}
 	
 	/**
-	 * Builds an entities object with specified
+	 * Builds a Mentions object with specified
 	 * dates and source.
 	 * 
 	 * @param source
-	 * 		Source of the entities (a NER tool).
+	 * 		Source of the mentions (a NER tool).
 	 * @param creationDate
-	 * 		Date the entities were detected.
+	 * 		Date the mentions were detected.
 	 * @param modificationDate
-	 * 		Date the entities were last modified.
+	 * 		Date the mentions were last modified.
 	 */
-	public Entities(RecognizerName source, Date creationDate, Date modificationDate)
+	public Mentions(RecognizerName source, Date creationDate, Date modificationDate)
 	{	this.creationDate = creationDate;
 		this.modificationDate = modificationDate;
 		this.source = source;
@@ -116,9 +116,9 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	// DATES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Date the entities were detected/annotated */
+	/** Date the mentions were detected/annotated */
 	private Date creationDate = null;
-	/** Date the entities were last modified (mainly for manual annotation files) */
+	/** Date the mentions were last modified (mainly for manual annotation files) */
 	private Date modificationDate = null;
 	
 	/**
@@ -132,29 +132,29 @@ public class Entities
 	}
 	
 	/**
-	 * Returns the date these entities
+	 * Returns the date these mentions
 	 * were detected.
 	 * 
 	 * @return
-	 * 		Date these entities were detected.
+	 * 		Date these mentions were detected.
 	 */
 	public Date getCreationDate()
 	{	return creationDate;
 	}
 	
 	/**
-	 * Returns the date these entities
+	 * Returns the date these mentions
 	 * were last modified.
 	 * 
 	 * @return
-	 * 		Date these entities were modified.
+	 * 		Date these mentions were modified.
 	 */
 	public Date getModificationDate()
 	{	return modificationDate;
 	}
 	
 	/**
-	 * Changes the date these entities
+	 * Changes the date these mentions
 	 * were detected.
 	 * 
 	 * @param creationDate
@@ -165,7 +165,7 @@ public class Entities
 	}
 	
 	/**
-	 * Changes the date these entities
+	 * Changes the date these mentions
 	 * were last modified.
 	 * 
 	 * @param modificationDate
@@ -178,15 +178,15 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	// SOURCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** NER tool which detected these entities (or {@link RecognizerName#REFERENCE} for a manual annotations) */
+	/** NER tool which detected these mentions (or {@link RecognizerName#REFERENCE} for a manual annotations) */
 	private RecognizerName source = null;
 	
 	/**
 	 * Returns the NER tool which detected
-	 * these entities.
+	 * these mentions.
 	 * 
 	 * @return
-	 * 		Name of the NER tool having detected these entities.
+	 * 		Name of the NER tool having detected these mentions.
 	 */
 	public RecognizerName getSource()
 	{	return source;
@@ -194,10 +194,10 @@ public class Entities
 	
 	/**
 	 * Changes the NER tool which detected
-	 * these entities.
+	 * these mentions.
 	 * 
 	 * @param source
-	 * 		New name of the NER tool having detected these entities.
+	 * 		New name of the NER tool having detected these mentions.
 	 */
 	public void setSource(RecognizerName source)
 	{	this.source = source;
@@ -206,12 +206,12 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	// EDITOR			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Human person that originally annotated these entities (only relevant if the recognizer name is REFERENCE) */
+	/** Human person that originally annotated these mentions (only relevant if the recognizer name is REFERENCE) */
 	private String editor = null;
 	
 	/**
 	 * Returns the name of the person which
-	 * originally annotated these entities.
+	 * originally annotated these mentions.
 	 * This is relevant only if the recognizer
 	 * name is {@link RecognizerName#REFERENCE},
 	 * otherwise the method returns {@code null}.
@@ -227,7 +227,7 @@ public class Entities
 	
 	/**
 	 * Changes the name of the person which originally 
-	 * annotated these entities.
+	 * annotated these mentions.
 	 * 
 	 * @param editor
 	 * 		New editor name.
@@ -237,38 +237,38 @@ public class Entities
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// MENTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities */
-	private final List<AbstractEntity<?>> entities = new ArrayList<AbstractEntity<?>>();
+	/** List of mentions */
+	private final List<AbstractMention<?>> mentions = new ArrayList<AbstractMention<?>>();
 	
 	/**
 	 * Returns the whole list
-	 * of detected entities.
+	 * of detected mentions.
 	 * 
 	 * @return
-	 * 		List of entity objects.
+	 * 		List of Mention objects.
 	 */
-	public List<AbstractEntity<?>> getEntities()
-	{	return entities;
+	public List<AbstractMention<?>> getMentions()
+	{	return mentions;
 	}
 	
 	/**
-	 * Returns the entity at the specified position (in the list of 
-	 * entities, not in the text).
+	 * Returns the mention at the specified position (in the list of 
+	 * mentions, not in the text).
 	 * 
 	 * @param index
-	 * 		Position of the required entity.
+	 * 		Position of the required mention.
 	 * @return
-	 * 		Entity at the specified position.
+	 * 		Mention at the specified position.
 	 */
-	public AbstractEntity<?> getEntityAt(int index)
-	{	AbstractEntity<?> result = entities.get(index);
+	public AbstractMention<?> getMentionAt(int index)
+	{	AbstractMention<?> result = mentions.get(index);
 		return result;
 	}
 
 	/**
-	 * Returns the list of entities overlapping the specified range.
+	 * Returns the list of mentions overlapping the specified range.
 	 * The parameters are expressed in terms of characters in the original
 	 * text.
 	 * 
@@ -277,117 +277,117 @@ public class Entities
 	 * @param endPos
 	 * 		Position of the last character+1 in the specified range.
 	 * @return
-	 * 		List of the concerned entities.
+	 * 		List of the concerned mentions.
 	 */
-	public List<AbstractEntity<?>> getEntitiesIn(int startPos, int endPos)
-	{	List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+	public List<AbstractMention<?>> getMentionsIn(int startPos, int endPos)
+	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
-		for(AbstractEntity<?> entity: entities)
-		{	if(entity.containsPosition(startPos) || entity.containsPosition(endPos-1)
-				|| (entity.startPos>=startPos && entity.startPos<endPos)
-				|| (entity.endPos>=startPos && entity.endPos<endPos))
-				result.add(entity);
+		for(AbstractMention<?> mention: mentions)
+		{	if(mention.containsPosition(startPos) || mention.containsPosition(endPos-1)
+				|| (mention.startPos>=startPos && mention.startPos<endPos)
+				|| (mention.endPos>=startPos && mention.endPos<endPos))
+				result.add(mention);
 		}
 		
 		return result;
 	}
 
 	/**
-	 * Adds a new entity in the list.
+	 * Adds a new mention to the list.
 	 * <br/>
 	 * No redundance check is performed. 
 	 * 
-	 * @param entity
-	 * 		Entity to add to the list.
+	 * @param mention
+	 * 		Mention to add to the list.
 	 */
-	public void addEntity(AbstractEntity<?> entity)
-	{	entities.add(entity);
+	public void addMention(AbstractMention<?> mention)
+	{	mentions.add(mention);
 	}
 	
 	/**
-	 * Adds all the entities from the specifid object
+	 * Adds all the mentions from the specifid object
 	 * to this object.
 	 * <br/>
 	 * No redundance check is performed. 
 	 * 
-	 * @param entities
-	 * 		Entities to add to the list.
+	 * @param mentions
+	 * 		Mentions to add to the list.
 	 */
-	public void addEntities(Entities entities)
-	{	List<AbstractEntity<?>> list = entities.getEntities();
-		this.entities.addAll(list);
+	public void addMentions(Mentions mentions)
+	{	List<AbstractMention<?>> list = mentions.getMentions();
+		this.mentions.addAll(list);
 	}
 
 	/**
-	 * Adds to this object all the entities contained in 
+	 * Adds to this object all the mentions contained in 
 	 * the specified list.
 	 * <br/>
 	 * No redundance check is performed. 
 	 * 
-	 * @param entities
-	 * 		List of entities to add to the list.
+	 * @param mentions
+	 * 		List of mentions to add to the list.
 	 */
-	public void addEntities(List<AbstractEntity<?>> entities)
-	{	this.entities.addAll(entities);
+	public void addMentions(List<AbstractMention<?>> mentions)
+	{	this.mentions.addAll(mentions);
 	}
 
 	/**
-	 * Removes the specified entity
+	 * Removes the specified mention
 	 * from this list.
 	 * 
-	 * @param entity
-	 * 		Entity object to be removed from the list.
+	 * @param mention
+	 * 		Mention object to be removed from the list.
 	 */
-	public void removeEntity(AbstractEntity<?> entity)
-	{	entities.remove(entity);
+	public void removeMention(AbstractMention<?> mention)
+	{	mentions.remove(mention);
 	}
 
 	/**
-	 * Returns a sublist containing only the entities of
+	 * Returns a sublist containing only the mentions of
 	 * a certain type.
 	 * 
 	 * @param type
-	 * 		The desired entity type.
+	 * 		The desired mention type.
 	 * @return
-	 * 		List of entities of this type.
+	 * 		List of mentions of this type.
 	 */
-	public List<AbstractEntity<?>> getEntitiesByType(EntityType type)
-	{	List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
-		for(AbstractEntity<?> entity: entities)
-		{	EntityType t = entity.getType();
+	public List<AbstractMention<?>> getMentionsByType(EntityType type)
+	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
+		for(AbstractMention<?> mention: mentions)
+		{	EntityType t = mention.getType();
 			if(t==type)
-				result.add(entity);
+				result.add(mention);
 		}
 		return result;
 	}
 	
 	/**
-	 * Sorts the entities in the list
+	 * Sorts the mentions in the list
 	 * depending on their position (first
 	 * to last).
 	 */
 	public void sortByPosition()
-	{	Collections.sort(entities);
+	{	Collections.sort(mentions);
 	}
 	
 	/**
-	 * Takes a list of entities of various types, and returns
+	 * Takes a list of mentions of various types, and returns
 	 * only those with the specified type.
 	 * 
 	 * @param list
-	 * 		List of entities.
+	 * 		List of mentions.
 	 * @param type
-	 * 		Entity type of interest.
+	 * 		Mention type of interest.
 	 * @return
-	 * 		A sublist of the original entity list.
+	 * 		A sublist of the original mention list.
 	 */
-	public static List<AbstractEntity<?>> filterByType(List<AbstractEntity<?>> list, EntityType type)
-	{	List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+	public static List<AbstractMention<?>> filterByType(List<AbstractMention<?>> list, EntityType type)
+	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
-		for(AbstractEntity<?> entity: list)
-		{	EntityType t = entity.getType();
+		for(AbstractMention<?> mention: list)
+		{	EntityType t = mention.getType();
 			if(t==type)
-				result.add(entity);
+				result.add(mention);
 		}
 		
 		return result;
@@ -397,7 +397,7 @@ public class Entities
 	// POSITIONS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Shifts to the right all entities located after 
+	 * Shifts to the right all mentions located after 
 	 * position {@code start}, by {@code length} characters.
 	 * 
 	 * @param start
@@ -406,62 +406,62 @@ public class Entities
 	 * 		Magnitude of the shifting, in characters.
 	 * @param text
 	 * 		Full text of the concerned article (used
-	 * 		to update the entity string values.
+	 * 		to update the mention string values.
 	 */
-	public void rightShiftEntityPositions(int start, int length, String text)
-	{	Iterator<AbstractEntity<?>> it = entities.iterator();
+	public void rightShiftMentionPositions(int start, int length, String text)
+	{	Iterator<AbstractMention<?>> it = mentions.iterator();
 		while(it.hasNext())
-		{	AbstractEntity<?> entity = it.next();
-			boolean keep = rightShiftEntityPosition(entity, start, length, text);
+		{	AbstractMention<?> mention = it.next();
+			boolean keep = rightShiftMentionPosition(mention, start, length, text);
 			if(!keep)
 				it.remove();
 		}
 	}
 	
 	/**
-	 * Shifts the specified entity by {@code length} characters 
+	 * Shifts the specified mention by {@code length} characters 
 	 * to the right, provided it is located after position 
 	 * {@code start}, 
 	 * 
-	 * @param entity
-	 * 		The entity which should be shifted.
+	 * @param mention
+	 * 		The mention which should be shifted.
 	 * @param start
 	 * 		Starting position of the right shifting.
 	 * @param length
 	 * 		Magnitude of the shifting, in characters.
 	 * @param text
 	 * 		Full text of the concerned article (used
-	 * 		to update the entity string value.
+	 * 		to update the mention string value.
 	 * @return
-	 * 		Whether the entity is still valid ({@code true}) or is now empty ({@code false}).
+	 * 		Whether the mention is still valid ({@code true}) or is now empty ({@code false}).
 	 */
-	public boolean rightShiftEntityPosition(AbstractEntity<?> entity, int start, int length, String text)
+	public boolean rightShiftMentionPosition(AbstractMention<?> mention, int start, int length, String text)
 	{	boolean result = false;
 	
 		// start position
-		int startPos = entity.getStartPos();
+		int startPos = mention.getStartPos();
 		if(start<=startPos)
 			startPos = Math.min(startPos+length, text.length());
 		
 		// end position
-		int endPos = entity.getEndPos();
+		int endPos = mention.getEndPos();
 		if(start<endPos)
 			endPos = Math.min(endPos+length, text.length());
 		
-		// update entity
+		// update mentions
 		if(startPos<endPos)
 		{	result = true;
-			entity.setStartPos(startPos);
-			entity.setEndPos(endPos);
+			mention.setStartPos(startPos);
+			mention.setEndPos(endPos);
 			String valueStr = text.substring(startPos,endPos);
-			entity.setStringValue(valueStr);
+			mention.setStringValue(valueStr);
 		}
 		
 		return result;
 	}
 	
 	/**
-	 * Shifts to the left all entities located after 
+	 * Shifts to the left all mentions located after 
 	 * position {@code start}, by {@code length} characters.
 	 * 
 	 * @param start
@@ -470,167 +470,167 @@ public class Entities
 	 * 		Magnitude of the shifting, in characters.
 	 * @param text
 	 * 		Full text of the concerned article (used
-	 * 		to update the entity string values.
+	 * 		to update the mentions string values.
 	 */
-	public void leftShiftEntityPositions(int start, int length, String text)
-	{	Iterator<AbstractEntity<?>> it = entities.iterator();
+	public void leftShiftMentionPositions(int start, int length, String text)
+	{	Iterator<AbstractMention<?>> it = mentions.iterator();
 		while(it.hasNext())
-		{	AbstractEntity<?> entity = it.next();
-			boolean keep = leftShiftEntityPosition(entity, start, length, text);
+		{	AbstractMention<?> mention = it.next();
+			boolean keep = leftShiftMentionPosition(mention, start, length, text);
 			if(!keep)
 				it.remove();
 		}
 	}
 
 	/**
-	 * Shifts the specified entity by {@code length} characters 
+	 * Shifts the specified mention by {@code length} characters 
 	 * to the left, provided it is located after position 
 	 * {@code start}, 
 	 * 
-	 * @param entity
-	 * 		The entity which should be shifted.
+	 * @param mention
+	 * 		The mention which should be shifted.
 	 * @param start
 	 * 		Starting position of the left shifting.
 	 * @param length
 	 * 		Magnitude of the shifting, in characters.
 	 * @param text
 	 * 		Full text of the concerned article (used
-	 * 		to update the entity string value.
+	 * 		to update the mention string value.
 	 * @return
-	 * 		Whether the entity is still valid ({@code true}) or is now empty ({@code false}).
+	 * 		Whether the mention is still valid ({@code true}) or is now empty ({@code false}).
 	 */
-	public boolean leftShiftEntityPosition(AbstractEntity<?> entity, int start, int length, String text)
+	public boolean leftShiftMentionPosition(AbstractMention<?> mention, int start, int length, String text)
 	{	boolean result = false;
 		
 		// start position
-		int startPos = entity.getStartPos();
+		int startPos = mention.getStartPos();
 		if(start<=startPos)
 			startPos = Math.max(startPos-length, start);
 		
 		// end position
-		int endPos = entity.getEndPos();
+		int endPos = mention.getEndPos();
 		if(start<endPos)
 			endPos = Math.max(endPos-length, start);
 		
-		// update entity
+		// update mention
 		if(startPos<endPos)
 		{	result = true;
-			entity.setStartPos(startPos);
-			entity.setEndPos(endPos);
+			mention.setStartPos(startPos);
+			mention.setEndPos(endPos);
 			String valueStr = text.substring(startPos,endPos);
-			entity.setStringValue(valueStr);
+			mention.setStringValue(valueStr);
 		}
 		
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITY COMPARISON	/////////////////////////////////////////
+	// MENTION COMPARISON	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Checks if the specified entity overlaps (spatially) with one
-	 * of the entities present in this Entities object.
+	 * Checks if the specified mention overlaps (spatially) with one
+	 * of the mentions present in this Mentions object.
 	 * 
-	 * @param entity
-	 * 		Entity of interest.
+	 * @param mention
+	 * 		Mention of interest.
 	 * @return
-	 * 		{@code true} iff it intersects an existing entity.
+	 * 		{@code true} iff it intersects an existing mention.
 	 */
-	public boolean isEntityOverlapping(AbstractEntity<?> entity)
-	{	boolean result = entity.overlapsWithOne(entities);
+	public boolean isMentionOverlapping(AbstractMention<?> mention)
+	{	boolean result = mention.overlapsWithOne(mentions);
 		return result;
 	}
 	
 	/**
 	 * Takes the output of several NER tools,
-	 * and compare the resulting entities.
+	 * and compare the resulting mentions.
 	 * The returned list contains maps of
-	 * overlapping entities, i.e. entites detected
+	 * overlapping mentions detected
 	 * by distinct NER tools, and which are considered
-	 * to be the same entity.
+	 * to be the same mention.
 	 * 
-	 * @param entities
-	 * 		Entities detected by several tools.
+	 * @param mentions
+	 * 		Mentions detected by several tools.
 	 * @return
-	 * 		List of maps of equivalent entities.
+	 * 		List of maps of equivalent mentions.
 	 */
-	public static List<Map<AbstractRecognizer,AbstractEntity<?>>> identifyOverlaps(Map<AbstractRecognizer,Entities> entities)
-	{	List<Map<AbstractRecognizer,AbstractEntity<?>>> result = new ArrayList<Map<AbstractRecognizer,AbstractEntity<?>>>();
+	public static List<Map<AbstractRecognizer,AbstractMention<?>>> identifyOverlaps(Map<AbstractRecognizer,Mentions> mentions)
+	{	List<Map<AbstractRecognizer,AbstractMention<?>>> result = new ArrayList<Map<AbstractRecognizer,AbstractMention<?>>>();
 		
-		// sort all entities
-		for(Entities e: entities.values())
+		// sort all mentions
+		for(Mentions e: mentions.values())
 			e.sortByPosition();
 		
 		// init iterators
-		Map<AbstractRecognizer,Iterator<AbstractEntity<?>>> iterators = new HashMap<AbstractRecognizer, Iterator<AbstractEntity<?>>>();
-		for(AbstractRecognizer recognizer: entities.keySet())
-		{	Entities e = entities.get(recognizer);
-			Iterator<AbstractEntity<?>> it = e.getEntities().iterator();
+		Map<AbstractRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractRecognizer, Iterator<AbstractMention<?>>>();
+		for(AbstractRecognizer recognizer: mentions.keySet())
+		{	Mentions e = mentions.get(recognizer);
+			Iterator<AbstractMention<?>> it = e.getMentions().iterator();
 			if(it.hasNext())
 				iterators.put(recognizer,it);
 		}
 		
-		// init current entities
-		Map<AbstractEntity<?>,AbstractRecognizer> current = new HashMap<AbstractEntity<?>, AbstractRecognizer>();
+		// init current mentions
+		Map<AbstractMention<?>,AbstractRecognizer> current = new HashMap<AbstractMention<?>, AbstractRecognizer>();
 		for(AbstractRecognizer recognizer: iterators.keySet())
-		{	Iterator<AbstractEntity<?>> it = iterators.get(recognizer);
-			AbstractEntity<?> entity = it.next();
-			current.put(entity,recognizer);
+		{	Iterator<AbstractMention<?>> it = iterators.get(recognizer);
+			AbstractMention<?> mention = it.next();
+			current.put(mention,recognizer);
 		}
 		
-		// detect overlapping entities
+		// detect overlapping mentions
 		while(iterators.size()>1)
 		{	// init map
-			Map<AbstractRecognizer,AbstractEntity<?>> map = new HashMap<AbstractRecognizer, AbstractEntity<?>>();
+			Map<AbstractRecognizer,AbstractMention<?>> map = new HashMap<AbstractRecognizer, AbstractMention<?>>();
 			
-			// identify the first entity
-			Iterator<AbstractEntity<?>> it = current.keySet().iterator();
-			AbstractEntity<?> first = it.next();
+			// identify the first mention
+			Iterator<AbstractMention<?>> it = current.keySet().iterator();
+			AbstractMention<?> first = it.next();
 			while(it.hasNext())
-			{	AbstractEntity<?> entity = it.next();
-				if(entity.precedes(first))
-					first = entity;
+			{	AbstractMention<?> mention = it.next();
+				if(mention.precedes(first))
+					first = mention;
 			}
 			
-			// compare other entities to the the first one
+			// compare other mentions to the the first one
 			it = current.keySet().iterator();
-			Map<AbstractEntity<?>,AbstractRecognizer> newCurrent = new HashMap<AbstractEntity<?>, AbstractRecognizer>();
+			Map<AbstractMention<?>,AbstractRecognizer> newCurrent = new HashMap<AbstractMention<?>, AbstractRecognizer>();
 			while(it.hasNext())
-			{	AbstractEntity<?> entity = it.next();
-				AbstractRecognizer recognizer = current.get(entity);
+			{	AbstractMention<?> mention = it.next();
+				AbstractRecognizer recognizer = current.get(mention);
 				
-				if(entity.overlapsWith(first))
+				if(mention.overlapsWith(first))
 				{	// update map
-					map.put(recognizer,entity);
+					map.put(recognizer,mention);
 					
-					// update iterator and entity list
-					Iterator<AbstractEntity<?>> i = iterators.get(recognizer);
+					// update iterator and mention list
+					Iterator<AbstractMention<?>> i = iterators.get(recognizer);
 					if(i.hasNext())
-					{	AbstractEntity<?> newEntity = i.next();
-						newCurrent.put(newEntity,recognizer);
+					{	AbstractMention<?> newMention = i.next();
+						newCurrent.put(newMention,recognizer);
 					}
 					else
 						iterators.remove(recognizer);
 				}
 				else
-					newCurrent.put(entity,recognizer);
+					newCurrent.put(mention,recognizer);
 			}
 			
-			// update entity list
+			// update mention list
 			current = newCurrent;
 			
 			result.add(map);
 		}
 		
-		// add the remaining entities
+		// add the remaining mentions
 		if(!iterators.isEmpty())
-		{	Entry<AbstractRecognizer,Iterator<AbstractEntity<?>>> entry = iterators.entrySet().iterator().next();
+		{	Entry<AbstractRecognizer,Iterator<AbstractMention<?>>> entry = iterators.entrySet().iterator().next();
 			AbstractRecognizer recognizer = entry.getKey();
-			Iterator<AbstractEntity<?>> it = entry.getValue();
+			Iterator<AbstractMention<?>> it = entry.getValue();
 			while(it.hasNext())
-			{	Map<AbstractRecognizer,AbstractEntity<?>> map = new HashMap<AbstractRecognizer, AbstractEntity<?>>();
-				AbstractEntity<?> entity = it.next();
-				map.put(recognizer,entity);
+			{	Map<AbstractRecognizer,AbstractMention<?>> map = new HashMap<AbstractRecognizer, AbstractMention<?>>();
+				AbstractMention<?> mention = it.next();
+				map.put(recognizer,mention);
 				result.add(map);
 			}
 		}
@@ -643,13 +643,13 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Reads the specified XML file, and 
-	 * builds the corresponding Entities object,
-	 * which contains both entities and meta-data.
+	 * builds the corresponding Mentions object,
+	 * which contains both mentions and meta-data.
 	 * 
 	 * @param dataFile
 	 * 		The XML file to be read.
 	 * @return
-	 * 		The list of entities and meta-data stored in the file.
+	 * 		The list of mentions and meta-data stored in the file.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while reading the file.
@@ -658,9 +658,9 @@ public class Entities
 	 * @throws ParseException 
 	 * 		Problem while parsing the date.
 	 */
-	public static Entities readFromXml(File dataFile) throws SAXException, IOException, ParseException
+	public static Mentions readFromXml(File dataFile) throws SAXException, IOException, ParseException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_ENTITY_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
 		File schemaFile = new File(schemaPath);
 
 		// load file
@@ -682,38 +682,38 @@ public class Entities
 		// get editor
 		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
 		
-		// get entities
-//Entities result = new Entities(source, date);
-		Entities result = new Entities(source, creationDate, modificationDate);
+		// get mentions
+//Mentions result = new Mentions(source, date);
+		Mentions result = new Mentions(source, creationDate, modificationDate);
 		result.setEditor(editor);
-		List<Element> elements = element.getChildren(XmlNames.ELT_ENTITY);
+		List<Element> elements = element.getChildren(XmlNames.ELT_MENTION);
 		for(Element e: elements)
-		{	AbstractEntity<?> entity = AbstractEntity.importFromElement(e, source);
-			result.addEntity(entity);
+		{	AbstractMention<?> mention = AbstractMention.importFromElement(e, source);
+			result.addMention(mention);
 		}
-		Collections.sort(result.entities);
+		Collections.sort(result.mentions);
 
 //result.writeToXml(dataFile);
 		return result;
 	}
 
 	/**
-	 * Write this Entities object under the form of
+	 * Write this Mentions object under the form of
 	 * a XML file using our own format.
 	 * 
 	 * @param dataFile
-	 * 		File to contain the entities.
+	 * 		File to contain the mentions.
 	 * 
 	 * @throws IOException
 	 * 		Problem while writing the file.
 	 */
 	public void writeToXml(File dataFile) throws IOException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_ENTITY_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
 		File schemaFile = new File(schemaPath);
 		
 		// build xml document
-		Element element = new Element(XmlNames.ELT_ENTITIES);
+		Element element = new Element(XmlNames.ELT_MENTIONS);
 		
 		// insert source attribute
 		Attribute sourceAttr = new Attribute(XmlNames.ATT_SOURCE, source.toString());
@@ -733,11 +733,11 @@ public class Entities
 			element.setAttribute(editorAttr);
 		}
 		
-		// insert entity elements
-		Collections.sort(entities);
-		for(AbstractEntity<?> entity: entities)
-		{	Element entityElt = entity.exportAsElement();
-			element.addContent(entityElt);
+		// insert mention elements
+		Collections.sort(mentions);
+		for(AbstractMention<?> mention: mentions)
+		{	Element mentionElt = mention.exportAsElement();
+			element.addContent(mentionElt);
 		}
 		
 		// record file

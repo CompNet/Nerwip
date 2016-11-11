@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -31,7 +31,7 @@ package tr.edu.gsu.nerwip.data.entity;
  */
 public enum PositionRelation
 {	/**
-	 * The first entity completely preceeds the second one:<br/>
+	 * The first mention completely preceeds the second one:<br/>
 	 * <code>
 	 * 1111------- | 111111----				<br/>
 	 * -------2222 | ------22222
@@ -40,7 +40,7 @@ public enum PositionRelation
 	COMPLETE_PRECEDES,
 	
 	/**
-	 * The first entity completely succeeds the second one:<br/>
+	 * The first mention completely succeeds the second one:<br/>
 	 * <code>
 	 * -------1111 | ------11111				<br/>
 	 * 2222------- | 222222-----
@@ -49,7 +49,7 @@ public enum PositionRelation
 	COMPLETE_SUCCEDES,
 	
 	/**
-	 * The first entity precedes the second one, but they overlap:<br/>
+	 * The first mention precedes the second one, but they overlap:<br/>
 	 * <code>
 	 * 11111111--- | 111111-----				<br/>
 	 * ---22222222 | -----222222
@@ -58,7 +58,7 @@ public enum PositionRelation
 	PARTIAL_PRECEDES,
 	
 	/**
-	 * The first entity succeeds the second onen but they overlap:<br/>
+	 * The first mention succeeds the second onen but they overlap:<br/>
 	 * <code>
 	 * ---11111111 | -----111111 				<br/>
 	 * 22222222--- | 222222-----
@@ -67,7 +67,7 @@ public enum PositionRelation
 	PARTIAL_SUCCEDES,
 	
 	/**
-	 * The first entity completely contains the second one:<br/>
+	 * The first mention completely contains the second one:<br/>
 	 * <code>
 	 * 11111111111 | ---11111111 | 11111111--- 	<br/>
 	 * ---22222--- | ---22222--- | ---22222---
@@ -76,7 +76,7 @@ public enum PositionRelation
 	CONTAINS,
 
 	/**
-	 * The first entity is completely contained in the second one:<br/>
+	 * The first mention is completely contained in the second one:<br/>
 	 * <code>
 	 * ---11111--- | ---11111--- | ---11111--- 	<br/>
 	 * 22222222222 | 22222222--- | ---22222222 
@@ -85,7 +85,7 @@ public enum PositionRelation
 	IS_CONTAINED,
 	
 	/**
-	 * Both entities occupy the exact same position:<br/>
+	 * Both mentions occupy the exact same position:<br/>
 	 * <code>
 	 * --1111111-- 								<br/>
 	 * --2222222--
@@ -97,13 +97,13 @@ public enum PositionRelation
 	 * Processes the relation between the specified text positions.
 	 * 
 	 * @param start1
-	 * 		Beginning of the first entity.
+	 * 		Beginning of the first mention.
 	 * @param end1
-	 * 		End of the first entity.
+	 * 		End of the first mention.
 	 * @param start2
-	 * 		Beginning of the second entity.
+	 * 		Beginning of the second mention.
 	 * @param end2
-	 * 		End of the second entity.
+	 * 		End of the second mention.
 	 * @return
 	 * 		Relative position.
 	 */
@@ -155,18 +155,18 @@ public enum PositionRelation
 	/**
 	 * Processes the relation between the specified text positions.
 	 * 
-	 * @param entity1
-	 * 		First entity.
+	 * @param mention1
+	 * 		First mention.
 	 * @param start2
-	 * 		Beginning of the second entity.
+	 * 		Beginning of the second mention.
 	 * @param end2
-	 * 		End of the second entity.
+	 * 		End of the second mention.
 	 * @return
 	 * 		Relative position.
 	 */
-	public static PositionRelation getRelation(AbstractEntity<?> entity1, int start2, int end2)
-	{	int start1 = entity1.getStartPos();
-		int end1 = entity1.getEndPos();
+	public static PositionRelation getRelation(AbstractMention<?> mention1, int start2, int end2)
+	{	int start1 = mention1.getStartPos();
+		int end1 = mention1.getEndPos();
 		PositionRelation result = getRelation(start1, end1, start2, end2);
 		return result;
 	}
@@ -174,18 +174,18 @@ public enum PositionRelation
 	/**
 	 * Processes the relation between the specified text positions.
 	 * 
-	 * @param entity1
-	 * 		First entity.
-	 * @param entity2
-	 * 		Second entity.
+	 * @param mention1
+	 * 		First mention.
+	 * @param mention2
+	 * 		Second mention.
 	 * @return
-	 * 		Relative position of the entities.
+	 * 		Relative position of the mentions.
 	 */
-	public static PositionRelation getRelation(AbstractEntity<?> entity1, AbstractEntity<?> entity2)
-	{	int start1 = entity1.getStartPos();
-		int end1 = entity1.getEndPos();
-		int start2 = entity2.getStartPos();
-		int end2 = entity2.getEndPos();
+	public static PositionRelation getRelation(AbstractMention<?> mention1, AbstractMention<?> mention2)
+	{	int start1 = mention1.getStartPos();
+		int end1 = mention1.getEndPos();
+		int start2 = mention2.getStartPos();
+		int end2 = mention2.getEndPos();
 		PositionRelation result = getRelation(start1, end1, start2, end2);
 		return result;
 	}

@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -27,47 +27,50 @@ package tr.edu.gsu.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.tools.time.Date;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Class representing a meeting entity.
+ * This class represents a date mention.
  * 
+ * @author Burcu Küpelioğlu
  * @author Vincent Labatut
  */
-public class EntityMeeting extends AbstractEntity<String>
+public class MentionDate extends AbstractMention<Date>
 {	
 	/**
-	 * Builds a new organization entity.
+	 * Builds a new date mention from a date value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @param value
-	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
+	 * 		Actual value of the mention.
 	 */
-	public EntityMeeting(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public MentionDate(int startPos, int endPos, RecognizerName source, String valueStr, Date value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
 	/**
-	 * Builds a new meeting without a value.
+	 * Builds a new date mention without any date value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityMeeting(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionDate(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -76,7 +79,7 @@ public class EntityMeeting extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public EntityType getType()
-	{	return EntityType.MEETING;
+	{	return EntityType.DATE;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -84,7 +87,7 @@ public class EntityMeeting extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Element exportAsElement()
-	{	Element result = new Element(XmlNames.ELT_ENTITY);
+	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
 		result.setAttribute(startAttr);
@@ -101,7 +104,7 @@ public class EntityMeeting extends AbstractEntity<String>
 		
 		if(value!=null)
 		{	Element valueElt = new Element(XmlNames.ELT_VALUE);
-			valueElt.setText(value);
+			valueElt.setText(value.exportToString());
 			result.addContent(valueElt);
 		}
 		
@@ -109,17 +112,17 @@ public class EntityMeeting extends AbstractEntity<String>
 	}
 	
 	/**
-	 * Builds a meeting entity from the specified
+	 * Builds a date mention from the specified
 	 * XML element.
 	 * 
 	 * @param element
-	 * 		XML element representing the entity.
+	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the entity.
+	 * 		Name of the NER tool which detected the mention.
 	 * @return
-	 * 		The meeting entity corresponding to the specified element.
+	 * 		The date mention corresponding to the specified element.
 	 */
-	public static EntityMeeting importFromElement(Element element, RecognizerName source)
+	public static MentionDate importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -130,11 +133,13 @@ public class EntityMeeting extends AbstractEntity<String>
 		String valueStr = stringElt.getText();
 		
 		Element valueElt = element.getChild(XmlNames.ELT_VALUE);
-		String value = null;
+		Date value = null;
 		if(valueElt!=null)
-			value = valueElt.getText();
+		{	String valueString = valueElt.getText();
+			value = Date.importFromString(valueString);
+		}
 		
-		EntityMeeting result =  new EntityMeeting(startPos, endPos, source, valueStr, value);
+		MentionDate result =  new MentionDate(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }

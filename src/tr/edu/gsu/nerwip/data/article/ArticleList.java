@@ -76,6 +76,6 @@ public class ArticleList extends ArrayList<File>
 	 * 		Name of this article list.
 	 */
 	public String getName()
-	{	return name;
+	{	return name; 
 	}
 }

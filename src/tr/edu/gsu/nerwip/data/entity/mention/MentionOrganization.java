@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -27,49 +27,48 @@ package tr.edu.gsu.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.tools.time.Date;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * This class represents a date entity.
+ * Class representing an organization mention.
  * 
- * @author Burcu Küpelioğlu
  * @author Vincent Labatut
  */
-public class EntityDate extends AbstractEntity<Date>
+public class MentionOrganization extends AbstractMention<String>
 {	
 	/**
-	 * Builds a new date entity from a date value.
+	 * Builds a new organization mention.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @param value
-	 * 		Actual value of the entity.
+	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public EntityDate(int startPos, int endPos, RecognizerName source, String valueStr, Date value)
+	public MentionOrganization(int startPos, int endPos, RecognizerName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
 	/**
-	 * Builds a new date entity without any date value.
+	 * Builds a new organization without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityDate(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionOrganization(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -78,7 +77,7 @@ public class EntityDate extends AbstractEntity<Date>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public EntityType getType()
-	{	return EntityType.DATE;
+	{	return EntityType.ORGANIZATION;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -86,7 +85,7 @@ public class EntityDate extends AbstractEntity<Date>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Element exportAsElement()
-	{	Element result = new Element(XmlNames.ELT_ENTITY);
+	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
 		result.setAttribute(startAttr);
@@ -103,7 +102,7 @@ public class EntityDate extends AbstractEntity<Date>
 		
 		if(value!=null)
 		{	Element valueElt = new Element(XmlNames.ELT_VALUE);
-			valueElt.setText(value.exportToString());
+			valueElt.setText(value);
 			result.addContent(valueElt);
 		}
 		
@@ -111,17 +110,17 @@ public class EntityDate extends AbstractEntity<Date>
 	}
 	
 	/**
-	 * Builds a date entity from the specified
+	 * Builds an organization mention from the specified
 	 * XML element.
 	 * 
 	 * @param element
-	 * 		XML element representing the entity.
+	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the entity.
+	 * 		Name of the NER tool which detected the mention.
 	 * @return
-	 * 		The date entity corresponding to the specified element.
+	 * 		The organization mention corresponding to the specified element.
 	 */
-	public static EntityDate importFromElement(Element element, RecognizerName source)
+	public static MentionOrganization importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -132,13 +131,11 @@ public class EntityDate extends AbstractEntity<Date>
 		String valueStr = stringElt.getText();
 		
 		Element valueElt = element.getChild(XmlNames.ELT_VALUE);
-		Date value = null;
+		String value = null;
 		if(valueElt!=null)
-		{	String valueString = valueElt.getText();
-			value = Date.importFromString(valueString);
-		}
+			value = valueElt.getText();
 		
-		EntityDate result =  new EntityDate(startPos, endPos, source, valueStr, value);
+		MentionOrganization result =  new MentionOrganization(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }

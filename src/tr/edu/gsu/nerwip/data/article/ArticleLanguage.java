@@ -32,6 +32,6 @@ package tr.edu.gsu.nerwip.data.article;
 public enum ArticleLanguage
 {	/** English */
 	EN,
-	/** French */
+	/** French */ 
 	FR;
 }

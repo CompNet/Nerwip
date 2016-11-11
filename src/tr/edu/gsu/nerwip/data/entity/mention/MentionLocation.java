@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -27,31 +27,32 @@ package tr.edu.gsu.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Class representing a location entity.
+ * Class representing a location mention.
  * 
  * @author Vincent Labatut
  */
-public class EntityLocation extends AbstractEntity<String>
+public class MentionLocation extends AbstractMention<String>
 {	
 	/**
-	 * Builds a new location entity.
+	 * Builds a new location mention.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @param value
-	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
+	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public EntityLocation(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public MentionLocation(int startPos, int endPos, RecognizerName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
@@ -63,11 +64,11 @@ public class EntityLocation extends AbstractEntity<String>
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityLocation(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionLocation(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -84,7 +85,7 @@ public class EntityLocation extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Element exportAsElement()
-	{	Element result = new Element(XmlNames.ELT_ENTITY);
+	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
 		result.setAttribute(startAttr);
@@ -109,17 +110,17 @@ public class EntityLocation extends AbstractEntity<String>
 	}
 
 	/**
-	 * Builds a location entity from the specified
+	 * Builds a location mention from the specified
 	 * XML element.
 	 * 
 	 * @param element
-	 * 		XML element representing the entity.
+	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the entity.
+	 * 		Name of the NER tool which detected the mention.
 	 * @return
-	 * 		The location entity corresponding to the specified element.
+	 * 		The location mention corresponding to the specified element.
 	 */
-	public static EntityLocation importFromElement(Element element, RecognizerName source)
+	public static MentionLocation importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -134,7 +135,7 @@ public class EntityLocation extends AbstractEntity<String>
 		if(valueElt!=null)
 			value = valueElt.getText();
 		
-		EntityLocation result =  new EntityLocation(startPos, endPos, source, valueStr, value);
+		MentionLocation result =  new MentionLocation(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }

@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.data.entity;
+package tr.edu.gsu.nerwip.data.entity.mention;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -27,48 +27,49 @@ package tr.edu.gsu.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
- * Class representing a production entity.
+ * Class representing a function mention.
  * 
  * @author Vincent Labatut
  * @author Sabrine Ayachi
  */
-public class EntityProduction extends AbstractEntity<String>
+public class MentionFunction extends AbstractMention<String>
 {	
 	/**
-	 * Builds a new production entity.
+	 * Builds a new function mention.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 * @param value
-	 * 		Actual value of the entity (can be the same as {@link #valueStr}).
+	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public EntityProduction(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public MentionFunction(int startPos, int endPos, RecognizerName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
 	/**
-	 * Builds a new date production without a value.
+	 * Builds a new date function without a value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
 	 * @param endPos
 	 * 		Ending position in the text.
 	 * @param source
-	 * 		Tool which detected this entity.
+	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public EntityProduction(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionFunction(int startPos, int endPos, RecognizerName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -77,7 +78,7 @@ public class EntityProduction extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public EntityType getType()
-	{	return EntityType.PRODUCTION;
+	{	return EntityType.FUNCTION;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ public class EntityProduction extends AbstractEntity<String>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Element exportAsElement()
-	{	Element result = new Element(XmlNames.ELT_ENTITY);
+	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
 		result.setAttribute(startAttr);
@@ -110,17 +111,17 @@ public class EntityProduction extends AbstractEntity<String>
 	}
 
 	/**
-	 * Builds a production entity from the specified
+	 * Builds a function mention from the specified
 	 * XML element.
 	 * 
 	 * @param element
-	 * 		XML element representing the entity.
+	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the entity.
+	 * 		Name of the NER tool which detected the mention.
 	 * @return
-	 * 		The production entity corresponding to the specified element.
+	 * 		The function mention corresponding to the specified element.
 	 */
-	public static EntityProduction importFromElement(Element element, RecognizerName source)
+	public static MentionFunction importFromElement(Element element, RecognizerName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -135,7 +136,7 @@ public class EntityProduction extends AbstractEntity<String>
 		if(valueElt!=null)
 			value = valueElt.getText();
 		
-		EntityProduction result =  new EntityProduction(startPos, endPos, source, valueStr, value);
+		MentionFunction result =  new MentionFunction(startPos, endPos, source, valueStr, value);
 		return result;
 	}
 }

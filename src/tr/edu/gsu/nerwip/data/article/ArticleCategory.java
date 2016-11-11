@@ -50,7 +50,7 @@ public enum ArticleCategory
 	POLITICS,
 	/** Priests, religious leaders, etc. */
 	RELIGION,
-	/** Sportsmen */
+	/** Sportsmen */ 
 	SPORT,
 	
 	/** Other categories */
