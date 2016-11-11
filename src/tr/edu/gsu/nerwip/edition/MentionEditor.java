@@ -103,9 +103,9 @@ import org.xml.sax.SAXException;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.edition.language.Language;
 import tr.edu.gsu.nerwip.edition.language.LanguageLoader;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
@@ -141,17 +141,17 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
  * Window used to display and edit annotated texts,
- * i.e. texts with identified named entities.
- * It relies on the use of the {@link EntityEditorPanel}.
+ * i.e. texts with identified mentions.
+ * It relies on the use of the {@link MentionEditorPanel}.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
 @SuppressWarnings("unused")
-public class EntityEditor implements WindowListener, ChangeListener
+public class MentionEditor implements WindowListener, ChangeListener
 {
 	/**
-	 * Builds a new, empty EntityEditor. Data must be 
+	 * Builds a new, empty MentionEditor. Data must be 
 	 * provided through the {@link #setArticle(String)} 
 	 * method.
 	 * 
@@ -164,7 +164,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * @throws ParserConfigurationException 
 	 * 		Problem while loading the configuration file. 
 	 */
-	public EntityEditor() throws SAXException, IOException, ParseException, ParserConfigurationException
+	public MentionEditor() throws SAXException, IOException, ParseException, ParserConfigurationException
 	{	// init the corpus folder
 		String articlePath = retrieveSettings();
 		
@@ -219,7 +219,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	// MAIN				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Launches the editor allowing to display entities
+	 * Launches the editor allowing to display mentions
 	 * and modify references. 
 	 * 
 	 * @param args
@@ -256,12 +256,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 		}
 		
 		// check if the settings file already exist
-		File settingsFile = new File(EntityEditor.CONFIG_PATH);
+		File settingsFile = new File(MentionEditor.CONFIG_PATH);
 		boolean mustCreate = !settingsFile.exists();
 		
 		// set up viewer
 		Locale.setDefault(Locale.ENGLISH);
-		EntityEditor viewer = new EntityEditor();
+		MentionEditor viewer = new MentionEditor();
 		
 		// possibly ask the user to init some values
 		if(mustCreate)
@@ -546,12 +546,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/////////////////////////////////////////////////////////////////
 	// FRAME			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Frame to contain tabs and entities */
+	/** Frame to contain tabs and mentionss */
 	private JFrame frame;
 	/** Version of this application */
 	private static final String APP_VERSION = "v2.34";
 	/** Name of this application */
-	private static final String APP_NAME = "Entity Editor";
+	private static final String APP_NAME = "Mention Editor";
 	/** Title of this application */
 	private static final String TITLE = "Nerwip - " + APP_NAME + " " + APP_VERSION;
 	/** Article name */
@@ -582,8 +582,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void initActions()
 	{	initFileActions();
-		initEntityViewActions();
-		initEntityEditionActions();
+		initMentionViewActions();
+		initMentionEditionActions();
 		initDisplayModeActions();
 		initFontActions();
 		initBrowseActions();
@@ -594,37 +594,37 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// MENTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** String used to set up entity names */
-	private final static String STR_ENTITY = "Entity";
+	/** String used to set up mentions names */
+	private final static String STR_MENTION = "Mention";
 	
-	/** Colors associated to the entities */ 
-	protected static final Map<EntityType,Color> ENTITY_COLOR = new HashMap<EntityType,Color>();
-	{	ENTITY_COLOR.put(EntityType.DATE, Color.PINK);
-		ENTITY_COLOR.put(EntityType.FUNCTION, new Color(180,180,180));
-		ENTITY_COLOR.put(EntityType.LOCATION, Color.ORANGE);
-		ENTITY_COLOR.put(EntityType.MEETING, new Color(218,112,214));
-		ENTITY_COLOR.put(EntityType.ORGANIZATION, Color.CYAN);
-		ENTITY_COLOR.put(EntityType.PERSON, Color.YELLOW);
-		ENTITY_COLOR.put(EntityType.PRODUCTION, Color.GREEN);
+	/** Colors associated to the mentionss */ 
+	protected static final Map<EntityType,Color> MENTION_COLOR = new HashMap<EntityType,Color>();
+	{	MENTION_COLOR.put(EntityType.DATE, Color.PINK);
+		MENTION_COLOR.put(EntityType.FUNCTION, new Color(180,180,180));
+		MENTION_COLOR.put(EntityType.LOCATION, Color.ORANGE);
+		MENTION_COLOR.put(EntityType.MEETING, new Color(218,112,214));
+		MENTION_COLOR.put(EntityType.ORGANIZATION, Color.CYAN);
+		MENTION_COLOR.put(EntityType.PERSON, Color.YELLOW);
+		MENTION_COLOR.put(EntityType.PRODUCTION, Color.GREEN);
 	}
 	
-	/** Shortcut letters associated to the entities */ 
-	private static final Map<EntityType,Character> ENTITY_LETTER = new HashMap<EntityType,Character>();
-	{	ENTITY_LETTER.put(EntityType.DATE, 'D');
-		ENTITY_LETTER.put(EntityType.FUNCTION, 'F');
-		ENTITY_LETTER.put(EntityType.LOCATION, 'L');
-		ENTITY_LETTER.put(EntityType.MEETING, 'M');
-		ENTITY_LETTER.put(EntityType.ORGANIZATION, 'O');
-		ENTITY_LETTER.put(EntityType.PERSON, 'P');
-		ENTITY_LETTER.put(EntityType.PRODUCTION, 'Q');
+	/** Shortcut letters associated to the mentions */ 
+	private static final Map<EntityType,Character> MENTION_LETTER = new HashMap<EntityType,Character>();
+	{	MENTION_LETTER.put(EntityType.DATE, 'D');
+		MENTION_LETTER.put(EntityType.FUNCTION, 'F');
+		MENTION_LETTER.put(EntityType.LOCATION, 'L');
+		MENTION_LETTER.put(EntityType.MEETING, 'M');
+		MENTION_LETTER.put(EntityType.ORGANIZATION, 'O');
+		MENTION_LETTER.put(EntityType.PERSON, 'P');
+		MENTION_LETTER.put(EntityType.PRODUCTION, 'Q');
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// TAB PANES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Tab to represent a tool entities. */
+	/** Tab to represent a tool detecting mentions */
 //	private MovableTabbedPane tabbedPane;
 	private JTabbedPane tabbedPane;
 	/** Selected tab */
@@ -637,14 +637,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * 		Complete text of the article.
 	 * @param linkedText
 	 * 		Linked text of the article.
-	 * @param entities
-	 * 		List of estimated entities.
+	 * @param mentions
+	 * 		List of estimated mentions.
 	 * @param references
-	 * 		List of reference entities. 
+	 * 		List of reference mentions. 
 	 * @param name
 	 * 		Full name of the tool.
 	 */
-	private void addTab(String text, String linkedText, Entities entities, Entities references, String name)
+	private void addTab(String text, String linkedText, Mentions mentions, Mentions references, String name)
 	{	String temp[] = name.split("_");
 		String algoName = temp[0];
 		String status = "";
@@ -668,7 +668,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		// get type switches
 		Map<EntityType,Boolean> switches = new HashMap<EntityType, Boolean>();
 		for(EntityType type: EntityType.values())
-		{	Action action = entityViewActions.get(type);
+		{	Action action = mentionViewActions.get(type);
 			boolean state = (Boolean)action.getValue(Action.SELECTED_KEY);
 			switches.put(type,state);
 		}
@@ -676,9 +676,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 		boolean linkState = (Boolean)showLinksAction.getValue(Action.SELECTED_KEY);
 		
 		// create and add panel
-		boolean editable = entities==references && editableReference;
+		boolean editable = mentions==references && editableReference;
 		
-		EntityEditorPanel panel = new EntityEditorPanel(this, text, linkedText, entities, references, params, modeState, switches, linkState, editable, name);
+		MentionEditorPanel panel = new MentionEditorPanel(this, text, linkedText, mentions, references, params, modeState, switches, linkState, editable, name);
 		if(fontSize!=null)
 			panel.setFontSize(fontSize);
 		tabbedPane.add(algoName, panel);
@@ -694,10 +694,10 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * @param source
 	 * 		Panel first changing its position.
 	 */
-	public void setScrollPosition(int index, EntityEditorPanel source)
+	public void setScrollPosition(int index, MentionEditorPanel source)
 	{	for(Component c:tabbedPane.getComponents())
 		{	if(c!=source)
-			{	EntityEditorPanel panel = (EntityEditorPanel) c;
+			{	MentionEditorPanel panel = (MentionEditorPanel) c;
 				panel.setScrollPosition(index);
 			}
 		}
@@ -896,8 +896,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 		{	articleEditor = currentEditor;
 			int size = tabbedPane.getTabCount();
 			for(int i=0;i<size;i++)
-			{	EntityEditorPanel panel = (EntityEditorPanel)tabbedPane.getComponentAt(i);
-				Entities references = panel.getReferences();
+			{	MentionEditorPanel panel = (MentionEditorPanel)tabbedPane.getComponentAt(i);
+				Mentions references = panel.getReferences();
 				references.setEditor(currentEditor);
 			}
 			updateStatusEditor();
@@ -913,14 +913,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JButton loadButton = null;
 	/** Tool bar with the entity types buttons */
 	private JPanel toolBar = null;
-	/** Colored panels containing the entity-related buttons */
-	private Map<EntityType,JPanel> entityPanels = null;
+	/** Colored panels containing the mention-related buttons */
+	private Map<EntityType,JPanel> mentionPanels = null;
 	/** Map of entity type view buttons */
-	private Map<EntityType,JToggleButton> entityViewButtons = null;
+	private Map<EntityType,JToggleButton> mentionViewButtons = null;
 	/** Map of entity type insert buttons */
-	private Map<EntityType,JButton> entityInsertButtons = null;
-	/** Button allowing to delete an entity */
-	private JButton entityDeleteButton = null;
+	private Map<EntityType,JButton> mentionInsertButtons = null;
+	/** Button allowing to delete a mention */
+	private JButton mentionDeleteButton = null;
 	/** Button controling the display mode */
 	private JRadioButton modeTypesButton = null;
 	/** Button controling the display mode */
@@ -993,19 +993,19 @@ public class EntityEditor implements WindowListener, ChangeListener
 			}
 		}
 		
-		// init entity panels
-		entityPanels = new HashMap<EntityType, JPanel>();
-		Map<EntityType, JPanel> innerEntityPanels = new HashMap<EntityType, JPanel>();
+		// init mention panels
+		mentionPanels = new HashMap<EntityType, JPanel>();
+		Map<EntityType, JPanel> innerMentionPanels = new HashMap<EntityType, JPanel>();
 		for(EntityType type: EntityType.values())
 		{	JPanel entPanel = new JPanel();
 			LayoutManager lay = new BoxLayout(entPanel, BoxLayout.LINE_AXIS);
 //			LayoutManager lay = new GridLayout(3,1);
 			entPanel.setLayout(lay);
 //			entPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-			String name = language.getText(STR_ENTITY+StringTools.initialize(type.toString()));
+			String name = language.getText(STR_MENTION+StringTools.initialize(type.toString()));
 //			entPanel.setBorder(BorderFactory.createTitledBorder(name));
 			entPanel.setBorder(BorderFactory.createEtchedBorder());
-			entPanel.setBackground(ENTITY_COLOR.get(type));
+			entPanel.setBackground(MENTION_COLOR.get(type));
 //			JLabel label = new JLabel(name,SwingConstants.CENTER);
 			VerticalLabel label = new VerticalLabel(name, SwingConstants.CENTER);
 			label.setRotation(VerticalLabel.ROTATE_LEFT);
@@ -1019,8 +1019,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 			panel.setLayout(lay);
 			panel.setBackground(null);
 			entPanel.add(panel);
-	    	innerEntityPanels.put(type,panel);
-	    	entityPanels.put(type,entPanel);
+	    	innerMentionPanels.put(type,panel);
+	    	mentionPanels.put(type,entPanel);
 	    	toolBar.add(entPanel);
 	    	
 	    	toolBar.add(Box.createHorizontalStrut(1));
@@ -1030,7 +1030,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	    }
 		
 		// view entity types
-		{	entityViewButtons = new HashMap<EntityType, JToggleButton>();
+		{	mentionViewButtons = new HashMap<EntityType, JToggleButton>();
 			// get the icon
 			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SHOW;
 			File iconFile = new File(iconPath);
@@ -1038,21 +1038,21 @@ public class EntityEditor implements WindowListener, ChangeListener
 			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
 			// create the buttons
 			for(EntityType type: EntityType.values())
-			{	JPanel panel = innerEntityPanels.get(type);
-				Action action = entityViewActions.get(type);
+			{	JPanel panel = innerMentionPanels.get(type);
+				Action action = mentionViewActions.get(type);
 				JToggleButton button = new JToggleButton(action);
 //				PaintableToggleButton button = new PaintableToggleButton(action);
 //				String name = StringTools.initialize(type.toString());
-//				String name = ENTITY_LETTER.get(type).toString();			
+//				String name = MENTION_LETTER.get(type).toString();			
 //				button.setText(name);
 				button.setText(null);
 				button.setIcon(new ImageIcon(img));
-//				button.setBackground(ENTITY_COLOR.get(type));
+//				button.setBackground(MENTION_COLOR.get(type));
 				button.setMinimumSize(buttonDim);
 				button.setMaximumSize(buttonDim);
 				button.setPreferredSize(buttonDim);
 				button.setAlignmentX(Component.CENTER_ALIGNMENT);
-				entityViewButtons.put(type, button);
+				mentionViewButtons.put(type, button);
 				panel.add(button);			
 			}
 		}
@@ -1100,8 +1100,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 		
 //		toolBar.add(Box.createHorizontalGlue());
 		
-		// edit entities
-		{	entityInsertButtons = new HashMap<EntityType, JButton>();
+		// edit mentions
+		{	mentionInsertButtons = new HashMap<EntityType, JButton>();
 			// get the icon
 			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_ADD;
 			File iconFile = new File(iconPath);
@@ -1109,41 +1109,41 @@ public class EntityEditor implements WindowListener, ChangeListener
 			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
 			// create the buttons
 			for(EntityType type: EntityType.values())
-			{	JPanel panel = innerEntityPanels.get(type);
-				Action action = entityInsertActions.get(type);
+			{	JPanel panel = innerMentionPanels.get(type);
+				Action action = mentionInsertActions.get(type);
 				JButton button = new JButton(action);
-//				Character name = ENTITY_LETTER.get(type);
+//				Character name = MENTION_LETTER.get(type);
 //				button.setText(name.toString());
 				button.setText(null);
 				button.setIcon(new ImageIcon(img));
-//				button.setBackground(ENTITY_COLOR.get(type));
+//				button.setBackground(MENTION_COLOR.get(type));
 				button.setMinimumSize(buttonDim);
 				button.setMaximumSize(buttonDim);
 				button.setPreferredSize(buttonDim);
 				button.setAlignmentX(Component.CENTER_ALIGNMENT);
-				entityInsertButtons.put(type, button);
+				mentionInsertButtons.put(type, button);
 				panel.add(button);			
 			}
 		}
 		
-		// remove entity
+		// remove mention
 		{	// get the icon
 			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_REMOVE;
 			File iconFile = new File(iconPath);
 			Image img = ImageIO.read(iconFile);
 			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
 			// create the button
-			entityDeleteButton = new JButton(entityDeleteAction);
+			mentionDeleteButton = new JButton(mentionDeleteAction);
 //			String name = ACTION_REMOVE.substring(0,1);
-//			entityDeleteButton.setText(name);
-			entityDeleteButton.setText(null);
-			entityDeleteButton.setIcon(new ImageIcon(img));
+//			mentionDeleteButton.setText(name);
+			mentionDeleteButton.setText(null);
+			mentionDeleteButton.setIcon(new ImageIcon(img));
 			Dimension dim = new Dimension(155,buttonSize);
-			entityDeleteButton.setMinimumSize(dim);
-			entityDeleteButton.setMaximumSize(dim);
-			entityDeleteButton.setPreferredSize(dim);
-			entityDeleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-			centerPanel.add(entityDeleteButton);
+			mentionDeleteButton.setMinimumSize(dim);
+			mentionDeleteButton.setMaximumSize(dim);
+			mentionDeleteButton.setPreferredSize(dim);
+			mentionDeleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+			centerPanel.add(mentionDeleteButton);
 //			centerPanel.add(Box.createVerticalGlue());
 //			centerPanel.add(Box.createVerticalStrut(2));
 		}
@@ -1270,13 +1270,13 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private JMenuItem miSaveCopy;
 	/** Menu item of the close action */
 	private JMenuItem miClose;
-	/** Menu item of the remove entity action */
+	/** Menu item of the remove mention action */
 	private JMenuItem miRemove;
-	/** Menu item of the entity views */
-	private Map<EntityType,JCheckBoxMenuItem> entityViewCheck = null;
-	/** Menu item of the left-shift entities action */
+	/** Menu item of the mention views */
+	private Map<EntityType,JCheckBoxMenuItem> mentionViewCheck = null;
+	/** Menu item of the left-shift mentions action */
 	private JMenuItem miShiftLeft;
-	/** Menu item of the right-shift entities action */
+	/** Menu item of the right-shift mentions action */
 	private JMenuItem miShiftRight;
 	/** Menu item of the type display mode */
 	private JRadioButtonMenuItem riTypes;
@@ -1387,15 +1387,15 @@ public class EntityEditor implements WindowListener, ChangeListener
 		{	JMenu menu = new JMenu(language.getText(MENU_EDIT));
 			menuBar.add(menu);
 			
-			// insert entities
+			// insert mentions
 			Color from = Color.BLACK;
 			for(EntityType type: EntityType.values())
-			{	Action action = entityInsertActions.get(type);
+			{	Action action = mentionInsertActions.get(type);
 				JMenuItem jmi = new JMenuItem(action);
 				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_ADD;
 				File iconFile = new File(iconPath);
 				BufferedImage img0 = ImageIO.read(iconFile);
-				Color to = ENTITY_COLOR.get(type);
+				Color to = MENTION_COLOR.get(type);
 //				to = new Color((int)(to.getRed()/1.5),(int)(to.getGreen()/1.5),(int)(to.getBlue()/1.5));
 				BufferedImageOp lookup = new LookupOp(new ColorMapper(from, to), null);
 				img0 = lookup.filter(img0, null);
@@ -1406,8 +1406,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			menu.addSeparator();
 
-			// remove entity
-			{	miRemove = new JMenuItem(entityDeleteAction);
+			// remove mention
+			{	miRemove = new JMenuItem(mentionDeleteAction);
 				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_REMOVE;
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
@@ -1418,9 +1418,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			menu.addSeparator();
 
-			// shift entities
+			// shift mentions
 			{	// left shift
-				{	miShiftLeft = new JMenuItem(entityShiftLeftAction);
+				{	miShiftLeft = new JMenuItem(mentionShiftLeftAction);
 					String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LEFT;
 					File iconFile = new File(iconPath);
 					Image img = ImageIO.read(iconFile);
@@ -1429,7 +1429,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 					menu.add(miShiftLeft);
 				}
 				// right shift
-				{	miShiftRight = new JMenuItem(entityShiftRightAction);
+				{	miShiftRight = new JMenuItem(mentionShiftRightAction);
 					String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_RIGHT;
 					File iconFile = new File(iconPath);
 					Image img = ImageIO.read(iconFile);
@@ -1444,23 +1444,23 @@ public class EntityEditor implements WindowListener, ChangeListener
 		{	JMenu menu = new JMenu(language.getText(MENU_VIEW));
 			menuBar.add(menu);
 			
-			// insert entities
-			entityViewCheck = new HashMap<EntityType, JCheckBoxMenuItem>();
+			// insert mentions
+			mentionViewCheck = new HashMap<EntityType, JCheckBoxMenuItem>();
 			Color from = Color.BLACK;
 			for(EntityType type: EntityType.values())
-			{	Action action = entityViewActions.get(type);
+			{	Action action = mentionViewActions.get(type);
 				JCheckBoxMenuItem  jmcbi = new JCheckBoxMenuItem(action);
 //				jmcbi.setSelected(true);
 				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SHOW;
 				File iconFile = new File(iconPath);
 				BufferedImage img0 = ImageIO.read(iconFile);
-				Color to = ENTITY_COLOR.get(type);
+				Color to = MENTION_COLOR.get(type);
 //				to = new Color((int)(to.getRed()/1.5),(int)(to.getGreen()/1.5),(int)(to.getBlue()/1.5));
 				BufferedImageOp lookup = new LookupOp(new ColorMapper(from, to), null);
 				img0 = lookup.filter(img0, null);
 				Image img = img0.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
 				jmcbi.setIcon(new ImageIcon(img));
-				entityViewCheck.put(type,jmcbi);
+				mentionViewCheck.put(type,jmcbi);
 				menu.add(jmcbi);
 			}
 			
@@ -1566,66 +1566,66 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITY VIEW		/////////////////////////////////////////////
+	// MENTION VIEW		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
 	private final static String ACTION_DISPLAY = "ActionDisplay";
 	/** Map of entity type view actions */
-	private Map<EntityType, Action> entityViewActions = null;
+	private Map<EntityType, Action> mentionViewActions = null;
 	
 	/**
 	 * Initializes the actions related to
 	 * the display of entity types.
 	 */
-	private void initEntityViewActions()
-	{	entityViewActions = new HashMap<EntityType, Action>();
+	private void initMentionViewActions()
+	{	mentionViewActions = new HashMap<EntityType, Action>();
 		for(EntityType type: EntityType.values())
 		{	final EntityType t = type;
-			String typeStr = language.getTooltip(STR_ENTITY+StringTools.initialize(type.toString()));
+			String typeStr = language.getTooltip(STR_MENTION+StringTools.initialize(type.toString()));
 			String name = language.getText(ACTION_DISPLAY) + " " + typeStr;
 			Action action = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
 				@Override
 			    public void actionPerformed(ActionEvent evt)
-				{	switchEntityView(t);
+				{	switchMentionView(t);
 			    }
 			};
-			entityViewActions.put(type,action);
-			int initial = ENTITY_LETTER.get(type);
+			mentionViewActions.put(type,action);
+			int initial = MENTION_LETTER.get(type);
 			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift "+((char)initial)));
-			typeStr = language.getText(STR_ENTITY+StringTools.initialize(type.toString()));
+			typeStr = language.getText(STR_MENTION+StringTools.initialize(type.toString()));
 			action.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_DISPLAY)+" "+typeStr);
 			action.putValue(Action.SELECTED_KEY, true);
 		}
 	}
 
 	/**
-	 * Hides/displays entities depending
+	 * Hides/displays mentions depending
 	 * on their type.
 	 * 
 	 * @param type
-	 * 		Type of the entities to hide/display.
+	 * 		Type of the mentions to hide/display.
 	 */
-	private void switchEntityView(EntityType type)
-	{	JToggleButton button = entityViewButtons.get(type);
-//		JCheckBoxMenuItem item = entityViewCheck.get(type);
-//		Action action = entityViewActions.get(type);
+	private void switchMentionView(EntityType type)
+	{	JToggleButton button = mentionViewButtons.get(type);
+//		JCheckBoxMenuItem item = mentionViewCheck.get(type);
+//		Action action = mentionViewActions.get(type);
 //		boolean state = (Boolean)action.getValue(Action.SELECTED_KEY);
 		boolean state = button.isSelected();
 
 		// update tabpanes
 		int count = tabbedPane.getComponentCount();
 		for(int i=0;i<count;i++)
-		{	EntityEditorPanel panel = (EntityEditorPanel)tabbedPane.getComponentAt(i);
+		{	MentionEditorPanel panel = (MentionEditorPanel)tabbedPane.getComponentAt(i);
 			panel.switchType(type);
-			Action action = entityInsertActions.get(type);
+			Action action = mentionInsertActions.get(type);
 			action.setEnabled(state);
 		}
 		
 		// update toolbar (color)
-		JPanel panel = entityPanels.get(type);
-		Color color = ENTITY_COLOR.get(type);
+		JPanel panel = mentionPanels.get(type);
+		Color color = MENTION_COLOR.get(type);
 		if(state)
 			panel.setBackground(color);
 		else
@@ -1638,110 +1638,110 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITY EDITION	/////////////////////////////////////////////
+	// MENTION EDITION	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** String used for action definition */
 	private final static String ACTION_INSERT = "ActionInsert";
-	/** Map of entity type insert actions */
-	private Map<EntityType, Action> entityInsertActions = null;
+	/** Map of mention type insert actions */
+	private Map<EntityType, Action> mentionInsertActions = null;
 	/** String used for action definition */
 	private final static  String ACTION_REMOVE = "ActionRemove";
-	/** Action allowing to delete an entity */
-	private Action entityDeleteAction = null;
+	/** Action allowing to delete a mention */
+	private Action mentionDeleteAction = null;
 	/** String used for action definition */
 	private final static  String ACTION_SHIFT_LEFT = "ActionShiftLeft";
-	/** Action allowing to left-shift entities */
-	private Action entityShiftLeftAction = null;
+	/** Action allowing to left-shift mentions */
+	private Action mentionShiftLeftAction = null;
 	/** String used for action definition */
 	private final static  String ACTION_SHIFT_RIGHT = "ActionShiftRight";
-	/** Action allowing to r-shift entities */
-	private Action entityShiftRightAction = null;
+	/** Action allowing to right-shift mentions */
+	private Action mentionShiftRightAction = null;
 
 	/**
 	 * Initializes actions related to the
-	 * edition of entities in the reference file.
+	 * edition of mentions in the reference file.
 	 */
-	private void initEntityEditionActions()
-	{	// remove entity
+	private void initMentionEditionActions()
+	{	// remove mention
 		{	String name = language.getText(ACTION_REMOVE);
-			entityDeleteAction = new AbstractAction(name)
+			mentionDeleteAction = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
 				@Override
 			    public void actionPerformed(ActionEvent e)
-				{	removeEntity();
+				{	removeMention();
 			    }
 			};
-			entityDeleteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt R"));
-			entityDeleteAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_REMOVE));
-			entityDeleteAction.setEnabled(false);
+			mentionDeleteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt R"));
+			mentionDeleteAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_REMOVE));
+			mentionDeleteAction.setEnabled(false);
 		}
 		
-		// insert entities
-		entityInsertActions = new HashMap<EntityType, Action>();
+		// insert mentions
+		mentionInsertActions = new HashMap<EntityType, Action>();
 		for(EntityType type: EntityType.values())
 		{	final EntityType t = type;
-			String typeStr = language.getText(STR_ENTITY+StringTools.initialize(type.toString()));
+			String typeStr = language.getText(STR_MENTION+StringTools.initialize(type.toString()));
 			String name = language.getText(ACTION_INSERT) + " " + typeStr;
 			Action action = new AbstractAction(name)
 			{	/** Class id */
 				private static final long serialVersionUID = 1L;
 				@Override
 			    public void actionPerformed(ActionEvent e)
-				{	insertEntity(t);
+				{	insertMention(t);
 			    }
 			};
-			entityInsertActions.put(type, action);
-			char initial = ENTITY_LETTER.get(type);
+			mentionInsertActions.put(type, action);
+			char initial = MENTION_LETTER.get(type);
 			action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt "+initial));
 			action.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_INSERT)+" "+typeStr);
 			action.setEnabled(false);
 		}
 		
-		// shift entities
+		// shift mentions
 		{	// shift left
 			{	String name = language.getText(ACTION_SHIFT_LEFT);
-				entityShiftLeftAction = new AbstractAction(name)
+				mentionShiftLeftAction = new AbstractAction(name)
 				{	/** Class id */
 					private static final long serialVersionUID = 1L;
 					@Override
 					public void actionPerformed(ActionEvent e)
-					{	shiftEntities(-1);
+					{	shiftMentions(-1);
 					}
 				};
-				entityShiftLeftAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SHIFT_LEFT));
-				entityShiftLeftAction.setEnabled(false);
+				mentionShiftLeftAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SHIFT_LEFT));
+				mentionShiftLeftAction.setEnabled(false);
 			}
 			// shift right
 			{	String name = language.getText(ACTION_SHIFT_RIGHT);
-				entityShiftRightAction = new AbstractAction(name)
+				mentionShiftRightAction = new AbstractAction(name)
 				{	/** Class id */
 					private static final long serialVersionUID = 1L;
 					@Override
 					public void actionPerformed(ActionEvent e)
-					{	shiftEntities(+1);
+					{	shiftMentions(+1);
 					}
 				};
-				entityShiftRightAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SHIFT_RIGHT));
-				entityShiftRightAction.setEnabled(false);
+				mentionShiftRightAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_SHIFT_RIGHT));
+				mentionShiftRightAction.setEnabled(false);
 			}
 		}
 	}
 
 	/**
-	 * Creates a new entity in the currently selected tab, 
+	 * Creates a new mention in the currently selected tab, 
 	 * and therefore the corresponding text.
 	 * <br/>
-	 * The entity corresponds to the currently selected text. 
-	 * If none is selected, then no entity is created.
+	 * The mention corresponds to the currently selected text. 
+	 * If none is selected, then no mention is created.
 	 * 
 	 * @param type
-	 * 		Type of the entity to be created.
+	 * 		Type of the mention to be created.
 	 */
-	private void insertEntity(EntityType type)
-	{	EntityEditorPanel tab = (EntityEditorPanel)tabbedPane.getSelectedComponent();
-		AbstractEntity<?> entity = tab.insertEntity(type);
-		if(entity!=null)
+	private void insertMention(EntityType type)
+	{	MentionEditorPanel tab = (MentionEditorPanel)tabbedPane.getSelectedComponent();
+		AbstractMention<?> mention = tab.insertMention(type);
+		if(mention!=null)
 		{	// update title
 			updateSaved(1);
 			updateTitle();
@@ -1753,8 +1753,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 			int size = tabbedPane.getTabCount();
 			for(int i=0;i<size;i++)
 			{	//if(i!=selectedTab)
-				{	EntityEditorPanel pane = (EntityEditorPanel)tabbedPane.getComponentAt(i);
-//					pane.insertReference(entity);
+				{	MentionEditorPanel pane = (MentionEditorPanel)tabbedPane.getComponentAt(i);
+//					pane.insertReference(mention);
 					pane.updateHighlighting();
 				}
 			}
@@ -1762,16 +1762,16 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Remove the entity in the currently selected tab, and therefore
+	 * Remove the mention in the currently selected tab, and therefore
 	 * the corresponding text.
 	 * <br/>
-	 * The concerned entity is the one at the current position of the cursor.
-	 * If the cursor is not included in any entity, then none is removed.
+	 * The concerned mention is the one at the current position of the cursor.
+	 * If the cursor is not included in any mention, then none is removed.
 	 */
-	private void removeEntity()
-	{	EntityEditorPanel tab = (EntityEditorPanel)tabbedPane.getSelectedComponent();
-		List<AbstractEntity<?>> entityList = tab.removeEntities();
-		if(!entityList.isEmpty())
+	private void removeMention()
+	{	MentionEditorPanel tab = (MentionEditorPanel)tabbedPane.getSelectedComponent();
+		List<AbstractMention<?>> mentionList = tab.removeMentions();
+		if(!mentionList.isEmpty())
 		{	// update title
 			updateSaved(1);
 			updateTitle();
@@ -1781,25 +1781,25 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			int size = tabbedPane.getTabCount();
 			for(int i=0;i<size;i++)
-			{	EntityEditorPanel pane = (EntityEditorPanel)tabbedPane.getComponentAt(i);
-//				pane.removeReferences(entities);
+			{	MentionEditorPanel pane = (MentionEditorPanel)tabbedPane.getComponentAt(i);
+//				pane.removeReferences(mentions);
 				pane.updateHighlighting();
 			}
 		}
 	}
 	
 	/**
-	 * Shift all the entities located after the current position.
+	 * Shift all the mentions located after the current position.
 	 * The shift direction depends on the parameter sign: negative
 	 * for left, positive for right.
 	 * 
 	 * @param offset
 	 * 		Magnitude and direction of the shift.
 	 */
-	private void shiftEntities(int offset)
-	{	EntityEditorPanel tab = (EntityEditorPanel)tabbedPane.getSelectedComponent();
-		List<AbstractEntity<?>> entityList = tab.shiftEntities(offset);
-		if(!entityList.isEmpty())
+	private void shiftMentions(int offset)
+	{	MentionEditorPanel tab = (MentionEditorPanel)tabbedPane.getSelectedComponent();
+		List<AbstractMention<?>> mentionList = tab.shiftMentions(offset);
+		if(!mentionList.isEmpty())
 		{	// update title
 			updateSaved(1);
 			updateTitle();
@@ -1809,8 +1809,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			int size = tabbedPane.getTabCount();
 			for(int i=0;i<size;i++)
-			{	EntityEditorPanel pane = (EntityEditorPanel)tabbedPane.getComponentAt(i);
-//				pane.removeReferences(entities);
+			{	MentionEditorPanel pane = (MentionEditorPanel)tabbedPane.getComponentAt(i);
+//				pane.removeReferences(mentions);
 				pane.updateHighlighting();
 			}
 		}
@@ -1830,7 +1830,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 
 	/**
 	 * Initializes the actions related to
-	 * the way entities are displayed.
+	 * the way mentions are displayed.
 	 */
 	private void initDisplayModeActions()
 	{	// display entity types
@@ -1865,7 +1865,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Changes the way entities are displayed:
+	 * Changes the way mentions are displayed:
 	 * either their types, or a spatial comparison
 	 * with the reference.
 	 * 
@@ -1876,7 +1876,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private void switchDisplayMode(boolean mode)
 	{	int count = tabbedPane.getComponentCount();
 		for(int i=0;i<count;i++)
-		{	EntityEditorPanel panel = (EntityEditorPanel)tabbedPane.getComponentAt(i);
+		{	MentionEditorPanel panel = (MentionEditorPanel)tabbedPane.getComponentAt(i);
 			panel.switchMode(mode);
 		}
 	}
@@ -1916,7 +1916,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private void showLinks()
 	{	int count = tabbedPane.getComponentCount();
 		for(int i=0;i<count;i++)
-		{	EntityEditorPanel panel = (EntityEditorPanel)tabbedPane.getComponentAt(i);
+		{	MentionEditorPanel panel = (MentionEditorPanel)tabbedPane.getComponentAt(i);
 			panel.switchHyperlinks();
 		}
 	}
@@ -1979,7 +1979,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 */
 	private void changeFontSize(int delta)
 	{	for(Component c:tabbedPane.getComponents())
-		{	EntityEditorPanel panel = (EntityEditorPanel) c;
+		{	MentionEditorPanel panel = (MentionEditorPanel) c;
 			panel.changeFontSize(delta);
 			fontSize = panel.getFontSize();
 		}
@@ -2195,19 +2195,19 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Records modified entities and text.
+	 * Records modified mentions and text.
 	 */
 	private void saveAll()
-	{	// record reference entities
+	{	// record reference mentions
 		try
-		{	String fileName = currentArticle + File.separator + FileNames.FI_ENTITY_LIST;
+		{	String fileName = currentArticle + File.separator + FileNames.FI_MENTION_LIST;
 			File file = new File(fileName);
 //			int index = tabbedPane.getSelectedIndex();
 			int index = 0;
-			EntityEditorPanel panel = (EntityEditorPanel) tabbedPane.getComponentAt(index);
-			Entities references = panel.getReferences();
+			MentionEditorPanel panel = (MentionEditorPanel) tabbedPane.getComponentAt(index);
+			Mentions references = panel.getReferences();
 			// record only if non-empty
-			if(!references.getEntities().isEmpty())
+			if(!references.getMentions().isEmpty())
 				references.writeToXml(file);
 		}
 		catch (IOException e)
@@ -2218,15 +2218,15 @@ public class EntityEditor implements WindowListener, ChangeListener
 		if(changed>1)
 		{	int size = tabbedPane.getTabCount();
 			for(int i=0;i<size;i++)
-			{	EntityEditorPanel panel = (EntityEditorPanel)tabbedPane.getComponentAt(i);
-				Entities references = panel.getReferences();
-				Entities entities = panel.getEntities();
-				if(references!=entities)
+			{	MentionEditorPanel panel = (MentionEditorPanel)tabbedPane.getComponentAt(i);
+				Mentions references = panel.getReferences();
+				Mentions mentions = panel.getMentions();
+				if(references!=mentions)
 				{	String folder = panel.getFolder();
-					String fileName = currentArticle + File.separator + folder + File.separator + FileNames.FI_ENTITY_LIST;
+					String fileName = currentArticle + File.separator + folder + File.separator + FileNames.FI_MENTION_LIST;
 					File file = new File(fileName);
 					try
-					{	entities.writeToXml(file);
+					{	mentions.writeToXml(file);
 					}
 					catch (IOException e)
 					{	e.printStackTrace();
@@ -2260,7 +2260,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	
 	/**
 	 * Records a copy of the current 
-	 * reference entities.
+	 * reference mentions.
 	 */
 	private void saveReferenceCopy()
 	{	int returnVal = referenceChooser.showOpenDialog(frame);
@@ -2268,9 +2268,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 		{	File file = referenceChooser.getSelectedFile();
 			try
 			{	int index = tabbedPane.getSelectedIndex();
-				EntityEditorPanel panel = (EntityEditorPanel) tabbedPane.getComponentAt(index);
-				Entities entities = panel.getEntities();
-				entities.writeToXml(file);
+				MentionEditorPanel panel = (MentionEditorPanel) tabbedPane.getComponentAt(index);
+				Mentions mentions = panel.getMentions();
+				mentions.writeToXml(file);
 				updateTitle();
 			}
 			catch (IOException e1)
@@ -2280,7 +2280,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Lets the user record modified reference entities before loading
+	 * Lets the user record modified reference mentions before loading
 	 * another article or quitting the application.
 	 * <br/>
 	 * The method returns a boolean indicating if the action was canceled 
@@ -2577,7 +2577,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private void switchEditableOption()
 	{	editableReference = !editableReference;
 		if(tabbedPane.getTabCount()>0)
-		{	EntityEditorPanel eep = (EntityEditorPanel) tabbedPane.getComponentAt(0);
+		{	MentionEditorPanel eep = (MentionEditorPanel) tabbedPane.getComponentAt(0);
 			eep.setEditable(editableReference);
 		}
 	}
@@ -2715,7 +2715,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	private final static String DIALOG_CORPUS_CHOOSER = "DialogCorpusChooser";
 	/** Component used to select the corpus main folder */
 	private JFileChooser corpusChooser;
-	/** Indicates if the reference was modified since the last save: 0=no, 1=ref entities, 2=text */
+	/** Indicates if the reference was modified since the last save: 0=no, 1=ref mentions, 2=text */
 	private int changed = 0;
 	
 	/**
@@ -2739,7 +2739,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * Updates the saved indicator and the corresponding GUI elements.
 	 * <br/>
 	 * The value 0 means there is no change anymore (we probably've 
-	 * just recorded them); the value 1 means only reference entities 
+	 * just recorded them); the value 1 means only reference mentions 
 	 * were modified; and the value 2 means the text was modified.  
 	 * 
 	 * @param changed
@@ -2799,12 +2799,12 @@ public class EntityEditor implements WindowListener, ChangeListener
 			String title = tabbedPane.getTitleAt(index);
 			boolean activation = title.equals(RecognizerName.REFERENCE.toString());
 			for(EntityType type: EntityType.values())
-			{	Action action = entityInsertActions.get(type);
+			{	Action action = mentionInsertActions.get(type);
 				action.setEnabled(activation);
 			}
-			entityDeleteAction.setEnabled(activation);
-			entityShiftLeftAction.setEnabled(activation);
-			entityShiftRightAction.setEnabled(activation);
+			mentionDeleteAction.setEnabled(activation);
+			mentionShiftLeftAction.setEnabled(activation);
+			mentionShiftRightAction.setEnabled(activation);
 			//saveAction.setEnabled(activation);
 			copyAction.setEnabled(activation);
 			
@@ -3210,8 +3210,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	/////////////////////////////////////////////////////////////////
 	// CONTENT			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Filter used to select only entity XML files */
-	private static final FilenameFilter FILTER = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
+	/** Filter used to select only mention XML files */
+	private static final FilenameFilter FILTER = FileTools.createFilter(FileNames.FI_MENTION_LIST);
 	/** Article currently displayed */
 	private String currentArticle = null;
 	/** Index of the currently displayed article */
@@ -3234,7 +3234,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Get the files containing entities,
+	 * Get the files containing mentions,
 	 * from the path of the article.
 	 * 
 	 * @param articlePath
@@ -3242,15 +3242,15 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * @return
 	 * 		List of File objects.
 	 */
-	private Map<String,File> getEntityFiles(String articlePath)
+	private Map<String,File> getMentionFiles(String articlePath)
 	{	Map<String,File> result = new HashMap<String, File>();
 		
 		// get the reference file
 		File articleFolder = new File(articlePath);
 		{	String algoName = RecognizerName.REFERENCE.toString();
-			File[] entityFiles = articleFolder.listFiles(FILTER);
-			if(entityFiles.length>0)
-				result.put(algoName,entityFiles[0]);
+			File[] mentionFiles = articleFolder.listFiles(FILTER);
+			if(mentionFiles.length>0)
+				result.put(algoName,mentionFiles[0]);
 		}
 		
 		// get the estimations
@@ -3259,9 +3259,9 @@ public class EntityEditor implements WindowListener, ChangeListener
 		{	if(algoFolder.isDirectory())
 			{	String algoName = algoFolder.getName();
 				if(prefixes.contains(algoName) || prefixes.isEmpty())
-				{	File[] entityFiles = algoFolder.listFiles(FILTER);
-					if(entityFiles.length>0)
-						result.put(algoName,entityFiles[0]);
+				{	File[] mentionFiles = algoFolder.listFiles(FILTER);
+					if(mentionFiles.length>0)
+						result.put(algoName,mentionFiles[0]);
 				}
 			}
 		}
@@ -3270,13 +3270,13 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Returns lists of entities,
-	 * from lists of entity files.
+	 * Returns lists of mentions,
+	 * from lists of mention files.
 	 * 
-	 * @param entityFiles
-	 * 		List of entity files.
+	 * @param mentionFiles
+	 * 		List of mention files.
 	 * @return
-	 * 		List of the corresponding entity lists, read from the specified files.
+	 * 		List of the corresponding mention lists, read from the specified files.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while accessing the files.
@@ -3285,14 +3285,14 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * @throws ParseException 
 	 * 		Problem while accessing the files.
 	 */
-	private Map<String,Entities> getEntityLists(Map<String,File> entityFiles) throws SAXException, IOException, ParseException
-	{	Map<String,Entities> result = new HashMap<String, Entities>();
+	private Map<String,Mentions> getMentionLists(Map<String,File> mentionFiles) throws SAXException, IOException, ParseException
+	{	Map<String,Mentions> result = new HashMap<String, Mentions>();
 		
-		for(Entry<String,File> entry: entityFiles.entrySet())
+		for(Entry<String,File> entry: mentionFiles.entrySet())
 		{	String algoName = entry.getKey();
-			File entityFile = entry.getValue();
-			Entities entities = Entities.readFromXml(entityFile);
-			result.put(algoName, entities);
+			File mentionFile = entry.getValue();
+			Mentions mentions = Mentions.readFromXml(mentionFile);
+			result.put(algoName, mentions);
 		}
 		
 		return result;
@@ -3331,8 +3331,8 @@ public class EntityEditor implements WindowListener, ChangeListener
 	}
 	
 	/**
-	 * Changes the content of this EntityEditor,
-	 * so that it displays entities for the
+	 * Changes the content of this MentionEditor,
+	 * so that it displays mentions for the
 	 * specified article.
 	 * 
 	 * @param articlePath
@@ -3383,11 +3383,11 @@ public class EntityEditor implements WindowListener, ChangeListener
 			// update position
 			updateStatusPosition(currentRawText.length(),currentRawText.length());
 			
-			// get entity files
-			Map<String,File> entityFiles = getEntityFiles(articlePath);
+			// get mention files
+			Map<String,File> mentionFiles = getMentionFiles(articlePath);
 			
-			// open them to get the entities
-			Map<String,Entities> entityLists = getEntityLists(entityFiles);
+			// open them to get the mentions
+			Map<String,Mentions> mentionLists = getMentionLists(mentionFiles);
 			
 			// clear existing article
 			String selectedTab = this.selectedTab;
@@ -3398,20 +3398,20 @@ public class EntityEditor implements WindowListener, ChangeListener
 			
 			// put them in a tab
 			String refName = RecognizerName.REFERENCE.toString();
-			Entities references = entityLists.get(refName);
+			Mentions references = mentionLists.get(refName);
 			if(references==null)
-			{	references = new Entities();
+			{	references = new Mentions();
 				//updateSaved(1); // preferable not to mark the article as mofified
 				//updateTitle();  // when just creating an empty reference
 			}
 			else
-			{	entityLists.remove(refName);
+			{	mentionLists.remove(refName);
 			}
 			addTab(currentRawText, currentLinkedText, references, references, refName);
-			Set<String> names = new TreeSet<String>(entityLists.keySet());
+			Set<String> names = new TreeSet<String>(mentionLists.keySet());
 			for(String name: names)
-			{	Entities entities = entityLists.get(name);
-				addTab(currentRawText, currentLinkedText, entities, references, name);
+			{	Mentions mentions = mentionLists.get(name);
+				addTab(currentRawText, currentLinkedText, mentions, references, name);
 			}
 			
 			// select tab
@@ -3450,7 +3450,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * Method called by the reference panel when
 	 * some text is inserted in the reference panel.
 	 * The text must be modified in each tool-related
-	 * panel, and the entities must be shifted accordingly
+	 * panel, and the mentions must be shifted accordingly
 	 * (in terms of positions).
 	 * 
 	 * @param start
@@ -3469,7 +3469,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		int size = tabbedPane.getTabCount();
 		for(int i=0;i<size;i++)
 		{	if(i!=selectedTab)
-			{	EntityEditorPanel pane = (EntityEditorPanel)tabbedPane.getComponentAt(i);
+			{	MentionEditorPanel pane = (MentionEditorPanel)tabbedPane.getComponentAt(i);
 				pane.textInserted(start, text, currentLinkedText);
 			}
 		}
@@ -3486,7 +3486,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 	 * Method called by the reference panel when
 	 * some text is removed in the reference panel.
 	 * The text must be modified in each tool-related
-	 * panel, and the entities must be shifted accordingly
+	 * panel, and the mentions must be shifted accordingly
 	 * (in terms of positions).
 	 * 
 	 * @param start
@@ -3505,7 +3505,7 @@ public class EntityEditor implements WindowListener, ChangeListener
 		int size = tabbedPane.getTabCount();
 		for(int i=0;i<size;i++)
 		{	if(i!=selectedTab)
-			{	EntityEditorPanel pane = (EntityEditorPanel)tabbedPane.getComponentAt(i);
+			{	MentionEditorPanel pane = (MentionEditorPanel)tabbedPane.getComponentAt(i);
 				pane.textRemoved(start, length, currentLinkedText);
 			}
 		}
@@ -3556,11 +3556,6 @@ public class EntityEditor implements WindowListener, ChangeListener
 	{	// nothing to do here
 	}
 }
-
-// TODO recherche guigui >> dans barre menu, mettre une zone texte et un bouton pour surligner/réinitialiser. un appui sur création d'entité transforme toutes les occurrences en entités.
-// TODO corriger script mac >> voir msg sur ordi fred
-
-// TODO rajouter les références biblio
 
 /**
  * La droite du PS >> PS = organisation

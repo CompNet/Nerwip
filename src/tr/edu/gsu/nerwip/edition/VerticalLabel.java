@@ -30,7 +30,7 @@ public class VerticalLabel extends JLabel {
 	public VerticalLabel() {
         super();
     }
-
+	
     public VerticalLabel(Icon image, int horizontalAlignment) {
         super(image, horizontalAlignment);
     }

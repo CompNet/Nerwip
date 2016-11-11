@@ -139,7 +139,7 @@ public class LanguageLoader
 	 * @param result
 	 * 		The resulting object which is updated.
 	 */
-	private static void loadTextElement(Element root, String name, Language result)
+	private static void loadTextElement(Element root, String name, Language result) 
 	{	// name
 		String key = root.getAttribute(XmlNames.ATT_NAME).getValue().trim();
 		String newName = name+key;

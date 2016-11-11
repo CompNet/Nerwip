@@ -60,39 +60,39 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.TextAction;
 
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 
 /**
  * This class implements a panel designed to
- * display a text and highlights a list of entities.
- * Each entity is displayed in a specific color.
+ * display a text and highlights a list of mentions.
+ * Each mention is displayed in a specific color.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class EntityEditorPanel extends JPanel implements AdjustmentListener, DocumentListener, CaretListener
+public class MentionEditorPanel extends JPanel implements AdjustmentListener, DocumentListener, CaretListener
 {	/** Version identifier for Serializable class */
 	private static final long serialVersionUID = 8501538849713791317L;
 
 	/**
 	 * Builds a panel meant to display the specified text
-	 * and highlight the specified entities. The tooltip
+	 * and highlight the specified mentions. The tooltip
 	 * is used to indicate the tool parameters (the tool
 	 * name appears in the title of this tab pane).  
 	 * 
 	 * @param mainEditor
-	 * 		{@link EntityEditor} window of the application. 
+	 * 		{@link MentionEditor} window of the application. 
 	 * @param text
 	 * 		Full text of the article.
 	 * @param linkedText
 	 * 		Linked text of the article.
-	 * @param entities
-	 * 		List of entities to display.
+	 * @param mentions
+	 * 		List of mentions to display.
 	 * @param references 
-	 * 		List of reference entities (used for the mode).
+	 * 		List of reference mentions (used for the mode).
 	 * @param tooltip
 	 * 		Complementary information.
 	 * @param mode
@@ -104,9 +104,9 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 	 * @param editable
 	 * 		Whether or not text can be modified in this panel (only for reference).
 	 * @param folder
-	 * 		Folder associated to the estimated entities (relative to the article folder).
+	 * 		Folder associated to the estimated mentions (relative to the article folder).
 	 */
-	public EntityEditorPanel(EntityEditor mainEditor, String text, String linkedText, Entities entities, Entities references, String tooltip,
+	public MentionEditorPanel(MentionEditor mainEditor, String text, String linkedText, Mentions mentions, Mentions references, String tooltip,
 		boolean mode, Map<EntityType,Boolean> typeDispl, boolean linkState, boolean editable, String folder)
 	{	super(new BorderLayout());
 		this.mainEditor = mainEditor;
@@ -144,10 +144,10 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 		// listen to position changes
 		textPane.addCaretListener(this);
 		
-		// entities
-		this.entities = entities;
+		// mentions
+		this.mentions = mentions;
 		this.references = references;
-		entitySwitches.putAll(typeDispl);
+		mentionSwitches.putAll(typeDispl);
 		
 		// highlighting styles
 		initStyles();
@@ -266,20 +266,20 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 	// MAIN EDITOR		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** CleanReferenceFiles window of the application */
-	private EntityEditor mainEditor;
+	private MentionEditor mainEditor;
 	
 	/////////////////////////////////////////////////////////////////
 	// FOLDER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Folder associated to the estimated entities */
+	/** Folder associated to the estimated mentions */
 	private String folder = null;
 	
 	/**
 	 * Returns the folder associated
-	 * to the estimated entities.
+	 * to the estimated mentions.
 	 * 
 	 * @return
-	 * 		Folder containing the estimated entities.
+	 * 		Folder containing the estimated mentions.
 	 */
 	public String getFolder()
 	{	return folder;
@@ -316,38 +316,38 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// MENTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Styles used to highlight entities */
-	private final Map<EntityType, Style> entityStyles = new HashMap<EntityType, Style>();
-	/** Whether or not entities of some type should be highlighted */
-	private final Map<EntityType, Boolean> entitySwitches = new HashMap<EntityType, Boolean>();
-	/** Style used to un-highlight entities */
+	/** Styles used to highlight mentions */
+	private final Map<EntityType, Style> mentionStyles = new HashMap<EntityType, Style>();
+	/** Whether or not mentions of some type should be highlighted */
+	private final Map<EntityType, Boolean> mentionSwitches = new HashMap<EntityType, Boolean>();
+	/** Style used to un-highlight mentions */
 	private Style noStyle = null;
-	/** List of entities to display */
-	private Entities entities = null;
-	/** List of reference entities */
-	private Entities references = null;
+	/** List of mentions to display */
+	private Mentions mentions = null;
+	/** List of reference mentions */
+	private Mentions references = null;
 
 	/**
-	 * Returns the list of estimated entities 
+	 * Returns the list of estimated mentions 
 	 * handled by this panel.
 	 * 
 	 * @return
-	 * 		List of estimated entities displayed by this panel.
+	 * 		List of estimated mentions displayed by this panel.
 	 */
-	public Entities getEntities()
-	{	return entities;
+	public Mentions getMentions()
+	{	return mentions;
 	}
 	
 	/**
-	 * Returns the list of reference entities 
+	 * Returns the list of reference mentions 
 	 * handled by this panel.
 	 * 
 	 * @return
-	 * 		List of reference entities displayed by this panel.
+	 * 		List of reference mentions displayed by this panel.
 	 */
-	public Entities getReferences()
+	public Mentions getReferences()
 	{	return references;
 	}
 	
@@ -356,17 +356,17 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 	 * entity type should be displayed or not.
 	 * 
 	 * @param type
-	 * 		Type of the concerned entities.
+	 * 		Type of the concerned mentions.
 	 */
 	public void switchType(EntityType type)
-	{	boolean flag = !entitySwitches.get(type);
-		entitySwitches.put(type,flag);
+	{	boolean flag = !mentionSwitches.get(type);
+		mentionSwitches.put(type,flag);
 		updateHighlighting();
 	}
 	
 	/**
 	 * Initializes the styles used
-	 * to highlight entities depending
+	 * to highlight mentions depending
 	 * on their type.
 	 */
 	private void initStyles()
@@ -375,8 +375,8 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 		for(EntityType type: EntityType.values())
 		{	// style
 			Style style = doc.addStyle(type.toString(), null);
-			StyleConstants.setBackground(style, EntityEditor.ENTITY_COLOR.get(type));
-			entityStyles.put(type, style);
+			StyleConstants.setBackground(style, MentionEditor.MENTION_COLOR.get(type));
+			mentionStyles.put(type, style);
 		}
 		
 		// mode
@@ -399,7 +399,7 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 	}
 	
 	/**
-	 * Updates entity highlighting depending
+	 * Updates mention highlighting depending
 	 * on the state of the switches.
 	 */
 	public void updateHighlighting()
@@ -409,19 +409,19 @@ public class EntityEditorPanel extends JPanel implements AdjustmentListener, Doc
 		
 		// types highlighting
 		if(mode)
-		{	List<AbstractEntity<?>> entityList = entities.getEntities();
-			for (AbstractEntity<?> entity : entityList)
-			{	EntityType type = entity.getType();
-				boolean flag = entitySwitches.get(type);
-//if(entity.getEndPos()>document.getLength())
-//	System.out.println("erreur!!! length="+document.getLength()+" mais end="+entity.getEndPos());
+		{	List<AbstractMention<?>> mentionList = mentions.getMentions();
+			for (AbstractMention<?> mention : mentionList)
+			{	EntityType type = mention.getType();
+				boolean flag = mentionSwitches.get(type);
+//if(mention.getEndPos()>document.getLength())
+//	System.out.println("erreur!!! length="+document.getLength()+" mais end="+mention.getEndPos());
 				if(flag)
-				{	Style style = entityStyles.get(type);
-					int startPos = entity.getStartPos();
-					int endPos = entity.getEndPos();
+				{	Style style = mentionStyles.get(type);
+					int startPos = mention.getStartPos();
+					int endPos = mention.getEndPos();
 					int length = endPos - startPos;
 if(endPos>document.getLength())
-	throw new IllegalArgumentException("Entity out of article: "+entity);
+	throw new IllegalArgumentException("Mention out of article: "+mention);
 					document.setCharacterAttributes(startPos,length,style,true);
 				}
 			}
@@ -433,15 +433,15 @@ if(endPos>document.getLength())
 			missingParts = new ArrayList<int[]>();
 			excessParts = new ArrayList<int[]>();
 //			if(!references.isEmpty())
-			List<AbstractEntity<?>> entityList = entities.getEntities();
-			Collections.sort(entityList);
-			List<AbstractEntity<?>> referenceList = references.getEntities();
+			List<AbstractMention<?>> mentionList = mentions.getMentions();
+			Collections.sort(mentionList);
+			List<AbstractMention<?>> referenceList = references.getMentions();
 			Collections.sort(referenceList);
-			Iterator<AbstractEntity<?>> itEst = entityList.iterator();
-			Iterator<AbstractEntity<?>> itRef = referenceList.iterator();
+			Iterator<AbstractMention<?>> itEst = mentionList.iterator();
+			Iterator<AbstractMention<?>> itRef = referenceList.iterator();
 			if(itRef.hasNext() && itEst.hasNext())
-			{	AbstractEntity<?> est = null;
-				AbstractEntity<?> ref = null;
+			{	AbstractMention<?> est = null;
+				AbstractMention<?> ref = null;
 				int indexEst = 0;
 				int indexRef = 0;
 				do
@@ -451,11 +451,11 @@ if(endPos>document.getLength())
 						ref = itRef.next();
 				
 					EntityType estType = est.getType();
-					if(!entitySwitches.get(estType))
+					if(!mentionSwitches.get(estType))
 						est = null;
 					else
 					{	EntityType refType = ref.getType();
-						if(!entitySwitches.get(refType))
+						if(!mentionSwitches.get(refType))
 							ref = null;
 						else
 						{	int startEst = Math.max(est.getStartPos(),indexEst);
@@ -524,18 +524,18 @@ if(endPos>document.getLength())
 					&& (ref!=null || itRef.hasNext()));
 			}
 			while(itEst.hasNext())
-			{	AbstractEntity<?> est = itEst.next();
+			{	AbstractMention<?> est = itEst.next();
 				EntityType estType = est.getType();
-				if(entitySwitches.get(estType))
+				if(mentionSwitches.get(estType))
 				{	int startEst = est.getStartPos();
 					int endEst = est.getEndPos();
 					excessParts.add(new int[]{startEst,endEst});
 				}
 			}
 			while(itRef.hasNext())
-			{	AbstractEntity<?> ref = itRef.next();
+			{	AbstractMention<?> ref = itRef.next();
 				EntityType refType = ref.getType();
-				if(entitySwitches.get(refType))
+				if(mentionSwitches.get(refType))
 				{	int startRef = ref.getStartPos();
 					int endRef = ref.getEndPos();
 					missingParts.add(new int[]{startRef,endRef});
@@ -610,80 +610,80 @@ if(endPos>document.getLength())
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITY EDITION	/////////////////////////////////////////////
+	// MENTION EDITION	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Adds a new entity to the list
+	 * Adds a new mention to the list
 	 * represented in this panel.
-	 * The entity is automatically generated
+	 * The mention is automatically generated
 	 * using the current selection. If no
 	 * text is currently selected but the
-	 * cursor is inside an existing entity,
+	 * cursor is inside an existing mention,
 	 * then its type is changed for
 	 * the specified one.
 	 * 
 	 * @param type 
-	 * 		Type of the new entity.
+	 * 		Type of the new mention.
 	 * @return
-	 * 		The created entity, or {@code null} if none was created.
-	 * 		In case of type change, the entity is returned only if
+	 * 		The created mention, or {@code null} if none was created.
+	 * 		In case of type change, the mention is returned only if
 	 * 		its type was changed.
 	 */
-	public AbstractEntity<?> insertEntity(EntityType type)
-	{	AbstractEntity<?> result = null;
+	public AbstractMention<?> insertMention(EntityType type)
+	{	AbstractMention<?> result = null;
 		int start = textPane.getSelectionStart();
 		int end = textPane.getSelectionEnd();
 		int position = textPane.getCaretPosition();
 		
-		// no selection: try changing the current entity
+		// no selection: try changing the current mention
 		if(start==end)
 			result = changeEntityType(type,position);
 		
-		// text selected: create a new entity
+		// text selected: create a new mention
 		else
-			result = insertEntity(type,start,end);
+			result = insertMention(type,start,end);
 				
 		return result;
 	}
 	
 	/**
-	 * Changes the type of the last inserted entity
+	 * Changes the type of the last inserted mention
 	 * containing the specified position, so that
 	 * its new type is the specified type. If there
-	 * is no entity there, or if its type is already
+	 * is no mention there, or if its type is already
 	 * the specified one, then no change is performed.
 	 * 
 	 * @param type
-	 * 		New type of the entity.
+	 * 		New type of the mention.
 	 * @param position
 	 * 		Position of the cursor.
 	 * @return
-	 * 		The entity whose type was changed, or {@code null} otherwise.
+	 * 		The mention whose type was changed, or {@code null} otherwise.
 	 */
-	private AbstractEntity<?> changeEntityType(EntityType type, int position)
-	{	AbstractEntity<?> result = null;
-		List<AbstractEntity<?>> entityList = entities.getEntities();
+	private AbstractMention<?> changeEntityType(EntityType type, int position)
+	{	AbstractMention<?> result = null;
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		int index = 0;
 		
-		// retrieve the last entity at this position 
-		ListIterator<AbstractEntity<?>> it = entityList.listIterator(entityList.size());
+		// retrieve the last mention at this position 
+		ListIterator<AbstractMention<?>> it = mentionList.listIterator(mentionList.size());
 		while(result==null && it.hasPrevious())
-		{	// get the entity
-			AbstractEntity<?> entity = it.previous();
-			int startPos = entity.getStartPos();
-			int endPos = entity.getEndPos();
+		{	// get the mention
+			AbstractMention<?> mention = it.previous();
+			int startPos = mention.getStartPos();
+			int endPos = mention.getEndPos();
 			// check its position
 			if(startPos<=position && position<=endPos)
-			{	// check its type: only affect visible entities
-				EntityType t = entity.getType();
-				if(entitySwitches.get(t) && t!=type)
-				{	// update entity
-					index = entityList.indexOf(entity);
+			{	// check its type: only affect visible mentions
+				EntityType t = mention.getType();
+				if(mentionSwitches.get(t) && t!=type)
+				{	// update mention
+					index = mentionList.indexOf(mention);
 					it.remove();
-					RecognizerName source = entity.getSource();
-					String valueStr = entity.getStringValue();
-					entity = AbstractEntity.build(type, startPos, endPos, source, valueStr);
-					result = entity;
+					RecognizerName source = mention.getSource();
+					String valueStr = mention.getStringValue();
+					mention = AbstractMention.build(type, startPos, endPos, source, valueStr);
+					result = mention;
 					
 					// update display
 					updateHighlighting();
@@ -697,32 +697,32 @@ if(endPos>document.getLength())
 		}
 		
 		if(result!=null)
-			entityList.add(index, result);
+			mentionList.add(index, result);
 		
 		return result;
 	}
 	
 	/**
-	 * Insert a new entity, of the specified
+	 * Insert a new mention, of the specified
 	 * type, at the specified position.
 	 * 
 	 * @param type
-	 * 		Type of the new entity.
+	 * 		Type of the new mention.
 	 * @param start
-	 * 		Start position of the new entity.
+	 * 		Start position of the new mention.
 	 * @param end
-	 * 		End position of the new entity.
+	 * 		End position of the new mention.
 	 * @return
-	 * 		The created entity.
+	 * 		The created mention.
 	 */
-	private AbstractEntity<?> insertEntity(EntityType type, int start, int end)
-	{	AbstractEntity<?> result = null;
+	private AbstractMention<?> insertMention(EntityType type, int start, int end)
+	{	AbstractMention<?> result = null;
 		
-		// update entities
+		// update mentions
 		String valueStr = textPane.getSelectedText();
 		RecognizerName source = RecognizerName.REFERENCE;
-		result = AbstractEntity.build(type, start, end, source, valueStr);
-		entities.addEntity(result);
+		result = AbstractMention.build(type, start, end, source, valueStr);
+		mentions.addMention(result);
 		
 		// update display
 		updateHighlighting();
@@ -736,61 +736,61 @@ if(endPos>document.getLength())
 	}
 	
 	/**
-	 * Remove an entity from the list represented in this panel.
-	 * The entity at the current carret position is removed, if there
-	 * is any. All entities in the selection are removed, if some text is selected.
+	 * Remove an mention from the list represented in this panel.
+	 * The mention at the current carret position is removed, if there
+	 * is any. All mentions in the selection are removed, if some text is selected.
 	 * <br/>
-	 * Entities not currently displayed are ignored.
+	 * Mentions not currently displayed are ignored.
 	 * 
 	 * @return
-	 * 		The removed entities, under the form of a list.
+	 * 		The removed mentions, under the form of a list.
 	 */
-	public List<AbstractEntity<?>> removeEntities()
-	{	List<AbstractEntity<?>> result = null; 
+	public List<AbstractMention<?>> removeMentions()
+	{	List<AbstractMention<?>> result = null; 
 		
 		// get the current selection / cursor position
 		int start = textPane.getSelectionStart();
 		int end = textPane.getSelectionEnd();
 		int position = textPane.getCaretPosition();
 		if(start!=end)
-			result = removeEntities(start,end);
+			result = removeMentions(start,end);
 		else
-		{	result = new ArrayList<AbstractEntity<?>>();
-			AbstractEntity<?> entity = removeEntity(position);
-			if(entity!=null)
-				result.add(entity);
+		{	result = new ArrayList<AbstractMention<?>>();
+			AbstractMention<?> mention = removeMention(position);
+			if(mention!=null)
+				result.add(mention);
 		}
 		
 		return result;
 	}
 	
 	/**
-	 * Removes the first entity found at the specified position.
+	 * Removes the first mention found at the specified position.
 	 * 
 	 * @param position
-	 * 		Position of the entity to remove.
+	 * 		Position of the mention to remove.
 	 * @return
-	 * 		Entity removed (can be {@code null}).
+	 * 		Removed mention (can be {@code null}).
 	 */
-	private AbstractEntity<?> removeEntity(int position)
-	{	AbstractEntity<?> result = null;
-		List<AbstractEntity<?>> entityList = entities.getEntities();
+	private AbstractMention<?> removeMention(int position)
+	{	AbstractMention<?> result = null;
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		
-		// retrieve the last entity at this position 
-		ListIterator<AbstractEntity<?>> it = entityList.listIterator(entityList.size());
+		// retrieve the last mention at this position 
+		ListIterator<AbstractMention<?>> it = mentionList.listIterator(mentionList.size());
 		while(result==null && it.hasPrevious())
-		{	// get the entity
-			AbstractEntity<?> entity = it.previous();
-			int startPos = entity.getStartPos();
-			int endPos = entity.getEndPos();
+		{	// get the mention
+			AbstractMention<?> mention = it.previous();
+			int startPos = mention.getStartPos();
+			int endPos = mention.getEndPos();
 			// check its position
 			if(startPos<=position && position<=endPos)
-			{	// check its type: only remove visible entities
-				EntityType type = entity.getType();
-				if(entitySwitches.get(type))
-				{	// update entities
+			{	// check its type: only remove visible mentions
+				EntityType type = mention.getType();
+				if(mentionSwitches.get(type))
+				{	// update mentions
 					it.remove();
-					result = entity;
+					result = mention;
 					
 					// update display
 					updateHighlighting();
@@ -807,36 +807,36 @@ if(endPos>document.getLength())
 	}
 	
 	/**
-	 * Remove all entities intersecting the current selection.
+	 * Remove all mentions intersecting the current selection.
 	 * <br/>
-	 * Entities not currently displayed are ignored.
+	 * Mentions not currently displayed are ignored.
 	 * 
 	 * @param start 
 	 * 		Start of the selection.
 	 * @param end 
 	 * 		End of the selection.
 	 * @return
-	 * 		The removed entities, under the form of a list.
+	 * 		The removed mentions, under the form of a list.
 	 */
-	private List<AbstractEntity<?>> removeEntities(int start, int end)
-	{	List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
-		List<AbstractEntity<?>> entityList = entities.getEntities();
+	private List<AbstractMention<?>> removeMentions(int start, int end)
+	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		 
-		Iterator<AbstractEntity<?>> it = entityList.iterator();
+		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())
-		{	// get the entity
-			AbstractEntity<?> entity = it.next();
-			int startPos = entity.getStartPos();
-			int endPos = entity.getEndPos();
+		{	// get the mention
+			AbstractMention<?> mention = it.next();
+			int startPos = mention.getStartPos();
+			int endPos = mention.getEndPos();
 			// check its position
 			if(startPos>=start && startPos<=end
 				|| endPos>=start && endPos<=end)
-			{	// check its type: only remove visible entities
-				EntityType type = entity.getType();
-				if(entitySwitches.get(type))
-				{	// update entities
+			{	// check its type: only remove visible mentions
+				EntityType type = mention.getType();
+				if(mentionSwitches.get(type))
+				{	// update mentions
 					it.remove();
-					result.add(entity);
+					result.add(mention);
 					
 					// update display
 					updateHighlighting();
@@ -853,42 +853,42 @@ if(endPos>document.getLength())
 	}
 	
 //	/**
-//	 * Add a reference entities 
+//	 * Add a reference mentions 
 //	 * and updates the panel accordingly.
 //	 * 
-//	 * @param entity
-//	 * 		Reference entity to add.
+//	 * @param mention
+//	 * 		Reference mention to add.
 //	 */
-//	public void insertReference(AbstractEntity<?> entity)
-//	{	references.add(entity);
+//	public void insertReference(AbstractMention<?> mention)
+//	{	references.add(mention);
 //		updateHighlighting();
 //	}
 //	
 //	/**
-//	 * Remove some reference entities 
+//	 * Remove some reference mentions 
 //	 * and updates the panel accordingly.
 //	 * 
-//	 * @param entities
-//	 * 		Reference entities to be removed.
+//	 * @param mentions
+//	 * 		Reference mentions to be removed.
 //	 */
-//	public void removeReferences(List<AbstractEntity<?>> entities)
-//	{	references.removeAll(entities);
+//	public void removeReferences(List<AbstractMention<?>> mentions)
+//	{	references.removeAll(mentions);
 //		updateHighlighting();
 //	}
 	
 	/**
-	 * Shift the entities located after the current cursor position.
+	 * Shift the mentions located after the current cursor position.
 	 * The shift direction depends on the parameter sign: negative for
 	 * left and positive for right.
 	 * <br/>
-	 * Entities not currently displayed are ignored.
+	 * Mentions not currently displayed are ignored.
 	 * 
 	 * @param offset
 	 * 		Magnitude and direction of the shifting.
 	 * @return
-	 * 		The shifted entities, under the form of a list.
+	 * 		The shifted mentions, under the form of a list.
 	 */
-	public List<AbstractEntity<?>> shiftEntities(int offset)
+	public List<AbstractMention<?>> shiftMentions(int offset)
 	{	// get the current cursor position
 		int position = textPane.getCaretPosition();
 		String rawText = null;
@@ -900,31 +900,31 @@ if(endPos>document.getLength())
 		{	e.printStackTrace();
 		}
 		
-		List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
-		List<AbstractEntity<?>> entityList = entities.getEntities();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		
-		Iterator<AbstractEntity<?>> it = entityList.iterator();
+		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())
-		{	// get the entity
-			AbstractEntity<?> entity = it.next();
-			int startPos = entity.getStartPos();
-			int endPos = entity.getEndPos();
-			// check its type: only move visible entities
-			EntityType type = entity.getType();
-			if(entitySwitches.get(type))
-			{	// upadte entity position
+		{	// get the mention
+			AbstractMention<?> mention = it.next();
+			int startPos = mention.getStartPos();
+			int endPos = mention.getEndPos();
+			// check its type: only move visible mentions
+			EntityType type = mention.getType();
+			if(mentionSwitches.get(type))
+			{	// upadte mention position
 				boolean keep;
 				if(offset<0)
-					keep = entities.leftShiftEntityPosition(entity, position, -offset, rawText);
+					keep = mentions.leftShiftMentionPosition(mention, position, -offset, rawText);
 				else
-					keep = entities.rightShiftEntityPosition(entity, position, offset, rawText);
+					keep = mentions.rightShiftMentionPosition(mention, position, offset, rawText);
 				if(!keep)
 				{	it.remove();
-					result.add(entity);
+					result.add(mention);
 				}
 				else
-				{	if(startPos!=entity.getStartPos() || endPos!=entity.getEndPos())
-						result.add(entity);
+				{	if(startPos!=mention.getStartPos() || endPos!=mention.getEndPos())
+						result.add(mention);
 				}
 				// update display
 				updateHighlighting();
@@ -941,7 +941,7 @@ if(endPos>document.getLength())
 	 * Method called by the main window when
 	 * some text is inserted in the reference panel.
 	 * The text must be modified in each tool-related
-	 * panel, and the entities must be shifted accordingly
+	 * panel, and the mentions must be shifted accordingly
 	 * (in terms of positions).
 	 * 
 	 * @param start
@@ -959,8 +959,8 @@ if(endPos>document.getLength())
 			
 			String rawText = document.getText(0, document.getLength());
 			int length = text.length();
-			entities.rightShiftEntityPositions(start,length,rawText);
-//			references.rightShiftEntityPositions(start,length);
+			mentions.rightShiftMentionPositions(start,length,rawText);
+//			references.rightShiftMentionPositions(start,length);
 		}
 		catch (BadLocationException e)
 		{	e.printStackTrace();
@@ -971,7 +971,7 @@ if(endPos>document.getLength())
 	 * Method called by the main window when
 	 * some text is removed in the reference panel.
 	 * The text must be modified in each tool-related
-	 * panel, and the entities must be shifted accordingly
+	 * panel, and the mentions must be shifted accordingly
 	 * (in terms of positions).
 	 * 
 	 * @param start
@@ -988,8 +988,8 @@ if(endPos>document.getLength())
 			document.remove(start, length);
 			
 			String rawText = document.getText(0, document.getLength());
-			entities.leftShiftEntityPositions(start,length,rawText);
-//			references.leftShiftEntityPositions(start,length);
+			mentions.leftShiftMentionPositions(start,length,rawText);
+//			references.leftShiftMentionPositions(start,length);
 		}
 		catch (BadLocationException e)
 		{	e.printStackTrace();
@@ -998,23 +998,23 @@ if(endPos>document.getLength())
 
 	/**
 	 * Checks if the specified positions are located
-	 * right before or after an existing reference entity.
+	 * right before or after an existing reference mention.
 	 * If that is the case, the method returns {@code true}.
 	 * 
 	 * @param startPos
 	 * 		Start position to be considered.
 	 * @return
 	 * 		{@code true} iff the positions are located right
-	 * 		before or after an existing reference entity.
+	 * 		before or after an existing reference mention.
 	 */
-	protected boolean isEntityAdjacent(int startPos)
+	protected boolean isMentionAdjacent(int startPos)
 	{	boolean result = false;
 		
-		Iterator<AbstractEntity<?>> it = references.getEntities().iterator();
+		Iterator<AbstractMention<?>> it = references.getMentions().iterator();
 		while(it.hasNext() && !result)
-		{	AbstractEntity<?> entity = it.next();
-			int startPos0 = entity.getStartPos();
-			int endPos0 = entity.getEndPos();
+		{	AbstractMention<?> mention = it.next();
+			int startPos0 = mention.getStartPos();
+			int endPos0 = mention.getEndPos();
 			result = startPos==startPos0 || startPos==endPos0;
 		}
 		
@@ -1026,11 +1026,11 @@ if(endPos>document.getLength())
 	/////////////////////////////////////////////////////////////////
 	/** Current display mode */
 	private boolean mode = false;
-	/** List of text parts common to both estimated and reference entities */
+	/** List of text parts common to both estimated and reference mentions */
 	private List<int[]> commonParts = null;
-	/** List of text parts present only in reference entities */
+	/** List of text parts present only in reference mentions */
 	private List<int[]> missingParts = null;
-	/** List of text parts present only in estimated entities */
+	/** List of text parts present only in estimated mentions */
 	private List<int[]> excessParts = null;
 	/** Style used for common parts */
 	private Style commonStyle = null;
@@ -1071,18 +1071,18 @@ if(endPos>document.getLength())
 			Document document = textPane.getDocument();
 			String text = document.getText(start, length);
 			
-//			// if the text is right before or after an entity: do not highlight it
-//			boolean entityAdjacent = isEntityAdjacent(start);
+//			// if the text is right before or after an mention: do not highlight it
+//			boolean mentionAdjacent = isMentionAdjacent(start);
 			
-			// no need to update estimated entities, since they're the same than reference, in this specific case
+			// no need to update estimated mentions, since they're the same than reference, in this specific case
 			String rawText = document.getText(0, document.getLength());
-			references.rightShiftEntityPositions(start,length,rawText);
+			references.rightShiftMentionPositions(start,length,rawText);
 			mainEditor.textInserted(start,text);
 			
 			// update linked text
 			linkedText = mainEditor.getCurrentLinkedText();
 			
-//			if(entityAdjacent)
+//			if(mentionAdjacent)
 //			{	SwingUtilities.invokeLater(new Runnable()
 //				{	@Override
 //					public void run()
@@ -1103,9 +1103,9 @@ if(endPos>document.getLength())
 			int length = e.getLength();
 			Document document = textPane.getDocument();
 			
-			// no need to update estimated entities, since they're the same than reference, in this specific case
+			// no need to update estimated mentions, since they're the same than reference, in this specific case
 			String rawText = document.getText(0, document.getLength());
-			references.leftShiftEntityPositions(start,length,rawText);
+			references.leftShiftMentionPositions(start,length,rawText);
 			mainEditor.textRemoved(start,length);
 			
 			// update linked text

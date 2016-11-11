@@ -101,6 +101,6 @@ class PaintableToggleButton extends JToggleButton
 			    String text = getText();
 			    g.drawString(text, (w - g.getFontMetrics().stringWidth(text))/2 + 1, (h + g.getFontMetrics().getAscent())/2 - 1);
 			}
-		}
+		} 
 	}
 }

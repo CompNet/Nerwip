@@ -143,4 +143,4 @@ public class TextDialog extends JDialog implements ActionListener
 	{	setVisible(false);  
 		dispose();
 	}
-}
+} 

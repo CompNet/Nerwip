@@ -51,7 +51,7 @@ public class MovableTabbedPane extends JTabbedPane
 	private final Color lineColor = new Color(0, 100, 255);
 	private int dragTabIndex = -1;
 
-	private void clickArrowButton(String actionKey) {
+	private void clickArrowButton(String actionKey) { 
 		ActionMap map = getActionMap();
 		if (map != null) {
 			Action action = map.get(actionKey);

@@ -156,7 +156,7 @@ if(result==null)
 			String key = txt.getKey();
 			String value = txt.getValue();
 			String tooltip = tt.getValue();
-			result.addText(key,value,tooltip);
+			result.addText(key,value,tooltip); 
 		}
 		return result;
 	}

@@ -18,7 +18,7 @@ extends LookupTable {
     public ColorMapper(Color from,
                        Color to) {
         super(0, 4);
-
+ 
         this.from = new int[] {
             from.getRed(),
             from.getGreen(),
