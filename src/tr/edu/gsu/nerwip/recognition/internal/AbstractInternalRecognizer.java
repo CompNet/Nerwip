@@ -32,8 +32,8 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
@@ -45,7 +45,7 @@ import tr.edu.gsu.nerwip.recognition.RecognizerException;
  * @param <T>
  * 		Class of the converter associated to this recognizer.
  * @param <U>
- * 		Class of the internal representation of the entities resulting from the detection.
+ * 		Class of the internal representation of the mentions resulting from the detection.
  * 		 
  * @author Yasa Akbulut
  * @author Vincent Labatut
@@ -57,7 +57,7 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 	 * using the specified default options.
 	 * 
 	 * @param trim
-	 * 		Whether or not the beginings and ends of entities should be 
+	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
@@ -92,10 +92,10 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities process(Article article) throws RecognizerException
+	public Mentions process(Article article) throws RecognizerException
 	{	logger.log("Start applying "+getName()+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
-		Entities result = null;
+		Mentions result = null;
 		
 		try
 		{	// checks if the result file already exists
@@ -112,11 +112,11 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
 				
 				// apply the NER tool
-				logger.log("Detect the entities");
+				logger.log("Detect the mentions");
 				prepareRecognizer();
-				U intRes = detectEntities(article);
+				U intRes = detectMentions(article);
 				
-				// possibly record entities as they are outputted (useful for debug)
+				// possibly record mentions as they are outputted (useful for debug)
 				if(outRawResults)
 				{	logger.log("Record raw "+getName()+" results");
 					converter.writeRawResults(article, intRes);
@@ -124,37 +124,37 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 				else
 					logger.log("Raw results not recorded (option disabled)");
 				
-				// convert entities to our internal representation
-				logger.log("Convert entities to internal representation");
+				// convert mentions to our internal representation
+				logger.log("Convert mentions to internal representation");
 				result = converter.convert(article,intRes);
 	
-				// check if the entities are consistent
+				// check if the mentions are consistent
 				String text = article.getRawText();
-				for(AbstractEntity<?> entity: result.getEntities())
-				{	if(!entity.checkText(article))
-						logger.log("ERROR: entity text not consistant with text/position, '"+entity.getStringValue()+" vs. '"+text.substring(entity.getStartPos(),entity.getEndPos())+"'");
+				for(AbstractMention<?> mention: result.getMentions())
+				{	if(!mention.checkText(article))
+						logger.log("ERROR: mention text not consistant with text/position, '"+mention.getStringValue()+" vs. '"+text.substring(mention.getStartPos(),mention.getEndPos())+"'");
 				}
 				
-				// possibly trim entities (remove non-digit/letter chars at beginning/end)
-				logger.log("Possibly clean entities.");
-				cleanEntities(result);
+				// possibly trim mentions (remove non-digit/letter chars at beginning/end)
+				logger.log("Possibly clean mentions.");
+				cleanMentions(result);
 				
 				// possibly filter stop-words and pronouns
-				logger.log("Filter entities (pronouns, stop-words, etc.)");
+				logger.log("Filter mentions (pronouns, stop-words, etc.)");
 				filterNoise(result,language);
 				
-				// filter overlapping entities
-				logger.log("Filter overlapping entities");
+				// filter overlapping mentions
+				logger.log("Filter overlapping mentions");
 				filterRedundancy(result);
 				
-				// record entities using our xml format
-				logger.log("Convert entities to our XML format");
+				// record mentions using our xml format
+				logger.log("Convert mentions to our XML format");
 				converter.writeXmlResults(article,result);
 			}
 			
 			// if the results already exist, we fetch them
 			else
-			{	logger.log("Loading entities from cached file");
+			{	logger.log("Loading mentions from cached file");
 				result = converter.readXmlResults(article);
 			}
 		}
@@ -175,8 +175,8 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 			throw new RecognizerException(e.getMessage());
 		}
 	
-		int nbrEnt = result.getEntities().size();
-		logger.log(getName()+" over ["+article.getName()+"], found "+nbrEnt+" entities");
+		int nbrEnt = result.getMentions().size();
+		logger.log(getName()+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
 		logger.decreaseOffset();
 
 		return result;
@@ -185,17 +185,17 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
     /**
      * Takes an object representation of the article, 
      * and returns the internal representation of
-     * the detected entities. Those must then
+     * the detected mentions. Those must then
      * be converted to objects compatible
      * with the rest of Nerwip.
      * 
      * @param article
      * 		Article to process.
      * @return
-     * 		Object representing the detected entities.
+     * 		Object representing the detected mentions.
      * 
      * @throws RecognizerException
      * 		Problem while applying the NER tool.
      */
-	protected abstract U detectEntities(Article article) throws RecognizerException;
+	protected abstract U detectMentions(Article article) throws RecognizerException;
 }

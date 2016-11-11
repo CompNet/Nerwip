@@ -39,9 +39,9 @@ import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -151,9 +151,9 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities convert(Article article, List<String> text) throws ConverterException
+	public Mentions convert(Article article, List<String> text) throws ConverterException
 	{	logger.increaseOffset();
-		Entities result = new Entities(recognizerName);
+		Mentions result = new Mentions(recognizerName);
 
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = text.iterator();
@@ -189,18 +189,18 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 						data.add(element);
 				}
 				
-				// create entities
-				logger.log("Create entity objects");
+				// create mentions
+				logger.log("Create mention objects");
 				for(Element element: data)
-				{	AbstractEntity<?> entity = convertElement(element, metaData, prevSize);
-					if(entity!=null)
-						result.addEntity(entity);
+				{	AbstractMention<?> mention = convertElement(element, metaData, prevSize);
+					if(mention!=null)
+						result.addMention(mention);
 				}
 				
 				// update size
 				prevSize = prevSize + originalText.length();
 				
-				// fix entity positions
+				// fix mention positions
 	//			fixRelativePositions(root, result);
 			}
 			catch (JDOMException e)
@@ -219,7 +219,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	/**
 	 * Receives an XML element and extract
 	 * the information necessary to create
-	 * an entity.
+	 * a mention.
 	 *  
 	 * @param element
 	 * 		Element to process.
@@ -228,10 +228,10 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	 * @param prevSize
 	 * 		Size of the parts already processed. 
 	 * @return
-	 * 		The resulting entity.
+	 * 		The resulting mention.
 	 */
-	private AbstractEntity<?> convertElement(Element element, Map<String,Element> metaData, int prevSize)
-	{	AbstractEntity<?> result = null;
+	private AbstractMention<?> convertElement(Element element, Map<String,Element> metaData, int prevSize)
+	{	AbstractMention<?> result = null;
 		
 		// get subject of the instance
 		Element subjElt = element.getChild(ELT_SUBJECT,nsC);
@@ -245,7 +245,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 		String typeCode = typeElt.getAttributeValue(ATT_RESOURCE,nsRdf);
 		EntityType type = CONVERSION_MAP.get(typeCode);
 		
-		// possibly create entity 
+		// possibly create mention 
 		if(type!=null)
 		{	Element valueElt = element.getChild(ELT_EXACT,nsC);
 			String valueStr = valueElt.getText();
@@ -256,7 +256,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 			String lengthStr = lengthElt.getText();
 			int length = Integer.parseInt(lengthStr);
 			int endPos = startPos + length;
-			result = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
+			result = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 		}
 		
 		return result;
@@ -264,16 +264,16 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	
 //	/**
 //	 * Method previously used to adjust
-//	 * the position of entities.
+//	 * the position of mentions.
 //	 * 
 //	 * @param root
 //	 * 		Root of the XML document.
-//	 * @param entities
-//	 * 		List of entities to be corrected.
+//	 * @param mentions
+//	 * 		List of mentions to be corrected.
 //	 */
 //	@SuppressWarnings("unchecked")
-//	private void fixRelativePositions(Element root, List<AbstractEntity<?>> entities)
-//	{	if(!entities.isEmpty())
+//	private void fixRelativePositions(Element root, List<AbstractMention<?>> mentions)
+//	{	if(!mentions.isEmpty())
 //		{	// retrieve full text as recorded in the XML document
 //			Element elt = null;
 //			List<Element> list = root.getChildren();
@@ -287,17 +287,17 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 ////			((CDATA)elt.getContent().iterator().next()).getValue();
 //			String fullText = elt.getText();
 //			
-//			// adjust entity positions accordingly
+//			// adjust mention positions accordingly
 //			Matcher matcher = DOC_PATTERN.matcher(fullText);
 //			while(matcher.find())
 //			{	int matcherStart = matcher.start();
-//				for(AbstractEntity<?> entity : entities)
-//				{	int startPos = entity.getStartPos();
+//				for(AbstractMention<?> mention : mentions)
+//				{	int startPos = mention.getStartPos();
 //					if(startPos > matcherStart)
 //					{	int newStart = startPos - 1;
-//						entity.setStartPos(newStart);
-//						int newEnd = entity.getEndPos() - 1;
-//						entity.setEndPos(newEnd);
+//						mention.setStartPos(newStart);
+//						int newEnd = mention.getEndPos() - 1;
+//						mention.setEndPos(newEnd);
 //					}
 //				}
 //			}

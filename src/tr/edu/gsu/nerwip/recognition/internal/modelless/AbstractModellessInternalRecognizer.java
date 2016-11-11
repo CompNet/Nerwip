@@ -38,7 +38,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInter
  * @param <T>
  * 		Class of the converter associated to this recognizer.
  * @param <U>
- * 		Class of the internal representation of the entities resulting from the detection.
+ * 		Class of the internal representation of the mentions resulting from the detection.
  * 		 
  * @author Vincent Labatut
  */
@@ -49,7 +49,7 @@ public abstract class AbstractModellessInternalRecognizer<U,T extends AbstractIn
 	 * using the specified options.
 	 * 
 	 * @param trim
-	 * 		Whether or not the beginings and ends of entities should be 
+	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.

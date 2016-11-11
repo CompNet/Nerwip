@@ -54,8 +54,8 @@ import org.htmlparser.util.ParserException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
@@ -67,7 +67,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class implements our own NER tool, called Subee. It takes advantage of
- * hyperlinks present in  Wikipedia pages to identify entities in the text, and 
+ * hyperlinks present in  Wikipedia pages to identify mentions in the text, and 
  * of Freebase to select their type.
  * <br/>
  * Recommended parameter values:
@@ -85,7 +85,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEntity<?>>, SubeeConverter>
+public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMention<?>>, SubeeConverter>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -94,7 +94,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	 * 
 	 * @param additionalOccurrences
 	 * 		Whether or not the tool should annotate the additional occurrences
-	 * 		of some entity.
+	 * 		of some mention.
 	 * @param useTitle
 	 * 		Whether or not the tool should use the article title to infer
 	 * 		the person name.
@@ -102,10 +102,10 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	 * 		Whether the tool should use the single notable type provided by Freebase,
 	 * 		or all available Freebase types.
 	 * @param useAcronyms
-	 * 		On their first occurrence, certain entities are followed by the associated
+	 * 		On their first occurrence, certain mentions are followed by the associated
 	 * 		acronym: this option allows searching them in the rest of the text.
 	 * @param discardDemonyms
-	 * 		Ignore entities whose string value corresponds to a demonym, i.e. the adjective
+	 * 		Ignore mentions whose string value corresponds to a demonym, i.e. the adjective
 	 * 		associated to a place, or the name of its inhabitants. Subee generally takes them
 	 * 		for the place itself, leading to an increased number of false positives.
 	 */
@@ -147,9 +147,9 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities detected by this recognizer */
+	/** List of entity types detected by this recognizer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 		EntityType.LOCATION,
 		EntityType.ORGANIZATION,
@@ -157,7 +157,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	);
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -180,20 +180,20 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<AbstractEntity<?>> detectEntities(Article article) throws RecognizerException
+	protected List<AbstractMention<?>> detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
-		List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
 		try
 		{	// detect and process hyperlinks
 			logger.log("Detect and process hyperlinks");
-			List<AbstractEntity<?>> sureEntities = processHyperlinks(article);
+			List<AbstractMention<?>> sureMentions = processHyperlinks(article);
 			
-			// look for additional occurrences of these entities
-			List<AbstractEntity<?>> possibleEntities = new ArrayList<AbstractEntity<?>>();
+			// look for additional occurrences of these mentions
+			List<AbstractMention<?>> possibleMentions = new ArrayList<AbstractMention<?>>();
 			if(additionalOccurrences)
 			{	logger.log("Look for additional occurrences");
-				possibleEntities = processOccurrences(article,sureEntities);
+				possibleMentions = processOccurrences(article,sureMentions);
 			}
 			else
 				logger.log("Ignore additional occurrences");
@@ -201,14 +201,14 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 			// process the name of the person described in the processed article
 			if(useTitle)
 			{	logger.log("Process the name of this article main person");
-				List<AbstractEntity<?>> temp = processMainName(article);
-				possibleEntities.addAll(temp);
+				List<AbstractMention<?>> temp = processMainName(article);
+				possibleMentions.addAll(temp);
 			}
 			else
 				logger.log("Ignore article title");
 			
-			// build result list by merging both lists (sure and possible entities)
-			result = mergeEntityLists(sureEntities,possibleEntities);
+			// build result list by merging both lists (sure and possible mentions)
+			result = mergeMentionLists(sureMentions,possibleMentions);
 		}
 		catch (ParserException e)
 		{	e.printStackTrace();
@@ -249,7 +249,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	 * @param article 
 	 * 		Article to process.
 	 * @return
-	 * 		List of possible entities based on the analysis of the article title and name.
+	 * 		List of possible mentions based on the analysis of the article title and name.
 	 * 
 	 * @throws ClientProtocolException
 	 * 		Problem while accessing Freebase.
@@ -260,9 +260,9 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	 * @throws org.json.simple.parser.ParseException
 	 * 		Problem while accessing Freebase.
 	 */
-	private List<AbstractEntity<?>> processMainName(Article article) throws ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
+	private List<AbstractMention<?>> processMainName(Article article) throws ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
 	{	logger.increaseOffset();
-		List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		String rawText = article.getRawText();
 
 		// init candidate strings with article name and title 
@@ -377,7 +377,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 			{	int startPos = m.start();
 				int endPos = m.end();
 				String valueStr = m.group();
-				AbstractEntity<?> ent = AbstractEntity.build(EntityType.PERSON, startPos, endPos, RecognizerName.SUBEE, valueStr);
+				AbstractMention<?> ent = AbstractMention.build(EntityType.PERSON, startPos, endPos, RecognizerName.SUBEE, valueStr);
 				result.add(ent);
 			}
 		}
@@ -403,16 +403,16 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 
 	/**
 	 * Takes advantage of hyperlinks in the text, in order
-	 * to detect entities. Most of the time, in a Wikipedia
+	 * to detect mentions. Most of the time, in a Wikipedia
 	 * article, the hyperlink is defined only for the very 
-	 * first occurrence of the entity. For this reason,
+	 * first occurrence of the mention. For this reason,
 	 * an additional processing is required to find the possible
 	 * other occurrences (cf. {@link #processOccurrences(Article, List)}). 
 	 * 
 	 * @param article
 	 * 		Processed article.
 	 * @return
-	 * 		The list of entities detected by this method.
+	 * 		The list of mentions detected by this method.
 	 * 
 	 * @throws ParserException
 	 * 		Problem while parsing the hyperlinks.
@@ -425,9 +425,9 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	 * @throws org.json.simple.parser.ParseException
 	 * 		Problem while accessing Freebase.
 	 */
-	private List<AbstractEntity<?>> processHyperlinks(Article article) throws ParserException, ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
+	private List<AbstractMention<?>> processHyperlinks(Article article) throws ParserException, ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
 	{	logger.increaseOffset();
-		List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 	
 		// parse linked text to automatically get hyperlink list
 		logger.log("Get hyperlink list");
@@ -465,7 +465,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 					else
 					{	List<String> possibleTypes = new ArrayList<String>();
 						possibleTypes.add(possibleType);
-						type = retrieveEntityType(possibleTypes);
+						type = retrieveMentionType(possibleTypes);
 					}
 				}
 				// use all available types
@@ -475,11 +475,11 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 					if(possibleTypes.isEmpty())
 						logger.log("WARNING: no Freebase type found at all for \""+valueStr+"\"");
 					else
-						type = retrieveEntityType(possibleTypes);
+						type = retrieveMentionType(possibleTypes);
 				}
 			}
 			
-			// set up the entity position
+			// set up the mention position
 			int startPos = linkTag.getStartPosition() - offset;
 			int endPos = startPos + length;
 			offset = offset + test.length() - length;
@@ -488,21 +488,21 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 //String valueStr2 = text.substring(startPos,endPos);
 //boolean test2 = valueStr.equals(valueStr2);
 //if(!test2)
-//	System.out.println("ERROR: entity and article do not match (position problem)");
+//	System.out.println("ERROR: mention and article do not match (position problem)");
 				
-			// no type: we can't create the entity
+			// no type: we can't create the mention
 			if(type==null)
-			{	logger.log("WARNING: no entity was created, because no type could be identified for \""+valueStr+"\"");
+			{	logger.log("WARNING: no mention was created, because no type could be identified for \""+valueStr+"\"");
 			}
 			// otherwise, we try
 			else
 			{	// ignore if purely numerical
 				if(StringTools.hasNoLetter(valueStr))
-					logger.log("The string is only numerical (no letters) so no entity is created for "+valueStr);
+					logger.log("The string is only numerical (no letters) so no mention is created for "+valueStr);
 				
 				// ignore if recognized as a location/organization but actually a demonym
 				else if(discardDemonyms && (type==EntityType.LOCATION || type==EntityType.ORGANIZATION) && DEMONYMS.contains(valueStr))
-					logger.log("The string is in the demonym list, so no entity is created for "+valueStr);
+					logger.log("The string is in the demonym list, so no mention is created for "+valueStr);
 				
 				else
 				{	
@@ -515,11 +515,11 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 					{	// only organization and locations have relevant acronyms
 						// (for a person, acronyms usually correspond to titles or awards)
 						if(type==EntityType.ORGANIZATION || type==EntityType.LOCATION)
-						{	// check if there's an acronym inside the entity name itself
+						{	// check if there's an acronym inside the mention name itself
 							Pattern r = Pattern.compile("\\([^\\(a-z]+?\\)$");	// must be in uppercase
 							Matcher m = r.matcher(valueStr);
 							if(m.find())
-							{	// create an additional entity (acronym) with the same type
+							{	// create an additional mention (acronym) with the same type
 								int last = m.groupCount();
 								String acro = m.group(last);
 								int l = acro.length();
@@ -532,46 +532,46 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 //String valueStr3 = text.substring(s,e);
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
-//	System.out.println("ERROR: entity acronym and article do not match (position problem)");
-									AbstractEntity<?> entity = AbstractEntity.build(type, s, e, RecognizerName.SUBEE, acro);
-									result.add(entity);
-									logger.log("Creation of an extra entity (acronym) "+entity);
+//	System.out.println("ERROR: mention acronym and article do not match (position problem)");
+									AbstractMention<?> mention = AbstractMention.build(type, s, e, RecognizerName.SUBEE, acro);
+									result.add(mention);
+									logger.log("Creation of an extra mention (acronym) "+mention);
 								}
 								// remove the acronym from the original string
 								valueStr = valueStr.substring(0,valueStr.length()-l).trim();
 								endPos = startPos + valueStr.length();
 							}
-							// check if there's an acronym right after the entity 
+							// check if there's an acronym right after the mention 
 							else
 							{	r = Pattern.compile("\\([^\\(a-z]+?\\)");	// must be in uppercase
 								m = r.matcher(linkedText);
 								if(m.find(linkTag.getEndTag().getEndPosition()-TAG_PAR_START.length()))
-								{	// possibly create an additional entity (acronym) with the same type
+								{	// possibly create an additional mention (acronym) with the same type
 									int last = m.groupCount();
 									String acro = m.group(last);
 									acro = acro.substring(1,acro.length()-1);
 									int s = m.start(last)-1 - (offset-TAG_PAR_END.length()) + 1;	// actually <a/> and not <p/>, but same length...
-									// the acronym must be right after the original entity
+									// the acronym must be right after the original mention
 									if(s==endPos+2 && !StringTools.hasNoLetter(acro))	
 									{	int e = m.end(last)-1 - (offset-TAG_PAR_END.length()) - 1 ;
 //debug
 //String valueStr3 = text.substring(s,e);
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
-//	System.out.println("ERROR: entity acronym and article do not match (position problem)");
-										AbstractEntity<?> entity = AbstractEntity.build(type, s, e, RecognizerName.SUBEE, acro);
-										result.add(entity);
-										logger.log("Creation of an extra entity (acronym) "+entity);
+//	System.out.println("ERROR: mention acronym and article do not match (position problem)");
+										AbstractMention<?> mention = AbstractMention.build(type, s, e, RecognizerName.SUBEE, acro);
+										result.add(mention);
+										logger.log("Creation of an extra mention (acronym) "+mention);
 									}
 								}
 							}
 						}
 					}
 					
-					// create the entity
-					AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, RecognizerName.SUBEE, valueStr);
-					result.add(entity);
-					logger.log("Creation of the entity "+entity);
+					// create the mention
+					AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, RecognizerName.SUBEE, valueStr);
+					result.add(mention);
+					logger.log("Creation of the mention "+mention);
 				}
 			}
 		}
@@ -664,7 +664,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	 * @return
 	 * 		Corresponding ArticleCategory, or {@code null} if node could be found.
 	 */
-	protected synchronized EntityType retrieveEntityType(List<String> fbTypes)
+	protected synchronized EntityType retrieveMentionType(List<String> fbTypes)
 	{	logger.increaseOffset();
 		Set<String> knownKeys = TYPE_MAP.keySet();
 		
@@ -800,30 +800,30 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	/////////////////////////////////////////////////////////////////
 	// OCCURRENCES	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Whether or not the tool should try to detect additional occurrences of linked entities */
+	/** Whether or not the tool should try to detect additional occurrences of linked mentions */
 	private boolean additionalOccurrences;
 	
 	/**
-	 * Receives the entities detected thanks to the hyperlinks, and tries 
+	 * Receives the mentions detected thanks to the hyperlinks, and tries 
 	 * to find their other occurrences in the text.
 	 * 
 	 * @param article 
 	 * 		Article to process.
-	 * @param sureEntities 
-	 * 		Entities already detected, corresponding to hyperlinks.
+	 * @param sureMentions 
+	 * 		Mentions already detected, corresponding to hyperlinks.
 	 * @return
-	 * 		A new list of possible entities, to be merged later with the sure entities.
+	 * 		A new list of possible mentions, to be merged later with the sure mentions.
 	 */
-	private List<AbstractEntity<?>> processOccurrences(Article article, List<AbstractEntity<?>> sureEntities)
+	private List<AbstractMention<?>> processOccurrences(Article article, List<AbstractMention<?>> sureMentions)
 	{	logger.increaseOffset();
 		String rawText = article.getRawText();
-		List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 	
-//		// sort entities by type (we want to prioritize them)
-//		logger.log("Sort entity by type");
-//		TreeSet<AbstractEntity<?>> temp = new TreeSet<AbstractEntity<?>>(new Comparator<AbstractEntity<?>>()
+//		// sort mentions by type (we want to prioritize them)
+//		logger.log("Sort mention by type");
+//		TreeSet<AbstractMention<?>> temp = new TreeSet<AbstractMention<?>>(new Comparator<AbstractMention<?>>()
 //		{	@Override
-//			public int compare(AbstractEntity<?> o1, AbstractEntity<?> o2)
+//			public int compare(AbstractMention<?> o1, AbstractMention<?> o2)
 //			{	int result = 0;
 //				EntityType t1 = o1.getType();
 //				EntityType t2 = o2.getType();
@@ -838,24 +838,24 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 //				return result;
 //			}	
 //		});
-//		temp.addAll(sureEntities);
+//		temp.addAll(sureMentions);
 		
 		// look for additional occurrences
 		logger.log("Look for additional occurrences");
-		for(AbstractEntity<?> entity: sureEntities)
-		{	String valueStr = entity.getStringValue();
+		for(AbstractMention<?> mention: sureMentions)
+		{	String valueStr = mention.getStringValue();
 			
-			// look for the entity in the text
+			// look for the mention in the text
 			String escapedStr = Pattern.quote(valueStr);
 			Pattern p = Pattern.compile("\\b"+escapedStr+"\\b");
 			Matcher m = p.matcher(rawText);
 			while(m.find())
 			{	int startPos = m.start();
-//				// don't use the same position for several entities
+//				// don't use the same position for several mentions
 //				if(!positionAlreadyUsed(startPos, result))	// this test is now done later 
 				{	int endPos = m.end();
-					EntityType type = entity.getType();
-					AbstractEntity<?> ent = AbstractEntity.build(type, startPos, endPos, RecognizerName.SUBEE, valueStr);
+					EntityType type = mention.getType();
+					AbstractMention<?> ent = AbstractMention.build(type, startPos, endPos, RecognizerName.SUBEE, valueStr);
 					result.add(ent);
 				}
 			}
@@ -866,42 +866,42 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractEnti
 	}
 	
 	/**
-	 * Merges two lists of entities: <i>sure</i> entities identified based on hyperlinks alone,
-	 * and <i>possible</i> entities identified using other means. If some possible entity overlaps
-	 * with a sure one, then only the sure one is kept. If several possible entities overlap,
+	 * Merges two lists of mentions: <i>sure</i> mentions identified based on hyperlinks alone,
+	 * and <i>possible</i> mentions identified using other means. If some possible mention overlaps
+	 * with a sure one, then only the sure one is kept. If several possible mentions overlap,
 	 * then the longest one (in terms of string length) is kept.
 	 * 
-	 * @param sureEntities
-	 * 		Entities for which we are reasonably sure.
-	 * @param possibleEntities
-	 * 		Entities for which we are less sure.
+	 * @param sureMentions
+	 * 		Mentions for which we are reasonably sure.
+	 * @param possibleMentions
+	 * 		Mentions for which we are less sure.
 	 * @return
 	 * 		Result of the merging of both lists.
 	 */
-	private List<AbstractEntity<?>> mergeEntityLists(List<AbstractEntity<?>> sureEntities, List<AbstractEntity<?>> possibleEntities)
-	{	logger.log("Start merging sure and possible entity lists");
+	private List<AbstractMention<?>> mergeMentionLists(List<AbstractMention<?>> sureMentions, List<AbstractMention<?>> possibleMentions)
+	{	logger.log("Start merging sure and possible mention lists");
 		logger.increaseOffset();
-		ArrayList<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		ArrayList<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
-		// add all sure entities
-		logger.log("Add all sure entities ("+sureEntities.size()+" entities)");
-		result.addAll(sureEntities);
+		// add all sure mentions
+		logger.log("Add all sure mentions ("+sureMentions.size()+" mentions)");
+		result.addAll(sureMentions);
 		
-		// remove overlapping possible entities (keeping the longest ones)
-		logger.log("Remove overlapping possible entities ("+possibleEntities.size()+" entities)");
-		filterRedundancy(possibleEntities);
-		logger.log("Removal complete ("+possibleEntities.size()+" entities remaining)");
+		// remove overlapping possible mentions (keeping the longest ones)
+		logger.log("Remove overlapping possible mentions ("+possibleMentions.size()+" mentions)");
+		filterRedundancy(possibleMentions);
+		logger.log("Removal complete ("+possibleMentions.size()+" mentions remaining)");
 		
-		// add to the result only the possible entities with no overlap with sure ones
-		logger.log("Adding remaining entities to the sure ones, avoiding overlaps)");
-		for(AbstractEntity<?> entity: possibleEntities)
-		{	AbstractEntity<?> e = positionAlreadyUsed(entity, sureEntities);
+		// add to the result only the possible mentions with no overlap with sure ones
+		logger.log("Adding remaining mentions to the sure ones, avoiding overlaps)");
+		for(AbstractMention<?> mention: possibleMentions)
+		{	AbstractMention<?> e = positionAlreadyUsed(mention, sureMentions);
 			if(e==null)
-				result.add(entity);
+				result.add(mention);
 		}
 	
 		logger.decreaseOffset();
-		logger.log("Merging complete: "+result.size()+" entities in total");
+		logger.log("Merging complete: "+result.size()+" mentions in total");
 		return result;
 	}
 

@@ -104,7 +104,7 @@ public class SubeeTools
 		subee.prepareRecognizer();
 		
 		// convert types
-		EntityType type = subee.retrieveEntityType(types);
+		EntityType type = subee.retrieveMentionType(types);
 		logger.log("Corresponding entity type: "+type);
 		
 		logger.log("Type conversion complete");

@@ -15,10 +15,10 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityDate;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -45,7 +45,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * @param parenSplit 
 	 * 		Indicates whether mentions containing parentheses
 	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is plit 
-	 * 		in two distinct entities).
+	 * 		in two distinct mentions).
 	 */
 	public OpeNerConverter(String nerFolder, boolean parenSplit)
 	{	super(RecognizerName.OPENER, nerFolder, FileNames.FI_OUTPUT_TEXT);
@@ -56,7 +56,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	/////////////////////////////////////////////////////////////////
 	// TYPE CONVERSION MAP	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Map of string to entity type conversion */
+	/** Map of string to mention type conversion */
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
 	
 	/** Initialization of the conversion map */
@@ -67,7 +67,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 		CONVERSION_MAP.put("DATE", EntityType.DATE);
 	}
 	/*
-	 * Note: ignored entity types
+	 * Note: ignored mention types
 	 * (cf https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc)
 	 * Time
 	 * Money
@@ -84,19 +84,19 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private final static String ELT_TERMS = "terms";
 	/** Element representing a term */
 	private final static String ELT_TERM = "term";
-	/** Element containing the list of all detected entities */
+	/** Element containing the list of all detected mentions */
 	private final static String ELT_ENTITIES = "entities";
-	/** Element representing an entity */
+	/** Element representing an mention */
 	private final static String ELT_ENTITY = "entity";
-	/** Element containing the list of mentions to an entity */
+	/** Element containing the list of mentions to an mention */
 	private final static String ELT_REFERENCES = "references";
-	/** Element containing the list of external references for an entity */
+	/** Element containing the list of external references for an mention */
 	private final static String ELT_EXTERNAL_REFERENCES = "externalReferences";
-	/** Element representing an external reference for an entity */
+	/** Element representing an external reference for an mention */
 	private final static String ELT_EXTERNAL_REFERENCE = "externalReference";
-	/** Element representing a mention to an entity (in a reference element) or a reference to a word (in a term element) */
+	/** Element representing a mention to an mention (in a reference element) or a reference to a word (in a term element) */
 	private final static String ELT_SPAN = "span";
-	/** Element refering to a term constituting an entity mention */
+	/** Element refering to a term constituting an mention mention */
 	private final static String ELT_TARGET = "target";
 	/** Element representing a word (word form) */
 	private final static String ELT_WF = "wf";
@@ -107,7 +107,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private final static String ATT_TID = "tid";
 	/** Attribute representing the id of a term or word in a target element */
 	private final static String ATT_ID = "id";
-	/** Attribute representing the type of an entity */
+	/** Attribute representing the type of an mention */
 	private final static String ATT_TYPE = "type";
 	/** Attribute representing the starting position of a word in the text */
 	private final static String ATT_OFFSET = "offset";
@@ -127,9 +127,9 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private boolean parenSplit = true;
 	
 	@Override
-	public Entities convert(Article article, List<String> data) throws ConverterException
+	public Mentions convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
-		Entities result = new Entities(recognizerName);
+		Mentions result = new Mentions(recognizerName);
 		
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = data.iterator();
@@ -169,21 +169,21 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 					termMap.put(tid,termElt);
 				}
 				
-				// process all entity elements
-				logger.log("Create entity objects");
+				// process all mention elements
+				logger.log("Create mention objects");
 				Element entitiesElt = root.getChild(ELT_ENTITIES);
 				if(entitiesElt!=null)
 				{	List<Element> entityElts = entitiesElt.getChildren(ELT_ENTITY);
 					for(Element entityElt: entityElts)
-					{	AbstractEntity<?> entity = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
-						if(entity!=null)
-						{	// possibly split in two distinct, smaller entities when containing parentheses
-							AbstractEntity<?>[] temp = processParentheses(entity);
+					{	AbstractMention<?> mention = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
+						if(mention!=null)
+						{	// possibly split in two distinct, smaller mentions when containing parentheses
+							AbstractMention<?>[] temp = processParentheses(mention);
 							if(temp==null)
-								result.addEntity(entity);
+								result.addMention(mention);
 							else
-							{	for(AbstractEntity<?> t: temp)
-									result.addEntity(t);
+							{	for(AbstractMention<?> t: temp)
+									result.addMention(t);
 							}
 						}
 					}
@@ -208,7 +208,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	/**
 	 * Receives an XML element and extract
 	 * the information necessary to create
-	 * an entity.
+	 * an mention.
 	 *  
 	 * @param element
 	 * 		Element to process.
@@ -221,11 +221,11 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * @param part
 	 * 		Part of the original text currently processed. 
 	 * @return
-	 * 		The resulting entity, or {@code null} if its
+	 * 		The resulting mention, or {@code null} if its
 	 * 		type is not supported.
 	 */
-	private AbstractEntity<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
-	{	AbstractEntity<?> result = null;
+	private AbstractMention<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
+	{	AbstractMention<?> result = null;
 		
 		String typeCode = element.getAttributeValue(ATT_TYPE);
 		EntityType type = CONVERSION_MAP.get(typeCode);
@@ -278,11 +278,11 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 					endPos = endPos2;
 				}
 				
-				// create entity
+				// create mention
 				String valueStr = part.substring(startPos, endPos);
 				startPos = startPos + prevSize;
 				endPos = endPos + prevSize;
-				result = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr);
+				result = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 				
 				// TODO we could add a unique code to the several mentions of the same entity
 			}
@@ -293,7 +293,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 			{	// TODO we could retrieve the assocated knowledge base references
 				// https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc
 				List<Element> extReferenceElts = extReferencesElt.getChildren(ELT_EXTERNAL_REFERENCE);
-				logger.log("Found the following external references for entity "+result);
+				logger.log("Found the following external references for mention "+result);
 				logger.increaseOffset();
 					for(Element extReferenceElt: extReferenceElts)
 					{	String resource = extReferenceElt.getAttributeValue(ATT_RESOURCE);
@@ -309,48 +309,48 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	}
 	
 	/**
-	 * On strings such as "Limoges (Haute-Vienne)", OpeNer tends to detect a single entity
+	 * On strings such as "Limoges (Haute-Vienne)", OpeNer tends to detect a single mention
 	 * when there are actually two ("Limoges" and "Haute-Vienne"). This method allows to
-	 * post-process such results, in order to get both entities.
+	 * post-process such results, in order to get both mentions.
 	 * 
-	 * @param entity
-	 * 		The original entity, containing both mentions.
+	 * @param mention
+	 * 		The original mention, containing both mentions.
 	 * @return
 	 * 		An array containing the two smaller mentions, or {@code null} if
-	 * 		the specified entity was not of the desired form.
+	 * 		the specified mention was not of the desired form.
 	 */
-	private AbstractEntity<?>[] processParentheses(AbstractEntity<?> entity)
-	{	AbstractEntity<?>[] result = null;
+	private AbstractMention<?>[] processParentheses(AbstractMention<?> mention)
+	{	AbstractMention<?>[] result = null;
 		
-		if(parenSplit && !(entity instanceof EntityDate))
-		{	// get entity info
-			String original = entity.getStringValue();
-			int startPos = entity.getStartPos();
-			EntityType type = entity.getType();
-			RecognizerName source = entity.getSource();
+		if(parenSplit && !(mention instanceof MentionDate))
+		{	// get mention info
+			String original = mention.getStringValue();
+			int startPos = mention.getStartPos();
+			EntityType type = mention.getType();
+			RecognizerName source = mention.getSource();
 	
 			// analyze the original string
 			int startPar = original.lastIndexOf('(');
 			int endPar = original.lastIndexOf(')');
 			if(startPar!=-1 && endPar!=-1 && startPar<endPar  // we need both opening and closing parentheses
 					&& !(startPar==0 && endPar==original.length()-1)) // to avoid treating things like "(Paris)" 
-			{	// first entity
+			{	// first mention
 				String valueStr1 = original.substring(0,startPar);
 				int startPos1 = startPos;
 				int endPos1 = startPos + startPar;
-				AbstractEntity<?> entity1 = AbstractEntity.build(type, startPos1, endPos1, source, valueStr1);
+				AbstractMention<?> mention1 = AbstractMention.build(type, startPos1, endPos1, source, valueStr1);
 //if(valueStr1.isEmpty())
 //	System.out.print("");
 
-				// second entity
+				// second mention
 				String valueStr2 = original.substring(startPar+1,endPar);
 				int startPos2 = startPos + startPar + 1;
 				int endPos2 = startPos + endPar;
-				AbstractEntity<?> entity2 = AbstractEntity.build(type, startPos2, endPos2, source, valueStr2);
+				AbstractMention<?> mention2 = AbstractMention.build(type, startPos2, endPos2, source, valueStr2);
 //if(valueStr2.isEmpty())
 //	System.out.print("");
 				
-				result = new AbstractEntity<?>[]{entity1,entity2};
+				result = new AbstractMention<?>[]{mention1,mention2};
 			}
 		}
 		

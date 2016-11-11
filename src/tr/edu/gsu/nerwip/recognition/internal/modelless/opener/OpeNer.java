@@ -83,16 +83,16 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 * 
 	 * @param parenSplit 
 	 * 		Indicates whether mentions containing parentheses
-	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is plit 
-	 * 		in two distinct entities).
+	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is split 
+	 * 		in two distinct mentions).
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 */
 	public OpeNer(boolean parenSplit, boolean ignorePronouns, boolean exclusionOn)
-	{	// it seems necessary to clean entities with OpeNer,
-		// other wise it sometimes includes punctation in the entities.
+	{	// it seems necessary to clean mentions with OpeNer,
+		// other wise it sometimes includes punctation in the mentions.
 		super(true,ignorePronouns,exclusionOn);
 		
 		setIgnoreNumbers(false);
@@ -133,7 +133,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by OpeNer */
+	/** List of entity types recognized by OpeNer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
 	(	EntityType.DATE,
 		EntityType.LOCATION,
@@ -142,7 +142,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	);
 
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -172,7 +172,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	private static final String TAGGER_URL = SERVICE_URL + "/pos-tagger";
 	/** Constituent parser URL */
 	private static final String PARSER_URL = SERVICE_URL + "/constituent-parser";
-	/** Entity recognizer URL */
+	/** Mention recognizer URL */
 	private static final String RECOGNIZER_URL = SERVICE_URL + "/ner";
 	/** Maximal request size for OpenNer (the doc recomands 1000) */
 	private static final int MAX_SIZE = 1000;
@@ -180,7 +180,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	private static final long SLEEP_PERIOD = 100;
 	
 	@Override
-	protected List<String> detectEntities(Article article) throws RecognizerException
+	protected List<String> detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();
@@ -351,13 +351,13 @@ if(i==18)
 	}
 	
 	/**
-	 * Sends the parsed text to the OpenNer entity recognizer,
+	 * Sends the parsed text to the OpenNer mention recognizer,
 	 * as a fourth processing step.
 	 * 
 	 * @param parsedText
 	 * 		The previously parsed text.
 	 * @return
-	 * 		Text with the detected entities.
+	 * 		Text with the detected mentions.
 	 * 
 	 * @throws RecognizerException
 	 * 		Problem while accessing the recognizer service.
@@ -367,7 +367,7 @@ if(i==18)
 	 * 		Problem while accessing the recognizer service.
 	 */
 	private String performRecognition(String parsedText) throws RecognizerException, ClientProtocolException, IOException
-	{	logger.log("Perform entity recognition");
+	{	logger.log("Perform mention recognition");
 		logger.increaseOffset();
 		
 		// define HTTP message

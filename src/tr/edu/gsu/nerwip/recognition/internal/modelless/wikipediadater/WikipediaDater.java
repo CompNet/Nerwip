@@ -32,9 +32,9 @@ import java.util.regex.Pattern;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.EntityDate;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
@@ -91,7 +91,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInterna
  * 
  * @author Vincent Labatut
  */
-public class WikipediaDater extends AbstractModellessInternalRecognizer<List<EntityDate>, WikipediaDaterConverter>
+public class WikipediaDater extends AbstractModellessInternalRecognizer<List<MentionDate>, WikipediaDaterConverter>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -127,15 +127,15 @@ public class WikipediaDater extends AbstractModellessInternalRecognizer<List<Ent
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// ENTITY TYPES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities detected by this recognizer */
+	/** List of entity types detected by this recognizer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 		EntityType.DATE
 	);
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -294,10 +294,10 @@ public class WikipediaDater extends AbstractModellessInternalRecognizer<List<Ent
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<EntityDate> detectEntities(Article article) throws RecognizerException
+	protected List<MentionDate> detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
-		List<EntityDate> result = new ArrayList<EntityDate>();
-		List<AbstractEntity<?>> temp = new ArrayList<AbstractEntity<?>>();
+		List<MentionDate> result = new ArrayList<MentionDate>();
+		List<AbstractMention<?>> temp = new ArrayList<AbstractMention<?>>();
 		String text = article.getRawText();
 		
 		logger.log("Process each registered pattern");
@@ -307,10 +307,10 @@ public class WikipediaDater extends AbstractModellessInternalRecognizer<List<Ent
 			{	int startPos = matcher.start();
 				int endPos = matcher.end();
 				String valueStr = matcher.group();
-				EntityDate entity = new EntityDate(startPos, endPos, getName(), valueStr);
-				if(positionAlreadyUsed(entity,temp)==null)
-				{	result.add(entity);
-					temp.add(entity);
+				MentionDate mention = new MentionDate(startPos, endPos, getName(), valueStr);
+				if(positionAlreadyUsed(mention,temp)==null)
+				{	result.add(mention);
+					temp.add(mention);
 				}
 			}
 		}

@@ -37,9 +37,9 @@ import java.util.Locale;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.EntityDate;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
@@ -57,7 +57,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
  * 
  * @author Burcu Küpelioğlu
  */
-public class DateExtractor extends AbstractModellessInternalRecognizer<List<EntityDate>, DateExtractorConverter>
+public class DateExtractor extends AbstractModellessInternalRecognizer<List<MentionDate>, DateExtractorConverter>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -93,15 +93,15 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities detected by this recognizer */
+	/** List of entity types detected by this recognizer */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 		EntityType.DATE
 	);
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -157,9 +157,9 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<EntityDate> detectEntities(Article article) throws RecognizerException
+	protected List<MentionDate> detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
-		List<EntityDate> result = new ArrayList<EntityDate>();
+		List<MentionDate> result = new ArrayList<MentionDate>();
 		
 		String text = article.getRawText();
 		
@@ -188,7 +188,7 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 	 * 
 	 * @param text
 	 * 		Whole text of the article.
-	 * @param entities
+	 * @param mentions
 	 * 		List of already detected dates.
 	 * @param patterns
 	 * 		List of patterns to apply.
@@ -199,9 +199,9 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 	 * @param yearFlag
 	 * 		Whether or not the pattern allows retrieving years numbers.
 	 */
-	public void extractDatePattern(String text, List<EntityDate> entities, List<SimpleDateFormat> patterns, boolean dayFlag, boolean monthFlag, boolean yearFlag)
+	public void extractDatePattern(String text, List<MentionDate> mentions, List<SimpleDateFormat> patterns, boolean dayFlag, boolean monthFlag, boolean yearFlag)
 	{	ParsePosition pos = new ParsePosition(0);
-		List<AbstractEntity<?>> temp = new ArrayList<AbstractEntity<?>>();
+		List<AbstractMention<?>> temp = new ArrayList<AbstractMention<?>>();
 		
 		while(pos.getIndex()<text.length())
 		{	int startPos = pos.getIndex();
@@ -237,7 +237,7 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 //					}
 				}
 				
-				// build the corresponding entity
+				// build the corresponding mention
 				if(date!=null) 
 				{	// build date
 					Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
@@ -253,11 +253,11 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 						day = calendar.get(Calendar.DAY_OF_MONTH);
 					tr.edu.gsu.nerwip.tools.time.Date value = new tr.edu.gsu.nerwip.tools.time.Date(day,month,year);
 					
-					// build entity
+					// build mention
 					String valueStr = text.substring(startPos, endPos);
-					EntityDate entity = new EntityDate(startPos, endPos, getName(), valueStr, value); 
-					entities.add(entity);
-					temp.add(entity);
+					MentionDate mention = new MentionDate(startPos, endPos, getName(), valueStr, value); 
+					mentions.add(mention);
+					temp.add(mention);
 				}
 			}
 			pos.setIndex(startPos+1);
@@ -286,7 +286,7 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Enti
 		return result;
 	}
 	
-//	private void completeDates(List<EntityDate> entities)
+//	private void completeDates(List<MentionDate> mentions)
 //	{	for(Date d:dates){
 //			int index = dates.indexOf(d);
 //			if(d.getYear() == 0) 

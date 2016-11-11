@@ -110,10 +110,10 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	List<EntityType> result = selectedLanguage.getHandledTypes(); 
 		return result;
 	}
@@ -144,7 +144,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	private static final long DELAY = 250;
 	
 	@Override
-	protected List<String> detectEntities(Article article) throws RecognizerException
+	protected List<String> detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();

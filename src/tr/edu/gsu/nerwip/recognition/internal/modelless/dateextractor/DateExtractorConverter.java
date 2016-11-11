@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.EntityDate;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -40,7 +40,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * 
  * @author Vincent Labatut
  */
-public class DateExtractorConverter extends AbstractInternalConverter<List<EntityDate>>
+public class DateExtractorConverter extends AbstractInternalConverter<List<MentionDate>>
 {	
 	/**
 	 * Builds a new converter using the specified info.
@@ -56,11 +56,11 @@ public class DateExtractorConverter extends AbstractInternalConverter<List<Entit
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities convert(Article article, List<EntityDate> entities) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, List<MentionDate> mentions) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 		
-		for(EntityDate entity: entities)
-			result.addEntity(entity);
+		for(MentionDate mention: mentions)
+			result.addMention(mention);
 		
 		return result;
 	}
@@ -69,11 +69,11 @@ public class DateExtractorConverter extends AbstractInternalConverter<List<Entit
 	// RAW				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void writeRawResults(Article article, List<EntityDate> entities) throws IOException
+	protected void writeRawResults(Article article, List<MentionDate> mentions) throws IOException
 	{	StringBuffer string = new StringBuffer();
 		
-		for(EntityDate entity: entities)
-			string.append(entity.toString() + "\n");
+		for(MentionDate mention: mentions)
+			string.append(mention.toString() + "\n");
 			
 		writeRawResultsStr(article, string.toString());
 	}

@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractConverter;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -41,7 +41,7 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * Nerwip objects. 
  * 
  * @param <T>
- * 		Internal representation of the entity list used by the NER tool.
+ * 		Internal representation of the mention list used by the NER tool.
  * 		 
  * @author Vincent Labatut
  */
@@ -66,19 +66,19 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Convert the specified objects, used internally by the associated NER
-	 * tool, into the entity list used internally by Nerwip.  
+	 * tool, into the mention list used internally by Nerwip.  
 	 * 
 	 * @param article
 	 * 		Original article (might be usefull, in order to get the full text).
 	 * @param data
 	 * 		Data objects to process.
 	 * @return
-	 * 		List of entities detected by the associated NER tool.
+	 * 		List of mentions detected by the associated NER tool.
 	 * 
 	 * @throws ConverterException
 	 * 		Problem while performing the conversion.
 	 */
-	public abstract Entities convert(Article article, T data) throws ConverterException;
+	public abstract Mentions convert(Article article, T data) throws ConverterException;
 
 	/////////////////////////////////////////////////////////////////
 	// RAW				/////////////////////////////////////////////
@@ -112,7 +112,7 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * @param article
 	 * 		Concerned article.
 	 * @param intRes
-	 * 		Result of the entity detection, represented using the format internal to the NER tool.
+	 * 		Result of the mention detection, represented using the format internal to the NER tool.
 	 * 
 	 * @throws IOException
 	 * 		Problem while writing the file.

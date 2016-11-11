@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
@@ -41,7 +41,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class SubeeConverter extends AbstractInternalConverter<List<AbstractEntity<?>>>
+public class SubeeConverter extends AbstractInternalConverter<List<AbstractMention<?>>>
 {	
 	/**
 	 * Builds a new converter using the specified info.
@@ -60,11 +60,11 @@ public class SubeeConverter extends AbstractInternalConverter<List<AbstractEntit
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities convert(Article article, List<AbstractEntity<?>> entities) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, List<AbstractMention<?>> mentions) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 		
-		for(AbstractEntity<?> entity: entities)
-			result.addEntity(entity);
+		for(AbstractMention<?> mention: mentions)
+			result.addMention(mention);
 		
 		return result;
 	}
@@ -73,11 +73,11 @@ public class SubeeConverter extends AbstractInternalConverter<List<AbstractEntit
 	// RAW				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void writeRawResults(Article article, List<AbstractEntity<?>> entities) throws IOException
+	protected void writeRawResults(Article article, List<AbstractMention<?>> mentions) throws IOException
 	{	StringBuffer string = new StringBuffer();
 		
-		for(AbstractEntity<?> entity: entities)
-			string.append(entity.toString() + "\n");
+		for(AbstractMention<?> mention: mentions)
+			string.append(mention.toString() + "\n");
 			
 		writeRawResultsStr(article, string.toString());
 	}
