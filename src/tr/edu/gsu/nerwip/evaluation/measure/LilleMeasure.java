@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -46,12 +46,12 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * Conference on Systems and Computer Science, p228-233, 2013.
  * <br/>
  * The <i>spatial evaluation</i> only concerns the position
- * of entities. We distinguish the following counts:
+ * of mentions. We distinguish the following counts:
  * <ul>
- * 		<li><b>Full match:</b> both entities have exactly the same limits.</li>
+ * 		<li><b>Full match:</b> both mentions have exactly the same limits.</li>
  * 		<li><b>Partial match:</b> they have not exactly the same limits, but they intersect.</li>
- * 		<li><b>Wrong hit:</b> the detected entity does not correspond to any reference entity.</li>
- * 		<li><b>Complete miss:</b> a reference entity does not overlap with any detected one.</li>
+ * 		<li><b>Wrong hit:</b> the detected mention does not correspond to any reference mention.</li>
+ * 		<li><b>Complete miss:</b> a reference mention does not overlap with any detected one.</li>
  * </ul>
  *  These counts are used to process the following scores:
  *  <ul>
@@ -62,9 +62,9 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  *  	<li><b>Total F-measure:</b> H[(FM+PM)/(FM+PM+WH);(FM+PM)/(FM+PM+CM)), i.e.
  *  			harmonic mean of fPre+pPre and pRec+pRec</li>
  *  </ul>
- *  The count definitions are straightforward when considering all entities,
+ *  The count definitions are straightforward when considering all mentions,
  *  or when restricting to certain category of text. But less so when
- *  considering only certain types of entities. In this case, we have the following:
+ *  considering only certain types of mentions. In this case, we have the following:
  * <ul>
  * 		<li><b>Full match, partial match & complete miss:</b> counted in the reference type.</li>
  * 		<li><b>Wrong hit:</b> counted in the estimated type.</li>
@@ -72,12 +72,12 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * The <i>type evaluation</i> only concerns the entity type. We use the classic counts from
  * classification, expressed in function of one type of interest. They can be processed only
  * when there is a match (be it full or partial) between the considered reference and
- * estimated entities.
+ * estimated mentions.
  * <ul>
- * 		<li><b>True positive:</b> both entities have the type of interest.</li>
- * 		<li><b>False positive:</b> the detected entity has the type of interest, but not the reference one.</li>
- * 		<li><b>False negative:</b> the reference entity has the type of interest, but not the detected one.</li>
- * 		<li><b>True negative:</b> (not counted) both entities do not have the type of interest.</li>
+ * 		<li><b>True positive:</b> both mentions have the type of interest.</li>
+ * 		<li><b>False positive:</b> the detected mention has the type of interest, but not the reference one.</li>
+ * 		<li><b>False negative:</b> the reference mention has the type of interest, but not the detected one.</li>
+ * 		<li><b>True negative:</b> (not counted) both mentions do not have the type of interest.</li>
  * </ul>
  *  These counts are then used to compute the following classic scores:
  *  <ul>
@@ -86,8 +86,8 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  *  	<li><b>F-measure:</b> H[(Pre;Rec), i.e.
  *  			harmonic mean of precision and recall</li>
  *  </ul>
- *  The count definitions are straightforward when considering entities by types. For overall
- *  or category-by-category values, we simply sum all counts over the considered set of entities,
+ *  The count definitions are straightforward when considering mentions by types. For overall
+ *  or category-by-category values, we simply sum all counts over the considered set of mentions,
  *  without considering their types, and process the mentionned scores.
  *  
  * @author Vincent Labatut
@@ -133,13 +133,13 @@ public class LilleMeasure extends AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
-	 * 		Entities used as reference.
+	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Entities detected by the NER tool.
+	 * 		Mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public LilleMeasure(AbstractRecognizer recognizer, List<EntityType> types, Entities reference, Entities estimation, List<ArticleCategory> categories)
+	public LilleMeasure(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	super(recognizer,types,reference,estimation,categories);
 	}	
 	
@@ -156,7 +156,7 @@ public class LilleMeasure extends AbstractMeasure
 	}
 	
 	@Override
-	public LilleMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Entities reference, Entities estimation, List<ArticleCategory> categories)
+	public LilleMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	LilleMeasure result = new LilleMeasure(recognizer,types,reference,estimation,categories);
 		return result;
 	}
@@ -175,13 +175,13 @@ public class LilleMeasure extends AbstractMeasure
 	/////////////////////////////////////////////////////////////////
 	// COUNTS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Full matches: both entities have exactly the same position */
+	/** Full matches: both mentions have exactly the same position */
 	public static final String COUNT_FM = "FullMatches";
-	/** Partial matches: overlap between the entities positions */
+	/** Partial matches: overlap between the mentions positions */
 	public static final String COUNT_PM = "PartialMatches";
-	/** Wrong hit: entity deteected, where there's nothing at all */
+	/** Wrong hit: mention deteected, where there's nothing at all */
 	public static final String COUNT_WH = "WrongHits";
-	/** Complete miss: entity not detected where there's one */
+	/** Complete miss: mention not detected where there's one */
 	public static final String COUNT_CM = "CompleteMisses";
 	/** True positive: correct type detected */
 	public static final String COUNT_TP = "TruePositives";
@@ -206,20 +206,20 @@ public class LilleMeasure extends AbstractMeasure
 	}
 
 	@Override
-	public void processCounts(Entities referenceOrig, Entities estimationOrig, List<ArticleCategory> categories)
-	{	// copy entity lists (those are going to be modified)
-		List<AbstractEntity<?>> reference = new ArrayList<AbstractEntity<?>>(referenceOrig.getEntities());
-		List<AbstractEntity<?>> estimation = new ArrayList<AbstractEntity<?>>(estimationOrig.getEntities());
+	public void processCounts(Mentions referenceOrig, Mentions estimationOrig, List<ArticleCategory> categories)
+	{	// copy mention lists (those are going to be modified)
+		List<AbstractMention<?>> reference = new ArrayList<AbstractMention<?>>(referenceOrig.getMentions());
+		List<AbstractMention<?>> estimation = new ArrayList<AbstractMention<?>>(estimationOrig.getMentions());
 		
-		// remove the entities whose type is not in the type list
-		cleanEntities(reference);
-		cleanEntities(estimation);
+		// remove the mentions whose type is not in the type list
+		cleanMentions(reference);
+		cleanMentions(estimation);
 		
-		// category entity lists
+		// category mention lists
 		for(ArticleCategory category: categories)
 		{	for(String count: COUNTS)
-			{	Map<ArticleCategory,List<AbstractEntity<?>>> map = entitiesByCategory.get(count);
-				List<AbstractEntity<?>> list = new ArrayList<AbstractEntity<?>>();
+			{	Map<ArticleCategory,List<AbstractMention<?>>> map = mentionsByCategory.get(count);
+				List<AbstractMention<?>> list = new ArrayList<AbstractMention<?>>();
 				map.put(category,list);
 			}
 		}
@@ -235,24 +235,24 @@ public class LilleMeasure extends AbstractMeasure
 	}
 	
 	/**
-	 * Process the full match entities.
+	 * Process the full match mentions.
 	 * 
 	 * @param reference
-	 * 		List of the entities of reference.
+	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the entities detected by the NER tool.
+	 * 		List of the mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processFullMatches(List<AbstractEntity<?>> reference, List<AbstractEntity<?>> estimation, List<ArticleCategory> categories)
-	{	Iterator<AbstractEntity<?>> itRef = reference.iterator();
+	private void processFullMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
-		{	AbstractEntity<?> ref = itRef.next();
+		{	AbstractMention<?> ref = itRef.next();
 			EntityType refType = ref.getType();
 			boolean found = false;
-			Iterator<AbstractEntity<?>> itEst = estimation.iterator();
+			Iterator<AbstractMention<?>> itEst = estimation.iterator();
 			while(itEst.hasNext() && !found)
-			{	AbstractEntity<?> est = itEst.next();
+			{	AbstractMention<?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(ref.hasSamePosition(est))
 				{	found = true;
@@ -261,11 +261,11 @@ public class LilleMeasure extends AbstractMeasure
 					
 					// update spatial evaluation
 						// all
-						List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_FM);
+						List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FM);
 						listAll.add(est);
 						// by type
-						Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_FM);
-						List<AbstractEntity<?>> listByType; 
+						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FM);
+						List<AbstractMention<?>> listByType; 
 						listByType = mapByType.get(refType);
 						listByType.add(ref);
 						if(refType!=estType)
@@ -273,9 +273,9 @@ public class LilleMeasure extends AbstractMeasure
 							listByType.add(est);
 						}
 						// by category
-						Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_FM);
+						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FM);
 						for(ArticleCategory category: categories)
-						{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 							listByCat.add(est);
 						}
 					
@@ -287,24 +287,24 @@ public class LilleMeasure extends AbstractMeasure
 	}
 	
 	/**
-	 * Process the partial match entities.
+	 * Process the partial match mentions.
 	 * 
 	 * @param reference
-	 * 		List of the entities of reference.
+	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the entities detected by the NER tool.
+	 * 		List of the mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processPartialMatches(List<AbstractEntity<?>> reference, List<AbstractEntity<?>> estimation, List<ArticleCategory> categories)
-	{	Iterator<AbstractEntity<?>> itRef = reference.iterator();
+	private void processPartialMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
-		{	AbstractEntity<?> ref = itRef.next();
+		{	AbstractMention<?> ref = itRef.next();
 			EntityType refType = ref.getType();
 			boolean found = false;
-			Iterator<AbstractEntity<?>> itEst = estimation.iterator();
+			Iterator<AbstractMention<?>> itEst = estimation.iterator();
 			while(itEst.hasNext() && !found)
-			{	AbstractEntity<?> est = itEst.next();
+			{	AbstractMention<?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(ref.overlapsWith(est))
 				{	found = true;
@@ -313,11 +313,11 @@ public class LilleMeasure extends AbstractMeasure
 					
 					// update spatial evaluation
 						// all
-						List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_PM);
+						List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_PM);
 						listAll.add(est);
 						// by type
-						Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_PM);
-						List<AbstractEntity<?>> listByType; 
+						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_PM);
+						List<AbstractMention<?>> listByType; 
 						listByType = mapByType.get(refType);
 						listByType.add(ref);
 						if(refType!=estType)
@@ -325,9 +325,9 @@ public class LilleMeasure extends AbstractMeasure
 							listByType.add(est);
 						}
 						// by category
-						Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_PM);
+						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_PM);
 						for(ArticleCategory category: categories)
-						{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 							listByCat.add(est);
 						}	
 					
@@ -339,45 +339,45 @@ public class LilleMeasure extends AbstractMeasure
 	}
 	
 	/**
-	 * Process the wrong hit entities.
+	 * Process the wrong hit mentions.
 	 * 
 	 * @param estimation
-	 * 		List of the entities detected by the NER tool.
+	 * 		List of the mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processWrongHits(List<AbstractEntity<?>> estimation, List<ArticleCategory> categories)
-	{	for(AbstractEntity<?> est: estimation)
+	private void processWrongHits(List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	{	for(AbstractMention<?> est: estimation)
 		{	EntityType estType = est.getType();
 	
 			// update spatial evaluation
 			{	// all
-				List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_WH);
+				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_WH);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_WH);
-				List<AbstractEntity<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_WH);
+				List<AbstractMention<?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_WH);
+				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_WH);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}
 				
 			// update typical evaluation
 			{	// all
-				List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_FP);
+				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FP);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_FP);
-				List<AbstractEntity<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FP);
+				List<AbstractMention<?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_FP);
+				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}
@@ -385,45 +385,45 @@ public class LilleMeasure extends AbstractMeasure
 	}
 	
 	/**
-	 * Process the complete miss entities.
+	 * Process the complete miss mentions.
 	 * 
 	 * @param reference
-	 * 		List of the entities of reference.
+	 * 		List of the mentions of reference.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processCompleteMisses(List<AbstractEntity<?>> reference, List<ArticleCategory> categories)
-	{	for(AbstractEntity<?> ref: reference)
+	private void processCompleteMisses(List<AbstractMention<?>> reference, List<ArticleCategory> categories)
+	{	for(AbstractMention<?> ref: reference)
 		{	EntityType refType = ref.getType();
 	
 			// update spatial evaluation
 			{	// all
-				List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_CM);
+				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_CM);
 				listAll.add(ref);
 				// by type
-				Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_CM);
-				List<AbstractEntity<?>> listByType = mapByType.get(refType);
+				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_CM);
+				List<AbstractMention<?>> listByType = mapByType.get(refType);
 				listByType.add(ref);
 				// by category
-				Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_CM);
+				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_CM);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 					listByCat.add(ref);
 				}
 			}
 				
 			// update typical evaluation
 			{	// all
-				List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_FN);
+				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FN);
 				listAll.add(ref);
 				// by type
-				Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_FN);
-				List<AbstractEntity<?>> listByType = mapByType.get(refType);
+				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FN);
+				List<AbstractMention<?>> listByType = mapByType.get(refType);
 				listByType.add(ref);
 				// by category
-				Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_FN);
+				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 					listByCat.add(ref);
 				}
 			}
@@ -435,35 +435,35 @@ public class LilleMeasure extends AbstractMeasure
 	 * the measures accordingly.
 	 * 
 	 * @param ref
-	 * 		Entity of reference.
+	 * 		Mention of reference.
 	 * @param refType
-	 * 		Type of the entity of reference.
+	 * 		Type of the mention of reference.
 	 * @param est
-	 * 		Entity detected by the NER tool.
+	 * 		Mention detected by the NER tool.
 	 * @param estType
-	 * 		Type of the entity detected by the NER tool.
+	 * 		Type of the mention detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 * @return
 	 * 		{@code true} iff both types are similar.
 	 */
-	private boolean updateTypicalEvaluation(AbstractEntity<?> ref, EntityType refType, AbstractEntity<?> est, EntityType estType, List<ArticleCategory> categories)
+	private boolean updateTypicalEvaluation(AbstractMention<?> ref, EntityType refType, AbstractMention<?> est, EntityType estType, List<ArticleCategory> categories)
 	{	boolean result = refType==estType;
 		
 	// types match
 		if(result)
 		{	// true positives
 			{	// all
-				List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_TP);
+				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_TP);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_TP);
-				List<AbstractEntity<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_TP);
+				List<AbstractMention<?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_TP);
+				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_TP);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}
@@ -473,31 +473,31 @@ public class LilleMeasure extends AbstractMeasure
 		else
 		{	// false negatives
 			{	// all
-				List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_FN);
+				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FN);
 				listAll.add(ref);
 				// by type
-				Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_FN);
-				List<AbstractEntity<?>> listByType = mapByType.get(refType);
+				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FN);
+				List<AbstractMention<?>> listByType = mapByType.get(refType);
 				listByType.add(ref);
 				// by category
-				Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_FN);
+				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 					listByCat.add(ref);
 				}
 			}
 			// false positives
 			{	// all
-				List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_FP);
+				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FP);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_FP);
-				List<AbstractEntity<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FP);
+				List<AbstractMention<?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_FP);
+				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}

@@ -37,8 +37,8 @@ import org.xml.sax.SAXException;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
@@ -55,7 +55,7 @@ import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
  * of NER tools. It requires a collection of manually
  * annotated articles, to be used as references.
  * NER tools are assessd by comparing their estimated
- * entities to the actual ones. Various measures can
+ * mentions to the actual ones. Various measures can
  * be used to perform this comparison.
  * 
  * @author Yasa Akbulut
@@ -200,8 +200,8 @@ public class Evaluator
 	 * Evaluate the NER tools on
 	 * the specified article. The method
 	 * will first retrieve the article,
-	 * the reference entities, apply the NER tools, 
-	 * get their estimated entities and compare them 
+	 * the reference mentions, apply the NER tools, 
+	 * get their estimated mentions and compare them 
 	 * to the reference.
 	 * 
 	 * @param folder
@@ -233,8 +233,8 @@ public class Evaluator
 		Article article = retriever.process(name);
 		lastCategories = article.getCategories();
 		
-		// get reference entities
-		Entities refEntities = article.getReferenceEntities();
+		// get reference mentions
+		Mentions refMentions = article.getReferenceMentions();
 		
 		// process each recognizer separately
 		logger.log("Process each NER tool separately");
@@ -252,8 +252,8 @@ public class Evaluator
 			// process results
 			if(!cache || processNeeded)
 			{	logger.log("Processing results");
-				Entities estEntites = recognizer.process(article);
-				AbstractMeasure res = template.build(recognizer, types, refEntities, estEntites, lastCategories);
+				Mentions estMentions = recognizer.process(article);
+				AbstractMeasure res = template.build(recognizer, types, refMentions, estMentions, lastCategories);
 				
 				logger.log("Writing results to cache");
 				res.writeNumbers(resultsFolder,name);

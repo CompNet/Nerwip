@@ -39,9 +39,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
@@ -110,13 +110,13 @@ public abstract class AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
-	 * 		Entities used as reference.
+	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Entities detected by the NER tool.
+	 * 		Mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public AbstractMeasure(AbstractRecognizer recognizer, List<EntityType> types, Entities reference, Entities estimation, List<ArticleCategory> categories)
+	public AbstractMeasure(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	this.recognizer = recognizer;
 		this.types.addAll(types);
 		
@@ -134,15 +134,15 @@ public abstract class AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
-	 * 		Entities used as reference.
+	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Entities detected by the NER tool.
+	 * 		Mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Entities reference, Entities estimation, List<ArticleCategory> categories);
+	public abstract AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories);
 	
 	/**
 	 * Builds the appropriate measure,
@@ -177,7 +177,7 @@ public abstract class AbstractMeasure
 	 */
 	private void initialize()
 	{	initializeCounts();
-		initializeEntities();
+		initializeMentions();
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -216,17 +216,17 @@ public abstract class AbstractMeasure
 	
 	/**
 	 * Removes from the specified list
-	 * all the entities whose type is not
+	 * all the mentions whose type is not
 	 * in the type list.
 	 * 
-	 * @param entities
-	 * 		The list of entities to process.
+	 * @param mentions
+	 * 		The list of mentions to process.
 	 */
-	protected void cleanEntities(List<AbstractEntity<?>> entities)
-	{	Iterator<AbstractEntity<?>> it = entities.iterator();
+	protected void cleanMentions(List<AbstractMention<?>> mentions)
+	{	Iterator<AbstractMention<?>> it = mentions.iterator();
 		while(it.hasNext())
-		{	AbstractEntity<?> entity = it.next();
-			EntityType type = entity.getType();
+		{	AbstractMention<?> mention = it.next();
+			EntityType type = mention.getType();
 			if(!types.contains(type))
 				it.remove();
 		}
@@ -256,54 +256,54 @@ public abstract class AbstractMeasure
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES			/////////////////////////////////////////////
+	// MENTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of all processed entities */
-	protected Map<String,List<AbstractEntity<?>>> entitiesAll = null;
-	/** List of entities by type */
-	protected Map<String,Map<EntityType,List<AbstractEntity<?>>>> entitiesByType = null;
-	/** List of entities by category */
-	protected Map<String,Map<ArticleCategory,List<AbstractEntity<?>>>> entitiesByCategory = null;
+	/** List of all processed mention */
+	protected Map<String,List<AbstractMention<?>>> mentionsAll = null;
+	/** List of mentions by type */
+	protected Map<String,Map<EntityType,List<AbstractMention<?>>>> mentionsByType = null;
+	/** List of mentions by category */
+	protected Map<String,Map<ArticleCategory,List<AbstractMention<?>>>> mentionsByCategory = null;
 
 	/**
-	 * Initializes the lists of entities.
+	 * Initializes the lists of mentions.
 	 */
-	private void initializeEntities()
-	{	entitiesAll = new HashMap<String,List<AbstractEntity<?>>>();
-		entitiesByType = new HashMap<String,Map<EntityType,List<AbstractEntity<?>>>>();
-		entitiesByCategory = new HashMap<String,Map<ArticleCategory,List<AbstractEntity<?>>>>();
+	private void initializeMentions()
+	{	mentionsAll = new HashMap<String,List<AbstractMention<?>>>();
+		mentionsByType = new HashMap<String,Map<EntityType,List<AbstractMention<?>>>>();
+		mentionsByCategory = new HashMap<String,Map<ArticleCategory,List<AbstractMention<?>>>>();
 
 		for(String measure: getCountNames())
 		{	// overall 
-			List<AbstractEntity<?>> entitiesAllList = new ArrayList<AbstractEntity<?>>();
-			entitiesAll.put(measure,entitiesAllList);
+			List<AbstractMention<?>> mentionsAllList = new ArrayList<AbstractMention<?>>();
+			mentionsAll.put(measure,mentionsAllList);
 			// by type 
-			Map<EntityType,List<AbstractEntity<?>>> entitiesByTypeMap = new HashMap<EntityType, List<AbstractEntity<?>>>();
+			Map<EntityType,List<AbstractMention<?>>> mentionsByTypeMap = new HashMap<EntityType, List<AbstractMention<?>>>();
 			for(EntityType type: types)
-				entitiesByTypeMap.put(type, new ArrayList<AbstractEntity<?>>());
-			entitiesByType.put(measure, entitiesByTypeMap);
+				mentionsByTypeMap.put(type, new ArrayList<AbstractMention<?>>());
+			mentionsByType.put(measure, mentionsByTypeMap);
 			// by category 
-			Map<ArticleCategory,List<AbstractEntity<?>>> entitiesByCatMap = new HashMap<ArticleCategory, List<AbstractEntity<?>>>();
-			entitiesByCategory.put(measure, entitiesByCatMap);
+			Map<ArticleCategory,List<AbstractMention<?>>> mentionsByCatMap = new HashMap<ArticleCategory, List<AbstractMention<?>>>();
+			mentionsByCategory.put(measure, mentionsByCatMap);
 		}
 	}
 	
 	/**
-	 * Returns the list of all entities,
+	 * Returns the list of all mentions,
 	 * for the specified count.
 	 * 
 	 * @param count
 	 * 		Count of interest.
 	 * @return
-	 * 		List of corresponding entities.
+	 * 		List of corresponding mentions.
 	 */
-	public List<AbstractEntity<?>> getEntitiesAll(String count)
-	{	List<AbstractEntity<?>> result = entitiesAll.get(count);
+	public List<AbstractMention<?>> getMentionsAll(String count)
+	{	List<AbstractMention<?>> result = mentionsAll.get(count);
 		return result;
 	}
 	
 	/**
-	 * Returns the list of entities,
+	 * Returns the list of mention,
 	 * for the specified count,
 	 * and considering only the specified
 	 * entity type.
@@ -313,16 +313,16 @@ public abstract class AbstractMeasure
 	 * @param type
 	 * 		Type of interest. 
 	 * @return
-	 * 		List of corresponding entities.
+	 * 		List of corresponding mentions.
 	 */
-	public List<AbstractEntity<?>> getEntitiesByType(String count, EntityType type)
-	{	Map<EntityType,List<AbstractEntity<?>>> map = entitiesByType.get(count);
-		List<AbstractEntity<?>> result = map.get(type);
+	public List<AbstractMention<?>> getMentionsByType(String count, EntityType type)
+	{	Map<EntityType,List<AbstractMention<?>>> map = mentionsByType.get(count);
+		List<AbstractMention<?>> result = map.get(type);
 		return result;
 	}
 	
 	/**
-	 * Returns the list of entities,
+	 * Returns the list of mentions,
 	 * for the specified count,
 	 * and considering only the specified
 	 * article category.
@@ -332,22 +332,22 @@ public abstract class AbstractMeasure
 	 * @param category
 	 * 		Category of interest. 
 	 * @return
-	 * 		List of corresponding entities.
+	 * 		List of corresponding mentions.
 	 */
-	public List<AbstractEntity<?>> getEntitiesByCategory(String count, ArticleCategory category)
-	{	Map<ArticleCategory,List<AbstractEntity<?>>> map = entitiesByCategory.get(count);
-		List<AbstractEntity<?>> result = map.get(category);
+	public List<AbstractMention<?>> getMentionsByCategory(String count, ArticleCategory category)
+	{	Map<ArticleCategory,List<AbstractMention<?>>> map = mentionsByCategory.get(count);
+		List<AbstractMention<?>> result = map.get(category);
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// COUNTS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Total numbers of entities */
+	/** Total numbers of mentions */
 	protected Map<String,Integer> countsAll = null;
-	/** Numbers of entities by entity type */
+	/** Numbers of mentions by entity type */
 	protected Map<String,Map<EntityType,Integer>> countsByType = null;
-	/** Numbers of entities by article category */
+	/** Numbers of mentions by article category */
 	protected Map<String,Map<ArticleCategory,Integer>> countsByCategory = null;
 
 	/**
@@ -401,7 +401,7 @@ public abstract class AbstractMeasure
 	 * Get the value for
 	 * the specified count,
 	 * when considering only
-	 * the specified entity type.
+	 * the specified mention type.
 	 * 
 	 * @param count
 	 * 		Count required by the user.
@@ -437,18 +437,18 @@ public abstract class AbstractMeasure
 
 	/**
 	 * Processes all counts for the specified
-	 * estimated entities (detected by a NER
-	 * tool), relatively to reference entities 
+	 * estimated mentions (detected by a NER
+	 * tool), relatively to reference mentions 
 	 * (usually manual annotations).
 	 * 
 	 * @param referenceOrig
-	 * 		List of entities of reference.
+	 * 		List of mentions of reference.
 	 * @param estimationOrig
-	 * 		List of entities detected by the NER tool.
+	 * 		List of mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	protected abstract void processCounts(Entities referenceOrig, Entities estimationOrig, List<ArticleCategory> categories);
+	protected abstract void processCounts(Mentions referenceOrig, Mentions estimationOrig, List<ArticleCategory> categories);
 	
 	/**
 	 * Updates the counts of this measure, by adding the counts from the
@@ -496,7 +496,7 @@ public abstract class AbstractMeasure
 	}
 	
 	/**
-	 * After the entities have been processed,
+	 * After the mentions have been processed,
 	 * this method processes the counts.
 	 * 
 	 * @param categories
@@ -505,16 +505,16 @@ public abstract class AbstractMeasure
 	protected void updateCounts(List<ArticleCategory> categories)
 	{	for(String count: getCountNames())
 		{	// total counts
-			{	List<AbstractEntity<?>> list = entitiesAll.get(count);
+			{	List<AbstractMention<?>> list = mentionsAll.get(count);
 				int value = list.size();
 				countsAll.put(count, value);
 			}
 			
 			// counts by type
 			{	Map<EntityType, Integer> countsMap = countsByType.get(count);
-				Map<EntityType, List<AbstractEntity<?>>> entitiesMap = entitiesByType.get(count);
+				Map<EntityType, List<AbstractMention<?>>> mentionsMap = mentionsByType.get(count);
 				for(EntityType type: types)
-				{	List<AbstractEntity<?>> list = entitiesMap.get(type);
+				{	List<AbstractMention<?>> list = mentionsMap.get(type);
 					int value = list.size();
 					countsMap.put(type, value);
 				}
@@ -522,9 +522,9 @@ public abstract class AbstractMeasure
 			
 			// counts by category
 			{	Map<ArticleCategory, Integer> countsMap = countsByCategory.get(count);
-				Map<ArticleCategory, List<AbstractEntity<?>>> entitiesMap = entitiesByCategory.get(count);
+				Map<ArticleCategory, List<AbstractMention<?>>> mentionsMap = mentionsByCategory.get(count);
 				for(ArticleCategory category: categories)
-				{	List<AbstractEntity<?>> list = entitiesMap.get(category);
+				{	List<AbstractMention<?>> list = mentionsMap.get(category);
 					int value = list.size();
 					countsMap.put(category, value);
 				}

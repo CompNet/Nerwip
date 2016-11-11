@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -46,13 +46,13 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * Galatasaray University, Istanbul, TR.
  * No scores are processed, only a number of counts:
  * <ul>
- * 		<li><b>True positive</b>: the limits of both entities perfectly match.</li>
- * 		<li><b>Excess positive</b>: the detected entity contains more than the reference entity.</li>
- * 		<li><b>Partial positive</b>: the detected entity contains less than the reference entity.</li>
- * 		<li><b>False positive</b>: the detected entity does not intersect with any reference entity.</li>
- * 		<li><b>False negative</b>: the reference entity does not intersect with any detected entity.</li>
+ * 		<li><b>True positive</b>: the limits of both mentions perfectly match.</li>
+ * 		<li><b>Excess positive</b>: the detected mention contains more than the reference mention.</li>
+ * 		<li><b>Partial positive</b>: the detected mention contains less than the reference mention.</li>
+ * 		<li><b>False positive</b>: the detected mention does not intersect with any reference mention.</li>
+ * 		<li><b>False negative</b>: the reference mention does not intersect with any detected mention.</li>
  * </ul>
- * In the 3 first cases, one can distinguish between entities whose type was correctly
+ * In the 3 first cases, one can distinguish between mentions whose type was correctly
  * estimated, and those whose type is not wrong. We therefore have a total of 8 different
  * counts.
  * 
@@ -99,18 +99,18 @@ public class IstanbulMeasure extends AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
-	 * 		Entities used as reference.
+	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Entities detected by the NER tool.
+	 * 		Mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public IstanbulMeasure(AbstractRecognizer recognizer, List<EntityType> types, Entities reference, Entities estimation, List<ArticleCategory> categories)
+	public IstanbulMeasure(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	super(recognizer,types,reference,estimation,categories);
 	}	
 
 	@Override
-	public AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Entities reference, Entities estimation, List<ArticleCategory> categories)
+	public AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	IstanbulMeasure result = new IstanbulMeasure(recognizer, types, reference, estimation, categories);
 		return result;
 	}
@@ -141,7 +141,7 @@ public class IstanbulMeasure extends AbstractMeasure
 	/////////////////////////////////////////////////////////////////
 	// COUNTS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Perfectly estimated entity */
+	/** Perfectly estimated mention */
 	public static final String COUNT_TP_CT = "TruePositiveCorrectType";
 	/** Limits are correct, but type is wrong */
 	public static final String COUNT_TP_WT = "TruePositiveWrongType";
@@ -153,9 +153,9 @@ public class IstanbulMeasure extends AbstractMeasure
 	public static final String COUNT_PP_CT = "PartialPositiveCorrectType";
 	/** Estimated limits contain less than the reference, type is wrong */
 	public static final String COUNT_PP_WT = "PartialPositiveWrongType";
-	/** Estimated limits do not intersect with any reference entity */
+	/** Estimated limits do not intersect with any reference mention */
 	public static final String COUNT_FP = "FalsePositive";
-	/** Reference limits do not intersect with any estimated entity */
+	/** Reference limits do not intersect with any estimated mention */
 	public static final String COUNT_FN = "FalseNegative";
 
 	/** Names of the supported counts */
@@ -176,20 +176,20 @@ public class IstanbulMeasure extends AbstractMeasure
 	}
 
 	@Override
-	protected void processCounts(Entities referenceOrig, Entities estimationOrig, List<ArticleCategory> categories) 
-	{	// copy entity lists (those are going to be modified)
-		List<AbstractEntity<?>> reference = new ArrayList<AbstractEntity<?>>(referenceOrig.getEntities());
-		List<AbstractEntity<?>> estimation = new ArrayList<AbstractEntity<?>>(estimationOrig.getEntities());
+	protected void processCounts(Mentions referenceOrig, Mentions estimationOrig, List<ArticleCategory> categories) 
+	{	// copy mention lists (those are going to be modified)
+		List<AbstractMention<?>> reference = new ArrayList<AbstractMention<?>>(referenceOrig.getMentions());
+		List<AbstractMention<?>> estimation = new ArrayList<AbstractMention<?>>(estimationOrig.getMentions());
 		
-		// remove the entities whose type is not in the type list
-		cleanEntities(reference);
-		cleanEntities(estimation);
+		// remove the mentions whose type is not in the type list
+		cleanMentions(reference);
+		cleanMentions(estimation);
 		
-		// category entity lists
+		// category mention lists
 		for(ArticleCategory category: categories)
 		{	for(String count: COUNTS)
-			{	Map<ArticleCategory,List<AbstractEntity<?>>> map = entitiesByCategory.get(count);
-				List<AbstractEntity<?>> list = new ArrayList<AbstractEntity<?>>();
+			{	Map<ArticleCategory,List<AbstractMention<?>>> map = mentionsByCategory.get(count);
+				List<AbstractMention<?>> list = new ArrayList<AbstractMention<?>>();
 				map.put(category,list);
 			}
 		}
@@ -206,25 +206,25 @@ public class IstanbulMeasure extends AbstractMeasure
 	}
 	
 	/**
-	 * Process the true positive entities.
+	 * Process the true positive mentions.
 	 * 
 	 * @param reference
-	 * 		List of the entities of reference.
+	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the entities detected by the NER tool.
+	 * 		List of the mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processTruePositives(List<AbstractEntity<?>> reference, List<AbstractEntity<?>> estimation, List<ArticleCategory> categories)
-	{	Iterator<AbstractEntity<?>> itRef = reference.iterator();
+	private void processTruePositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
-		{	AbstractEntity<?> ref = itRef.next();
+		{	AbstractMention<?> ref = itRef.next();
 			EntityType refType = ref.getType();
 			boolean found = false;
 			
-			Iterator<AbstractEntity<?>> itEst = estimation.iterator();
+			Iterator<AbstractMention<?>> itEst = estimation.iterator();
 			while(itEst.hasNext() && !found)
-			{	AbstractEntity<?> est = itEst.next();
+			{	AbstractMention<?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(ref.hasSamePosition(est))
 				{	found = true;
@@ -238,14 +238,14 @@ public class IstanbulMeasure extends AbstractMeasure
 						countName = COUNT_TP_WT;
 					
 					// update spatial evaluation
-					{	List<AbstractEntity<?>> listAll = entitiesAll.get(countName);
+					{	List<AbstractMention<?>> listAll = mentionsAll.get(countName);
 						listAll.add(est);
-						Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(countName);
-						List<AbstractEntity<?>> listByType = mapByType.get(refType);
+						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(countName);
+						List<AbstractMention<?>> listByType = mapByType.get(refType);
 						listByType.add(est);
-						Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(countName);
+						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(countName);
 						for(ArticleCategory category: categories)
-						{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 							listByCat.add(est);
 						}
 					}
@@ -255,25 +255,25 @@ public class IstanbulMeasure extends AbstractMeasure
 	}
 	
 	/**
-	 * Process the excess positive entities.
+	 * Process the excess positive mentions.
 	 * 
 	 * @param reference
-	 * 		List of the entities of reference.
+	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the entities detected by the NER tool.
+	 * 		List of the mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processExcessPositives(List<AbstractEntity<?>> reference, List<AbstractEntity<?>> estimation, List<ArticleCategory> categories)
-	{	Iterator<AbstractEntity<?>> itRef = reference.iterator();
+	private void processExcessPositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
-		{	AbstractEntity<?> ref = itRef.next();
+		{	AbstractMention<?> ref = itRef.next();
 			EntityType refType = ref.getType();
 			boolean found = false;
 			
-			Iterator<AbstractEntity<?>> itEst = estimation.iterator();
+			Iterator<AbstractMention<?>> itEst = estimation.iterator();
 			while(itEst.hasNext() && !found)
-			{	AbstractEntity<?> est = itEst.next();
+			{	AbstractMention<?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(est.contains(ref))
 				{	found = true;
@@ -287,14 +287,14 @@ public class IstanbulMeasure extends AbstractMeasure
 						countName = COUNT_EP_WT;
 					
 					// update spatial evaluation
-					{	List<AbstractEntity<?>> listAll = entitiesAll.get(countName);
+					{	List<AbstractMention<?>> listAll = mentionsAll.get(countName);
 						listAll.add(est);
-						Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(countName);
-						List<AbstractEntity<?>> listByType = mapByType.get(refType);
+						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(countName);
+						List<AbstractMention<?>> listByType = mapByType.get(refType);
 						listByType.add(est);
-						Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(countName);
+						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(countName);
 						for(ArticleCategory category: categories)
-						{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 							listByCat.add(est);
 						}
 					}
@@ -304,25 +304,25 @@ public class IstanbulMeasure extends AbstractMeasure
 	}
 
 	/**
-	 * Process the partial positive entities.
+	 * Process the partial positive mentions.
 	 * 
 	 * @param reference
-	 * 		List of the entities of reference.
+	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the entities detected by the NER tool.
+	 * 		List of the mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processPartialPositives(List<AbstractEntity<?>> reference, List<AbstractEntity<?>> estimation, List<ArticleCategory> categories)
-	{	Iterator<AbstractEntity<?>> itRef = reference.iterator();
+	private void processPartialPositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
-		{	AbstractEntity<?> ref = itRef.next();
+		{	AbstractMention<?> ref = itRef.next();
 			EntityType refType = ref.getType();
 			boolean found = false;
 			
-			Iterator<AbstractEntity<?>> itEst = estimation.iterator();
+			Iterator<AbstractMention<?>> itEst = estimation.iterator();
 			while(itEst.hasNext() && !found)
-			{	AbstractEntity<?> est = itEst.next();
+			{	AbstractMention<?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(est.overlapsWith(ref))
 				{	found = true;
@@ -336,14 +336,14 @@ public class IstanbulMeasure extends AbstractMeasure
 						countName = COUNT_PP_WT;
 					
 					// update spatial evaluation
-					{	List<AbstractEntity<?>> listAll = entitiesAll.get(countName);
+					{	List<AbstractMention<?>> listAll = mentionsAll.get(countName);
 						listAll.add(est);
-						Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(countName);
-						List<AbstractEntity<?>> listByType = mapByType.get(refType);
+						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(countName);
+						List<AbstractMention<?>> listByType = mapByType.get(refType);
 						listByType.add(est);
-						Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(countName);
+						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(countName);
 						for(ArticleCategory category: categories)
-						{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 							listByCat.add(est);
 						}
 					}
@@ -353,48 +353,48 @@ public class IstanbulMeasure extends AbstractMeasure
 	}
 	
 	/**
-	 * Process the false positive entities.
+	 * Process the false positive mentions.
 	 * 
 	 * @param estimation
-	 * 		List of the entities detected by the NER tool.
+	 * 		List of the mentions detected by the NER tool.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processFalsePositives(List<AbstractEntity<?>> estimation, List<ArticleCategory> categories)
-	{	for(AbstractEntity<?> est: estimation)
+	private void processFalsePositives(List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	{	for(AbstractMention<?> est: estimation)
 		{	EntityType estType = est.getType();
-			List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_FN);
+			List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FN);
 			listAll.add(est);
-			Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_FN);
-			List<AbstractEntity<?>> listByType = mapByType.get(estType);
+			Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FN);
+			List<AbstractMention<?>> listByType = mapByType.get(estType);
 			listByType.add(est);
-			Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_FN);
+			Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
 			for(ArticleCategory category: categories)
-			{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+			{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 				listByCat.add(est);
 			}
 		}
 	}
 	
 	/**
-	 * Process the false negative entities.
+	 * Process the false negative mentions.
 	 * 
 	 * @param reference
-	 * 		List of the entities of reference.
+	 * 		List of the mentions of reference.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processFalseNegatives(List<AbstractEntity<?>> reference, List<ArticleCategory> categories)
-	{	for(AbstractEntity<?> ref: reference)
+	private void processFalseNegatives(List<AbstractMention<?>> reference, List<ArticleCategory> categories)
+	{	for(AbstractMention<?> ref: reference)
 		{	EntityType refType = ref.getType();
-			List<AbstractEntity<?>> listAll = entitiesAll.get(COUNT_FP);
+			List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FP);
 			listAll.add(ref);
-			Map<EntityType,List<AbstractEntity<?>>> mapByType = entitiesByType.get(COUNT_FP);
-			List<AbstractEntity<?>> listByType = mapByType.get(refType);
+			Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FP);
+			List<AbstractMention<?>> listByType = mapByType.get(refType);
 			listByType.add(ref);
-			Map<ArticleCategory,List<AbstractEntity<?>>> mapByCat = entitiesByCategory.get(COUNT_FP);
+			Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
 			for(ArticleCategory category: categories)
-			{	List<AbstractEntity<?>> listByCat = mapByCat.get(category);
+			{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
 				listByCat.add(ref);
 			}
 		}
