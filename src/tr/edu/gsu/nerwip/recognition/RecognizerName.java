@@ -27,7 +27,7 @@ package tr.edu.gsu.nerwip.recognition;
 /**
  * Each value of this enum type
  * represents one way of detecting
- * named entities. 
+ * named entity mentions. 
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
@@ -57,7 +57,7 @@ public enum RecognizerName
 	/////////////////////////////////////////////////////////////////
 	/** Tool specifically developped to detect dates */
 	DATEEXTRACTOR,
-	/** Takes advantage of hyperlinks to detect named entities */ 
+	/** Takes advantage of hyperlinks to detect named entity mentions */ 
 	SUBEE,
 	/** Tool specifically developped to detect dates in Wikipedia articles */
 	WIKIPEDIADATER,

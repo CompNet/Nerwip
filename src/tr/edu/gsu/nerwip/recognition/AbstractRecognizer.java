@@ -36,9 +36,9 @@ import java.util.Scanner;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -62,7 +62,7 @@ public abstract class AbstractRecognizer
 	 * using the specified default options.
 	 * 
 	 * @param trim
-	 * 		Whether or not the beginings and ends of entities should be 
+	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
@@ -114,7 +114,7 @@ public abstract class AbstractRecognizer
 	public abstract String getFolder();
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES TYPES	/////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Returns the list of entity types this NER tool
@@ -123,7 +123,7 @@ public abstract class AbstractRecognizer
 	 * @return 
 	 * 		A list of entity types.
 	 */
-	public abstract List<EntityType> getHandledEntityTypes();
+	public abstract List<EntityType> getHandledMentionTypes();
 	
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES		/////////////////////////////////////////////
@@ -176,17 +176,17 @@ public abstract class AbstractRecognizer
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Applies this NER tool to the specified article,
-	 * and returns a list of the detected entities.
+	 * and returns a list of the detected mentions.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
 	 * @return
-	 * 		List of the resulting entities.
+	 * 		List of the resulting mentions.
 	 * 
 	 * @throws RecognizerException
 	 * 		Problem while applying the NER tool. 
 	 */
-	public abstract Entities process(Article article) throws RecognizerException;
+	public abstract Mentions process(Article article) throws RecognizerException;
 
 	/////////////////////////////////////////////////////////////////
 	// FILTERING NOISE 		/////////////////////////////////////////
@@ -198,9 +198,9 @@ public abstract class AbstractRecognizer
 	/** Whether or not numbers should be ignored */
 	protected boolean ignoreNumbers = true;
 	
-	/** Lists of forbidden words, used for filtering entities */	
+	/** Lists of forbidden words, used for filtering mentions */	
 	private static final Map<ArticleLanguage,List<String>> EXCLUSION_LISTS = new HashMap<ArticleLanguage,List<String>>();
-	/** List of pronouns, used for filtering entities */	
+	/** List of pronouns, used for filtering mentions */	
 	private static final Map<ArticleLanguage,List<String>> PRONOUN_LISTS = new HashMap<ArticleLanguage,List<String>>();
 	
 	/**
@@ -362,7 +362,7 @@ public abstract class AbstractRecognizer
 
 	/**
 	 * Disables/enables the removal of purely
-	 * numerical entities.
+	 * numerical mentions.
 	 * 
 	 * @param ignoreNumbers
 	 * 		If {@code true}, numbers are ignored.
@@ -372,7 +372,7 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Whether or not purely numerical entities
+	 * Whether or not purely numerical mentions
 	 * should be ignored.
 	 * 
 	 * @return
@@ -383,39 +383,39 @@ public abstract class AbstractRecognizer
 	}
 
 	/**
-	 * Gets a list of entities and removes some of them,
+	 * Gets a list of mentions and removes some of them,
 	 * considered as noise depending on the current options: 
 	 * stop-words, pronouns, numerical expressions, etc.
 	 * 
-	 * @param entities
+	 * @param mentions
 	 * 		List to be filtered.
 	 * @param language
 	 * 		Language of the article currently processed. 
 	 */
-	protected void filterNoise(Entities entities, ArticleLanguage language)
+	protected void filterNoise(Mentions mentions, ArticleLanguage language)
 	{	logger.increaseOffset();
 	
-		List<AbstractEntity<?>> entityList = entities.getEntities();
-		Iterator<AbstractEntity<?>> it = entityList.iterator();
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
+		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())
-		{	AbstractEntity<?> entity = it.next();
-			String entityStr = entity.getStringValue();
+		{	AbstractMention<?> mention = it.next();
+			String mentionStr = mention.getStringValue();
 			
 			// is it a stop-word?
-			if(exclusionOn && isExcluded(entityStr,language))
-			{	logger.log("Entity '"+entityStr+"' is a stop-word >> filtered.)");
+			if(exclusionOn && isExcluded(mentionStr,language))
+			{	logger.log("Mention '"+mentionStr+"' is a stop-word >> filtered.)");
 				it.remove();
 			}
 			
 			// is it a pronoun?
-			else if(ignorePronouns && (entityStr.length()<=1 || isPronoun(entityStr,language)))
-			{	logger.log("Entity '"+entityStr+"' is a pronoun >> filtered.)");
+			else if(ignorePronouns && (mentionStr.length()<=1 || isPronoun(mentionStr,language)))
+			{	logger.log("Mention '"+mentionStr+"' is a pronoun >> filtered.)");
 				it.remove();
 			}
 			
 			// is it a pure number?
-			else if(ignoreNumbers && StringTools.hasNoLetter(entityStr))
-			{	logger.log("Entity '"+entityStr+"' is a number (no letter) >> filtered.)");
+			else if(ignoreNumbers && StringTools.hasNoLetter(mentionStr))
+			{	logger.log("Mention '"+mentionStr+"' is a number (no letter) >> filtered.)");
 				it.remove();
 			}
 		}
@@ -426,28 +426,28 @@ public abstract class AbstractRecognizer
 	/////////////////////////////////////////////////////////////////
 	// CLEANING		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    /** Whether or not the beginings and ends of entities should be cleaned from any non-letter/digit chars */
+    /** Whether or not the beginings and ends of mentions should be cleaned from any non-letter/digit chars */
     protected boolean trim = false;
 
     /**
-	 * Some NER tools let punctuation/space at the begining/end of the entity. This
-	 * function trims the entity to remove this noise.
+	 * Some NER tools let punctuation/space at the begining/end of the mention. This
+	 * function trims the mention to remove this noise.
 	 * <br/>
-	 * If the consecutive trimmings remove all characters from the entity, then
+	 * If the consecutive trimmings remove all characters from the mention, then
 	 * this method returns {@code false}, and {@code true} otherwise (non-empty
-	 * string for the entity).
+	 * string for the mention).
 	 * 
-	 * @param entity
-	 * 		Entity to be processed.
+	 * @param mention
+	 * 		Mention to be processed.
 	 * @return
-	 * 		{@code true} iff the entity is not empty after the trimming.
+	 * 		{@code true} iff the mention is not empty after the trimming.
 	 */
-	public boolean cleanEntityEnds(AbstractEntity<?> entity)
-	{	String valueStr = entity.getStringValue();
+	public boolean cleanMentionEnds(AbstractMention<?> mention)
+	{	String valueStr = mention.getStringValue();
 		char c;
 		
 		// trim beginning
-		int startPos = entity.getStartPos();
+		int startPos = mention.getStartPos();
 		c = valueStr.charAt(0);
 		while(!valueStr.isEmpty() && !Character.isLetterOrDigit(c))
 		{	startPos++;
@@ -457,7 +457,7 @@ public abstract class AbstractRecognizer
 		}
 		
 		// trim ending
-		int endPos = entity.getEndPos();
+		int endPos = mention.getEndPos();
 		if(!valueStr.isEmpty())
 		{	c = valueStr.charAt(valueStr.length()-1);
 			while(!valueStr.isEmpty() && !Character.isLetterOrDigit(c))
@@ -468,16 +468,16 @@ public abstract class AbstractRecognizer
 			}
 		}
 		
-		entity.setStringValue(valueStr);
-		entity.setStartPos(startPos);
-		entity.setEndPos(endPos);
+		mention.setStringValue(valueStr);
+		mention.setStartPos(startPos);
+		mention.setEndPos(endPos);
 		
 		boolean result = !valueStr.isEmpty();
 		return result;
 	}
 
 	/**
-	 * Gets a list of entities and cleans them by
+	 * Gets a list of mentions and cleans them by
 	 * removing unappropriate characters possibly
 	 * located at the beginning-end. Unappropriate
 	 * means here neither characters nor letters.
@@ -485,30 +485,30 @@ public abstract class AbstractRecognizer
 	 * Not all NER tools need this process. In fact,
 	 * most don't!
 	 * 
-	 * @param entities
+	 * @param mentions
 	 * 		List to be cleaned.
 	 */
-	protected void cleanEntities(Entities entities)
+	protected void cleanMentions(Mentions mentions)
 	{	logger.increaseOffset();
 		
 		if(trim)
 		{	logger.log("Start trimming");
 			
 			logger.increaseOffset();
-			List<AbstractEntity<?>> entityList = entities.getEntities();
-			Iterator<AbstractEntity<?>> it = entityList.iterator();
+			List<AbstractMention<?>> mentionList = mentions.getMentions();
+			Iterator<AbstractMention<?>> it = mentionList.iterator();
 			while(it.hasNext())
-			{	AbstractEntity<?> entity = it.next();
-				String str = entity.getStringValue();
+			{	AbstractMention<?> mention = it.next();
+				String str = mention.getStringValue();
 				if(str.isEmpty())
 				{	it.remove();
-					logger.log("WARNING: Entity "+entity+" was empty before trimming >> removed");
+					logger.log("WARNING: Mention "+mention+" was empty before trimming >> removed");
 				}
 				else 
-				{	boolean temp = cleanEntityEnds(entity);
+				{	boolean temp = cleanMentionEnds(mention);
 					if(!temp)
 					{	it.remove();
-						logger.log("Entity "+entity+" was empty after trimming >> removed");
+						logger.log("Mention "+mention+" was empty after trimming >> removed");
 					}
 				}
 			}
@@ -521,30 +521,30 @@ public abstract class AbstractRecognizer
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITIES		 		/////////////////////////////////////////
+	// MENTIONS		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    /** Whether or not the NER tool can output (spatially) overlapping entities */
+    /** Whether or not the NER tool can output (spatially) overlapping mentions */
     protected boolean noOverlap = true;
 
     /**
 	 * Checks if the specified text position
-	 * is already a part of an existing entity.
+	 * is already a part of an existing mention.
 	 * 
 	 * @param pos
 	 * 		Position to be checked
-	 * @param entities
-	 * 		The entities already built.
+	 * @param mentions
+	 * 		The mentions already built.
 	 * @return
-	 * 		{@code true} iff the position is already included in an entity.
+	 * 		{@code true} iff the position is already included in an mention.
 	 */
-	protected boolean positionAlreadyUsed(int pos, List<AbstractEntity<?>> entities)
+	protected boolean positionAlreadyUsed(int pos, List<AbstractMention<?>> mentions)
 	{	boolean result = false;
 		
-		Iterator<AbstractEntity<?>> it = entities.iterator();
+		Iterator<AbstractMention<?>> it = mentions.iterator();
 		while(it.hasNext() && !result)
-		{	AbstractEntity<?> entity = it.next();
-			int startPos = entity.getStartPos();
-			int endPos = entity.getEndPos();
+		{	AbstractMention<?> mention = it.next();
+			int startPos = mention.getStartPos();
+			int endPos = mention.getEndPos();
 			result = pos>=startPos && pos<=endPos;
 		}
 		
@@ -553,49 +553,49 @@ public abstract class AbstractRecognizer
 
 //	/**
 //	 * Checks whether a part of the specified
-//	 * entity was already detected as another
-//	 * entity.
+//	 * mention was already detected as another
+//	 * mention.
 //	 * 
-//	 * @param entity
-//	 * 		Newly detected entity.
-//	 * @param entities
-//	 * 		List of entities already detected.
+//	 * @param mention
+//	 * 		Newly detected mention.
+//	 * @param mentions
+//	 * 		List of mentions already detected.
 //	 * @return
-//	 * 		{@code true} iff the entity is actually new.
+//	 * 		{@code true} iff the mention is actually new.
 //	 * 
 //	 * @author Vincent Labatut
 //	 */
-//	public boolean positionAlreadyUsed(EntityDate entity, List<AbstractEntity<?>> entities)
+//	public boolean positionAlreadyUsed(MentionDate mention, List<AbstractMention<?>> mentions)
 //	{	boolean result = false;
 //		
-//		Iterator<AbstractEntity<?>> it = entities.iterator();
+//		Iterator<AbstractMention<?>> it = mentions.iterator();
 //		while(!result && it.hasNext())
-//		{	AbstractEntity<?> temp = it.next();
-//			result = temp.overlapsWith(entity);
+//		{	AbstractMention<?> temp = it.next();
+//			result = temp.overlapsWith(mention);
 //		}
 //		
 //		return result;
 //	}
 	
 	/**
-	 * Checks whether a part of the specified entity was already detected as another
-	 * entity. Returns the concerned entity.
+	 * Checks whether a part of the specified mention was already detected as another
+	 * mention. Returns the concerned mention.
 	 * 
-	 * @param entity
-	 * 		Newly detected entity.
-	 * @param entities
-	 * 		List of entities already detected.
+	 * @param mention
+	 * 		Newly detected mention.
+	 * @param mentions
+	 * 		List of mentions already detected.
 	 * @return
-	 * 		Entity intersecting the specified one,
+	 * 		Mention intersecting the specified one,
 	 * 		or {@code null} if none does.
 	 */
-	public AbstractEntity<?> positionAlreadyUsed(AbstractEntity<?> entity, List<AbstractEntity<?>> entities)
-	{	AbstractEntity<?> result = null;
+	public AbstractMention<?> positionAlreadyUsed(AbstractMention<?> mention, List<AbstractMention<?>> mentions)
+	{	AbstractMention<?> result = null;
 		
-		Iterator<AbstractEntity<?>> it = entities.iterator();
+		Iterator<AbstractMention<?>> it = mentions.iterator();
 		while(result==null && it.hasNext())
-		{	AbstractEntity<?> temp = it.next();
-			if(temp.overlapsWith(entity))
+		{	AbstractMention<?> temp = it.next();
+			if(temp.overlapsWith(mention))
 				result = temp;
 		}
 		
@@ -603,56 +603,56 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Gets an Entities object and detects the overlapping entities.
+	 * Gets an Mentions object and detects the overlapping mentions.
 	 * Only keeps the longest ones amongst them. This method uses
 	 * {@link #filterRedundancy(List)}.
 	 * 
-	 * @param entities
+	 * @param mentions
 	 * 		List to be filtered.
 	 */
-	protected void filterRedundancy(Entities entities)
-	{	List<AbstractEntity<?>> entityList = entities.getEntities();
-		filterRedundancy(entityList);
+	protected void filterRedundancy(Mentions mentions)
+	{	List<AbstractMention<?>> mentionList = mentions.getMentions();
+		filterRedundancy(mentionList);
 	}
 	
 	/**
-	 * Gets a list of entities and detects the overlapping ones.
+	 * Gets a list of mentions and detects the overlapping ones.
 	 * Only keeps the longest ones amongst them.
 	 * 
-	 * @param entities
+	 * @param mentions
 	 * 		List to be filtered.
 	 */
-	protected void filterRedundancy(List<AbstractEntity<?>> entities)
+	protected void filterRedundancy(List<AbstractMention<?>> mentions)
 	{	logger.increaseOffset();
 	
 		if(!noOverlap)
-			logger.log("Overlapping entities are allowed.)");
+			logger.log("Overlapping mentions are allowed.)");
 		else
-		{	List<AbstractEntity<?>> temp = new ArrayList<AbstractEntity<?>>(entities);
-			entities.clear();
+		{	List<AbstractMention<?>> temp = new ArrayList<AbstractMention<?>>(mentions);
+			mentions.clear();
 			
-			for(AbstractEntity<?> entity1: temp)
-			{	AbstractEntity<?> entity2 = positionAlreadyUsed(entity1, entities);
+			for(AbstractMention<?> mention1: temp)
+			{	AbstractMention<?> mention2 = positionAlreadyUsed(mention1, mentions);
 				boolean pass = false;
-				while(!pass && entity2!=null)
-				{	// process both entity lengths
-					int length1 = entity1.getEndPos() - entity1.getStartPos();
-					int length2 = entity2.getEndPos() - entity2.getStartPos();
+				while(!pass && mention2!=null)
+				{	// process both mention lengths
+					int length1 = mention1.getEndPos() - mention1.getStartPos();
+					int length2 = mention2.getEndPos() - mention2.getStartPos();
 					// keep the longest one
 					if(length1>length2)
-					{	logger.log("New entity "+entity1+" intersects with old entity "+entity2+" >> keep the new one");
-						entities.remove(entity2);
+					{	logger.log("New mention "+mention1+" intersects with old mention "+mention2+" >> keep the new one");
+						mentions.remove(mention2);
 					}
 					else
-					{	logger.log("New entity "+entity1+" intersects with old entity "+entity2+" >> keep the old one");
+					{	logger.log("New mention "+mention1+" intersects with old mention "+mention2+" >> keep the old one");
 						pass = true;
 					}
-					// check next overlapping entity
-					entity2 = positionAlreadyUsed(entity1, entities);
+					// check next overlapping mention
+					mention2 = positionAlreadyUsed(mention1, mentions);
 				}
 				
 				if(!pass)
-					entities.add(entity1);
+					mentions.add(mention1);
 			}
 		}
 		

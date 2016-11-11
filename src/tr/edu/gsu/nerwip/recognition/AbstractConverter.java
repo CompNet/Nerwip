@@ -31,7 +31,7 @@ import java.text.ParseException;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
@@ -101,7 +101,7 @@ public abstract class AbstractConverter
 	{	String resultsFolder = article.getFolderPath();
 		if(nerFolder!=null)
 			resultsFolder = resultsFolder + File.separator + nerFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
+		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
 		
 		File result = new File(filePath);
 		return result;
@@ -139,12 +139,12 @@ public abstract class AbstractConverter
 	 * 
 	 * @param article
 	 * 		Concerned article.
-	 * @param entities
-	 * 		List of the detected entities.
+	 * @param mentions
+	 * 		List of the detected mentions.
 	 * @throws IOException
 	 * 		Problem while writing the file.
 	 */
-	public void writeXmlResults(Article article, Entities entities) throws IOException
+	public void writeXmlResults(Article article, Mentions mentions) throws IOException
 	{	// data file
 		File file = getXmlFile(article);
 		
@@ -153,7 +153,7 @@ public abstract class AbstractConverter
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		entities.writeToXml(file);
+		mentions.writeToXml(file);
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public abstract class AbstractConverter
 	 * @param article
 	 * 		Article to process.
 	 * @return
-	 * 		The list of entities stored in the file.
+	 * 		The list of mentions stored in the file.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while reading the file.
@@ -173,10 +173,10 @@ public abstract class AbstractConverter
 	 * @throws ParseException 
 	 * 		Problem while parsing a date. 
 	 */
-	public Entities readXmlResults(Article article) throws SAXException, IOException, ParseException
+	public Mentions readXmlResults(Article article) throws SAXException, IOException, ParseException
 	{	File dataFile = getXmlFile(article);
 		
-		Entities result = Entities.readFromXml(dataFile);
+		Mentions result = Mentions.readFromXml(dataFile);
 		
 		return result;
 	}
