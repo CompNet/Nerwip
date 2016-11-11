@@ -40,9 +40,9 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractConverter;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
@@ -123,25 +123,25 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Gets a list of entities and removes all those
+	 * Gets a list of mentions and removes all those
 	 * whose type is not in the list of handled types.
 	 * 
-	 * @param entities
+	 * @param mentions
 	 * 		List to be filtered.
 	 */
-	public void filterType(Entities entities)
-	{	List<EntityType> handledTypes = getHandledEntityTypes();
+	public void filterType(Mentions mentions)
+	{	List<EntityType> handledTypes = getHandledMentionTypes();
 		logger.log("Handled types: "+handledTypes.toString()+".)");
 		logger.increaseOffset();
 		
-		List<AbstractEntity<?>> entityList = entities.getEntities();
-		Iterator<AbstractEntity<?>> it = entityList.iterator();
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
+		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())
-		{	AbstractEntity<?> entity = it.next();
-			EntityType type = entity.getType();
+		{	AbstractMention<?> mention = it.next();
+			EntityType type = mention.getType();
 			
 			if(!handledTypes.contains(type))
-			{	logger.log("Entity '"+entity+"' does not have one of the handled types.)");
+			{	logger.log("Mention '"+mention+"' does not have one of the handled types.)");
 				it.remove();
 			}
 		}
@@ -229,34 +229,34 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	
 	/**
 	 * Applies this combiner to the specified article,
-	 * and returns a list of the detected entities.
+	 * and returns a list of the detected mentions.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
 	 * @return
-	 * 		List of the resulting entities.
+	 * 		List of the resulting mentions.
 	 * 
 	 * @throws RecognizerException
 	 * 		Problem while applying the combiner. 
 	 */
-	protected Entities applyRecognizers(Article article) throws RecognizerException
+	protected Mentions applyRecognizers(Article article) throws RecognizerException
 	{	logger.log("Apply each NER tool separately");
 		logger.increaseOffset();
-		Map<AbstractRecognizer,Entities> entities = new HashMap<AbstractRecognizer,Entities>();
+		Map<AbstractRecognizer,Mentions> mentions = new HashMap<AbstractRecognizer,Mentions>();
 		for(AbstractRecognizer recognizer: recognizers)
 		{	// apply the NER tool
-			Entities temp = recognizer.process(article);
+			Mentions temp = recognizer.process(article);
 			// keep only the relevant types
-			logger.log("Filter entities by type");
+			logger.log("Filter mentions by type");
 			filterType(temp);
 			// add to map
-			entities.put(recognizer, temp);
+			mentions.put(recognizer, temp);
 		}
 		logger.decreaseOffset();
 		
 		logger.log("Combine the NER tools outputs");
 		StringBuffer rawOutput = new StringBuffer();
-		Entities result = combineEntities(article,entities,rawOutput);
+		Mentions result = combineMentions(article,mentions,rawOutput);
 
 		if(outRawResults)
 		{	if(rawOutput.length()==0)
@@ -281,13 +281,13 @@ public abstract class AbstractCombiner extends AbstractRecognizer
     /**
      * Takes a map representing the outputs
      * of each previously applied NER tool,
-     * and combine those entities to get
+     * and combine those mentions to get
      * a single set.
      * 
      * @param article
      * 		Concerned article.
-     * @param entities
-     * 		Map of the entities detected by the 
+     * @param mentions
+     * 		Map of the mentions detected by the 
      * 		individual NER tools.
      * @param rawOutput
      * 		Empty {@code StringBuffer} the combiner can use to
@@ -295,21 +295,21 @@ public abstract class AbstractCombiner extends AbstractRecognizer
      * 		Or it can just let it empty.
      * @return
      * 		Result of the combination of those
-     * 		individual entities.
+     * 		individual mentions.
      * 
      * @throws RecognizerException
-     * 		Problem while combining entities.
+     * 		Problem while combining mentions.
     */
-	protected abstract Entities combineEntities(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput) throws RecognizerException;
+	protected abstract Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException;
 
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities process(Article article) throws RecognizerException
+	public Mentions process(Article article) throws RecognizerException
 	{	logger.log("Start applying "+getName()+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
-		Entities result = null;
+		Mentions result = null;
 		
 		try
 		{	// checks if the result file already exists
@@ -326,17 +326,17 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
 				
 				// apply the NER tool
-				logger.log("Detect the entities");
+				logger.log("Detect the mentions");
 				result = applyRecognizers(article);
 				
-				// record entities using our xml format
-				logger.log("Record entities using our XML format");
+				// record mentions using our xml format
+				logger.log("Record mentions using our XML format");
 				converter.writeXmlResults(article,result);
 			}
 			
 			// if the results already exist, we fetch them
 			else
-			{	logger.log("Loading entities from cached file");
+			{	logger.log("Loading mentions from cached file");
 				result = converter.readXmlResults(article);
 			}
 		}
@@ -357,8 +357,8 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 			throw new RecognizerException(e.getMessage());
 		}
 		
-		int nbrEnt = result.getEntities().size();
-		logger.log(getName()+" over ["+article.getName()+"], found "+nbrEnt+" entities");
+		int nbrEnt = result.getMentions().size();
+		logger.log(getName()+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
 		logger.decreaseOffset();
 
 		return result;

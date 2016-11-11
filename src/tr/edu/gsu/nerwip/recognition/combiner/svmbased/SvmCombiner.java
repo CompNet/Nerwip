@@ -40,10 +40,10 @@ import libsvm.svm_node;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.data.entity.PositionRelation;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
+import tr.edu.gsu.nerwip.data.entity.mention.PositionRelation;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
@@ -82,8 +82,8 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * Various options allow changing the behavior of this combiner:
  * <ul>
  * 		<li>{@code combineMode}: How the combination is performed. It can be
- * 		entity-by-entity or word-by-word. In the former case, the SVM
- * 		cannot handle entity positions, so it is resolved through a
+ * 		mention-by-mention or word-by-word. In the former case, the SVM
+ * 		cannot handle mention positions, so it is resolved through a
  * 		voting process, not unlike what is performed by {@link VoteCombiner}.
  * 		Various vote processes are proposed, see {@link CombineMode}.</li>
  * 		<li>{@code useCategories}: whether the SVM should use article categories
@@ -109,9 +109,9 @@ public class SvmCombiner extends AbstractCombiner
 	 *		Whether to use the standalone NER tools with their default models 
 	 *		({@code false}), or ones specifically trained on our corpus ({@code true}).
 	 * @param useCategories 
-	 * 		Indicates if categories should be used when combining entities.
+	 * 		Indicates if categories should be used when combining mentions.
 	 * @param combineMode
-	 * 		 Indicates how entities should be combined.
+	 * 		 Indicates how mentions should be combined.
 	 * @param subeeMode
 	 * 		Indicates how our NER tool {@link Subee} is used (if it's used). 
 	 *
@@ -165,7 +165,7 @@ public class SvmCombiner extends AbstractCombiner
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of entity types recognized by this combiner */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 //		EntityType.DATE,
 		EntityType.LOCATION,
@@ -174,14 +174,14 @@ public class SvmCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of languages recognized by this combiner */
 	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
 		ArticleLanguage.EN
 //		ArticleLanguage.FR
@@ -297,7 +297,7 @@ public class SvmCombiner extends AbstractCombiner
 	{	loadSvmModel();
 		if(combineMode.hasWeights())
 		{	loadVoteWeights();
-			if(combineMode==CombineMode.ENTITY_WEIGHTED_CATEGORY)
+			if(combineMode==CombineMode.MENTION_WEIGHTED_CATEGORY)
 				loadCategoryProportions();
 			else
 				categoryProportions = CategoryProportions.buildUniformProportions();
@@ -405,7 +405,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * Converts the outputs of the selected NER tools,
 	 * into an object the SVM can process as an input.
 	 * <br/>
-	 * This method is used when using the entity-by-entity mode.
+	 * This method is used when using the mention-by-mention mode.
 	 * 
 	 * @param group
 	 * 		Our internal representation of the NER tools outputs.
@@ -414,7 +414,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * @return
 	 * 		The SVM representation of the same data.
 	 */
-	protected svm_node[] convertEntityGroupToSvm(Map<AbstractRecognizer, AbstractEntity<?>> group, Article article)
+	protected svm_node[] convertMentionGroupToSvm(Map<AbstractRecognizer, AbstractMention<?>> group, Article article)
 	{	ArticleCategory categoryValues[] = ArticleCategory.values();
 		int inSize;													// total number of SVM inputs
 		int nerSize = recognizers.size() * HANDLED_TYPES.size();	// NER-related inputs
@@ -434,10 +434,10 @@ public class SvmCombiner extends AbstractCombiner
 
 		// convert NER outputs
 		for(AbstractRecognizer recognizer: recognizers)
-		{	AbstractEntity<?> entity = group.get(recognizer);
+		{	AbstractMention<?> mention = group.get(recognizer);
 			EntityType type = null;
-			if(entity!=null)
-				type = entity.getType();
+			if(mention!=null)
+				type = mention.getType();
 			for(EntityType t: HANDLED_TYPES)
 			{	result[j] = new svm_node();
 				result[j].index = j + 1;
@@ -460,15 +460,15 @@ public class SvmCombiner extends AbstractCombiner
 	 * @param index
 	 * 		Position to start from in the SVM data object.
 	 * @param type
-	 * 		Type of the entity (or {@code null} for no entity).
+	 * 		Type of the mention (or {@code null} for no mention).
 	 * @param beginning
-	 * 		BIO state of the entity (B={@code true}, I={@code false} and O={@code null}). 
+	 * 		BIO state of the mention (B={@code true}, I={@code false} and O={@code null}). 
 	 * @param result
 	 * 		SVM data object to complete.
 	 * @return
 	 * 		Position after the process is over.
 	 */
-	private int convertEntityWordSglToSvm(int index, EntityType type, Boolean beginning, svm_node result[])
+	private int convertMentionWordSglToSvm(int index, EntityType type, Boolean beginning, svm_node result[])
 	{	int idx = index;
 		
 		// setup the type
@@ -524,14 +524,14 @@ public class SvmCombiner extends AbstractCombiner
 	 * 		Type used for the previous chunk (optional).
 	 * @param previousBeginning
 	 * 		BIO state used for the previous chunk (optional).
-	 * @param wordEntities
-	 * 		Word-entity couples to be converted.
+	 * @param wordMentions
+	 * 		Word-mention couples to be converted.
 	 * @param article
 	 * 		Processed article. 
 	 * @return
 	 * 		The SVM representation of the same data.
 	 */
-	protected svm_node[] convertEntityWordToSvm(EntityType previousType, Boolean previousBeginning, Map<AbstractRecognizer,WordEntity> wordEntities, Article article)
+	protected svm_node[] convertMentionWordToSvm(EntityType previousType, Boolean previousBeginning, Map<AbstractRecognizer,WordMention> wordMentions, Article article)
 	{	ArticleCategory categoryValues[] = ArticleCategory.values();
 		int nerSize = recognizers.size() * (HANDLED_TYPES.size()+2);	// NER-related inputs (2 extras for BIO)
 		int catSize = categoryValues.length;							// category-related inputs
@@ -552,49 +552,49 @@ public class SvmCombiner extends AbstractCombiner
 
 		// convert previous chunk
 		if(combineMode==CombineMode.CHUNK_PREVIOUS)
-			j = convertEntityWordSglToSvm(j, previousType, previousBeginning, result);
+			j = convertMentionWordSglToSvm(j, previousType, previousBeginning, result);
 		
 		// convert NER outputs
 		for(AbstractRecognizer recognizer: recognizers)
-		{	WordEntity wordEntity = wordEntities.get(recognizer);
+		{	WordMention wordMention = wordMentions.get(recognizer);
 		
 			EntityType type = null;
 			Boolean beginning = null;
-			if(wordEntity!=null)
-			{	type = wordEntity.getType();
-				beginning = wordEntity.isBeginning();
+			if(wordMention!=null)
+			{	type = wordMention.getType();
+				beginning = wordMention.isBeginning();
 			}
 			
-			j = convertEntityWordSglToSvm(j, type, beginning, result);
+			j = convertMentionWordSglToSvm(j, type, beginning, result);
 		}
 		
 		return result;
 	}
 
 	/**
-	 * Produces an entity depending on the class 
-	 * outputed by the SVM, and the entities estimated
-	 * by the selected NER tools. The entities have
+	 * Produces a mention depending on the class 
+	 * outputed by the SVM, and the mentions estimated
+	 * by the selected NER tools. The mentions have
 	 * to vote to determine the exact position of the
-	 * entity, which was not outputted by the SVM.
+	 * mention, which was not outputted by the SVM.
 	 * <br/>
-	 * This method is used when using the entity-by-entity mode.
+	 * This method is used when using the mention-by-mention mode.
 	 * 
 	 * @param group
-	 * 		Entities detected by the NER tools.
+	 * 		Mentions detected by the NER tools.
 	 * @param y
 	 * 		Output of the SVM.
 	 * @param article
 	 * 		Processed article. 
 	 * @return
-	 * 		An entity, or {@code null} if none was detected.
+	 * 		A mention, or {@code null} if none was detected.
 	 */
-	private AbstractEntity<?> convertSvmToEntity(Map<AbstractRecognizer, AbstractEntity<?>> group, double y, Article article)
-	{	logger.log("Vote-based conversion of an entity group");
+	private AbstractMention<?> convertSvmToMention(Map<AbstractRecognizer, AbstractMention<?>> group, double y, Article article)
+	{	logger.log("Vote-based conversion of a mention group");
 		logger.increaseOffset();
 		logger.log(group.values().toString());
 		
-		AbstractEntity<?> result = null;
+		AbstractMention<?> result = null;
 		String rawText = article.getRawText();
 		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
 	
@@ -604,32 +604,32 @@ public class SvmCombiner extends AbstractCombiner
 		if(idx>1)
 			type = HANDLED_TYPES.get(idx-2);
 		
-		// 'no type' means 'no entity'
+		// 'no type' means 'no mention'
 		if(type==null)
-			logger.log("No entity was detected by the SVM");
+			logger.log("No mention was detected by the SVM");
 		
 		else
-		{	logger.log("Entity detected, type: "+type);
+		{	logger.log("Mention detected, type: "+type);
 			logger.increaseOffset();
 			
-			// get entity position
+			// get mention position
 			Map<Integer,Float> startScores = new HashMap<Integer, Float>();
 			Map<Integer,Float> endScores = new HashMap<Integer, Float>();
 			
 			// first: pro votes
 			for(AbstractRecognizer recognizer: recognizers)
-			{	AbstractEntity<?> entity = group.get(recognizer);
+			{	AbstractMention<?> mention = group.get(recognizer);
 				
 				// check existence
-				if(entity!=null)
+				if(mention!=null)
 				{	float weight;
-					if(combineMode==CombineMode.ENTITY_UNIFORM)
+					if(combineMode==CombineMode.MENTION_UNIFORM)
 						weight = 1f;
 					else
 						weight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FP, categoryWeights);
 					
 					// start position
-					{	int startPos = entity.getStartPos();
+					{	int startPos = mention.getStartPos();
 						Float startScore = startScores.get(startPos);
 						if(startScore==null)
 							startScore = 0f;
@@ -638,7 +638,7 @@ public class SvmCombiner extends AbstractCombiner
 					}
 					
 					// end position
-					{	int endPos = entity.getEndPos();
+					{	int endPos = mention.getEndPos();
 						Float endScore = endScores.get(endPos);
 						if(endScore==null)
 							endScore = 0f;
@@ -653,18 +653,18 @@ public class SvmCombiner extends AbstractCombiner
 			// second: against votes
 			if(useRecall)
 			{	for(AbstractRecognizer recognizer: recognizers)
-				{	AbstractEntity<?> entity = group.get(recognizer);
+				{	AbstractMention<?> mention = group.get(recognizer);
 					
 					// check existence
-					if(entity!=null)
+					if(mention!=null)
 					{	float weight;
-						if(combineMode==CombineMode.ENTITY_UNIFORM)
+						if(combineMode==CombineMode.MENTION_UNIFORM)
 							weight = 1f;
 						else
 							weight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FR, categoryWeights);
 						
 						// start position
-						{	int startPos = entity.getStartPos();
+						{	int startPos = mention.getStartPos();
 							List<Entry<Integer,Float>> entries = new ArrayList<Entry<Integer,Float>>(startScores.entrySet());
 							for(Entry<Integer,Float> entry: entries)
 							{	int pos = entry.getKey();
@@ -677,7 +677,7 @@ public class SvmCombiner extends AbstractCombiner
 						}
 						
 						// end position
-						{	int endPos = entity.getEndPos();
+						{	int endPos = mention.getEndPos();
 							List<Entry<Integer,Float>> entries = new ArrayList<Entry<Integer,Float>>(endScores.entrySet());
 							for(Entry<Integer,Float> entry: entries)
 							{	int pos = entry.getKey();
@@ -705,9 +705,9 @@ public class SvmCombiner extends AbstractCombiner
 			String valueStr = rawText.substring(startPos,endPos);
 			RecognizerName source = getName();
 			
-			// build entity
-			result = AbstractEntity.build(type, startPos, endPos, source, valueStr);
-			logger.log("Final entity: "+result);
+			// build mention
+			result = AbstractMention.build(type, startPos, endPos, source, valueStr);
+			logger.log("Final mention: "+result);
 		}
 		
 		logger.decreaseOffset();
@@ -715,30 +715,30 @@ public class SvmCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Builds a new entity from the specified data.
+	 * Builds a new mention from the specified data.
 	 * <br/>
 	 * This method is used when using the word-by-word mode.
 	 * 
 	 * @param startPos
-	 * 		Start position of the entity to be created.
+	 * 		Start position of the mention to be created.
 	 * @param endPos
-	 * 		End position of the entity to be created.
+	 * 		End position of the mention to be created.
 	 * @param type
-	 * 		Type of the entity to be created.
+	 * 		Type of the mention to be created.
 	 * @param article
-	 * 		Article containing the entity.
+	 * 		Article containing the mention.
 	 * @return
-	 * 		Created entity.
+	 * 		Created mention.
 	 */
-	private AbstractEntity<?> convertSvmToEntity(int startPos, int endPos, EntityType type, Article article)
+	private AbstractMention<?> convertSvmToMention(int startPos, int endPos, EntityType type, Article article)
 	{	String rawText = article.getRawText();
 		String valueStr = rawText.substring(startPos, endPos);
-		AbstractEntity<?> result = AbstractEntity.build(type, startPos, endPos, getName(), valueStr);
+		AbstractMention<?> result = AbstractMention.build(type, startPos, endPos, getName(), valueStr);
 		return result;
 	}
 
 	/**
-	 * Produces an entity type depending on the class 
+	 * Produces an mention type depending on the class 
 	 * outputed by the SVM.
 	 * <br/>
 	 * This method is used when using the word-by-wprd mode.
@@ -746,9 +746,9 @@ public class SvmCombiner extends AbstractCombiner
 	 * @param y
 	 * 		Output of the SVM.
 	 * @return
-	 * 		An entity type, or {@code null} if no entity was detected.
+	 * 		An mention type, or {@code null} if no mention was detected.
 	 */
-	private EntityType convertSvmToEntityType(double y)
+	private EntityType convertSvmToMentionType(double y)
 	{	EntityType result;
 	
 		if(y==1)
@@ -765,16 +765,16 @@ public class SvmCombiner extends AbstractCombiner
 	 * Produces a boolean indicating if the class 
 	 * outputed by the SVM means the considerd word
 	 * is at the beginning ({@code true} or inside
-	 * {@code false} of an entity.
+	 * {@code false} of a mention.
 	 * <br/>
-	 * This method is used when using the entity-by-entity mode.
+	 * This method is used when using the mention-by-mention mode.
 	 * 
 	 * @param y
 	 * 		Output of the SVM.
 	 * @return
-	 * 		{@code true} iff the considered word is at the beginning of an entity.
+	 * 		{@code true} iff the considered word is at the beginning of a mention.
 	 */
-	private Boolean convertSvmToEntityBio(double y)
+	private Boolean convertSvmToMentionBio(double y)
 	{	Boolean result = null;
 	
 		if(y==1)
@@ -795,10 +795,10 @@ public class SvmCombiner extends AbstractCombiner
 
 	/**
 	 * Indicates whether categories should be used when
-	 * combining the entities.
+	 * combining the mentions.
 	 * 
 	 * @return
-	 * 		{@code true} iff categories should be used for entity combination.
+	 * 		{@code true} iff categories should be used for mention combination.
 	 */
 	public boolean getUseCategories()
 	{	return useCategories;
@@ -807,20 +807,20 @@ public class SvmCombiner extends AbstractCombiner
 	/////////////////////////////////////////////////////////////////
 	// COMBINE MODE		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Indicates if entities should be combined by entity (in which case several vote modes are possible) or by word */
+	/** Indicates if mentions should be combined by mention (in which case several vote modes are possible) or by word */
 	private CombineMode combineMode;
 
 	/**
 	 * Enumeration used to configure how
-	 * the entity combination is performed.
+	 * the mention combination is performed.
 	 */
 	public enum CombineMode
 	{	/** Each NER tool accounts for one vote */
-		ENTITY_UNIFORM("EntUnif"),
+		MENTION_UNIFORM("EntUnif"),
 		/** Overall scores are used to determine vote weights */
-		ENTITY_WEIGHTED_OVERALL("EntWghtOvrl"),
+		MENTION_WEIGHTED_OVERALL("EntWghtOvrl"),
 		/** Category-related scores are used to determine vote weights */
-		ENTITY_WEIGHTED_CATEGORY("EntWghtCat"),
+		MENTION_WEIGHTED_CATEGORY("EntWghtCat"),
 		/** No vote at all (the SVM handles everything), processing one chunk at a time */
 		CHUNK_SINGLE("ChunkSngl"),
 		/** No vote at all (the SVM handles everything), using the previous chunk*/
@@ -848,8 +848,8 @@ public class SvmCombiner extends AbstractCombiner
 		 * 		{@code true} if vote weights are required.
 		 */
 		public boolean hasWeights()
-		{	boolean result = this==ENTITY_WEIGHTED_OVERALL
-				|| this==ENTITY_WEIGHTED_CATEGORY;
+		{	boolean result = this==MENTION_WEIGHTED_OVERALL
+				|| this==MENTION_WEIGHTED_CATEGORY;
 			return result;
 		}
 		
@@ -873,10 +873,10 @@ public class SvmCombiner extends AbstractCombiner
 	}
 	
 	/**
-	 * Returns the mode used to combine entities.
+	 * Returns the mode used to combine mentions.
 	 * 
 	 * @return
-	 * 		A symbol representing how entities are combined.
+	 * 		A symbol representing how mentions are combined.
 	 */
 	public CombineMode getCombineMode()
 	{	return combineMode;
@@ -886,18 +886,18 @@ public class SvmCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Entities combineEntities(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
 	{	logger.increaseOffset();
-		Entities result = new Entities(getName());
+		Mentions result = new Mentions(getName());
 		
 		// possibly load the SVM combiner
 		if(!isLoaded())
 			loadModel();
 				
 		if(combineMode.isChunkBased())
-			combineEntitiesByWord(article, entities, rawOutput, result);
+			combineMentionsByWord(article, mentions, rawOutput, result);
 		else
-			combineEntitiesByEntity(article, entities, rawOutput, result);
+			combineMentionsByMention(article, mentions, rawOutput, result);
 		
 		logger.decreaseOffset();
 		return result;
@@ -905,13 +905,13 @@ public class SvmCombiner extends AbstractCombiner
 	
 	/**
 	 * Takes a map representing the outputs of each previously applied NER tool, 
-	 * and combine those entities to get a single set. The combination is 
-	 * performed entity by entity. 
+	 * and combine those mentions to get a single set. The combination is 
+	 * performed mention by mention. 
 	 * 
      * @param article
      * 		Concerned article.
-     * @param entities
-     * 		Map of the entities detected by the 
+     * @param mentions
+     * 		Map of the mentions detected by the 
      * 		individual NER tools.
      * @param rawOutput
      * 		Empty {@code StringBuffer} the combiner can use to
@@ -919,31 +919,31 @@ public class SvmCombiner extends AbstractCombiner
      * 		Or it can just let it empty.
 	 * @param result
      * 		Result of the combination of those
-     * 		individual entities.
+     * 		individual mentions.
      * 
 	 * @throws RecognizerException
-     * 		Problem while combining entities.
+     * 		Problem while combining mentions.
 	 */
-	private void combineEntitiesByEntity(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput, Entities result) throws RecognizerException
-	{	// get overlapping entities
-		logger.log("Get list of overlapping entities");
-		List<Map<AbstractRecognizer, AbstractEntity<?>>> overlaps = Entities.identifyOverlaps(entities);
+	private void combineMentionsByMention(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws RecognizerException
+	{	// get overlapping mentions
+		logger.log("Get list of overlapping mentions");
+		List<Map<AbstractRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
-		// process each group of entities
-		logger.log("Process each group of entities");
+		// process each group of mentions
+		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<AbstractRecognizer, AbstractEntity<?>> overlap: overlaps)
+		for(Map<AbstractRecognizer, AbstractMention<?>> overlap: overlaps)
 		{	// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<AbstractRecognizer, AbstractEntity<?>> entry: overlap.entrySet())
+			for(Entry<AbstractRecognizer, AbstractMention<?>> entry: overlap.entrySet())
 			{	AbstractRecognizer recognizer = entry.getKey();
-				AbstractEntity<?> entity = entry.getValue();
-				rawOutput.append("\t"+recognizer.getName()+": "+entity+"\n");
+				AbstractMention<?> mention = entry.getValue();
+				rawOutput.append("\t"+recognizer.getName()+": "+mention+"\n");
 			}
 			
 			// convert to SVM input
 			logger.log("Convert to SVM format");
-			svm_node[] x = convertEntityGroupToSvm(overlap,article);
+			svm_node[] x = convertMentionGroupToSvm(overlap,article);
 			rawOutput.append("x={");
 			for(svm_node xx: x)
 				rawOutput.append(xx.index+":"+xx.value+" ");
@@ -954,14 +954,14 @@ public class SvmCombiner extends AbstractCombiner
 			rawOutput.append("y="+y);
 			logger.log("Process SVM prediction: "+y);
 			
-			// convert to actual entity
-			AbstractEntity<?> entity = convertSvmToEntity(overlap,y,article);
-			rawOutput.append(">> entity="+entity+"\n");
-			logger.log("Convert to entity object: "+entity);
+			// convert to actual mention
+			AbstractMention<?> mention = convertSvmToMention(overlap,y,article);
+			rawOutput.append(">> mention="+mention+"\n");
+			logger.log("Convert to mention object: "+mention);
 			
 			// possibly add to result
-			if(entity!=null)
-				result.addEntity(entity);
+			if(mention!=null)
+				result.addMention(mention);
 			
 			rawOutput.append("\n");
 		}
@@ -969,19 +969,19 @@ public class SvmCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Process the list of word-entity couples for the specified article.
+	 * Process the list of word-mention couples for the specified article.
 	 * Those are used when the combination mode is set to word-by-word.
 	 * 
 	 * @param article
 	 * 		Article to process.
-	 * @param entities
-	 * 		Previously detected entities, to be compared with the article words.
+	 * @param mentions
+	 * 		Previously detected mentions, to be compared with the article words.
 	 * @return
-	 * 		List of word-entity maps: each map corresponds to one word with at least
-	 * 		an overlap with a previously detected entity.
+	 * 		List of word-mention maps: each map corresponds to one word with at least
+	 * 		an overlap with a previously detected mention.
 	 */
-	protected List<Map<AbstractRecognizer,WordEntity>> identifyWordEntityOverlaps(Article article, Map<AbstractRecognizer,Entities> entities)
-	{	List<Map<AbstractRecognizer,WordEntity>> result = new ArrayList<Map<AbstractRecognizer, WordEntity>>();
+	protected List<Map<AbstractRecognizer,WordMention>> identifyWordMentionOverlaps(Article article, Map<AbstractRecognizer,Mentions> mentions)
+	{	List<Map<AbstractRecognizer,WordMention>> result = new ArrayList<Map<AbstractRecognizer, WordMention>>();
 		
 		// break text into words
 		String rawText = article.getRawText();
@@ -993,24 +993,24 @@ public class SvmCombiner extends AbstractCombiner
 		
 		// build an iterator for each NER tool
 		logger.log("Build all needed structures");
-		List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>(entities.keySet());
-		Map<AbstractRecognizer,Iterator<AbstractEntity<?>>> iterators = new HashMap<AbstractRecognizer,Iterator<AbstractEntity<?>>>();
-		Map<AbstractRecognizer,AbstractEntity<?>> currentEntities = new HashMap<AbstractRecognizer,AbstractEntity<?>>();
+		List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>(mentions.keySet());
+		Map<AbstractRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractRecognizer,Iterator<AbstractMention<?>>>();
+		Map<AbstractRecognizer,AbstractMention<?>> currentMentions = new HashMap<AbstractRecognizer,AbstractMention<?>>();
 		Map<AbstractRecognizer,Integer> currentIndices = new HashMap<AbstractRecognizer,Integer>();
 		Iterator<AbstractRecognizer> itR = recognizers.iterator();
 		while(itR.hasNext())
 		{	AbstractRecognizer recognizer = itR.next();
-			Entities e = entities.get(recognizer);
-			Iterator<AbstractEntity<?>> it = e.getEntities().iterator();
+			Mentions e = mentions.get(recognizer);
+			Iterator<AbstractMention<?>> it = e.getMentions().iterator();
 			if(it.hasNext())
-			{	AbstractEntity<?> entity = it.next();
-				currentEntities.put(recognizer, entity);
+			{	AbstractMention<?> mention = it.next();
+				currentMentions.put(recognizer, mention);
 				currentIndices.put(recognizer, 0);
 				iterators.put(recognizer,it);
 			}
 			else
 			{	itR.remove();
-				logger.log("WARNING: NER tool "+recognizer+" did not find any entity for this article, which is possibly worth checking");
+				logger.log("WARNING: NER tool "+recognizer+" did not find any mention for this article, which is possibly worth checking");
 			}
 		}
 		
@@ -1025,44 +1025,44 @@ public class SvmCombiner extends AbstractCombiner
 //			logger.log("Processing word \""+word+"\" ("+wordStart+"-"+wordEnd+")");
 			logger.increaseOffset();
 			
-			// get entities containing this word or overlapping it
+			// get mentions containing this word or overlapping it
 //			logger.log("Comparing the word to each NER output");
 			logger.increaseOffset();
-			Map<AbstractRecognizer,WordEntity> wordEntities = new HashMap<AbstractRecognizer,WordEntity>();
+			Map<AbstractRecognizer,WordMention> wordMentions = new HashMap<AbstractRecognizer,WordMention>();
 //			Map<AbstractRecognizer,EntityType> ovTypes = new HashMap<AbstractRecognizer,EntityType>();
-//			Map<AbstractRecognizer,AbstractEntity<?>> ovEntities = new HashMap<AbstractRecognizer,AbstractEntity<?>>();
+//			Map<AbstractRecognizer,AbstractMention<?>> ovMentions = new HashMap<AbstractRecognizer,AbstractMention<?>>();
 //			Map<AbstractRecognizer,Boolean> ovBeginnings = new HashMap<AbstractRecognizer,Boolean>();
 			Iterator<AbstractRecognizer> itRec = recognizers.iterator();
 			while(itRec.hasNext())
 			{	AbstractRecognizer recognizer = itRec.next();
 //				logger.log("Managing NER "+recognizer);
 				logger.increaseOffset();
-				AbstractEntity<?> currentEntity = currentEntities.get(recognizer);
-				Iterator<AbstractEntity<?>> it = iterators.get(recognizer);
+				AbstractMention<?> currentMention = currentMentions.get(recognizer);
+				Iterator<AbstractMention<?>> it = iterators.get(recognizer);
 				PositionRelation posRel;
 				
-				// go to the appropriate entity for the current NER tool
+				// go to the appropriate mention for the current NER tool
 				do
-				{	posRel = PositionRelation.getRelation(currentEntity,wordStart,wordEnd);
-//					logger.log("Current entity [posRel="+posRel+"]: "+currentEntity);
+				{	posRel = PositionRelation.getRelation(currentMention,wordStart,wordEnd);
+//					logger.log("Current mention [posRel="+posRel+"]: "+currentMention);
 					if(posRel==PositionRelation.COMPLETE_PRECEDES && it.hasNext())
-					{	currentEntity = it.next();
-						currentEntities.put(recognizer, currentEntity);
+					{	currentMention = it.next();
+						currentMentions.put(recognizer, currentMention);
 					}
 				}
 				while(posRel==PositionRelation.COMPLETE_PRECEDES && it.hasNext());
 				
-				// if no more entities, remove NER tool from list
+				// if no more mentions, remove NER tool from list
 				if(posRel==PositionRelation.COMPLETE_PRECEDES)
 				{	
-//					logger.log(posRel+" >> no more entity >> "+recognizer+" is removed from the list");
+//					logger.log(posRel+" >> no more mention >> "+recognizer+" is removed from the list");
 					itRec.remove();
 					iterators.remove(recognizer);
-					currentEntities.remove(recognizer);
+					currentMentions.remove(recognizer);
 					currentIndices.remove(recognizer);
 				}
 				
-				// if the entity does not overlap, ignore it for now
+				// if the mention does not overlap, ignore it for now
 				else if(posRel==PositionRelation.COMPLETE_SUCCEDES)
 				{	
 //					logger.log(posRel+" >> no overlap >> nothing to do ");
@@ -1070,29 +1070,29 @@ public class SvmCombiner extends AbstractCombiner
 				
 				// otherwise we work on the overlap
 				else
-				{	WordEntity wordEntity = new WordEntity();
-					int entityStart = currentEntity.getStartPos();
-					if(wordStart<=entityStart)
-					{	wordEntity.setBeginning(true);
-//						logger.log(posRel+" word is at the beginning of the entity");
+				{	WordMention wordMention = new WordMention();
+					int mentionStart = currentMention.getStartPos();
+					if(wordStart<=mentionStart)
+					{	wordMention.setBeginning(true);
+//						logger.log(posRel+" word is at the beginning of the mention");
 					}
 					else
-					{	wordEntity.setBeginning(false);
-//						logger.log(posRel+" word is inside the entity");
+					{	wordMention.setBeginning(false);
+//						logger.log(posRel+" word is inside the mention");
 					}
-					wordEntity.setStartPosition(wordStart);
-					wordEntity.setEndPosition(wordEnd);
-					wordEntity.setEntity(currentEntity);
-					wordEntities.put(recognizer, wordEntity);
+					wordMention.setStartPosition(wordStart);
+					wordMention.setEndPosition(wordEnd);
+					wordMention.setEntity(currentMention);
+					wordMentions.put(recognizer, wordMention);
 				}
 				
 				logger.decreaseOffset();
 			}
 			
-//			if(wordEntities.isEmpty())
-//				logger.log("No entity at all found for the considered word");
+//			if(wordMentions.isEmpty())
+//				logger.log("No mention at all found for the considered word");
 //			else
-				result.add(wordEntities);
+				result.add(wordMentions);
 			
 			logger.decreaseOffset();
 			logger.decreaseOffset();
@@ -1104,13 +1104,13 @@ public class SvmCombiner extends AbstractCombiner
 	
 	/**
 	 * Takes a map representing the outputs of each previously applied NER tool, 
-	 * and combine those entities to get a single set. The combination is 
+	 * and combine those mentions to get a single set. The combination is 
 	 * performed chunk-wise (i.e. word-by-word). 
 	 * 
      * @param article
      * 		Concerned article.
-     * @param entities
-     * 		Map of the entities detected by the 
+     * @param mentions
+     * 		Map of the mentions detected by the 
      * 		individual NER tools.
      * @param rawOutput
      * 		Empty {@code StringBuffer} the combiner can use to
@@ -1118,45 +1118,45 @@ public class SvmCombiner extends AbstractCombiner
      * 		Or it can just let it empty.
 	 * @param result
      * 		Result of the combination of those
-     * 		individual entities.
+     * 		individual mentions.
      * 
 	 * @throws RecognizerException
-     * 		Problem while combining entities.
+     * 		Problem while combining mentions.
 	 */
-	private void combineEntitiesByWord(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput, Entities result) throws RecognizerException
-	{	// identify word-entity couples for each NER tool
-		List<Map<AbstractRecognizer,WordEntity>> wordEntities = identifyWordEntityOverlaps(article,entities);
+	private void combineMentionsByWord(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws RecognizerException
+	{	// identify word-mention couples for each NER tool
+		List<Map<AbstractRecognizer,WordMention>> wordMentions = identifyWordMentionOverlaps(article,mentions);
 		String rawText = article.getRawText();
 		
 		// process each word in the text
-		logger.log("Process each word-entity map detected in the text");
+		logger.log("Process each word-mention map detected in the text");
 		int currentStartPos = -1;
 		int currentEndPos = -1;
 		EntityType currentType = null;
 		Boolean previousBeginning = null;
 		EntityType previousType = null;
-		Iterator<Map<AbstractRecognizer,WordEntity>> it = wordEntities.iterator();
+		Iterator<Map<AbstractRecognizer,WordMention>> it = wordMentions.iterator();
 		logger.increaseOffset();
 		while(it.hasNext())
-		{	// get the next word-entity map
-			Map<AbstractRecognizer,WordEntity> weMap = it.next();
+		{	// get the next word-mention map
+			Map<AbstractRecognizer,WordMention> weMap = it.next();
 			
-			// no overlapping entity at all >> it is an outside word, we treat it as such
+			// no overlapping mention at all >> it is an outside word, we treat it as such
 			if(weMap.isEmpty())
 			{	
-//				logger.log("Word does not overlap with any entity >> outside word");
+//				logger.log("Word does not overlap with any mention >> outside word");
 				logger.increaseOffset();
-				// if there's a current entity
+				// if there's a current mention
 				if(currentType==null)
 				{	
-//					logger.log("No current entity to finalize");
+//					logger.log("No current mention to finalize");
 				}
 				else
-				{	// finalize the current entity
-					AbstractEntity<?> entity = convertSvmToEntity(currentStartPos, currentEndPos, currentType, article);
-					result.addEntity(entity);
-//					logger.log("Finalizing the current entity: "+entity);
-					// mark the fact there is now no current entity 
+				{	// finalize the current mention
+					AbstractMention<?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
+					result.addMention(mention);
+//					logger.log("Finalizing the current mention: "+mention);
+					// mark the fact there is now no current mention 
 					currentType = null;
 					currentStartPos = -1;
 					currentEndPos = -1;
@@ -1169,33 +1169,33 @@ public class SvmCombiner extends AbstractCombiner
 				logger.decreaseOffset();
 			}
 				
-			// at least one overlapping entity
+			// at least one overlapping mention
 			else
-			{	WordEntity we = weMap.values().iterator().next();
+			{	WordMention we = weMap.values().iterator().next();
 				int wordStart = we.getStartPosition();
 				int wordEnd = we.getEndPosition();
 				String word = rawText.substring(wordStart,wordEnd);
 //				logger.log("Processing word \""+word+"\" ("+wordStart+"-"+wordEnd+")");
 
-//				logger.log("Word does overlap with at least one entity >> beginning/inside word");
+//				logger.log("Word does overlap with at least one mention >> beginning/inside word");
 				logger.increaseOffset();
 				// add overlap to raw output
 				rawOutput.append("Overlap: \""+word+"\" ("+wordStart+")\n");
-				for(Entry<AbstractRecognizer, WordEntity> entry: weMap.entrySet())
+				for(Entry<AbstractRecognizer, WordMention> entry: weMap.entrySet())
 				{	AbstractRecognizer recognizer = entry.getKey();
-					WordEntity wordEntity = entry.getValue();
-					AbstractEntity<?> entity = wordEntity.getEntity();
-					Boolean beginning = wordEntity.isBeginning();
+					WordMention wordMention = entry.getValue();
+					AbstractMention<?> mention = wordMention.getMention();
+					Boolean beginning = wordMention.isBeginning();
 					String bio;
 					if(beginning)
 						bio = "B";
 					else
 						bio = "I";
-					rawOutput.append("\t"+recognizer.getName()+" [BIO="+bio+"]: "+entity+"\n");
+					rawOutput.append("\t"+recognizer.getName()+" [BIO="+bio+"]: "+mention+"\n");
 				}
 				
 				// convert to SVM input
-				svm_node[] x = convertEntityWordToSvm(previousType,previousBeginning,weMap,article);
+				svm_node[] x = convertMentionWordToSvm(previousType,previousBeginning,weMap,article);
 //				logger.log("Convert to SVM format: x="+x.toString());
 				rawOutput.append("x={");
 				for(svm_node xx: x)
@@ -1207,25 +1207,25 @@ public class SvmCombiner extends AbstractCombiner
 				rawOutput.append("y="+y);
 //				logger.log("Process SVM prediction: "+y);
 			
-				// convert to actual entity
-				EntityType type = convertSvmToEntityType(y);
-				Boolean beginning = convertSvmToEntityBio(y);
+				// convert to actual mention
+				EntityType type = convertSvmToMentionType(y);
+				Boolean beginning = convertSvmToMentionBio(y);
 				// outside word
 				if(type==null)
 				{	
 //					logger.log("SVM decision: outside word");
 					logger.increaseOffset();
-					// if there's a current entity
+					// if there's a current mention
 					if(currentType==null)
 					{
-//						logger.log("No current entity to finalize");
+//						logger.log("No current mention to finalize");
 					}
 					else
-					{	// finalize the current entity
-						AbstractEntity<?> entity = convertSvmToEntity(currentStartPos, currentEndPos, currentType, article);
-						result.addEntity(entity);
-//						logger.log("Finalizing the current entity: "+entity);
-						// mark the fact there is now no current entity 
+					{	// finalize the current mention
+						AbstractMention<?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
+						result.addMention(mention);
+//						logger.log("Finalizing the current mention: "+mention);
+						// mark the fact there is now no current mention 
 						currentType = null;
 						currentStartPos = -1;
 						currentEndPos = -1;
@@ -1241,21 +1241,21 @@ public class SvmCombiner extends AbstractCombiner
 				{	currentType = type;
 					currentStartPos = wordStart;
 					currentEndPos = wordEnd;
-//					logger.log("SVM decision: beginning/inside word after an outside word >> start new entity");
+//					logger.log("SVM decision: beginning/inside word after an outside word >> start new mention");
 					
 					previousType = type;
 					previousBeginning = true;
 				}
-				// beginning word (new entity) or type change (also considered to be a new entity?)
+				// beginning word (new mention) or type change (also considered to be a new mention?)
 				else if(beginning || type!=currentType)
 				{	
 //					logger.log("SVM decision: beginning word or inside word with type change");
 					logger.increaseOffset();
-					// finalize the current entity
-					AbstractEntity<?> entity = convertSvmToEntity(currentStartPos, currentEndPos, currentType, article);
-					result.addEntity(entity);
-//					logger.log("Finalizing the current entity: "+entity);
-					rawOutput.append(">> entity="+entity+"\n");
+					// finalize the current mention
+					AbstractMention<?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
+					result.addMention(mention);
+//					logger.log("Finalizing the current mention: "+mention);
+					rawOutput.append(">> mention="+mention+"\n");
 					// start the new one
 //					logger.log("And starting a new one");
 					currentType = type;
@@ -1270,8 +1270,8 @@ public class SvmCombiner extends AbstractCombiner
 				// inside word
 				else
 				{	
-//					logger.log("SVM decision: inside word >> updating current entity");
-					// update the current entity
+//					logger.log("SVM decision: inside word >> updating current mention");
+					// update the current mention
 					currentEndPos = wordEnd;
 					
 					previousType = type;

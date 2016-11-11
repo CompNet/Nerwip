@@ -50,9 +50,9 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
@@ -211,23 +211,23 @@ public class SvmTrainer
 				ArticleRetriever retriever = new ArticleRetriever();
 				Article article = retriever.process(name);
 					
-				Map<AbstractRecognizer,Entities> entities = new HashMap<AbstractRecognizer, Entities>();
+				Map<AbstractRecognizer,Mentions> mentions = new HashMap<AbstractRecognizer, Mentions>();
 				
-				// get reference entities
-				Entities refEntities = article.getReferenceEntities();
+				// get reference mentions
+				Mentions refMentions = article.getReferenceMentions();
 				// keep only those allowed for this training
-				combiner.filterType(refEntities);
-				entities.put(null, refEntities);
+				combiner.filterType(refMentions);
+				mentions.put(null, refMentions);
 				
-				// get estimated entities for each recognizer
+				// get estimated mentions for each recognizer
 				for(AbstractRecognizer recognizer: recognizers)
-				{	Entities estEntites = recognizer.process(article);
-					combiner.filterType(estEntites);
-					entities.put(recognizer, estEntites);
+				{	Mentions estMentions = recognizer.process(article);
+					combiner.filterType(estMentions);
+					mentions.put(recognizer, estMentions);
 				}
 				
-				// convert all these entities to something the SVM can process
-				svm_problem conv = convertEntities(article,entities);
+				// convert all these mentions to something the SVM can process
+				svm_problem conv = convertMentions(article,mentions);
 				// add to the rest of the data
 				result = mergeData(result,conv);
 			}
@@ -404,49 +404,49 @@ public class SvmTrainer
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Convert the specified entities to a format appropriate
+	 * Convert the specified mentions to a format appropriate
 	 * for SVM.
 	 * 
 	 * @param article
 	 * 		Article to process.
-	 * @param entities
-	 * 		Reference and estimated entities.
+	 * @param mentions
+	 * 		Reference and estimated mentions.
 	 * @return
 	 * 		A 'problem' object, representing SVM inputs and outputs
 	 * 		using an appropriate format.
 	 */
-	private svm_problem convertEntities(Article article, Map<AbstractRecognizer,Entities> entities)
+	private svm_problem convertMentions(Article article, Map<AbstractRecognizer,Mentions> mentions)
 	{	logger.increaseOffset();
 		svm_problem result;
 		CombineMode combineMode = combiner.getCombineMode();
 		
 		if(combineMode.isChunkBased())
-			result = convertEntitiesByWord(article, entities);
+			result = convertMentionsByWord(article, mentions);
 		else
-			result = convertEntitiesByEntity(article, entities);
+			result = convertMentionsByMention(article, mentions);
 		
 		logger.decreaseOffset();
 		return result;
 	}
 
 	/**
-	 * Convert the specified entities to a format appropriate for SVM.
-	 * The conversion is processed entity group by entity group.
+	 * Convert the specified mentions to a format appropriate for SVM.
+	 * The conversion is processed mention group by mention group.
 	 * 
 	 * @param article
 	 * 		Article to process.
-	 * @param entities
-	 * 		Reference and estimated entities.
+	 * @param mentions
+	 * 		Reference and estimated mentions.
 	 * @return
 	 * 		A 'problem' object, representing SVM inputs and outputs
 	 * 		using an appropriate format.
 	 */
-	private svm_problem convertEntitiesByEntity(Article article, Map<AbstractRecognizer,Entities> entities)
+	private svm_problem convertMentionsByMention(Article article, Map<AbstractRecognizer,Mentions> mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		
-		// retrieve overlapping entities
-		List<Map<AbstractRecognizer,AbstractEntity<?>>> overlaps = Entities.identifyOverlaps(entities);
+		// retrieve overlapping mentions
+		List<Map<AbstractRecognizer,AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// init data object
 		svm_problem result = new svm_problem();
@@ -456,20 +456,20 @@ public class SvmTrainer
 		int index = 0;
 		
 		// convert to SVM format
-		for(Map<AbstractRecognizer, AbstractEntity<?>> overlap: overlaps)
-		{	Map<AbstractRecognizer, AbstractEntity<?>> estimations = overlap;
-			AbstractEntity<?> refEntity = overlap.get(null);
+		for(Map<AbstractRecognizer, AbstractMention<?>> overlap: overlaps)
+		{	Map<AbstractRecognizer, AbstractMention<?>> estimations = overlap;
+			AbstractMention<?> refMention = overlap.get(null);
 			EntityType refType = null;
 			
 			// get reference entity type
-			if(refEntity!=null)
-			{	refType = refEntity.getType();
-				estimations = new HashMap<AbstractRecognizer, AbstractEntity<?>>(overlap);
+			if(refMention!=null)
+			{	refType = refMention.getType();
+				estimations = new HashMap<AbstractRecognizer, AbstractMention<?>>(overlap);
 				estimations.remove(null);
 			}
 			
-			// convert entities
-			convertEntityGroupToSvm(result,index,article,refType,estimations);
+			// convert mentions
+			convertMentionGroupToSvm(result,index,article,refType,estimations);
 			
 			index++;
 		}
@@ -479,27 +479,27 @@ public class SvmTrainer
 	}
 
 	/**
-	 * Convert the specified entities to a format appropriate for SVM.
+	 * Convert the specified mentions to a format appropriate for SVM.
 	 * The conversion is processed word by word.
 	 * 
 	 * @param article
 	 * 		Article to process.
-	 * @param entities
-	 * 		Reference and estimated entities.
+	 * @param mentions
+	 * 		Reference and estimated mentions.
 	 * @return
 	 * 		A 'problem' object, representing SVM inputs and outputs
 	 * 		using an appropriate format.
 	 */
-	private svm_problem convertEntitiesByWord(Article article, Map<AbstractRecognizer,Entities> entities)
+	private svm_problem convertMentionsByWord(Article article, Map<AbstractRecognizer,Mentions> mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		String rawText = article.getRawText();
 		
-		// retrieve word-entity couples
-		List<Map<AbstractRecognizer,WordEntity>> wordEntities = combiner.identifyWordEntityOverlaps(article,entities);
+		// retrieve word-mention couples
+		List<Map<AbstractRecognizer,WordMention>> wordMentions = combiner.identifyWordMentionOverlaps(article,mentions);
 		// count non-empty maps (length of the output)
 		int size = 0;
-		for(Map<AbstractRecognizer,WordEntity> weMap: wordEntities)
+		for(Map<AbstractRecognizer,WordMention> weMap: wordMentions)
 		{	if(!weMap.isEmpty())
 				size++;
 		}
@@ -517,8 +517,8 @@ public class SvmTrainer
 		int index = 0;
 		Boolean prevBeginning = null;
 		EntityType prevType = null;
-		for(Map<AbstractRecognizer,WordEntity> weMap: wordEntities)
-		{	Map<AbstractRecognizer,WordEntity> estimations = weMap;
+		for(Map<AbstractRecognizer,WordMention> weMap: wordMentions)
+		{	Map<AbstractRecognizer,WordMention> estimations = weMap;
 			
 			if(weMap.isEmpty())
 			{	prevBeginning = null;
@@ -526,21 +526,21 @@ public class SvmTrainer
 			}
 			
 			else
-			{	WordEntity refWe = weMap.get(null);
+			{	WordMention refWe = weMap.get(null);
 				
-				// remove reference word-entity
+				// remove reference word-mention
 				if(refWe!=null)
 				{	String word = rawText.substring(refWe.getStartPosition(),refWe.getEndPosition());
-					logger.log("Processing word \""+word+"\" ("+refWe.getEntity()+")");
+					logger.log("Processing word \""+word+"\" ("+refWe.getMention()+")");
 					
-					estimations = new HashMap<AbstractRecognizer, WordEntity>(weMap);
+					estimations = new HashMap<AbstractRecognizer, WordMention>(weMap);
 					estimations.remove(null);
 				}
 				else
 					logger.log("Reference word is empty");
 				
-				// convert entities
-				convertEntityWordToSvm(result,index,article,prevType,prevBeginning,refWe,estimations);
+				// convert mentions
+				convertMentionWordToSvm(result,index,article,prevType,prevBeginning,refWe,estimations);
 				
 				// update previous info
 				if(refWe==null)
@@ -563,9 +563,9 @@ public class SvmTrainer
 
 	/**
 	 * Completes the specified SVM {@code data} object using
-	 * the specified reference entity type and estimated
-	 * entities. The reference type can be {@code null}, 
-	 * if no entity actually exists. 
+	 * the specified reference mention type and estimated
+	 * mentions. The reference type can be {@code null}, 
+	 * if no mention actually exists. 
 	 * 
 	 * @param data
 	 * 		SVM data object to be completed.
@@ -574,12 +574,12 @@ public class SvmTrainer
 	 * @param article
 	 * 		Article to process.
 	 * @param refType
-	 * 		Type of the reference entity, 
-	 * 		or {@code null} if no reference entity. 
-	 * @param estEntities
-	 * 		Corresponding estimated entities.
+	 * 		Type of the reference mention, 
+	 * 		or {@code null} if no reference mention. 
+	 * @param estMentions
+	 * 		Corresponding estimated mentions.
 	 */
-	private void convertEntityGroupToSvm(svm_problem data, int index, Article article, EntityType refType, Map<AbstractRecognizer,AbstractEntity<?>> estEntities)
+	private void convertMentionGroupToSvm(svm_problem data, int index, Article article, EntityType refType, Map<AbstractRecognizer,AbstractMention<?>> estMentions)
 	{	logger.increaseOffset();
 		
 		// use combiner to process output
@@ -588,15 +588,15 @@ public class SvmTrainer
 		
 		// use combiner to process inputs
 		logger.log("Converting inputs");
-		data.x[index] = combiner.convertEntityGroupToSvm(estEntities, article);
+		data.x[index] = combiner.convertMentionGroupToSvm(estMentions, article);
 		
 		logger.decreaseOffset();
 	}
 	
 	/**
 	 * Completes the specified SVM {@code data} object using
-	 * the specified reference and estimated word-entity couples.
-	 * The reference type can be {@code null}, if no entity actually 
+	 * the specified reference and estimated word-mention couples.
+	 * The reference type can be {@code null}, if no mention actually 
 	 * exists.
 	 * 
 	 * @param data
@@ -610,11 +610,11 @@ public class SvmTrainer
 	 * @param prevBeginning
 	 * 		BIO state used for the previous chunk.
 	 * @param refWe
-	 * 		Reference word-entity couple, or {@code null} if none. 
+	 * 		Reference word-mention couple, or {@code null} if none. 
 	 * @param estWe
-	 * 		Corresponding estimated word-entity couples.
+	 * 		Corresponding estimated word-mention couples.
 	 */
-	private void convertEntityWordToSvm(svm_problem data, int index, Article article, EntityType prevType, Boolean prevBeginning, WordEntity refWe, Map<AbstractRecognizer,WordEntity> estWe)
+	private void convertMentionWordToSvm(svm_problem data, int index, Article article, EntityType prevType, Boolean prevBeginning, WordMention refWe, Map<AbstractRecognizer,WordMention> estWe)
 	{	logger.increaseOffset();
 		
 		// use combiner to process output
@@ -623,7 +623,7 @@ public class SvmTrainer
 		
 		// use combiner to process inputs
 		logger.log("Converting inputs");
-		data.x[index] = combiner.convertEntityWordToSvm(prevType, prevBeginning, estWe, article);
+		data.x[index] = combiner.convertMentionWordToSvm(prevType, prevBeginning, estWe, article);
 if(data.x[index]==null || index==131)
 	System.out.print("");
 		
@@ -635,22 +635,22 @@ if(data.x[index]==null || index==131)
 	 * double value the SVM can interpret.
 	 * <br/>
 	 * This method is used during training,
-	 * when using the entity-by-entity mode.
+	 * when using the mention-by-mention mode.
 	 * 
 	 * @param type
-	 * 		Entity type to be converted.
+	 * 		Mention type to be converted.
 	 * @return
 	 * 		The corresponding {@code double} value.
 	 */
 	protected double convertOutputToSvm(EntityType type)
 	{	double result = 0;
 		
-		// no entity was detected >> null type
+		// no mention was detected >> null type
 		if(type==null)
 			result = 1;
-		// an entity was detected >> just get its position
+		// an mention was detected >> just get its position
 		else
-		{	List<EntityType> handledTypes = combiner.getHandledEntityTypes();
+		{	List<EntityType> handledTypes = combiner.getHandledMentionTypes();
 			result = handledTypes.indexOf(type) + 2;
 		}
 		
@@ -664,27 +664,27 @@ if(data.x[index]==null || index==131)
 	 * This method is used during training,
 	 * when using the word-by-word mode.
 	 * 
-	 * @param wordEntity
-	 * 		Couple word-entity to be converted.
+	 * @param wordMention
+	 * 		Couple word-mention to be converted.
 	 * @return
 	 * 		The corresponding {@code double} value.
 	 */
-	protected double convertOutputToSvm(WordEntity wordEntity)
-	{	logger.log("Word-entity to be converted: "+wordEntity);
+	protected double convertOutputToSvm(WordMention wordMention)
+	{	logger.log("Word-mention to be converted: "+wordMention);
 		logger.increaseOffset();
 		double result = 0;
 		
-		// no entity was detected >> null type
-		if(wordEntity==null)
+		// no mention was detected >> null type
+		if(wordMention==null)
 			result = 1;
-		// an entity was detected >> just get its position
+		// an mention was detected >> just get its position
 		else
-		{	AbstractEntity<?> entity = wordEntity.getEntity();
-			int wordStart = wordEntity.getStartPosition();
-			List<EntityType> handledTypes = combiner.getHandledEntityTypes();
-			EntityType type = entity.getType();
+		{	AbstractMention<?> mention = wordMention.getMention();
+			int wordStart = wordMention.getStartPosition();
+			List<EntityType> handledTypes = combiner.getHandledMentionTypes();
+			EntityType type = mention.getType();
 			result = (handledTypes.indexOf(type)+1)*2;
-			int startPos = entity.getStartPos();
+			int startPos = mention.getStartPos();
 			if(wordStart>startPos)
 				result++;
 		}
@@ -905,7 +905,7 @@ if(data.x[index]==null || index==131)
 		if(combineMode.hasWeights())
 		{	// vote weights
 			{	// process
-				List<EntityType> types = combiner.getHandledEntityTypes();
+				List<EntityType> types = combiner.getHandledMentionTypes();
 				List<AbstractRecognizer> recognizers = combiner.getRecognizers();
 				AbstractMeasure measure = new LilleMeasure(null);
 				Evaluator evaluator = new Evaluator(types, recognizers, folders, measure);
@@ -914,7 +914,7 @@ if(data.x[index]==null || index==131)
 					LilleMeasure.SCORE_FP,
 					LilleMeasure.SCORE_FR
 				);
-				boolean byCategory = combineMode==CombineMode.ENTITY_WEIGHTED_CATEGORY;
+				boolean byCategory = combineMode==CombineMode.MENTION_WEIGHTED_CATEGORY;
 				VoteWeights voteWeights = VoteWeights.buildWeightsFromEvaluator(evaluator,names,byCategory);
 				
 				// record
@@ -923,7 +923,7 @@ if(data.x[index]==null || index==131)
 			}
 			
 			// category proportions
-			if(combineMode==CombineMode.ENTITY_WEIGHTED_CATEGORY)
+			if(combineMode==CombineMode.MENTION_WEIGHTED_CATEGORY)
 			{	// process
 				CategoryProportions result = CategoryProportions.buildProportionsFromCorpus(folders);
 				
@@ -979,7 +979,7 @@ if(data.x[index]==null || index==131)
 	
 	/**
 	 * Trains the SVM on the specified data,
-	 * for the specified entity types.
+	 * for the specified mention types.
 	 * 
 	 * @param folders
 	 * 		List of concered articles.
@@ -990,9 +990,9 @@ if(data.x[index]==null || index==131)
 	 * @throws IOException
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException
-	 * 		Problem while accessing an entity file. 
+	 * 		Problem while accessing an mention file. 
 	 * @throws ParseException
-	 * 		Problem while accessing an entity file. 
+	 * 		Problem while accessing an mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException
@@ -1067,9 +1067,9 @@ if(data.x[index]==null || index==131)
 	 * @throws IOException
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException
-	 * 		Problem while accessing an entity file. 
+	 * 		Problem while accessing an mention file. 
 	 * @throws ParseException
-	 * 		Problem while accessing an entity file. 
+	 * 		Problem while accessing an mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException

@@ -24,22 +24,22 @@ package tr.edu.gsu.nerwip.recognition.combiner.svmbased;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 
 /**
  * This class is used to represent some partial results when the SVM
- * is in charge of determining the entity positions (i.e. word-based
+ * is in charge of determining the mention positions (i.e. word-based
  * encoding). 
  * 
  * @author Vincent Labatut
  */
-public class WordEntity
+public class WordMention
 {	
 	/**
 	 * Builds an empty object.
 	 */
-	public WordEntity()
+	public WordMention()
 	{
 		//
 	}
@@ -52,15 +52,15 @@ public class WordEntity
 	 * 		Start position of the word in the whole text. 
 	 * @param endPos
 	 * 		End position of the word in the whole text. 
-	 * @param entity 
+	 * @param mention 
 	 * 		Entity associated to the considered word.
 	 * @param beginning 
-	 * 		Whether or not the considered word is at the beginning of the associated entity.
+	 * 		Whether or not the considered word is at the beginning of the associated mention.
 	 */
-	public WordEntity(int startPos, int endPos, AbstractEntity<?> entity, boolean beginning)
+	public WordMention(int startPos, int endPos, AbstractMention<?> mention, boolean beginning)
 	{	this.startPos = startPos;
 		this.endPos = endPos;
-		this.entity = entity;
+		this.mention = mention;
 		this.beginning = beginning;
 	}
 	
@@ -113,56 +113,56 @@ public class WordEntity
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITY			/////////////////////////////////////////////
+	// MENTION			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Entity associated to the considered word */
-	private AbstractEntity<?> entity;
+	private AbstractMention<?> mention;
 
 	/**
-	 * Returns the entity associated to the considered word.
+	 * Returns the mention associated to the considered word.
 	 * 
 	 * @return
 	 * 		Entity associated to the considered word.
 	 */
-	public AbstractEntity<?> getEntity()
-	{	return entity;
+	public AbstractMention<?> getMention()
+	{	return mention;
 	}
 
 	/**
-	 * Changes the entity associated to the considered word.
+	 * Changes the mention associated to the considered word.
 	 * 
-	 * @param entity
-	 * 		New entity associated to the considered word.
+	 * @param mention
+	 * 		New mention associated to the considered word.
 	 */
-	public void setEntity(AbstractEntity<?> entity)
-	{	this.entity = entity;
+	public void setEntity(AbstractMention<?> mention)
+	{	this.mention = mention;
 	}
 	
 	/**
-	 * Returns the type of the entity associated to the considered word.
+	 * Returns the type of the mention associated to the considered word.
 	 * 
 	 * @return
-	 * 		Type of the entity associated to the considered word.
+	 * 		Type of the mention associated to the considered word.
 	 */
 	public EntityType getType()
 	{	EntityType result = null;
-		if(entity!=null)
-			result = entity.getType();
+		if(mention!=null)
+			result = mention.getType();
 		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// BEGINNING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Whether or not the considered word is at the beginning of the associated entity */
+	/** Whether or not the considered word is at the beginning of the associated mention */
 	private boolean beginning;
 	
 	/**
 	 * Indicates whether or not the considered word is at the 
-	 * beginning of the associated entity.
+	 * beginning of the associated mention.
 	 * 
 	 * @return
-	 * 		{@code true} iff the word is at the beginning of the entity.
+	 * 		{@code true} iff the word is at the beginning of the mention.
 	 */
 	public boolean isBeginning()
 	{	return beginning;
@@ -170,10 +170,10 @@ public class WordEntity
 
 	/**
 	 * Changes the flag indicating whether or not the considered 
-	 * word is at the beginning of the associated entity. 
+	 * word is at the beginning of the associated mention. 
 	 * 
 	 * @param beginning
-	 * 		{@code true} iff the word is at the beginning of the entity.
+	 * 		{@code true} iff the word is at the beginning of the mention.
 	 */
 	public void setBeginning(boolean beginning)
 	{	this.beginning = beginning;
@@ -185,7 +185,7 @@ public class WordEntity
 	@Override
 	public String toString()
 	{	String result = "("+startPos+","+endPos+")"
-			+ " b=" + beginning + " - " + entity;
+			+ " b=" + beginning + " - " + mention;
 		return result;
 	}
 }

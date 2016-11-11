@@ -141,7 +141,7 @@ public class VoteTrainer
 		if(voteMode.hasWeights())
 		{	// vote weights
 			{	// process
-				List<EntityType> types = combiner.getHandledEntityTypes();
+				List<EntityType> types = combiner.getHandledMentionTypes();
 				List<AbstractRecognizer> recognizers = combiner.getRecognizers();
 				AbstractMeasure measure = new LilleMeasure(null);
 				Evaluator evaluator = new Evaluator(types, recognizers, folders, measure);
@@ -186,9 +186,9 @@ public class VoteTrainer
 	 * @throws IOException
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException
-	 * 		Problem while accessing an entity file. 
+	 * 		Problem while accessing an mention file. 
 	 * @throws ParseException
-	 * 		Problem while accessing an entity file. 
+	 * 		Problem while accessing an mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException

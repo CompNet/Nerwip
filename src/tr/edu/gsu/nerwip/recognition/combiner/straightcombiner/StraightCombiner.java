@@ -34,9 +34,9 @@ import java.util.Map.Entry;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -60,7 +60,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
  * whereas others cannot.
  * <br/>
  * Here is the principle of the voting process. We call 'activated tool' a tool
- * which has detected an entity for a given expression. When there is at least
+ * which has detected a mention for a given expression. When there is at least
  * one activated tool:
  * <ol>
  * 	<li>Type vote: we keep the majority entity type, among all activated tools.</li>
@@ -125,7 +125,7 @@ public class StraightCombiner extends AbstractCombiner
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of entity types recognized by this combiner */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 		EntityType.DATE,
 		EntityType.FUNCTION,
@@ -136,14 +136,14 @@ public class StraightCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of languages recognized by this combiner */
 	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
 //		ArticleLanguage.EN,
 		ArticleLanguage.FR
@@ -223,50 +223,50 @@ public class StraightCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Entities combineEntities(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
 	{	logger.increaseOffset();
 		String text = article.getRawText();
-		Entities result = new Entities(getName());
+		Mentions result = new Mentions(getName());
 		
-		// get overlapping entities
-		logger.log("Get the list of overlapping entities");
-		List<Map<AbstractRecognizer, AbstractEntity<?>>> overlaps = Entities.identifyOverlaps(entities);
+		// get overlapping mentions
+		logger.log("Get the list of overlapping mentions");
+		List<Map<AbstractRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// compare/combine them
-		logger.log("Process each group of entities");
+		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<AbstractRecognizer, AbstractEntity<?>> map: overlaps)
+		for(Map<AbstractRecognizer, AbstractMention<?>> map: overlaps)
 		{	logger.log(map.values().toString());
 			logger.increaseOffset();
 			
 			// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<AbstractRecognizer, AbstractEntity<?>> entry: map.entrySet())
+			for(Entry<AbstractRecognizer, AbstractMention<?>> entry: map.entrySet())
 			{	AbstractRecognizer recognizer = entry.getKey();
-				AbstractEntity<?> entity = entry.getValue();
-				rawOutput.append("\t"+recognizer+": "+entity+"\n");
+				AbstractMention<?> mention = entry.getValue();
+				rawOutput.append("\t"+recognizer+": "+mention+"\n");
 			}
 			
 			// determine entity type
 			EntityType type = voteForType(map);
 			rawOutput.append("Type="+type+"\n");
 			
-			// determine entity existence
+			// determine mention existence
 			boolean existence = voteForExistence(map, type);
 			rawOutput.append("Existence="+existence+"\n");
 			
 			if(existence)
-			{	// determine entity position
+			{	// determine mention position
 				int pos[] = voteForPosition(map);
 				rawOutput.append("Position=("+pos[0]+","+pos[1]+")\n");
 				
-				// build new, appropriate entity
+				// build new, appropriate mention
 				int startPos = pos[0];
 				int endPos = pos[1];
 				String valueStr = text.substring(startPos,endPos);
-				AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, getName(), valueStr);
-				result.addEntity(entity);
-				rawOutput.append(">> Entity="+endPos+"\n\n");
+				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, getName(), valueStr);
+				result.addMention(mention);
+				rawOutput.append(">> Mention="+endPos+"\n\n");
 			}
 			logger.decreaseOffset();
 		}
@@ -278,23 +278,23 @@ public class StraightCombiner extends AbstractCombiner
 
 	/**
 	 * Combine the NER tools results, in order to determine the
-	 * type of the entity represented by the specified group.
+	 * type of the mention represented by the specified group.
 	 * 
 	 * @param map 
-	 * 		Group of estimated entities.
+	 * 		Group of estimated mentions.
 	 * @return 
-	 * 		Type of the entity represnted by the group.
+	 * 		Type of the mention represnted by the group.
 	 */
-	protected EntityType voteForType(Map<AbstractRecognizer, AbstractEntity<?>> map)
+	protected EntityType voteForType(Map<AbstractRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for type: ");
 		logger.increaseOffset();
 		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
 		
 		// process votes
 		for(AbstractRecognizer recognizer: recognizers)
-		{	AbstractEntity<?> entity = map.get(recognizer);
-			if(entity!=null)
-			{	EntityType type = entity.getType();
+		{	AbstractMention<?> mention = map.get(recognizer);
+			if(mention!=null)
+			{	EntityType type = mention.getType();
 				Float typeScore = typeScores.get(type);
 				if(typeScore==null)
 					typeScore = 0f;
@@ -322,17 +322,17 @@ public class StraightCombiner extends AbstractCombiner
 
 	/**
 	 * Combine the NER tools results, in order to determine if
-	 * the group of estimated entities corresponds to an actual
-	 * entity.
+	 * the group of estimated mentions corresponds to an actual
+	 * mention.
 	 * 
 	 * @param map 
-	 * 		Group of estimated entities.
+	 * 		Group of estimated mentions.
 	 * @param type 
-	 * 		Estimated type for the treated entity.
+	 * 		Estimated type for the treated mention.
 	 * @return 
-	 * 		{@code true} iff the conclusion is that the entity is correct.
+	 * 		{@code true} iff the conclusion is that the mention is correct.
 	 */
-	protected boolean voteForExistence(Map<AbstractRecognizer, AbstractEntity<?>> map, EntityType type)
+	protected boolean voteForExistence(Map<AbstractRecognizer, AbstractMention<?>> map, EntityType type)
 	{	logger.log("Start voting for existence:");
 		logger.increaseOffset();
 		
@@ -340,10 +340,10 @@ public class StraightCombiner extends AbstractCombiner
 		float voteAgainst = 0;
 		
 		for(AbstractRecognizer recognizer: recognizers)
-		{	List<EntityType> handledTypes = recognizer.getHandledEntityTypes();
+		{	List<EntityType> handledTypes = recognizer.getHandledMentionTypes();
 			if(handledTypes.contains(type))
-			{	AbstractEntity<?> entity = map.get(recognizer);
-				if(entity==null)
+			{	AbstractMention<?> mention = map.get(recognizer);
+				if(mention==null)
 					voteAgainst = voteAgainst + 1;
 				else
 					voteFor = voteFor + 1;
@@ -361,14 +361,14 @@ public class StraightCombiner extends AbstractCombiner
 
 	/**
 	 * Combine the NER tools results, in order to determine the
-	 * position of the entity represented by the specified group.
+	 * position of the mention represented by the specified group.
 	 * 
 	 * @param map 
-	 * 		Group of estimated entities.
+	 * 		Group of estimated mentions.
 	 * @return 
-	 * 		An array of two integers corresponding to the entity position.
+	 * 		An array of two integers corresponding to the mention position.
 	 */
-	protected int[] voteForPosition(Map<AbstractRecognizer, AbstractEntity<?>> map)
+	protected int[] voteForPosition(Map<AbstractRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for position:");
 		logger.increaseOffset();
 		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
@@ -376,12 +376,12 @@ public class StraightCombiner extends AbstractCombiner
 		
 		// pro votes
 		for(AbstractRecognizer recognizer: recognizers)
-		{	AbstractEntity<?> entity = map.get(recognizer);
+		{	AbstractMention<?> mention = map.get(recognizer);
 		
 			// check existence
-			if(entity!=null)
+			if(mention!=null)
 			{	// start position
-				int startPos = entity.getStartPos();
+				int startPos = mention.getStartPos();
 				Float startScore = startScores.get(startPos);
 				if(startScore==null)
 					startScore = 0f;
@@ -389,7 +389,7 @@ public class StraightCombiner extends AbstractCombiner
 				startScores.put(startPos,startScore);
 				
 				// end position
-				int endPos = entity.getEndPos();
+				int endPos = mention.getEndPos();
 				Float endScore = endScores.get(endPos);
 				if(endScore==null)
 					endScore = 0f;

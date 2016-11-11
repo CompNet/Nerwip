@@ -35,9 +35,9 @@ import java.util.Map.Entry;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
@@ -79,8 +79,8 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * 		(a NER tool has more importance if it was good on the test data). 
  * 		See {@link VoteMode}.</li>
  * 		<li>{@code existVote}: whether a vote should be conducted to determine
- * 		the existence of an entity. Otherwise, if at least one NER tool detects
- * 		something, we suppose an entity exist (increases the number of false 
+ * 		the existence of a mention. Otherwise, if at least one NER tool detects
+ * 		something, we suppose a mention exists (increases the number of false 
  * 		positves).</li>
  * 		<li>subeeMode: whether to use our NER tool {@link Subee}, and if yes,
  * 		how to use it. See {@code SubeeMode}.</li>
@@ -107,7 +107,7 @@ public class VoteCombiner extends AbstractCombiner
 	 * @param useRecall
 	 * 		 Indicates if recall should be used when voting.
 	 * @param existVote
-	 * 		Indicates if entity existence should be voted. 
+	 * 		Indicates if mention existence should be voted. 
 	 * @param subeeMode
 	 * 		Indicates how our NER tool {@link Subee} is used (if it is used). 
 	 *
@@ -163,7 +163,7 @@ public class VoteCombiner extends AbstractCombiner
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of entity types recognized by this combiner */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 //		EntityType.DATE,
 		EntityType.LOCATION,
@@ -172,14 +172,14 @@ public class VoteCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of languages recognized by this combiner */
 	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
 		ArticleLanguage.EN
 //		ArticleLanguage.FR
@@ -324,7 +324,7 @@ public class VoteCombiner extends AbstractCombiner
 	private VoteMode voteMode;
 	/** Whether the recall measures should be used or not */
 	private boolean useRecall;
-	/** Whether a vote should happen for entity existence, or not */
+	/** Whether a vote should happen for mention existence, or not */
 	private boolean existVote;
 
 	/**
@@ -374,10 +374,10 @@ public class VoteCombiner extends AbstractCombiner
 	}
 	
 	/**
-	 * Returns the mode used to combine entities.
+	 * Returns the mode used to combine mentions.
 	 * 
 	 * @return
-	 * 		A symbol representing how entities are combined.
+	 * 		A symbol representing how mentions are combined.
 	 */
 	public VoteMode getVoteMode()
 	{	return voteMode;
@@ -387,43 +387,43 @@ public class VoteCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Entities combineEntities(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
 	{	logger.increaseOffset();
 		String text = article.getRawText();
-		Entities result = new Entities(getName());
+		Mentions result = new Mentions(getName());
 		
 		// possibly load the necessary data
 		if(!isLoaded())
 			loadModel();
 		
-		// get overlapping entities
-		logger.log("Get the list of overlapping entities");
-		List<Map<AbstractRecognizer, AbstractEntity<?>>> overlaps = Entities.identifyOverlaps(entities);
+		// get overlapping mentions
+		logger.log("Get the list of overlapping mentions");
+		List<Map<AbstractRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// process the weights associated to article categories
 		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
 		
 		// compare/combine them
-		logger.log("Process each group of entities");
+		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<AbstractRecognizer, AbstractEntity<?>> map: overlaps)
+		for(Map<AbstractRecognizer, AbstractMention<?>> map: overlaps)
 		{	logger.log(map.values().toString());
 			logger.increaseOffset();
 			
 			// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<AbstractRecognizer, AbstractEntity<?>> entry: map.entrySet())
+			for(Entry<AbstractRecognizer, AbstractMention<?>> entry: map.entrySet())
 			{	AbstractRecognizer recognizer = entry.getKey();
-				AbstractEntity<?> entity = entry.getValue();
-				rawOutput.append("\t"+recognizer+": "+entity+"\n");
+				AbstractMention<?> mention = entry.getValue();
+				rawOutput.append("\t"+recognizer+": "+mention+"\n");
 			}
 			
-			// determine entity existence
+			// determine mention existence
 			boolean existence = voteForExistence(article,categoryWeights, map);
 			rawOutput.append("Existence="+existence+"\n");
 			
 			if(existence)
-			{	// determine entity position
+			{	// determine mention position
 				int pos[] = voteForPosition(article,categoryWeights, map);
 				rawOutput.append("Position=("+pos[0]+","+pos[1]+")\n");
 				
@@ -431,13 +431,13 @@ public class VoteCombiner extends AbstractCombiner
 				EntityType type = voteForType(article,categoryWeights, map);
 				rawOutput.append("Type="+type+"\n");
 				
-				// build new, appropriate entity
+				// build new, appropriate mention
 				int startPos = pos[0];
 				int endPos = pos[1];
 				String valueStr = text.substring(startPos,endPos);
-				AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, getName(), valueStr);
-				result.addEntity(entity);
-				rawOutput.append(">> Entity="+endPos+"\n\n");
+				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, getName(), valueStr);
+				result.addMention(mention);
+				rawOutput.append(">> Mention="+endPos+"\n\n");
 			}
 			logger.decreaseOffset();
 		}
@@ -449,19 +449,19 @@ public class VoteCombiner extends AbstractCombiner
 	
 	/**
 	 * Combine the NER tools results, in order to determine if
-	 * the group of estimated entities corresponds to an actual
-	 * entity.
+	 * the group of estimated mentions corresponds to an actual
+	 * mention.
 	 * 
 	 * @param article
 	 * 		Concerned article. 
 	 * @param categoryWeights
 	 * 		Weights associated to the article categories. 
 	 * @param map 
-	 * 		Group of estimated entities.
+	 * 		Group of estimated mentions.
 	 * @return 
-	 * 		{@code true} iff the conclusion is that the entity is correct.
+	 * 		{@code true} iff the conclusion is that the mention is correct.
 	 */
-	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractEntity<?>> map)
+	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for existence:");
 		logger.increaseOffset();
 		boolean result = false;
@@ -471,9 +471,9 @@ public class VoteCombiner extends AbstractCombiner
 			float voteAgainst = 0;
 			
 			for(AbstractRecognizer recognizer: recognizers)
-			{	AbstractEntity<?> entity = map.get(recognizer);
+			{	AbstractMention<?> mention = map.get(recognizer);
 				// existence
-				if(entity==null)
+				if(mention==null)
 				{	float conWeight;
 					if(voteMode==VoteMode.UNIFORM)
 						conWeight = 1f;
@@ -510,18 +510,18 @@ public class VoteCombiner extends AbstractCombiner
 
 	/**
 	 * Combine the NER tools results, in order to determine the
-	 * position of the entity represented by the specified group.
+	 * position of the mention represented by the specified group.
 	 * 
 	 * @param article
 	 * 		Concerned article. 
 	 * @param categoryWeights
 	 * 		Weights associated to the article categories. 
 	 * @param map 
-	 * 		Group of estimated entities.
+	 * 		Group of estimated mentions.
 	 * @return 
-	 * 		An array of two integers corresponding to the entity position.
+	 * 		An array of two integers corresponding to the mention position.
 	 */
-	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractEntity<?>> map)
+	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for position:");
 		logger.increaseOffset();
 		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
@@ -529,10 +529,10 @@ public class VoteCombiner extends AbstractCombiner
 		
 		// pro votes
 		for(AbstractRecognizer recognizer: recognizers)
-		{	AbstractEntity<?> entity = map.get(recognizer);
+		{	AbstractMention<?> mention = map.get(recognizer);
 		
 			// check existence
-			if(entity!=null)
+			if(mention!=null)
 			{	// retrieve weight
 				float proWeight;
 				if(voteMode==VoteMode.UNIFORM)
@@ -541,7 +541,7 @@ public class VoteCombiner extends AbstractCombiner
 					proWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FP, categoryWeights);
 				
 				// start position
-				int startPos = entity.getStartPos();
+				int startPos = mention.getStartPos();
 				Float startScore = startScores.get(startPos);
 				if(startScore==null)
 					startScore = 0f;
@@ -549,7 +549,7 @@ public class VoteCombiner extends AbstractCombiner
 				startScores.put(startPos,startScore);
 				
 				// end position
-				int endPos = entity.getEndPos();
+				int endPos = mention.getEndPos();
 				Float endScore = endScores.get(endPos);
 				if(endScore==null)
 					endScore = 0f;
@@ -561,10 +561,10 @@ public class VoteCombiner extends AbstractCombiner
 		// con votes
 		if(useRecall)
 		{	for(AbstractRecognizer recognizer: recognizers)
-			{	AbstractEntity<?> entity = map.get(recognizer);
+			{	AbstractMention<?> mention = map.get(recognizer);
 			
 				// check existence
-				if(entity!=null)
+				if(mention!=null)
 				{	// retrieve weight
 					float conWeight;
 					if(voteMode==VoteMode.UNIFORM)
@@ -573,7 +573,7 @@ public class VoteCombiner extends AbstractCombiner
 						conWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FR, categoryWeights);
 					
 					// start position
-					{	int startPos = entity.getStartPos();
+					{	int startPos = mention.getStartPos();
 						List<Entry<Integer,Float>> entries = new ArrayList<Entry<Integer,Float>>(startScores.entrySet());
 						for(Entry<Integer,Float> entry: entries)
 						{	int pos = entry.getKey();
@@ -586,7 +586,7 @@ public class VoteCombiner extends AbstractCombiner
 					}
 					
 					// end position
-					{	int endPos = entity.getEndPos();
+					{	int endPos = mention.getEndPos();
 						List<Entry<Integer,Float>> entries = new ArrayList<Entry<Integer,Float>>(endScores.entrySet());
 						for(Entry<Integer,Float> entry: entries)
 						{	int pos = entry.getKey();
@@ -609,25 +609,25 @@ public class VoteCombiner extends AbstractCombiner
 
 	/**
 	 * Combine the NER tools results, in order to determine the
-	 * type of the entity represented by the specified group.
+	 * type of the mention represented by the specified group.
 	 * 
 	 * @param article
 	 * 		Concerned article. 
 	 * @param categoryWeights
 	 * 		Weights associated to the article categories. 
 	 * @param map 
-	 * 		Group of estimated entities.
+	 * 		Group of estimated mentions.
 	 * @return 
-	 * 		Type of the entity represnted by the group.
+	 * 		Type of the mention represnted by the group.
 	 */
-	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractEntity<?>> map)
+	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for type: ");
 		logger.increaseOffset();
 		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
 		
 		// pro votes
 		for(AbstractRecognizer recognizer: recognizers)
-		{	AbstractEntity<?> entity = map.get(recognizer);
+		{	AbstractMention<?> mention = map.get(recognizer);
 			
 			// retrieve weight
 			float proWeight;
@@ -636,8 +636,8 @@ public class VoteCombiner extends AbstractCombiner
 			else
 				proWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_TP, categoryWeights);
 			
-			if(entity!=null)
-			{	EntityType type = entity.getType();
+			if(mention!=null)
+			{	EntityType type = mention.getType();
 				Float typeScore = typeScores.get(type);
 				if(typeScore==null)
 					typeScore = 0f;
@@ -649,7 +649,7 @@ public class VoteCombiner extends AbstractCombiner
 		// con votes
 		if(useRecall)
 		{	for(AbstractRecognizer recognizer: recognizers)
-			{	AbstractEntity<?> entity = map.get(recognizer);
+			{	AbstractMention<?> mention = map.get(recognizer);
 					
 				// retrieve weight
 				float conWeight;
@@ -658,8 +658,8 @@ public class VoteCombiner extends AbstractCombiner
 				else
 					conWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_TR, categoryWeights);
 					
-				if(entity!=null)
-				{	EntityType type = entity.getType();
+				if(mention!=null)
+				{	EntityType type = mention.getType();
 					List<Entry<EntityType,Float>> entries = new ArrayList<Entry<EntityType,Float>>(typeScores.entrySet());
 					for(Entry<EntityType,Float> entry: entries)
 					{	EntityType t = entry.getKey();

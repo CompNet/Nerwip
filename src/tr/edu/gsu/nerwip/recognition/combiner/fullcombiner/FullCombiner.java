@@ -31,9 +31,9 @@ import java.util.Map;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
@@ -46,7 +46,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
 
 /**
  * This combiner is very basic: it first applies our date
- * detector to identify entities which are quasi-certainly
+ * detector to identify mentions which are quasi-certainly
  * dates, then uses one of the other combiners for the other
  * types of entities. There is no training for this combiner,
  * the training is performed at the level of the combiner
@@ -61,7 +61,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
  * Various options allow changing the behavior of this combiner:
  * <ul>
  * 		<li>{@code combiner}: combiner used for the location, organization
- * 			and person entities (i.e. either the SVM- or vote-based combiner).</li>
+ * 			and person mentions (i.e. either the SVM- or vote-based combiner).</li>
  * </ul>
  * 
  * @author Vincent Labatut
@@ -116,7 +116,7 @@ public class FullCombiner extends AbstractCombiner
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of entity types recognized by this combiner */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
 		EntityType.DATE,
 		EntityType.LOCATION,
@@ -125,14 +125,14 @@ public class FullCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
+	public List<EntityType> getHandledMentionTypes()
 	{	return HANDLED_TYPES;
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by this combiner */
+	/** List of languages recognized by this combiner */
 	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
 		ArticleLanguage.EN
 //		ArticleLanguage.FR
@@ -230,23 +230,23 @@ public class FullCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Entities combineEntities(Article article, Map<AbstractRecognizer,Entities> entities, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
 	{	logger.increaseOffset();
-		Entities result = new Entities(getName());
+		Mentions result = new Mentions(getName());
 		Iterator<AbstractRecognizer> it = recognizers.iterator();
 		
 		// first get the dates
 		AbstractRecognizer wikipediaDater = it.next();
-		Entities dates = entities.get(wikipediaDater);
-		result.addEntities(dates);
+		Mentions dates = mentions.get(wikipediaDater);
+		result.addMentions(dates);
 		
-		// then add the rest of the (non-overlapping) entities
+		// then add the rest of the (non-overlapping) mentions
 		AbstractRecognizer combiner = it.next();
-		Entities ents = entities.get(combiner);
-		List<AbstractEntity<?>> entList = ents.getEntities();
-		for(AbstractEntity<?> entity: entList)
-		{	if(!result.isEntityOverlapping(entity))
-				result.addEntity(entity);
+		Mentions ents = mentions.get(combiner);
+		List<AbstractMention<?>> mentList = ents.getMentions();
+		for(AbstractMention<?> mention: mentList)
+		{	if(!result.isMentionOverlapping(mention))
+				result.addMention(mention);
 		}
 		
 		logger.decreaseOffset();
