@@ -58,143 +58,126 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * @author Sabrine Ayachi
  */
 public class DbTypeTools 
-{
-    /////////////////////////////////////////////////////////////////
-   // PREFIXES		/////////////////////////////////////////////////
-   /////////////////////////////////////////////////////////////////
-   /** Prefix for representing the DBpedia RDF Schema vocabulary (RDFS) */
-   private final static String PRE_RDFS = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>";
-   /** Prefix for representing article data */
-   private final static String PRE_DBR = "PREFIX res: <http://dbpedia.org/resource/>";
-   /** Prefix for representing the DBpedia ontology */
-   private final static String PRE_DBO = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>";
-   
-   /////////////////////////////////////////////////////////////////
-   //LOGGING			/////////////////////////////////////////////
-   /////////////////////////////////////////////////////////////////
-   /** Common object used for logging */
-   protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+{	
+	/////////////////////////////////////////////////////////////////
+	// PREFIXES		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Prefix for representing the DBpedia RDF Schema vocabulary (RDFS) */
+	private final static String PRE_RDFS = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>";
+	/** Prefix for representing article data */
+	private final static String PRE_DBR = "PREFIX res: <http://dbpedia.org/resource/>";
+	/** Prefix for representing the DBpedia ontology */
+	private final static String PRE_DBO = "PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>";
 
-   /**
-   * This method takes a name of entity,
-   * and retrieves all its Wikidata types.
-   * <br/>
-   * Those types must then be processed in order to
-   * get the corresponding {@link EntityType} or
-   * article category.
-   * 
-   * @param entity
-   * 		Name of the entity.
-   * @return
-   * 		a List containing the DBpedia types of this entity.*/
+	/////////////////////////////////////////////////////////////////
+	//LOGGING			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Common object used for logging */
+	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+
+	/**
+	 * This method takes a name of entity,
+	 * and retrieves all its Wikidata types.
+	 * <br/>
+	 * Those types must then be processed in order to
+	 * get the corresponding {@link EntityType} or
+	 * article category.
+	 * 
+	 * @param entity
+	 * 		Name of the entity.
+	 * @return
+	 * 		a List containing the DBpedia types of this entity.
+	 */
+	public static List<String> getAllTypes(String entity) 
+	{	logger.increaseOffset();
+		List<String> types = new ArrayList<String>();
    
-   @SuppressWarnings({ "unchecked" })
-   public static List<String> getAllTypes(String entity) 
-   {   logger.increaseOffset();
-       List<String> types = new ArrayList<String>();
+		//adress of the SPARQL endpoint
+		String service="http://fr.dbpedia.org/sparql";
    
-       //adress of the SPARQL endpoint
-       String service="http://fr.dbpedia.org/sparql";
+		//SPARQL query
+		String query = PRE_RDFS + PRE_DBR + PRE_DBO + "select ?type where {<http://fr.dbpedia.org/resource/" + entity + "> rdf:type ?type.}";  
    
-       //SPARQL query
-       String query = PRE_RDFS + PRE_DBR + PRE_DBO + 
-    		   "select ?type where {<http://fr.dbpedia.org/resource/" + entity + "> rdf:type ?type.}";  
-   
-       try {
-    	   
-    	   HttpClient httpclient = new DefaultHttpClient();
-    	   List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-    	   params.add(new BasicNameValuePair("query", query)); 
-    	   params.add(new BasicNameValuePair("Accept", "application/json"));
-    	   params.add(new BasicNameValuePair("output", "xml"));
-     
-    	   HttpGet httpget = new HttpGet(service+"?"+URLEncodedUtils.format(params, "utf-8"));
-    	   HttpResponse response = httpclient.execute(httpget);
-    	   logger.log( response.toString());
-    	   
-    	   InputStream stream = response.getEntity().getContent();
-    	   InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
-    	   BufferedReader bufferedReader = new BufferedReader(streamReader);
-    		
-    	   // read DBanswer
-    	   logger.log("DB answer");
-    	   StringBuilder builder = new StringBuilder();
-    	   String line;
-    	   
-    	   while((line = bufferedReader.readLine())!=null)
-    	   
-    	   {
-    		   builder.append(line+"\n");
-    		   //logger.log("Line:" +line);
-    		   
-    	   }
-    	   
-    	   String dbAnswer = builder.toString();
-    	   //logger.log("dbAnswer=" + dbAnswer);
-    		
-    	   // build DOM
-    	   logger.log("Build DOM");
-    	   SAXBuilder sb = new SAXBuilder();
-    	   Document doc = sb.build(new StringReader(dbAnswer));
-    	   Element root = doc.getRootElement();
-    	   List<Element> list = root.getChildren();
-    	   //logger.log("size :" + list.size());
-           Element results = list.get(1);
-           //logger.log("results :" + results.getName());
-            
-           List<Element> list2 = results.getChildren();
-           //logger.log("size list2 :" + list2.size()); 
-            
-           for (int i=0;  i < list2.size(); i++)
-           
-           {
-        	   Element result = list2.get(i);
-               //logger.log("result :" + result.getName());
-               List<Element> list3 = result.getChildren();
-               Element element = list3.get(0);
-               logger.log("type :" + element.getValue());
-               String type = element.getValue();
-               types.add(type);
-               
-           }
-           
-               logger.log("types :" + types);
-           
-       }
-       
-       catch (ClientProtocolException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	    } catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    		
-    	    } catch (JDOMException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				
-    	    }
-       
-       logger.decreaseOffset();
-       return types;
-       
-   }
-   
+		try
+		{	HttpClient httpclient = new DefaultHttpClient();
+			List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+			params.add(new BasicNameValuePair("query", query)); 
+			params.add(new BasicNameValuePair("Accept", "application/json"));
+			params.add(new BasicNameValuePair("output", "xml"));
+
+			HttpGet httpget = new HttpGet(service+"?"+URLEncodedUtils.format(params, "utf-8"));
+			HttpResponse response = httpclient.execute(httpget);
+			logger.log( response.toString());
+
+			InputStream stream = response.getEntity().getContent();
+			InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
+			BufferedReader bufferedReader = new BufferedReader(streamReader);
+
+			// read DBanswer
+			logger.log("DB answer");
+			StringBuilder builder = new StringBuilder();
+			String line;
+
+			while((line = bufferedReader.readLine())!=null)
+			{	builder.append(line+"\n");
+				//logger.log("Line:" +line);
+			}
+
+			String dbAnswer = builder.toString();
+			//logger.log("dbAnswer=" + dbAnswer);
+
+			// build DOM
+			logger.log("Build DOM");
+			SAXBuilder sb = new SAXBuilder();
+			Document doc = sb.build(new StringReader(dbAnswer));
+			Element root = doc.getRootElement();
+			List<Element> list = root.getChildren();
+			//logger.log("size :" + list.size());
+			Element results = list.get(1);
+			//logger.log("results :" + results.getName());
+
+			List<Element> list2 = results.getChildren();
+			//logger.log("size list2 :" + list2.size()); 
+
+			for (int i=0;  i < list2.size(); i++)
+			{	Element result = list2.get(i);
+				//logger.log("result :" + result.getName());
+				List<Element> list3 = result.getChildren();
+				Element element = list3.get(0);
+				logger.log("type :" + element.getValue());
+				String type = element.getValue();
+				types.add(type);
+			}
+
+			logger.log("types :" + types);
+		}
+		catch (ClientProtocolException e) 
+		{	// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) 
+		{	// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (JDOMException e) 
+		{	// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		logger.decreaseOffset();
+		return types;
+	}
+
+    // processing with Jena library
+    /*  QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
+        ResultSet rs=e.execSelect();
+        while (rs.hasNext())
+        
+        {
+        
+        QuerySolution qs=rs.nextSolution();
+        String res = qs.toString();
+        logger.log("res=" + res);
+        }
+        
+        e.close();*/
 }
-
-       
-       // processing with Jena library
-       /*  QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
-           ResultSet rs=e.execSelect();
-           while (rs.hasNext())
-           
-           {
-           
-           QuerySolution qs=rs.nextSolution();
-           String res = qs.toString();
-           logger.log("res=" + res);
-           }
-           
-           e.close();*/
-      
-       

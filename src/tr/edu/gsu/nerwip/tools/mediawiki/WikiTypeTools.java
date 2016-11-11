@@ -42,38 +42,36 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  *
  */
 public class WikiTypeTools 
-{
-   /////////////////////////////////////////////////////////////////
-   // LOGGING			/////////////////////////////////////////////
-   /////////////////////////////////////////////////////////////////
-   /** Common object used for logging */
-   protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+{	/////////////////////////////////////////////////////////////////
+	// LOGGING			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Common object used for logging */
+	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
    /**
-   * This method takes a name of entity,
-   * and retrieves all its Wikidata types.
-   * <br/>
-   * Those types must then be processed in order to
-   * get the corresponding {@link EntityType} or
-   * article category.
-   * 
-   * @param entity
-   * 		Name of the entity.
-   * @return
-   * 		a List containing the Wikidata types of this entity.
-   * 
-   * @throws IOException 
-   * 		Problem while retrieving the FB types.
-   * @throws ClientProtocolException 
-   * 		Problem while retrieving the FB types.
-   * @throws ParseException
-   * 		Problem while retrieving the FB types.
-   */
-   public static List<String> getAllTypes(String entity) throws ClientProtocolException, IOException   
-   {  logger.increaseOffset();
-      List<String> result = null;
-      
-      
-      return result;
-   }
+    * This method takes a name of entity,
+    * and retrieves all its Wikidata types.
+    * <br/>
+    * Those types must then be processed in order to
+    * get the corresponding {@link EntityType} or
+    * article category.
+    * 
+    * @param entity
+    * 		Name of the entity.
+    * @return
+    * 		a List containing the Wikidata types of this entity.
+    * 
+    * @throws IOException 
+    * 		Problem while retrieving the FB types.
+    * @throws ClientProtocolException 
+    * 		Problem while retrieving the FB types.
+    * @throws ParseException
+    * 		Problem while retrieving the FB types.
+    */
+	public static List<String> getAllTypes(String entity) throws ClientProtocolException, IOException   
+	{	logger.increaseOffset();
+		List<String> result = null;
+
+		return result;
+	}
 }

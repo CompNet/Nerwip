@@ -69,169 +69,153 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * @author Sabrine Ayachi
  * 
  */
-public class SpotlightTools {
-	
-/////////////////////////////////////////////////////////////////
-//LOGGING			/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/** Common object used for logging */
-protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+public class SpotlightTools
+{	
+	/////////////////////////////////////////////////////////////////
+	//LOGGING			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Common object used for logging */
+	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
+	/////////////////////////////////////////////////////////////////
+	// XML NAMES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Element containing the list of all entities resources */
+	private final static String ELT_RESOURCES = "Resources";
+	/** Element containing the list of informations of every entity resource */
+	private final static String ELT_RESOURCE = "Resource";
 
-/////////////////////////////////////////////////////////////////
-// XML NAMES		/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/** Element containing the list of all entities resources */
-private final static String ELT_RESOURCES = "Resources";
-/** Element containing the list of informations of every entity resource */
-private final static String ELT_RESOURCE = "Resource";
+	/** Attribute representing the name of an entity */
+	private final static String ATT_NAME = "surfaceForm";
+	/** Attribute representing the type of an entity */
+	private final static String ATT_TYPE = "types";
+	/** Attribute representing the id of an entity */
+	private final static String ATT_URI = "URI";
 
+	/////////////////////////////////////////////////////////////////
+	// PROCESSING	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Web service URL */
+	private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/disambiguate";
 
-/** Attribute representing the name of an entity */
-private final static String ATT_NAME = "surfaceForm";
-/** Attribute representing the type of an entity */
-private final static String ATT_TYPE = "types";
-/** Attribute representing the id of an entity */
-private final static String ATT_URI = "URI";
-
-/////////////////////////////////////////////////////////////////
-// PROCESSING	 		/////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-/** Web service URL */
-private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/disambiguate";
-
-/////////////////////////////////////////////////////////////////
-// PROCESS			/////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-
-   /**
-    * Receives an article and entities and
-    * construct the xml text needed for 
-    * disambiguation.
-    *  
-    * @param entities
-    * 		Entities detected in the article.
-    * @param article
-    * 		Article to process.
-    * @return
-    * 		The xml text.
-    */
+	/////////////////////////////////////////////////////////////////
+	// PROCESS			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+     * Receives an article and entities and
+     * construct the xml text needed for 
+     * disambiguation.
+     *  
+     * @param entities
+     * 		Entities detected in the article.
+     * @param article
+     * 		Article to process.
+     * @return
+     * 		The xml text.
+     */
 	public static String process(Entities entities, Article article) 
-	{   logger.increaseOffset();
-	    String textt = article.getRawText();
-	   
+	{	logger.increaseOffset();
+		String textt = article.getRawText();
  
-        //entities
+		//entities
 		List<AbstractEntity<?>> entityList = entities.getEntities();
-		
-	    //creating xml objects 
-	    Element racine = new Element("annotation");
-	    Document document = new Document(racine);
-	    Attribute text = new Attribute("text",textt);
-	    racine.setAttribute(text);
-	    
-	    logger.log("entitylist size= " + entityList.size() );
-	     
-	    for (int i=1; i<=entityList.size(); i++)
-	    {
-	    	ListIterator<AbstractEntity<?>> itr = entityList.listIterator(i);
-	    	
-	    	// get the entity	    	
-		    AbstractEntity<?> entityy = itr.previous(); 
 
-		    int startPos = entityy.getStartPos(); //offset
+		//creating xml objects 
+		Element racine = new Element("annotation");
+		Document document = new Document(racine);
+		Attribute text = new Attribute("text",textt);
+		racine.setAttribute(text);
+
+		logger.log("entitylist size= " + entityList.size() );
+
+		for (int i=1; i<=entityList.size(); i++)
+		{	ListIterator<AbstractEntity<?>> itr = entityList.listIterator(i);
+
+			// get the entity	    	
+			AbstractEntity<?> entityy = itr.previous(); 
+
+			int startPos = entityy.getStartPos(); //offset
 			String startPosition = String.valueOf(startPos);
-		    String value = entityy.getStringValue();
-		     
-	    	Element surfaceForm = new Element(ATT_NAME);
-	        Attribute name = new Attribute("name", value);
-	        surfaceForm.setAttribute(name);
-	      
-	        Attribute offset = new Attribute("offset", startPosition);
-	        surfaceForm.setAttribute(offset);
-	        racine.addContent(surfaceForm);
-	        
-	    }
-	    
-	    //xml output
-	   
-	    	XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-	    	String xmlText = outputter.outputString(document);
-	    	//logger.log("xmlText " + xmlText);
-	    	  
-	    	String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-	    	xmlText = xmlText.replace(xml, "");
-	    	//logger.log("xmlText " + xmlText);
-	    	
-	    	logger.log("end of processing");
-	    	return xmlText;
-	    
+			String value = entityy.getStringValue();
+
+			Element surfaceForm = new Element(ATT_NAME);
+			Attribute name = new Attribute("name", value);
+			surfaceForm.setAttribute(name);
+
+			Attribute offset = new Attribute("offset", startPosition);
+			surfaceForm.setAttribute(offset);
+			racine.addContent(surfaceForm);
+		}
+
+		//xml output
+		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+		String xmlText = outputter.outputString(document);
+		//logger.log("xmlText " + xmlText);
+
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+		xmlText = xmlText.replace(xml, "");
+		//logger.log("xmlText " + xmlText);
+
+		logger.log("end of processing");
+		return xmlText;
 	}
-	
+
 	// preprocessing before the disambiguation
 	public static String annotate(Article article)
-	{
-		logger.increaseOffset();
-	    String textt = article.getRawText();
+	{	logger.increaseOffset();
+		String textt = article.getRawText();
 		String spotlightResponse = null;
 
-		try {
-			logger.log("Define HTTP message for spotlight annotation");
-		
-		    HttpPost method = new HttpPost("http://spotlight.dbpedia.org/rest/annotate");
-		    List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("content-type", "application/x-www-form-urlencoded"));
-		    //params.add(new BasicNameValuePair("disambiguator", "Default")); 
-		    params.add(new BasicNameValuePair("confidence", "0.1")); 
-	        params.add(new BasicNameValuePair("support", "1")); 
-	        params.add(new BasicNameValuePair("Accept", "application/json"));
-	        //params.add(new BasicNameValuePair("output", "xml"));
-            params.add(new BasicNameValuePair("text", textt));
-	        params.add(new BasicNameValuePair("url", "http://spotlight.dbpedia.org/rest/annotate"));
-            method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-	
-		    logger.log("Send message to service");
-		    HttpClient client = new DefaultHttpClient();
-		    HttpResponse response;
-	        response = client.execute(method);
-	        int responseCode = response.getStatusLine().getStatusCode();
-		    logger.log("Response Code : " + responseCode);
-		
-		    //read service answer
+		try
+		{	logger.log("Define HTTP message for spotlight annotation");
+
+			HttpPost method = new HttpPost("http://spotlight.dbpedia.org/rest/annotate");
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("content-type", "application/x-www-form-urlencoded"));
+			//params.add(new BasicNameValuePair("disambiguator", "Default")); 
+			params.add(new BasicNameValuePair("confidence", "0.1")); 
+			params.add(new BasicNameValuePair("support", "1")); 
+			params.add(new BasicNameValuePair("Accept", "application/json"));
+			//params.add(new BasicNameValuePair("output", "xml"));
+			params.add(new BasicNameValuePair("text", textt));
+			params.add(new BasicNameValuePair("url", "http://spotlight.dbpedia.org/rest/annotate"));
+			method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+			logger.log("Send message to service");
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse response;
+			response = client.execute(method);
+			int responseCode = response.getStatusLine().getStatusCode();
+			logger.log("Response Code : " + responseCode);
+
+			//read service answer
 			logger.log("Read the spotlight annotation answer");
 			HttpEntity entity = response.getEntity();
 			InputStream inputStream = entity.getContent();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
 			StringBuffer sb = new StringBuffer();
 			String line;
-		    while((line = reader.readLine()) != null)
-			{
-		    	//logger.log(line);
-			    sb.append(line+"\n");
-			    
+			while((line = reader.readLine()) != null)
+			{	//logger.log(line);
+				sb.append(line+"\n");
 			}
-		    
-		    spotlightResponse = sb.toString();
-		    
+
+			spotlightResponse = sb.toString();
 		}
-		
-		catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+		catch (UnsupportedEncodingException e) 
+		{	// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		catch (ClientProtocolException e) 
+		{	// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		catch (IOException e) 
+		{	// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return spotlightResponse;
-		
-		
-		
-		
 	}
 	
 	/**
@@ -243,78 +227,70 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 	 * @return
 	 * 		The result of disambiguation.
 	 */
-  
 	public static String disambiguate(String text)
-	
-	{
-		String spotlightResponse = null;
+	{	String spotlightResponse = null;
+		
+		try
+		{	logger.log("Define HTTP message for spotlight");
 
-		try {
-			logger.log("Define HTTP message for spotlight");
-		
-		    HttpPost method = new HttpPost(SERVICE_URL);
-		    List<NameValuePair> params = new ArrayList<NameValuePair>();
-		    params.add(new BasicNameValuePair("confidence", "0.1")); 
-	        params.add(new BasicNameValuePair("support", "10")); 
-	        params.add(new BasicNameValuePair("Accept", "application/json"));
-	        params.add(new BasicNameValuePair("output", "xml"));
-            params.add(new BasicNameValuePair("text", text));
-	        params.add(new BasicNameValuePair("url", SERVICE_URL));
-	        //params.add(new BasicNameValuePair("sparql", "CuttingEdge"));
-            method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-	
-		    logger.log("Send message to service");
-		    HttpClient client = new DefaultHttpClient();
-		    HttpResponse response;
-	        response = client.execute(method);
-	        int responseCode = response.getStatusLine().getStatusCode();
-		    logger.log("Response Code : " + responseCode);
-		
-		    //read service answer
+			HttpPost method = new HttpPost(SERVICE_URL);
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("confidence", "0.1")); 
+			params.add(new BasicNameValuePair("support", "10")); 
+			params.add(new BasicNameValuePair("Accept", "application/json"));
+			params.add(new BasicNameValuePair("output", "xml"));
+			params.add(new BasicNameValuePair("text", text));
+			params.add(new BasicNameValuePair("url", SERVICE_URL));
+			//params.add(new BasicNameValuePair("sparql", "CuttingEdge"));
+			method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+			logger.log("Send message to service");
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse response;
+			response = client.execute(method);
+			int responseCode = response.getStatusLine().getStatusCode();
+			logger.log("Response Code : " + responseCode);
+
+			//read service answer
 			logger.log("Read the spotlight answer");
 			HttpEntity entity = response.getEntity();
 			InputStream inputStream = entity.getContent();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
 			StringBuffer sb = new StringBuffer();
 			String line;
-		    while((line = reader.readLine()) != null)
-			{
-		    	//logger.log(line);
-			    sb.append(line+"\n");
-			    
+			while((line = reader.readLine()) != null)
+			{	//logger.log(line);
+				sb.append(line+"\n");
 			}
-		    
-		    spotlightResponse = sb.toString();
-		    
+
+			spotlightResponse = sb.toString();
 		}
-		
-		catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+
+		catch (UnsupportedEncodingException e) 
+		{	// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
+		catch (ClientProtocolException e) 
+		{	// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) 
+		{	// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return spotlightResponse;
-		
-	
 	}
 	
 	/**
 	 * This method applies spotlight on all 
 	 * the biographic corpus and return all the
 	 * disambiguated entities in the corpus.
+	 * 
 	 * @throws Exception
 	 * 		When something goes wrong.
 	 */
 	public static String SpotlightAllCorpus() throws Exception
-	{
-		String spotlightAnswer = null;
+	{	String spotlightAnswer = null;
 		ArticleList folders = ArticleLists.getArticleList();
 		Article article;
 		Entities entities;
@@ -322,34 +298,32 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 		for(File folder: folders)
 		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
 			logger.increaseOffset();
+			
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractRecognizer recognizer = new StraightCombiner();
-		    ArticleRetriever retriever = new ArticleRetriever();
-		    article = retriever.process(name);
-		    String rawText = article.getRawText();
-		    // retrieve the entities
-		   logger.log("Retrieve the entities");
-		   entities = recognizer.process(article);
-		   
-		   logger.log("start applying Spotlight to " + name);
-		   String xmlText = SpotlightTools.process(entities, article);
-		   //logger.log("xmltext = " + xmlText);
-		    String answer = SpotlightTools.disambiguate(xmlText);
+			AbstractRecognizer recognizer = new StraightCombiner();
+			ArticleRetriever retriever = new ArticleRetriever();
+			article = retriever.process(name);
+			String rawText = article.getRawText();
+			// retrieve the entities
+			logger.log("Retrieve the entities");
+			entities = recognizer.process(article);
+
+			logger.log("start applying Spotlight to " + name);
+			String xmlText = SpotlightTools.process(entities, article);
+			//logger.log("xmltext = " + xmlText);
+			String answer = SpotlightTools.disambiguate(xmlText);
 			//logger.log("answer = " + answer);
 			spotlightAnswer = spotlightAnswer + answer;
 		}
-		
+
 		return spotlightAnswer;
-		
-		
 	}
-	
 	
 	/**
 	 * Receives the response of spotlight
-	 *and returns the list of offsets of disambiguated entities.
+	 * and returns the list of offsets of disambiguated entities.
 	 *  
 	 * @param text
 	 * 		the response of spotlight.
@@ -357,43 +331,38 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 	 * 		List of offsets.
 	 */
 	public static List<String> getOffsetSpotlight(String text)
-	
-	{   ArrayList<String> offsetList = new ArrayList<String>();
-		
+	{	ArrayList<String> offsetList = new ArrayList<String>();
+
 		try
 		{	// build DOM
 			logger.log("Build DOM");
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(text));
 			Element root = doc.getRootElement();
-			
+
 			Element resources = root.getChild(ELT_RESOURCES);
 			List<Element> wordElts = resources.getChildren(ELT_RESOURCE);
-			
 
 			for(Element wordElt: wordElts)
-			{	
-			    String entityOffset = wordElt.getAttributeValue("offset");
-			    //logger.log("entityOffset= " + entityOffset);
-			    offsetList.add(entityOffset);
+			{	String entityOffset = wordElt.getAttributeValue("offset");
+				//logger.log("entityOffset= " + entityOffset);
+				offsetList.add(entityOffset);
 			}
 			logger.log("offsetList " + offsetList.toString());
 		}
-        
-        catch (JDOMException e)
+		catch (JDOMException e)
 		{	e.printStackTrace();
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
-        
-        return offsetList;
 
+        return offsetList;
 	}
-	
+
 	/**
 	 * Receives the response of spotlight
-	 *and returns the list of disambiguated entities.
+	 * and returns the list of disambiguated entities.
 	 *  
 	 * @param text
 	 * 		the response of spotlight.
@@ -401,140 +370,121 @@ private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/dis
 	 * 		List of entities disambiguated by spotlight.
 	 */
     public static List<String> getEntitySpotlight(String text)
-	
-	{   ArrayList<String> entityList = new ArrayList<String>();
-		
+	{	ArrayList<String> entityList = new ArrayList<String>();
+
 		try
 		{	// build DOM
 			logger.log("Build DOM");
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(text));
 			Element root = doc.getRootElement();
-			
+
 			Element resources = root.getChild(ELT_RESOURCES);
 			List<Element> wordElts = resources.getChildren(ELT_RESOURCE);
-			
-
 			for(Element wordElt: wordElts)
-			{	
-			    String entityName = wordElt.getAttributeValue(ATT_NAME);
-			    //logger.log("entityName= " + entityName);
-			    entityList.add(entityName);
-			    
-			    String entityOffset = wordElt.getAttributeValue("offset");
-			    //logger.log("entityOffset= " + entityOffset);
-			    entityList.add(entityOffset);
+			{	String entityName = wordElt.getAttributeValue(ATT_NAME);
+				//logger.log("entityName= " + entityName);
+				entityList.add(entityName);
+
+				String entityOffset = wordElt.getAttributeValue("offset");
+				//logger.log("entityOffset= " + entityOffset);
+				entityList.add(entityOffset);
 			}
 			logger.log("entityList " + entityList.toString());
 		}
-        
-        catch (JDOMException e)
+
+		catch (JDOMException e)
 		{	e.printStackTrace();
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
-        
-        return entityList;
 
+		return entityList;
 	}
-	
-	
 	
     /**
 	 * Receives the response of spotlight
-	 *and returns the list of uri of 
-	 *disambiguated entities.
+	 * and returns the list of uri of 
+	 * disambiguated entities.
 	 *  
 	 * @param text
 	 * 		the response of spotlight.
 	 * @return
 	 * 		List of uri.
 	 */
-	public static List<String> getIdSpotlight(String text)
-	{
-		
-		ArrayList<String> idList = new ArrayList<String>();
-		
-        try
+    public static List<String> getIdSpotlight(String text)
+	{	ArrayList<String> idList = new ArrayList<String>();
+
+		try
 		{	// build DOM
 			logger.log("Build DOM");
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(text));
 			Element root = doc.getRootElement();
-			
+
 			Element resources = root.getChild(ELT_RESOURCES);
 			List<Element> wordElts = resources.getChildren(ELT_RESOURCE);
-			
+
 			for(Element wordElt: wordElts)
 			{	String uri = wordElt.getAttributeValue(ATT_URI); 
-			    logger.log("uri= " + uri);
-			    idList.add(uri);
-			}	
+				logger.log("uri= " + uri);
+				idList.add(uri);
+			}
 		}
-        
-        catch (JDOMException e)
+		catch (JDOMException e)
 		{	e.printStackTrace();
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
         
-        
-        return idList;
+		return idList;
 	}
-	
+
 	/**
 	 * Receives the response of spotlight
-	 *and returns the list of types of disambiguated entities.
+	 * and returns the list of types of disambiguated entities.
 	 *  
 	 * @param text
 	 * 		the response of spotlight.
 	 * @return
 	 * 		List of types.
 	 */
-	public static List<List<String>> getTypeSpotlight(String text)
-	{
-		List<List<String>> entityTypes = new ArrayList<List<String>>();
-		
-        try
+    public static List<List<String>> getTypeSpotlight(String text)
+	{	List<List<String>> entityTypes = new ArrayList<List<String>>();
+
+		try
 		{	// build DOM
 			logger.log("Build DOM");
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(text));
 			Element root = doc.getRootElement();
-			
+
 			Element resources = root.getChild(ELT_RESOURCES);
 			List<Element> wordElts = resources.getChildren(ELT_RESOURCE);
 			List<String> L = new ArrayList<String>();
 			for(Element wordElt: wordElts)
-			{	
-			    String types = wordElt.getAttributeValue(ATT_TYPE);
-			    
-			    //logger.log("types= " + types);
-			    String[] splitArray = types.split(",");
-			    
-			    for(int i = 0; i< splitArray.length;i++){
-			    	   L.add(splitArray[i]);
+			{	String types = wordElt.getAttributeValue(ATT_TYPE);
 
-			    	  }
-			   // entityTypes.add(L);
-			   //logger.log("entityTypes " + entityTypes.toString());
+				//logger.log("types= " + types);
+				String[] splitArray = types.split(",");
+
+				for(int i = 0; i< splitArray.length;i++)
+					L.add(splitArray[i]);
+				// entityTypes.add(L);
+				//logger.log("entityTypes " + entityTypes.toString());
 			}
 			entityTypes.add(L);
 			logger.log("entityTypes " + entityTypes.toString());
-	
 		}
-        
-        catch (JDOMException e)
+		catch (JDOMException e)
 		{	e.printStackTrace();
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
 		}
         
-        
-        return entityTypes;
+		return entityTypes;
 	}
-	
 }

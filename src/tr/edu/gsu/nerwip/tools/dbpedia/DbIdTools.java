@@ -83,102 +83,91 @@ public class DbIdTools
 	* @return
 	* 		A String describing the DBpedia id.
 	*/
-	@SuppressWarnings("unchecked")
 	public static String getId(String entity) 
-	{   logger.increaseOffset();
-       String ID = null;
+	{	logger.increaseOffset();
+		String ID = null;
 
-       //adress of the french SPARQL endpoint
-       String service="http://fr.dbpedia.org/sparql";
- 
+		//adress of the french SPARQL endpoint
+		String service="http://fr.dbpedia.org/sparql";
    
-      //SPARQL query
-      String query = PRE_DBR + PRE_DBO + "select ?wikiPageID where {" + 
-    		   "<http://fr.dbpedia.org/resource/" + entity + ">" +  
-               "dbpedia-owl:wikiPageID ?wikiPageID." +
-               "}";
-       
- 
-      try {
-	   
-	   HttpClient httpclient = new DefaultHttpClient();
-	   List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-	   params.add(new BasicNameValuePair("query", query)); 
-	  // params.add(new BasicNameValuePair("Accept", "application/json"));
-	   params.add(new BasicNameValuePair("output", "xml"));
- 
-	   HttpGet httpget = new HttpGet(service+"?"+URLEncodedUtils.format(params, "utf-8"));
-	   HttpResponse response = httpclient.execute(httpget);
-	   logger.log( response.toString());
-	   
-	   InputStream stream = response.getEntity().getContent();
-		InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
-		BufferedReader bufferedReader = new BufferedReader(streamReader);
-		
-		// read DBanswer
-		logger.log("DB answer");
-		StringBuilder builder = new StringBuilder();
-		String line;
-		while((line = bufferedReader.readLine())!=null)
-		{	builder.append(line+"\n");
-			//logger.log("Line:" +line);
+		//SPARQL query
+		String query = PRE_DBR + PRE_DBO + "select ?wikiPageID where {" + 
+				"<http://fr.dbpedia.org/resource/" + entity + ">" +  
+				"dbpedia-owl:wikiPageID ?wikiPageID." +
+				"}";
+		try
+		{	HttpClient httpclient = new DefaultHttpClient();
+			List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+			params.add(new BasicNameValuePair("query", query)); 
+			// params.add(new BasicNameValuePair("Accept", "application/json"));
+			params.add(new BasicNameValuePair("output", "xml"));
+
+			HttpGet httpget = new HttpGet(service+"?"+URLEncodedUtils.format(params, "utf-8"));
+			HttpResponse response = httpclient.execute(httpget);
+			logger.log( response.toString());
+
+			InputStream stream = response.getEntity().getContent();
+			InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
+			BufferedReader bufferedReader = new BufferedReader(streamReader);
+
+			// read DBanswer
+			logger.log("DB answer");
+			StringBuilder builder = new StringBuilder();
+			String line;
+			while((line = bufferedReader.readLine())!=null)
+			{	builder.append(line+"\n");
+				//logger.log("Line:" +line);
+			}
+			String dbAnswer = builder.toString();
+			logger.log("DBAnswer=" + dbAnswer);
+
+			// build DOM
+			logger.log("Build DOM");
+			SAXBuilder sb = new SAXBuilder();
+			Document doc = sb.build(new StringReader(dbAnswer));
+			Element root = doc.getRootElement();
+			List<Element> list = root.getChildren();
+			//logger.log("size :" + list.size());
+			Element results = list.get(1);
+			logger.log("results :" + results.getName());
+
+			List<Element> list2 = results.getChildren();
+			//logger.log("size list2 :" + resultt.size());
+
+			Element result = list2.get(0);
+			logger.log("result :" + result.getName());
+
+			List<Element> list3 = result.getChildren();
+			Element wikiPageID = list3.get(0);
+			logger.log("wikiPageID :" + wikiPageID.getValue());
+			ID = wikiPageID.getValue();
 		}
-		String dbAnswer = builder.toString();
-		logger.log("DBAnswer=" + dbAnswer);
-		
-		// build DOM
-		logger.log("Build DOM");
-		SAXBuilder sb = new SAXBuilder();
-		Document doc = sb.build(new StringReader(dbAnswer));
-		Element root = doc.getRootElement();
-		List<Element> list = root.getChildren();
-        //logger.log("size :" + list.size());
-        Element results = list.get(1);
-        logger.log("results :" + results.getName());
-        
-		List<Element> list2 = results.getChildren();
-        //logger.log("size list2 :" + resultt.size());
-         
-        Element result = list2.get(0);
-        logger.log("result :" + result.getName());
-      
-		List<Element> list3 = result.getChildren();
-        Element wikiPageID = list3.get(0);
-        logger.log("wikiPageID :" + wikiPageID.getValue());
-        ID = wikiPageID.getValue();
-
-       }
-      catch (ClientProtocolException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-    } catch (IOException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-	
-    }
-     /* catch (ParseException e) {
-			// TODO Auto-generated catch block
+		catch (ClientProtocolException e) 
+		{	// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/ catch (JDOMException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-   
-   // processing with jena library 
-   
-   /*QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
-   ResultSet rs=e.execSelect();
-   
-   while (rs.hasNext()) 
-   {
-       QuerySolution qs=rs.nextSolution();
-       result = qs.toString();
-       logger.log("result=" + result);
-   }
-   e.close();*/
+		}
+		catch (IOException e) 
+		{	// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (JDOMException e) 
+		{	// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// processing with jena library 
+/*		QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
+		ResultSet rs=e.execSelect();
+
+		while (rs.hasNext()) 
+		{	QuerySolution qs=rs.nextSolution();
+			result = qs.toString();
+			logger.log("result=" + result);
+		}
+		e.close();
+*/
   
-   logger.decreaseOffset();
-   return ID;
-   
-   }
+		logger.decreaseOffset();
+		return ID;
+	}
 }
