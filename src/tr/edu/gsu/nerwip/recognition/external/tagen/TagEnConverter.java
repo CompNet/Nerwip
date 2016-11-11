@@ -41,9 +41,9 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
@@ -80,11 +80,11 @@ public class TagEnConverter extends AbstractExternalConverter
 	private final static String NEW_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	/** Fake root element name */
 	private final static String ELT_ROOT = "root";
-	/** Enumerated entity value */
+	/** Enumerated mention value */
 	private final static String ELT_ENAMEX = "enamex";	// location, organization, person...
-	/** Temporal entity value */
+	/** Temporal mention value */
 	private final static String ELT_TIMEX = "timex";	// date... 
-	/** Numerical entity value */
+	/** Numerical mention value */
 	private final static String ELT_NUMEX = "numex";	// percent...
 	/** Use to represent range of values, inside entity elements */
 	private final static String ELT_RANGE = "range";	// ...
@@ -112,9 +112,9 @@ public class TagEnConverter extends AbstractExternalConverter
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-    public Entities convert(Article article, String data) throws ConverterException
+    public Mentions convert(Article article, String data) throws ConverterException
 	{	logger.increaseOffset();
-		Entities result = new Entities(recognizerName);
+		Mentions result = new Mentions(recognizerName);
 		
 		// the result file is basically an XML file, only the header is missing
 		// so add a fake header and parse it like an xml file
@@ -160,13 +160,13 @@ public class TagEnConverter extends AbstractExternalConverter
 			// elements are processed individually
 			else if(child instanceof Element)
 			{	Element e = (Element)child;
-				List<AbstractEntity<?>> entList = convertElement(e, index);
+				List<AbstractMention<?>> entList = convertElement(e, index);
 				String str = XmlTools.getRecText(e);
 				int length = str.length();
 				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
-				result.addEntities(entList);
-				for(AbstractEntity<?> entity: entList)
-					logger.log(entity.toString());
+				result.addMentions(entList);
+				for(AbstractMention<?> mention: entList)
+					logger.log(mention.toString());
 				index = index + length;
 			}
 		}
@@ -178,18 +178,18 @@ public class TagEnConverter extends AbstractExternalConverter
 	
 	/**
 	 * Receives an XML element, and processes it to
-	 * extract an entity.
+	 * extract a mention.
 	 * 
 	 * @param element
 	 * 		Element to process.
 	 * @param index
 	 * 		Current position in the original text (in characters).
 	 * @return
-	 * 		The created entity, or {@code null} if it was not
+	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private List<AbstractEntity<?>> convertElement(Element element, int index)
-	{	List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+	private List<AbstractMention<?>> convertElement(Element element, int index)
+	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
 		// retrieving the child(ren)
 		String name = element.getName();
@@ -199,17 +199,17 @@ public class TagEnConverter extends AbstractExternalConverter
 		else
 		{	Element innerElt = elts.get(0);
 			
-			// enumerated entity
+			// enumerated mention
 			if(name.equalsIgnoreCase(ELT_ENAMEX))
-			{	AbstractEntity<?> entity = convertEnumElement(innerElt,index);
-				result.add(entity);
+			{	AbstractMention<?> mention = convertEnumElement(innerElt,index);
+				result.add(mention);
 			}
 			
-			// temporal entity
+			// temporal mention
 			else if(name.equalsIgnoreCase(ELT_TIMEX))
 				result = convertTemporalElement(innerElt,index);
 			
-			// other entity
+			// other mention
 			else if(!ELEMENT_BLACKLIST.contains(name))
 				logger.log("WARNING: detected an unknown element: <"+name+">");
 		}
@@ -219,19 +219,19 @@ public class TagEnConverter extends AbstractExternalConverter
 
 	/**
 	 * Receives an XML element, and processes it to
-	 * extract an enumerated entity.
+	 * extract an enumerated mention.
 	 * 
 	 * @param element
 	 * 		Element to process.
 	 * @param index
 	 * 		Current position in the original text (in characters).
 	 * @return
-	 * 		The created entity, or {@code null} if it was not
+	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private AbstractEntity<?> convertEnumElement(Element element, int index)
+	private AbstractMention<?> convertEnumElement(Element element, int index)
 	{	logger.increaseOffset();
-		AbstractEntity<?> result = null;
+		AbstractMention<?> result = null;
 		XMLOutputter xo = new XMLOutputter();
 				
 		// check if the element does not contain any lower element
@@ -243,12 +243,12 @@ public class TagEnConverter extends AbstractExternalConverter
 		{	String name = element.getName();
 			EntityType type = CONVERSION_MAP.get(name);
 			if(type==null)
-				logger.log("WARNING: could not find the entity type associated to tag "+xo.outputString(element));
+				logger.log("WARNING: could not find the mention type associated to tag "+xo.outputString(element));
 			
 			else
 			{	String valueStr = element.getText();
 				int length = valueStr.length();
-				result = AbstractEntity.build(type, index, index+length, recognizerName, valueStr);
+				result = AbstractMention.build(type, index, index+length, recognizerName, valueStr);
 			}
 		}
 		
@@ -258,19 +258,19 @@ public class TagEnConverter extends AbstractExternalConverter
 
 	/**
 	 * Receives an XML element, and processes it to
-	 * extract a date entity.
+	 * extract a date mention.
 	 * 
 	 * @param element
 	 * 		Element to process.
 	 * @param index
 	 * 		Current position in the original text (in characters).
 	 * @return
-	 * 		The created entity, or {@code null} if it was not
+	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private List<AbstractEntity<?>> convertTemporalElement(Element element, int index)
+	private List<AbstractMention<?>> convertTemporalElement(Element element, int index)
 	{	logger.increaseOffset();
-		List<AbstractEntity<?>> result = new ArrayList<AbstractEntity<?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		XMLOutputter xo = new XMLOutputter();
 				
 		String name = element.getName();
@@ -278,7 +278,7 @@ public class TagEnConverter extends AbstractExternalConverter
 		EntityType type = CONVERSION_MAP.get(name);
 		if(type==null)
 		{	if(!TIMEX_BLACKLIST.contains(name))
-				logger.log("WARNING: could not find the entity type associated to tag "+xo.outputString(element));
+				logger.log("WARNING: could not find the mention type associated to tag "+xo.outputString(element));
 //				logger.log("Element not describing a date/time (ignored): "+xo.outputString(element));
 		}
 		// we only focus on dates and date-times
@@ -358,13 +358,13 @@ public class TagEnConverter extends AbstractExternalConverter
 //					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); 
 //				else
 				{	int length = valueStr.length();
-					AbstractEntity<?> entity = AbstractEntity.build
+					AbstractMention<?> mention = AbstractMention.build
 					(	EntityType.DATE, 
 						index+offset, index+offset+length, 
 						recognizerName, valueStr
 					);
 //					result.setValue(date);
-					result.add(entity);
+					result.add(mention);
 				}
 			}
 		}

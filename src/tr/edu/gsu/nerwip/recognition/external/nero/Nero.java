@@ -76,7 +76,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	 * @param neroTagger
 	 * 		NeroTagger used by Nero (CRF or FST).
 	 * @param flat
-	 * 		Whether entities can contain other entities ({@code false}) or
+	 * 		Whether mentions can contain other mentions ({@code false}) or
 	 * 		are mutually exclusive ({@code true}).
 	 * @param ignorePronouns
 	 *      Whether or not pronouns should be excluded from the detection.
@@ -121,7 +121,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES 	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entities recognized by Nero */
+	/** List of entity types recognized by Nero */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
 	(
 		EntityType.DATE, 
@@ -133,7 +133,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	);
 
 	@Override
-	public List<EntityType> getHandledEntityTypes() 
+	public List<EntityType> getHandledMentionTypes() 
 	{	return HANDLED_TYPES;
 	}
 
@@ -174,9 +174,9 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Whether entities can contain other entities ({@code false}) or are mutually exclusive ({@code true}) */
+	/** Whether mentions can contain other mentions ({@code false}) or are mutually exclusive ({@code true}) */
 	private boolean flat = false;
-	/** Switch used to enable the detection of non-flat entities */
+	/** Switch used to enable the detection of non-flat mentions */
 	private final static String FLAT_SWITCH = "-f2h";
 	/** Name of the temporary file generated for Nero */
 	private static final String TEMP_NAME = "temp";
@@ -204,7 +204,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	}
 	
 	@Override
-	protected String detectEntities(Article article) throws RecognizerException
+	protected String detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		StringBuffer tempRes = new StringBuffer();
 		String text = article.getRawText();

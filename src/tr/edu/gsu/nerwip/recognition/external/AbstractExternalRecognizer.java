@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
@@ -56,7 +56,7 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 	 * using the specified default options.
 	 * 
 	 * @param trim
-	 * 		Whether or not the beginings and ends of entities should be 
+	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
@@ -77,10 +77,10 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities process(Article article) throws RecognizerException
+	public Mentions process(Article article) throws RecognizerException
 	{	logger.log("Start applying "+getName()+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
-		Entities result = null;
+		Mentions result = null;
 		
 		try
 		{	// checks if the result file already exists
@@ -97,27 +97,27 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
 				
 				// apply the NER tool
-				logger.log("Detect the entities");
-				String entitiesStr = detectEntities(article);
+				logger.log("Detect the mentions");
+				String mentionsStr = detectMentions(article);
 				
-				// convert entities to our internal representation
-				logger.log("Convert entities to our internal representation");
-				result = converter.convert(article,entitiesStr);
+				// convert mentions to our internal representation
+				logger.log("Convert mentions to our internal representation");
+				result = converter.convert(article,mentionsStr);
 				
-				// possibly trim entities (remove non-digit/letter chars at beginning/end)
-				logger.log("Possibly clean entities.");
-				cleanEntities(result);
+				// possibly trim mentions (remove non-digit/letter chars at beginning/end)
+				logger.log("Possibly clean mentions.");
+				cleanMentions(result);
 				
 				// possibly filter stop words and pronouns
-				logger.log("Possibly filter entities (pronouns, stop-words, etc.)");
+				logger.log("Possibly filter mentions (pronouns, stop-words, etc.)");
 				filterNoise(result,language);
 				
-				// filter overlapping entities
-				logger.log("Filter overlapping entities");
+				// filter overlapping mentions
+				logger.log("Filter overlapping mentions");
 				filterRedundancy(result);
 				
-				// record entities using our xml format
-				logger.log("Record entities using our XML format");
+				// record mentions using our xml format
+				logger.log("Record mentions using our XML format");
 				converter.writeXmlResults(article,result);
 				
 				// possibly remove the raw output file
@@ -160,16 +160,16 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
     /**
      * Takes the raw text of the article, and
      * returns a string representing the detected 
-     * entities. Those must then be converted 
+     * mentions. Those must then be converted 
      * to objects compatible with the rest of Nerwip.
      * 
      * @param article
      * 		Article to process.
      * @return
-     * 		String representing the detected entities.
+     * 		String representing the detected mentions.
      * 
      * @throws RecognizerException
      * 		Problem while applying the NER tool.
     */
-	protected abstract String detectEntities(Article article) throws RecognizerException;
+	protected abstract String detectMentions(Article article) throws RecognizerException;
 }

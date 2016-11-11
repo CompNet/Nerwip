@@ -62,7 +62,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 	 * Builds and sets up an object representing the TagEN tool.
 	 * 
 	 * @param model
-	 *      Model used to perform the entity detection.
+	 *      Model used to perform the mention detection.
 	 * @param ignorePronouns
 	 *      Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
@@ -104,7 +104,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 	// ENTITY TYPES 	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public List<EntityType> getHandledEntityTypes() 
+	public List<EntityType> getHandledMentionTypes() 
 	{	List<EntityType> result = model.getHandledTypes();
 		return result;
 	}
@@ -121,7 +121,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 	/////////////////////////////////////////////////////////////////
 	// MODEL		 	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Model used during the entity detection */
+	/** Model used during the mention detection */
 	private TagEnModelName model = null;
 	
 	/////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ public class TagEn extends AbstractExternalRecognizer<TagEnConverter>
 	}
 	
 	@Override
-	protected String detectEntities(Article article) throws RecognizerException
+	protected String detectMentions(Article article) throws RecognizerException
 	{	logger.increaseOffset();
 		String result = null;
 		

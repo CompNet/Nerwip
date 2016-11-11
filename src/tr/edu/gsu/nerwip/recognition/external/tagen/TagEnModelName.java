@@ -33,7 +33,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 /**
  * Class representing the predefined
  * model used by TagEn for 
- * detecting entities.
+ * detecting mentions.
  * 
  * @author Vincent Labatut
  */

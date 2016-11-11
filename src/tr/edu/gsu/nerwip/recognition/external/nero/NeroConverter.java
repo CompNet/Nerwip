@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
@@ -91,8 +91,8 @@ public class NeroConverter extends AbstractExternalConverter
 	// PROCESS 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Entities convert(Article article, String data) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, String data) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 		String originalText = article.getRawText();
 
 		LinkedList<EntityType> types = new LinkedList<EntityType>();
@@ -144,9 +144,9 @@ if(i2>2800)
 					{
 //						String valueStr = data.substring(sp2,k2);
 						String valueStr = originalText.substring(sp1,i1);
-						AbstractEntity<?> entity = AbstractEntity.build(type, sp1, i1, RecognizerName.NERO, valueStr);
-						entity.correctEntitySpan(); // to remove some spaces located at the end of entities
-						result.addEntity(entity);
+						AbstractMention<?> mention = AbstractMention.build(type, sp1, i1, RecognizerName.NERO, valueStr);
+						mention.correctMentionSpan(); // to remove some spaces located at the end of mentions
+						result.addMention(mention);
 					}
 				}
 				
