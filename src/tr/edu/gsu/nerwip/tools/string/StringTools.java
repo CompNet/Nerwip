@@ -33,6 +33,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * This class contains various methods
  * used when processing strings.
@@ -479,6 +481,35 @@ public class StringTools
 		
 		List<Integer> result = new ArrayList<Integer>(temp);
 		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// DISTANCE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+    /**
+    * This method calculate the normalized Levenshtein  
+    * distance between two strings. It returns a value between 0 (similar)
+    * and 1 (maximally dissimilar)
+    * 
+    * @param str1
+    * 		The first string.
+    * @param str2
+    *       The second string.
+    * @return
+    * 		A real value between 0 and 1 corresponding to the normalized Levenshtein distance.
+    */
+	public static double getNormalizedLevenshtein(String str1, String str2) 
+	{	// process the regular distance
+		double dist = StringUtils.getLevenshteinDistance(str1, str2);
+	    //System.out.println("Levenshtein Distance between " + str1 + " and " + str2 + ":" + dist);
+		
+		// get the max length
+		int maxLength = Math.max(str1.length(), str2.length());
+		
+		double result = dist / maxLength ;
+		//System.out.println("Normalized Levenshtein Distance between " + str1 + " and " + str2 + " =  " + levNorm);
+		
+        return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////

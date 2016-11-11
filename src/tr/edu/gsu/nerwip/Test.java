@@ -69,7 +69,6 @@ import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.IstanbulMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
 import tr.edu.gsu.nerwip.eventcomparison.EventComparison;
-import tr.edu.gsu.nerwip.eventcomparison.stringsimilaritytools.NLDistance;
 import tr.edu.gsu.nerwip.eventextraction.EventExtraction;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
@@ -125,6 +124,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.mediawiki.WikiIdTools;
 import tr.edu.gsu.nerwip.tools.mediawiki.WikiTypeTools;
 import tr.edu.gsu.nerwip.tools.string.LinkTools;
+import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class is used to launch some processes
@@ -535,11 +535,18 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
-	
-	private static void testNLDistance(String S, String T) 
+	/**
+	 * Tests the normalization of the Levenshtein distance.
+	 * 
+     * @param str1
+     * 		The first string.
+     * @param str2
+     *       The second string.
+	 */
+	private static void testNLDistance(String str1, String str2) 
 	{	logger.setName("Test-NLDistance");
 		logger.increaseOffset();
-		NLDistance.getLevNorm(S, T);
+		StringTools.getNormalizedLevenshtein(str1, str2);
 		logger.decreaseOffset();
 	}
 	
