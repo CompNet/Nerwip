@@ -33,19 +33,19 @@ import java.util.List;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
- * This class contains various methods used to verify reference entities
- * are correct: no overlap, consistant position, no empty entities, etc.
+ * This class contains various methods used to verify reference mentions
+ * are correct: no overlap, consistant position, no empty mentions, etc.
  *  
  * @author Vincent Labatut
  */
 @SuppressWarnings("unused")
-public class EntityCheck
+public class MentionCheck
 {	
 	/**
 	 * Method used to do some punctual processing.
@@ -57,12 +57,12 @@ public class EntityCheck
 	 * 		Whatever.
 	 */
 	public static void main(String[] args) throws Exception
-	{	logger.setName("Entity-check");
+	{	logger.setName("Mention-check");
 		List<File> articles = ArticleLists.getArticleList();
 		
-//		checkEntityConsistance(articles);
-//		checkEntityOverlap(articles);
-		checkEntityEmptiness(articles);
+//		checkMentionConsistance(articles);
+//		checkMentionOverlap(articles);
+		checkMentionEmptiness(articles);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -76,9 +76,9 @@ public class EntityCheck
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Parse the xml reference associated to the specified
-	 * articles and for each entity, checks if the string
-	 * of the entity string is equal to that retrieved from the text
-	 * using the start and end positions of the entity. If it's not
+	 * articles and for each mention, checks if the string
+	 * of the mention string is equal to that retrieved from the text
+	 * using the start and end positions of the mention. If it's not
 	 * the case, a message is displayed to allow manual correction.
 	 * 
 	 * @param articles
@@ -91,8 +91,8 @@ public class EntityCheck
 	 * @throws ParseException 
 	 * 		Problem while accessing the articles.
 	 */
-	private static void checkEntityConsistance(List<File> articles) throws ParseException, SAXException, IOException
-	{	logger.log("Checking all entities");
+	private static void checkMentionConsistance(List<File> articles) throws ParseException, SAXException, IOException
+	{	logger.log("Checking all mentions");
 		logger.increaseOffset();
 		
 		int problems = 0;
@@ -106,16 +106,16 @@ public class EntityCheck
 			Article article = Article.read(name);
 			String text = article.getRawText();
 			
-			Entities entities = article.getReferenceEntities();
-			List<AbstractEntity<?>> list = entities.getEntities();
+			Mentions mentions = article.getReferenceMentions();
+			List<AbstractMention<?>> list = mentions.getMentions();
 			
-			for(AbstractEntity<?> entity: list)
-			{	int start = entity.getStartPos();
-				int end = entity.getEndPos();
+			for(AbstractMention<?> mention: list)
+			{	int start = mention.getStartPos();
+				int end = mention.getEndPos();
 				String textStr = text.substring(start, end);
-				String entityStr = entity.getStringValue();
-				if(!entityStr.equals(textStr))
-				{	logger.log("Problem with entity "+entity+" entity=\""+entityStr+"\" vs. text=\""+textStr+"\"");
+				String mentionStr = mention.getStringValue();
+				if(!mentionStr.equals(textStr))
+				{	logger.log("Problem with mention "+mention+" mention=\""+mentionStr+"\" vs. text=\""+textStr+"\"");
 					problems++;
 				}
 			}
@@ -126,7 +126,7 @@ public class EntityCheck
 		logger.decreaseOffset();
 
 		logger.decreaseOffset();
-		logger.log("Entity check over: "+problems+" detected");
+		logger.log("Mention check over: "+problems+" detected");
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -134,8 +134,8 @@ public class EntityCheck
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Parses the xml reference associated to the specified
-	 * articles and for each entity, checks if there exist
-	 * overlapping entities. If some are detected, a warning 
+	 * articles and for each mention, checks if there exist
+	 * overlapping mentions. If some are detected, a warning 
 	 * message is displayed.
 	 * 
 	 * @param articles
@@ -148,8 +148,8 @@ public class EntityCheck
 	 * @throws ParseException 
 	 * 		Problem while accessing the articles.
 	 */
-	private static void checkEntityOverlap(List<File> articles) throws ParseException, SAXException, IOException
-	{	logger.log("Checking all entities");
+	private static void checkMentionOverlap(List<File> articles) throws ParseException, SAXException, IOException
+	{	logger.log("Checking all mentions");
 		logger.increaseOffset();
 		
 		int problems = 0;
@@ -163,22 +163,22 @@ public class EntityCheck
 			Article article = Article.read(name);
 			String text = article.getRawText();
 			
-			Entities entities = article.getReferenceEntities();
-			entities.sortByPosition();
-			List<AbstractEntity<?>> list = entities.getEntities();
+			Mentions mentions = article.getReferenceMentions();
+			mentions.sortByPosition();
+			List<AbstractMention<?>> list = mentions.getMentions();
 			
-			Iterator<AbstractEntity<?>> it = list.iterator();
-			AbstractEntity<?> current = null;
-			AbstractEntity<?> prev = null;
+			Iterator<AbstractMention<?>> it = list.iterator();
+			AbstractMention<?> current = null;
+			AbstractMention<?> prev = null;
 			while(it.hasNext())
 			{	prev = current;
 				current = it.next();
 				if(prev!=null)
 				{	if(prev.overlapsWith(current))
-					{	logger.log("Overlapping entities detected:");
+					{	logger.log("Overlapping mentions detected:");
 						logger.increaseOffset();
-						logger.log("Previous entity: "+prev); 
-						logger.log("Current entity: "+current); 
+						logger.log("Previous mention: "+prev); 
+						logger.log("Current mention: "+current); 
 						logger.decreaseOffset();
 						problems++;
 					}
@@ -191,7 +191,7 @@ public class EntityCheck
 		logger.decreaseOffset();
 
 		logger.decreaseOffset();
-		logger.log("Entity check over: "+problems+" detected");
+		logger.log("Mention check over: "+problems+" detected");
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ public class EntityCheck
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Parses the xml reference associated to the specified
-	 * articles and for each entity, checks if it contains
+	 * articles and for each mention, checks if it contains
 	 * at least one character. Otherwise, a warning message 
 	 * is displayed.
 	 * 
@@ -213,8 +213,8 @@ public class EntityCheck
 	 * @throws ParseException 
 	 * 		Problem while accessing the articles.
 	 */
-	private static void checkEntityEmptiness(List<File> articles) throws ParseException, SAXException, IOException
-	{	logger.log("Checking all entities");
+	private static void checkMentionEmptiness(List<File> articles) throws ParseException, SAXException, IOException
+	{	logger.log("Checking all mentions");
 		logger.increaseOffset();
 		
 		int problems = 0;
@@ -228,15 +228,15 @@ public class EntityCheck
 			Article article = Article.read(name);
 			String text = article.getRawText();
 			
-			Entities entities = article.getReferenceEntities();
-			entities.sortByPosition();
-			List<AbstractEntity<?>> list = entities.getEntities();
+			Mentions mentions = article.getReferenceMentions();
+			mentions.sortByPosition();
+			List<AbstractMention<?>> list = mentions.getMentions();
 			
-			for(AbstractEntity<?> entity: list)
-			{	int start = entity.getStartPos();
-				int end = entity.getEndPos();
+			for(AbstractMention<?> mention: list)
+			{	int start = mention.getStartPos();
+				int end = mention.getEndPos();
 				if(start==end)
-				{	logger.log("Problem with entity "+entity+": it is empty.");
+				{	logger.log("Problem with mention "+mention+": it is empty.");
 					problems++;
 				}
 			}
@@ -247,6 +247,6 @@ public class EntityCheck
 		logger.decreaseOffset();
 
 		logger.decreaseOffset();
-		logger.log("Entity check over: "+problems+" detected");
+		logger.log("Mention check over: "+problems+" detected");
 	}
 }

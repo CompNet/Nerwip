@@ -47,7 +47,7 @@ import java.util.Scanner;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -218,7 +218,7 @@ public class ArticleLists
 	 * 		Ouput file (a text file).
 	 *  
 	 * @throws ParseException
-	 * 		Problem while reading the entity file. 
+	 * 		Problem while reading the mention file. 
 	 * @throws IOException 
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException 
@@ -230,7 +230,7 @@ public class ArticleLists
 		PrintWriter pw = FileTools.openTextFileWrite(output, "UTF-8");
 		pw.println("Number"+sep+"Title"+sep+"Size"+sep+"Date"+sep+"Editor"+sep+"Count");
 		
-		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
+		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_MENTION_LIST);
 		FilenameFilter ffRaw = FileTools.createFilter(FileNames.FI_RAW_TEXT);
 		Map<String,Integer> counts = new HashMap<String, Integer>();
 			
@@ -242,13 +242,13 @@ public class ArticleLists
 			File files[] = folder.listFiles(ffEnt);
 			if(files.length>0)
 			{	File file = files[0];
-				Entities entities = Entities.readFromXml(file);
-				String editor = entities.getEditor();
+				Mentions mentions = Mentions.readFromXml(file);
+				String editor = mentions.getEditor();
 				if(editor!=null)
 				{	files = folder.listFiles(ffRaw);
 					if(files.length>0)
 					{	file = files[0];
-						Date date = entities.getModificationDate();
+						Date date = mentions.getModificationDate();
 						String dateStr = DATE_FORMAT.format(date);
 						String rawText = FileTools.readTextFile(file, "UTF-8");
 						int size = rawText.length();
@@ -278,7 +278,7 @@ public class ArticleLists
 	 * 		Ouput file (a text file).
 	 *  
 	 * @throws ParseException
-	 * 		Problem while reading the entity file. 
+	 * 		Problem while reading the mention file. 
 	 * @throws IOException 
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException 
@@ -290,7 +290,7 @@ public class ArticleLists
 		PrintWriter pw = FileTools.openTextFileWrite(output, "UTF-8");
 		pw.println("Number"+sep+"Title"+sep+"Size");
 		
-		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_ENTITY_LIST);
+		FilenameFilter ffEnt = FileTools.createFilter(FileNames.FI_MENTION_LIST);
 		FilenameFilter ffRaw = FileTools.createFilter(FileNames.FI_RAW_TEXT);
 			
 		// get the list of articles
@@ -311,8 +311,8 @@ public class ArticleLists
 					treat = true;
 				else
 				{	file = files[0];
-					Entities entities = Entities.readFromXml(file);
-					String editor = entities.getEditor();
+					Mentions mentions = Mentions.readFromXml(file);
+					String editor = mentions.getEditor();
 					if(editor==null)
 						treat = true;
 				}

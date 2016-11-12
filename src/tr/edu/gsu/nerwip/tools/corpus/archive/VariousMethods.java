@@ -33,8 +33,8 @@ import java.util.List;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
@@ -177,16 +177,16 @@ public class VariousMethods
 			logger.log("Process article "+name);
 			logger.increaseOffset();
 			
-			logger.log("Retrieve reference entities");
+			logger.log("Retrieve reference mentions");
 			String refPath = folder.getPath() + File.separator + FileNames.FI_REFERENCE_TEXT;
 			File refFile = new File(refPath);
 			String references = FileTools.readTextFile(refFile, "UTF-8");
-			Entities entities = converter.convert(null,references);
+			Mentions mentions = converter.convert(null,references);
 
 			logger.log("Record our XML format");
-			String xmlPath = folder.getPath() + File.separator + FileNames.FI_ENTITY_LIST;
+			String xmlPath = folder.getPath() + File.separator + FileNames.FI_MENTION_LIST;
 			File xmlFile = new File(xmlPath);
-			entities.writeToXml(xmlFile);
+			mentions.writeToXml(xmlFile);
 			logger.decreaseOffset();
 		}
 		logger.decreaseOffset();
@@ -197,7 +197,7 @@ public class VariousMethods
 
 	/**
 	 * Removes the files produced during NER detection,
-	 * as well as the reference entity file (but not the
+	 * as well as the reference mention file (but not the
 	 * raw text, linked text and annotated text).
 	 * 
 	 * @deprecated
@@ -219,15 +219,15 @@ public class VariousMethods
 		{	logger.log("Processing article "+article.getName());
 			logger.increaseOffset();
 			
-			// remove entity file
-			String entityPath = article.getPath() + File.separator + FileNames.FI_ENTITY_LIST;
-			File entityFile = new File(entityPath);
-			if(entityFile.exists())
-			{	logger.log("Removing "+entityFile.getName());
-				entityFile.delete();
+			// remove mention file
+			String mentionPath = article.getPath() + File.separator + FileNames.FI_MENTION_LIST;
+			File mentionFile = new File(mentionPath);
+			if(mentionFile.exists())
+			{	logger.log("Removing "+mentionFile.getName());
+				mentionFile.delete();
 			}
 			else
-				logger.log("No entity file ("+entityFile.getName()+") to remove");
+				logger.log("No mention file ("+mentionFile.getName()+") to remove");
 			
 			// remove subfolders
 			File subfolders[] = article.listFiles(FileTools.FILTER_DIRECTORY);
@@ -244,15 +244,15 @@ public class VariousMethods
 	}
 	
 	/**
-	 * Removes values from the entities in
+	 * Removes values from the mentions in
 	 * the reference files. Only used once.
 	 * 
 	 * @throws ParseException
-	 * 		Problem while reading/writing entities. 
+	 * 		Problem while reading/writing mentions. 
 	 * @throws IOException 
-	 * 		Problem while reading/writing entities. 
+	 * 		Problem while reading/writing mentions. 
 	 * @throws SAXException 
-	 * 		Problem while reading/writing entities. 
+	 * 		Problem while reading/writing mentions. 
 	 * 
 	 * @deprecated
 	 * 		Only used once, for cleaning purposes.
@@ -272,17 +272,17 @@ public class VariousMethods
 			logger.log("Process article "+name);
 			logger.increaseOffset();
 			
-			logger.log("Retrieve reference entities");
-			String xmlPath = folder.getPath() + File.separator + FileNames.FI_ENTITY_LIST;
+			logger.log("Retrieve reference mentions");
+			String xmlPath = folder.getPath() + File.separator + FileNames.FI_MENTION_LIST;
 			File file = new File(xmlPath);
-			Entities entities = Entities.readFromXml(file);
+			Mentions mentions = Mentions.readFromXml(file);
 			
 			logger.log("Remove their value (keep the string representation, though)");
-			for(AbstractEntity<?> entity: entities.getEntities())
-				entity.setValue(null);
+			for(AbstractMention<?> mention: mentions.getMentions())
+				mention.setValue(null);
 			
-			logger.log("Record the modified entities");
-			entities.writeToXml(file);
+			logger.log("Record the modified mentions");
+			mentions.writeToXml(file);
 			logger.decreaseOffset();
 		}
 		logger.decreaseOffset();
@@ -296,11 +296,11 @@ public class VariousMethods
 	 * old corpus.
 	 * 
 	 * @throws SAXException
-	 * 		Problem while reading/writing entities. 
+	 * 		Problem while reading/writing mentions. 
 	 * @throws IOException
-	 * 		Problem while reading/writing entities. 
+	 * 		Problem while reading/writing mentions. 
 	 * @throws ParseException
-	 * 		Problem while reading/writing entities. 
+	 * 		Problem while reading/writing mentions. 
 	 */
 	private static void updateReferenceFiles() throws SAXException, IOException, ParseException
 	{	File corpusFolder = new File("C:/Users/Vincent/Documents/Dropbox/Nerwip2/out");
@@ -311,11 +311,11 @@ public class VariousMethods
 			if(name.equals("Ozias_Leduc"))
 				flag = true;
 			else if(flag)
-			{	String xmlPath = folder.getPath() + File.separator + FileNames.FI_ENTITY_LIST;
+			{	String xmlPath = folder.getPath() + File.separator + FileNames.FI_MENTION_LIST;
 				File file = new File(xmlPath);
-				Entities entities = Entities.readFromXml(file);
-				entities.setModificationDate(entities.getCreationDate());
-				entities.writeToXml(file);
+				Mentions mentions = Mentions.readFromXml(file);
+				mentions.setModificationDate(mentions.getCreationDate());
+				mentions.writeToXml(file);
 			}
 		}
 	}

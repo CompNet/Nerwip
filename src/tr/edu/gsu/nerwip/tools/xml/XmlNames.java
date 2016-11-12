@@ -46,7 +46,7 @@ public class XmlNames
 	public static final String ATT_EDITABLE = "editable";
 	/** Person who originally annotated an article */
 	public static final String ATT_EDITOR = "editor";
-	/** Entity end position */
+	/** Mention end position */
 	public static final String ATT_END = "end";
 	/** Font size */
 	public static final String ATT_FONT_SIZE = "fontSize";
@@ -56,13 +56,13 @@ public class XmlNames
 	public static final String ATT_MODIFICATION = "modification";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
-	/** NER tool used to detect the entity */
+	/** NER tool used to detect the mention */
 	public static final String ATT_SOURCE = "source";
-	/** Entity start position */
+	/** Mention start position */
 	public static final String ATT_START = "start";
 	/** GUI tooltip */
 	public static final String ATT_TOOLTIP = "tooltip";
-	/** Entity type */
+	/** Mention type */
 	public static final String ATT_TYPE = "type";
 	/** Some value (generally associated to a name or key) */
 	public static final String ATT_VALUE = "value";
@@ -90,10 +90,10 @@ public class XmlNames
 	public static final String ELT_EDITOR = "editor";
 	/** Text expressions which must be ignored because of how they end, when retreiving categories */
 	public static final String ELT_ENDS_WITH = "endsWith";
-	/** A list of entities */
-	public static final String ELT_ENTITIES = "entities";
-	/** An entity in a list of entities */
-	public static final String ELT_ENTITY = "entity";
+	/** A list of mentions */
+	public static final String ELT_MENTIONS = "entities";	//TODO this should be corrected
+	/** A mention in a list of mentions */
+	public static final String ELT_MENTION = "entity";		//TODO this too
 	/** A group of GUI texts */
 	public static final String ELT_GROUP = "group";
 	/** Some text key */
@@ -114,7 +114,7 @@ public class XmlNames
 	public static final String ELT_RETRIEVAL_DATE = "retrieval";
 	/** Text expressions which must be ignored because of how they start, when retreiving categories */
 	public static final String ELT_STARTS_WITH = "startsWith";
-	/** String describing an entity */
+	/** String describing a mention */
 	public static final String ELT_STRING = "string";
 	/** Text properties in the editor */
 	public static final String ELT_TEXT = "text";
@@ -124,6 +124,6 @@ public class XmlNames
 	public static final String ELT_URL = "url";
 	/** Whether or not to use the last value */
 	public static final String ELT_USE = "use";
-	/** Actual value of an entity (might differ from its textual representation */
+	/** Actual value of a mention (might differ from its textual representation */
 	public static final String ELT_VALUE = "value";
 }

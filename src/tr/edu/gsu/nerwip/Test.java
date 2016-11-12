@@ -57,19 +57,24 @@ import de.unihd.dbs.heideltime.standalone.OutputType;
 import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 import tr.edu.gsu.extractor.data.event.Event;
+import tr.edu.gsu.extractor.temp.eventcomparison.EventComparison;
+import tr.edu.gsu.extractor.temp.eventextraction.EventExtraction;
+import tr.edu.gsu.extractor.temp.tools.dbpedia.DbIdTools;
+import tr.edu.gsu.extractor.temp.tools.dbpedia.DbTypeTools;
+import tr.edu.gsu.extractor.temp.tools.dbspotlight.SpotlightTools;
+import tr.edu.gsu.extractor.temp.tools.mediawiki.WikiIdTools;
+import tr.edu.gsu.extractor.temp.tools.mediawiki.WikiTypeTools;
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.edition.EntityEditor;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
+import tr.edu.gsu.nerwip.edition.MentionEditor;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.IstanbulMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
-import tr.edu.gsu.nerwip.eventcomparison.EventComparison;
-import tr.edu.gsu.nerwip.eventextraction.EventExtraction;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
@@ -111,9 +116,6 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
-import tr.edu.gsu.nerwip.tools.dbpedia.DbIdTools;
-import tr.edu.gsu.nerwip.tools.dbpedia.DbTypeTools;
-import tr.edu.gsu.nerwip.tools.dbspotlight.SpotlightTools;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbIdTools;
@@ -121,8 +123,6 @@ import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
 import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
-import tr.edu.gsu.nerwip.tools.mediawiki.WikiIdTools;
-import tr.edu.gsu.nerwip.tools.mediawiki.WikiTypeTools;
 import tr.edu.gsu.nerwip.tools.string.LinkTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
@@ -307,7 +307,7 @@ public class Test
 		logger.log("Start testing EventExtraction");
 		logger.increaseOffset();
 		Article article;
-		Entities entities;
+		Mentions mentions;
 		
 		ArticleList folders = ArticleLists.getArticleList();
 		int i = 0;
@@ -322,11 +322,11 @@ public class Test
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
-		    // retrieve the entities
-		   logger.log("Retrieve the entities");
-		   entities = recognizer.process(article);
+		    // retrieve the mentions
+		   logger.log("Retrieve the mentions");
+		   mentions = recognizer.process(article);
 		   
-		   List<Event> extractedEvents = EventExtraction.extractEvents(article, entities); 
+		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions); 
 		   allEventsList.addAll(extractedEvents);
 		
 		}
@@ -347,7 +347,7 @@ public class Test
 		logger.log("Start testing EventComparison");
 		logger.increaseOffset();
 		Article article;
-		Entities entities;
+		Mentions mentions;
 		
 		ArticleList folders = ArticleLists.getArticleList();
 		int i = 0;
@@ -361,13 +361,13 @@ public class Test
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
-		    // retrieve the entities
-		   logger.log("Retrieve the entities");
-		   entities = recognizer.process(article);
+		    // retrieve the mentions
+		   logger.log("Retrieve the mentions");
+		   mentions = recognizer.process(article);
 	    
 		   //event comparison
-		List<Event> extractedEvents = EventExtraction.extractEvents(article, entities);
-		String xmlText = SpotlightTools.process(entities, article);
+		List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
+		String xmlText = SpotlightTools.process(mentions, article);
 		logger.log("xmltext = " + xmlText);
 		String answer = SpotlightTools.disambiguate(xmlText);
 		logger.log("answer = " + answer);
@@ -391,11 +391,11 @@ public class Test
 	private static void test2() throws Exception
 	{
 		Article article;
-		Entities entities = null;
+		Mentions mentions = null;
 		
 		ArticleList folders = ArticleLists.getArticleList();
-		//List<AbstractEntity<?>> allEntitiesList = null;
-		Entities allEntities =  new Entities();
+		//List<AbstractMention<?>> allMentionsList = null;
+		Mentions allMentions =  new Mentions();
 		int i = 0;
 		for(File folder: folders)
 		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
@@ -407,39 +407,39 @@ public class Test
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
-		    // retrieve the entities
-		   logger.log("Retrieve the entities");
-		   entities = recognizer.process(article);
-		   //logger.log("SIZE OF ENTITIES OF ARTICLE " + name + entities.getEntities().size());
+		    // retrieve the mentions
+		   logger.log("Retrieve the mentions");
+		   mentions = recognizer.process(article);
+		   //logger.log("SIZE OF ENTITIES OF ARTICLE " + name + mentions.getMentions().size());
 		   
-		   //allEntities = allEntities.addEntities(entities);
-		  // allEntities = allEntities.addEntities(entities);
-		   allEntities.addEntities(entities);
+		   //allMentions = allMentions.addMentions(mentions);
+		  // allMentions = allMentions.addMentions(mentions);
+		   allMentions.addMentions(mentions);
 		   
 		
 		}
-		int n = allEntities.getEntities().size();
+		int n = allMentions.getMentions().size();
 		logger.log("all folders size + " + n );
-		List<AbstractEntity<?>> personEntities = new ArrayList<AbstractEntity<?>>();
+		List<AbstractMention<?>> personMentions = new ArrayList<AbstractMention<?>>();
 		   
 		@SuppressWarnings("null")
-		List<AbstractEntity<?>> ent = allEntities.getEntities();
-		for(AbstractEntity<?> e: ent)
+		List<AbstractMention<?>> ent = allMentions.getMentions();
+		for(AbstractMention<?> e: ent)
 		{ EntityType entityType = e.getType();
 		  String type = entityType.toString();
 		  //logger.log("type = " + type);
 		  if (type == "PERSON")
 		  { logger.log("add this person to list " + e.getStringValue());
-			  personEntities.add(e);
+			  personMentions.add(e);
 		  }
 		}
 		
-		int p = personEntities.size();
+		int p = personMentions.size();
 		
-		logger.log("personEntities size " + p);
-		logger.log("size personEntities pour est " + p);
+		logger.log("personMentions size " + p);
+		logger.log("size personMentions pour est " + p);
 		for (int j=0; j<p; j++)
-		{logger.log("entityname " + personEntities.get(j).getStringValue());}
+		{logger.log("mentionName " + personMentions.get(j).getStringValue());}
 		
 		
 	}*/
@@ -457,9 +457,6 @@ public class Test
 	 * Tests the feature allowing to automatically
 	 * retrieve DBpediaSpotlight ids and types of entities.
 	 * 
-	 * * @param name
-	 * 		name of the article to parse.
-	 * 
 	 * @throws Exception
 	 * 		Something went wrong...
 	 */
@@ -469,7 +466,7 @@ public class Test
 		logger.increaseOffset();
 	    
 		Article article;
-		Entities entities;
+		Mentions mentions;
 		
 		ArticleList folders = ArticleLists.getArticleList();
 		int i = 0;
@@ -485,9 +482,9 @@ public class Test
 		    String rawText = article.getRawText();
 		    // retrieve the entities
 		   logger.log("Retrieve the entities");
-		   entities = recognizer.process(article);
+		   mentions = recognizer.process(article);
 		   logger.log("start applying Spotlight to " + name);
-		   String xmlText = SpotlightTools.process(entities, article);
+		   String xmlText = SpotlightTools.process(mentions, article);
 		   //logger.log("xmltext = " + xmlText);
 		   String answer = SpotlightTools.disambiguate(xmlText);
 			logger.log("answer = " + answer);
@@ -550,13 +547,13 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
-	//List<Event> extractEvents(Article article, Entities entities)
+	//List<Event> extractEvents(Article article, Mentions entities)
 	private static void testEventsExtraction() throws Exception
 	{   logger.setName("Test-EventComparison");
 	    logger.log("Start testing EventComparison");
 	    logger.increaseOffset();
 	    Article article;
-	    Entities entities;
+	    Mentions mentions;
 	
 	    ArticleList folders = ArticleLists.getArticleList();
 	    int i = 0;
@@ -572,11 +569,11 @@ public class Test
 	        String rawText = article.getRawText();
 	        // retrieve the entities
 	       logger.log("Retrieve the entities");
-	       entities = recognizer.process(article);
+	       mentions = recognizer.process(article);
 	   
 		   
 	
-		   List<Event> extractedEvents = EventExtraction.extractEvents(article, entities);
+		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
 		   int p = extractedEvents.size();
 		   logger.log("size of eventsList " + p);
 		   }
@@ -630,7 +627,6 @@ public class Test
 		//logger.log("Type retrieval complete");
 		//logger.decreaseOffset();
 	}
-	
 	
 	/**
 	 * Tests the feature allowing to automatically
@@ -1330,9 +1326,9 @@ public class Test
 //			true
 		);
 		List<CombineMode> combineModes = Arrays.asList(
-			CombineMode.ENTITY_UNIFORM
-//			CombineMode.ENTITY_WEIGHTED_OVERALL
-//			CombineMode.ENTITY_WEIGHTED_CATEGORY
+			CombineMode.MENTION_UNIFORM
+//			CombineMode.MENTION_WEIGHTED_OVERALL
+//			CombineMode.MENTION_WEIGHTED_CATEGORY
 //			CombineMode.CHUNK_SINGLE
 //			CombineMode.CHUNK_PREVIOUS
 		);
@@ -1785,30 +1781,30 @@ public class Test
 //			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.SINGLE),
 //			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.ALL),
 			
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
@@ -1816,30 +1812,30 @@ public class Test
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
 
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
@@ -1914,7 +1910,7 @@ public class Test
 		
 		// set up viewer
 		logger.log("Set up viewer");
-		EntityEditor viewer = new EntityEditor();
+		MentionEditor viewer = new MentionEditor();
 		
 		// set up article
 //		String articleName = "Aart_Kemink";

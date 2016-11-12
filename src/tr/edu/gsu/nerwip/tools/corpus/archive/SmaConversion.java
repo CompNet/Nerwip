@@ -33,9 +33,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
@@ -70,8 +70,8 @@ public class SmaConversion extends AbstractExternalConverter
 	private static final Pattern SEARCH_PATTERN = Pattern.compile("<(.+?)>(.+?)</.+?>",Pattern.DOTALL);
 
 	@Override
-	public Entities convert(Article article, String content) throws ConverterException
-	{	Entities result = new Entities(recognizerName);
+	public Mentions convert(Article article, String content) throws ConverterException
+	{	Mentions result = new Mentions(recognizerName);
 		
 	// change the form of tags
 		// quick and dirty fix. a better version would be to replace the main regex.
@@ -85,7 +85,7 @@ public class SmaConversion extends AbstractExternalConverter
 		content = content.replaceAll("<tag name=\"DATE\" value=\"start\"/>", "<DATE>");
 		content = content.replaceAll("<tag name=\"DATE\" value=\"end\"/>", "</DATE>");
 		
-		// extract entities
+		// extract mentions
 		//"<(.+?)>(.+?)<.+?>" causes problems with newline inside tags
 		// we have to use Pattern.DOTALL to deal with that
 		Matcher matcher = SEARCH_PATTERN.matcher(content);
@@ -103,22 +103,22 @@ if(typeStr.equals("/LOCATION"))
 			RecognizerName source = RecognizerName.REFERENCE;
 			String valueStr = matcher.group(2);//matcher.group();
 //			String value = matcher.group(2);
-			AbstractEntity<?> entity = AbstractEntity.build(type, startPos, endPos, source, valueStr);
-			result.addEntity(entity);
+			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, source, valueStr);
+			result.addMention(mention);
 		}
 		
 		// correct positions
-		List<AbstractEntity<?>> entityList = result.getEntities();
+		List<AbstractMention<?>> mentionList = result.getMentions();
 		int rollingCount = 0;
-		for (AbstractEntity<?> entity : entityList)
-		{	int startPos = entity.getStartPos();
-			int endPos = entity.getEndPos();
-			entity.setStartPos(startPos-rollingCount);
-			entity.setEndPos(endPos-(rollingCount));
+		for (AbstractMention<?> mention : mentionList)
+		{	int startPos = mention.getStartPos();
+			int endPos = mention.getEndPos();
+			mention.setStartPos(startPos-rollingCount);
+			mention.setEndPos(endPos-(rollingCount));
 			int length = endPos - startPos;
-			int shift = length - entity.getStringValue().length();
+			int shift = length - mention.getStringValue().length();
 			rollingCount = rollingCount + shift;
-			entity.setEndPos(entity.getEndPos()-shift);
+			mention.setEndPos(mention.getEndPos()-shift);
 		}
 		
 		return result;

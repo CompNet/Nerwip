@@ -38,9 +38,9 @@ import org.xml.sax.SAXException;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -83,7 +83,7 @@ public class StatsProcessing
 	/**
 	 * Calculates various stats regarding
 	 * the corpus: size of the articles,
-	 * number of entities, etc. Everything
+	 * number of mentions, etc. Everything
 	 * is recorded in a file in the corpus
 	 * folder.
 	 * 
@@ -139,15 +139,15 @@ public class StatsProcessing
 			charCounts.add(charCount);
 			logger.log("Count characters: "+charCount);
 			
-			// entities
-			String entitiesPath = folder.getPath() + File.separator + FileNames.FI_ENTITY_LIST;
-			File entitiesFile = new File(entitiesPath);
+			// mentions
+			String mentionsPath = folder.getPath() + File.separator + FileNames.FI_MENTION_LIST;
+			File mentionsFile = new File(mentionsPath);
 			Map<EntityType,Integer> counts = new HashMap<EntityType, Integer>();
-			if(entitiesFile.exists())
-			{	Entities entities = Entities.readFromXml(entitiesFile);
-				List<AbstractEntity<?>> entityList = entities.getEntities();
-				for(AbstractEntity<?> entity: entityList)
-				{	EntityType type = entity.getType();
+			if(mentionsFile.exists())
+			{	Mentions mentions = Mentions.readFromXml(mentionsFile);
+				List<AbstractMention<?>> mentionList = mentions.getMentions();
+				for(AbstractMention<?> mention: mentionList)
+				{	EntityType type = mention.getType();
 					Integer count = counts.get(type);
 					if(count==null)
 						count = 0;
@@ -164,7 +164,7 @@ public class StatsProcessing
 				Integer count = counts.get(type);
 				if(count==null)
 					count = 0;
-				logger.log("Count "+type.toString()+" entities: "+count);
+				logger.log("Count "+type.toString()+" mentions: "+count);
 				list.add(count);
 			}
 			

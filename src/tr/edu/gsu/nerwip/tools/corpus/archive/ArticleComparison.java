@@ -163,7 +163,7 @@ public class ArticleComparison
 	 * @param raw
 	 * 		Raw text.
 	 * @param annotated
-	 * 		Annotated text (raw text + entities).
+	 * 		Annotated text (raw text + mentions).
 	 * @param linked
 	 * 		Linked text (raw text + hyperlinks).
 	 * @return
@@ -173,7 +173,7 @@ public class ArticleComparison
 	{	logger.log("Comparing the article contents");
 		logger.increaseOffset();
 		
-		// remove entities from the annotated file
+		// remove mentions from the annotated file
 		String deannotated = null;
 		if(annotated!=null)
 			deannotated = annotated.replaceAll("<tag name=\"[A-Z]*\" value=\"[a-z]*\"/>", "");

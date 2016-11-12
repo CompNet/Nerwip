@@ -33,7 +33,7 @@ import java.util.List;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.edition.EntityEditor;
+import tr.edu.gsu.nerwip.edition.MentionEditor;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
@@ -216,7 +216,7 @@ public class Launch
 		// to perform the manual annotation.
 		launchEditor();
 		// The editor also allows visualizing the result
-		// of the NER tools (the entities they detected).
+		// of the NER tools (the mentions they detected).
 		
 		
 		
@@ -622,7 +622,7 @@ public class Launch
 		logger.decreaseOffset();
 		
 		// set the NER tools we want to evaluate (including their parameters)
-		// note that by default, the entities detected by a NER are cached.
+		// note that by default, the mentions detected by a NER are cached.
 		// this means if the result file already exists, it will be loaded.
 		// here, we use the same parameters than for the single-article tests.
 		AbstractRecognizer temp[] =
@@ -900,7 +900,7 @@ public class Launch
 		
 		// set up viewer
 		logger.log("Set up viewer");
-		EntityEditor viewer = new EntityEditor();
+		MentionEditor viewer = new MentionEditor();
 		
 		// set up article
 		ArticleList articles = ArticleLists.getArticleList();

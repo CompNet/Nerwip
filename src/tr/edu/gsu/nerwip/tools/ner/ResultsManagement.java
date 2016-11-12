@@ -256,30 +256,30 @@ public class ResultsManagement
 //			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.SINGLE),
 //			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.ALL),
 			
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
@@ -287,30 +287,30 @@ public class ResultsManagement
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
 
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.ENTITY_WEIGHTED_CATEGORY, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
@@ -339,7 +339,7 @@ public class ResultsManagement
 	/**
 	 * Removes the files produced during NER detection,
 	 * but not the article files: raw text, linked text,
-	 * reference entities, original html file, property file,
+	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed.
 	 * 
 	 * @param articles
@@ -373,7 +373,7 @@ public class ResultsManagement
 	/**
 	 * Removes the files produced during NER detection,
 	 * but not the article files: raw text, linked text,
-	 * reference entities, original html file, property file,
+	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed.
 	 * <br/>
 	 * Unlike {@link #removeNerResults(ArticleList)}, the focus 
@@ -395,7 +395,7 @@ public class ResultsManagement
 	/**
 	 * Removes the files produced during NER detection,
 	 * but not the article files: raw text, linked text,
-	 * reference entities, original html file, property file,
+	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed.
 	 * <br/>
 	 * Unlike {@link #removeNerResults(ArticleList)}, the focus 
@@ -447,7 +447,7 @@ public class ResultsManagement
 	/**
 	 * Moves the files produced during NER detection,
 	 * but not the article files: raw text, linked text,
-	 * reference entities, original html file, property file,
+	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed. The
 	 * files are moved to the specified targeted folder.
 	 * 
@@ -504,7 +504,7 @@ public class ResultsManagement
 	/**
 	 * Moves the files produced during NER detection,
 	 * but not the article files: raw text, linked text,
-	 * reference entities, original html file, property file,
+	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed. The
 	 * files are moved to the specified targeted folder.
 	 * <br/>
@@ -529,7 +529,7 @@ public class ResultsManagement
 	/**
 	 * Moves the files produced during NER detection,
 	 * but not the article files: raw text, linked text,
-	 * reference entities, original html file, property file,
+	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed. The
 	 * files are moved to the specified targeted folder.
 	 * <br/>

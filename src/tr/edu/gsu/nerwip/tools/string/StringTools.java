@@ -198,7 +198,7 @@ public class StringTools
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Cleans the specified string, in order to remove characters
-	 * causing problems when detecting named entities.
+	 * causing problems when detecting named entity mentions.
 	 *    
 	 * @param input
 	 * 		The string to process.

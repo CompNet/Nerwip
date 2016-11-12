@@ -23,7 +23,7 @@ The first results obtained on Wikipedia biographical texts were published in [AL
 
 ## Organization
 The source code takes the form of an Eclipse project. It is organized as follows: 
-* Package `data` contains all the classes used to represent data: articles, entities, etc.
+* Package `data` contains all the classes used to represent data: articles, mentions, entities, etc.
 * Package `edition` contains a secondary tool, allowing the annotation of articles and the visualization of annotated articles.
 * Pacakge  `evaluation` contains classes used to measure the performances of NER tools. Additional measures can be implemented (see the Extension section)
 * Package `recognition` contains the NER-related source code. We distinguish different types of NER tools: 
