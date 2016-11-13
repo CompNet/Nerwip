@@ -401,7 +401,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 //	 * @return
 //	 * 		{@code true} only if they partially overlap.
 //	 */
-//	public boolean overlapsStrictlyWith(AbstractMention<?> mention)
+//	public boolean overlapsStrictlyWith(AbstractEntity<?> mention)
 //	{	int startPos2 = mention.getStartPos();
 //		int endPos2 = mention.getEndPos();
 //		
@@ -463,7 +463,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 //	 * @return
 //	 * 		{@code true} only if this mention contained the specified one.
 //	 */
-//	public boolean containsStrictly(AbstractMention<?> mention)
+//	public boolean containsStrictly(AbstractEntity<?> mention)
 //	{	int startPos2 = mention.getStartPos();
 //		int endPos2 = mention.getEndPos();
 //		
