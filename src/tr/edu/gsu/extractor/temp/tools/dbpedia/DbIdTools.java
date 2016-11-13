@@ -154,19 +154,7 @@ public class DbIdTools
 		{	// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// processing with jena library 
-/*		QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
-		ResultSet rs=e.execSelect();
-
-		while (rs.hasNext()) 
-		{	QuerySolution qs=rs.nextSolution();
-			result = qs.toString();
-			logger.log("result=" + result);
-		}
-		e.close();
-*/
-  
+		
 		logger.decreaseOffset();
 		return ID;
 	}

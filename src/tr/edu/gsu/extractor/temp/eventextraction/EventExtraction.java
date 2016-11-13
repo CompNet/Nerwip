@@ -84,7 +84,7 @@ public class EventExtraction
 	    int sp = -1;
 	    int eventNbr = 0;
 	    
-	    // for each sentence, we get the detected entities
+	    // for each sentence, we get the detected mentions
 	    for(int ep: sentencePos)
 	    {	if(sp>=0)
 	    	{   List<AbstractMention<?>> le = mentions.getMentionsIn(sp, ep);
@@ -101,14 +101,14 @@ public class EventExtraction
 					{   Event event = new Event();
 					    events.add(event);
 					    eventNbr++;
-					    for(AbstractMention<?> entity: persons)
-					    {	MentionPerson person = (MentionPerson)entity;
+					    for(AbstractMention<?> mention: persons)
+					    {	MentionPerson person = (MentionPerson)mention;
 					    	event.addPerson(person);
 					    }
 				    
 					    if(locations.size()==1)
-				    	{	for(AbstractMention<?> entity: locations)
-				    		{	MentionLocation location = (MentionLocation)entity;
+				    	{	for(AbstractMention<?> mention: locations)
+				    		{	MentionLocation location = (MentionLocation)mention;
 				    			event.addLocation(location);
 			    			}
 				    	}
@@ -117,8 +117,8 @@ public class EventExtraction
 				    		{	Event event1 = new Event();
 				    			events.add(event1);
 			    				eventNbr++;
-		    					for(AbstractMention<?> entity: persons)
-		    					{	MentionPerson person = (MentionPerson)entity;
+		    					for(AbstractMention<?> mention: persons)
+		    					{	MentionPerson person = (MentionPerson)mention;
 		    						event1.addPerson(person);
 	    						}
 					       
@@ -130,8 +130,8 @@ public class EventExtraction
 				        }
 					    
 					    if(orgs.size()==1)
-					    {	for(AbstractMention<?> entity: orgs)
-				    		{	MentionOrganization org = (MentionOrganization)entity;
+					    {	for(AbstractMention<?> mention: orgs)
+				    		{	MentionOrganization org = (MentionOrganization)mention;
 				    			event.addOrganization(org);
 			    			}
 					    }
@@ -140,8 +140,8 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 				    			eventNbr++;
-			    				for(AbstractMention<?> entity: persons)
-			    				{	MentionPerson person = (MentionPerson)entity;
+			    				for(AbstractMention<?> mention: persons)
+			    				{	MentionPerson person = (MentionPerson)mention;
 			    					event1.addPerson(person);
 			    				}
 		    					MentionOrganization org1 = (MentionOrganization)orgs.get(i);
@@ -152,8 +152,8 @@ public class EventExtraction
 					    }
 				
 					    if(functs.size()==1)
-					    {	for(AbstractMention<?> entity: functs)
-					    	{	MentionFunction funct = (MentionFunction)entity;
+					    {	for(AbstractMention<?> mention: functs)
+					    	{	MentionFunction funct = (MentionFunction)mention;
 					    		event.addFunction(funct);
 					    	}
 					    }
@@ -162,8 +162,8 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 				    			eventNbr++;
-				    			for(AbstractMention<?> entity: persons)
-				    			{	MentionPerson person = (MentionPerson)entity;
+				    			for(AbstractMention<?> mention: persons)
+				    			{	MentionPerson person = (MentionPerson)mention;
 				    				event1.addPerson(person);
 				    			}
 			    				MentionFunction func1 = (MentionFunction)functs.get(i);
@@ -174,8 +174,8 @@ public class EventExtraction
 					    }
 				
 					    if(products.size()==1)
-					    {	for(AbstractMention<?> entity: products)
-					    	{	MentionProduction product = (MentionProduction)entity;
+					    {	for(AbstractMention<?> mention: products)
+					    	{	MentionProduction product = (MentionProduction)mention;
 					    		event.addProduction(product);
 				    		}
 					    }
@@ -184,8 +184,8 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 					    		eventNbr++;
-					    		for(AbstractMention<?> entity: persons)
-					    		{	MentionPerson person = (MentionPerson)entity;
+					    		for(AbstractMention<?> mention: persons)
+					    		{	MentionPerson person = (MentionPerson)mention;
 					    			event1.addPerson(person);
 					    		}
 				    			MentionProduction product1 = (MentionProduction)products.get(i);
@@ -196,8 +196,8 @@ public class EventExtraction
 					    }
 
 					    if(meetings.size()==1)
-					    {	for(AbstractMention<?> entity: products)
-					    	{	MentionMeeting meeting = (MentionMeeting)entity;
+					    {	for(AbstractMention<?> mention: products)
+					    	{	MentionMeeting meeting = (MentionMeeting)mention;
 					    		event.addMeeting(meeting);
 					    	}
 					    }
@@ -206,8 +206,8 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 					    		eventNbr++;
-					    		for(AbstractMention<?> entity: persons)
-					    		{	MentionPerson person = (MentionPerson)entity;
+					    		for(AbstractMention<?> mention: persons)
+					    		{	MentionPerson person = (MentionPerson)mention;
 					    			event1.addPerson(person);
 					    		}
 					    		MentionMeeting meet1 = (MentionMeeting)meetings.get(i);
@@ -218,8 +218,8 @@ public class EventExtraction
 					    }
 				  
 					    if(dates.size()==1 | dates.size()==2)
-					    {	for(AbstractMention<?> entity: dates)
-					    	{	MentionDate date = (MentionDate)entity;
+					    {	for(AbstractMention<?> mention: dates)
+					    	{	MentionDate date = (MentionDate)mention;
 					    		event.addDate(date);
 					    	}
 					    }
@@ -228,8 +228,8 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 				    			eventNbr++;
-				    			for(AbstractMention<?> entity: persons)
-				    			{	MentionPerson person = (MentionPerson)entity;
+				    			for(AbstractMention<?> mention: persons)
+				    			{	MentionPerson person = (MentionPerson)mention;
 				    				event1.addPerson(person);
 				    			}
 				    			MentionDate date1 = (MentionDate)dates.get(i);

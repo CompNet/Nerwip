@@ -58,10 +58,10 @@ public class WikiIdTools
     protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
     
     /**
-    * This method takes an entity as parameter,
+    * This method takes an entity name as parameter,
     * and retrieves its Wikidata id.
     * 
-    * @param entityy
+    * @param entityName
     * 		Name of the entity.
     * @return
     * 		A String describing the wikidata id.
@@ -73,11 +73,11 @@ public class WikiIdTools
     *      Problem while retrieving the Wikidata types. 
     * 
     */
-    public static String getId(String entityy) throws ClientProtocolException, IOException, org.json.simple.parser.ParseException 
+    public static String getId(String entityName) throws ClientProtocolException, IOException, org.json.simple.parser.ParseException 
     {	logger.increaseOffset();
     	String result = null;
 
-    	String url ="https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +entityy + "&format=json&language=fr&type=item";
+    	String url ="https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +entityName + "&format=json&language=fr&type=item";
 
     	// get Wikidata answer
 		HttpClient httpclient = new DefaultHttpClient();

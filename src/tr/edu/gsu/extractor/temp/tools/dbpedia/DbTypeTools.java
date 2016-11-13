@@ -161,22 +161,8 @@ public class DbTypeTools
 		{	// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		logger.decreaseOffset();
 		return types;
 	}
-
-    // processing with Jena library
-    /*  QueryExecution e=QueryExecutionFactory.sparqlService(service, query);
-        ResultSet rs=e.execSelect();
-        while (rs.hasNext())
-        
-        {
-        
-        QuerySolution qs=rs.nextSolution();
-        String res = qs.toString();
-        logger.log("res=" + res);
-        }
-        
-        e.close();*/
 }

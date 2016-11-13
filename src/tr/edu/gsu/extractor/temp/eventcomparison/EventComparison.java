@@ -45,25 +45,24 @@ public class EventComparison
      * location type entity is disambiguated by spotlight
      * 
      * @param e1
-     * 		The event which contains the Location entity. 
-     * entity type.
+     * 		The event which contains the Location mention. 
      * @param text
      *       The spotlight response.
      * @return
-     * 		The uri of the Location entity if it's disambiguated .
+     * 		The uri of the Location mention if it's disambiguated .
      */
 	public static String verifyLocation(Event e1, String text)
 	{	String uri = null;
-		List<String> entityList = new ArrayList<String>();
+		List<String> mentionList = new ArrayList<String>();
 		List<String> offsetList = new ArrayList<String>();
-		entityList = SpotlightTools.getEntitySpotlight(text);
+		mentionList = SpotlightTools.getEntitySpotlight(text);
 		offsetList = SpotlightTools.getOffsetSpotlight(text);
-		if (entityList.contains(e1.getLocation().getValue()) == true)
+		if (mentionList.contains(e1.getLocation().getValue()) == true)
 		{	System.out.println("location in the list ");
 			int startPos = e1.getLocation().getStartPos();
 			String strOffset = Integer.toString(startPos);
 			int index = offsetList.indexOf(strOffset);
-			uri = entityList.get(index);
+			uri = mentionList.get(index);
 			System.out.println("uri = " + uri);
 		}
 		System.out.println("uri = " + uri);
@@ -73,27 +72,26 @@ public class EventComparison
 	
 	/**
 	 * This method verifies if a specific 
-	 * location type entity is disambiguated by spotlight
+	 * organization type entity is disambiguated by spotlight
 	 * 
 	 * @param e
-	 * 		The event which contains the Organization entity. 
-	 * entity type.
+	 * 		The event which contains the Organization mention. 
 	 * @param text
 	 *       The spotlight response.
 	 * @return
-	 * 		The uri of the Organization entity if it's disambiguated .
+	 * 		The uri of the Organization mention if it's disambiguated .
 	 */
 	public static String verifyOrganization(Event e, String text)
 	{	String uri = null;
-		List<String> entityList = new ArrayList<String>();
+		List<String> mentionList = new ArrayList<String>();
 		List<String> offsetList = new ArrayList<String>();
-		entityList = SpotlightTools.getEntitySpotlight(text);
+		mentionList = SpotlightTools.getEntitySpotlight(text);
 		offsetList = SpotlightTools.getOffsetSpotlight(text);
-		if(entityList.contains(e.getOrganization().getValue()) == true)
+		if(mentionList.contains(e.getOrganization().getValue()) == true)
 		{	int startPos = e.getOrganization().getStartPos();
 			String strOffset = Integer.toString(startPos);
 			int index = offsetList.indexOf(strOffset);
-			uri = entityList.get(index);
+			uri = mentionList.get(index);
 			System.out.println("uri = " + uri);
 		}
 
@@ -105,24 +103,23 @@ public class EventComparison
 	 * Production type entity is disambiguated by spotlight
 	 * 
 	 * @param e
-	 * 		The event which contains the Production entity. 
-	 * entity type.
+	 * 		The event which contains the Production mention. 
 	 * @param text
 	 *       The spotlight response.
 	 * @return
-	 * 		The uri of the Production entity if it's disambiguated .
+	 * 		The uri of the Production mention if it's disambiguated .
 	 */
 	public static String verifyProduction(Event e, String text)
 	{	String uri = null;
-		List<String> entityList = new ArrayList<String>();
+		List<String> mentionList = new ArrayList<String>();
 		List<String> offsetList = new ArrayList<String>();
-		entityList = SpotlightTools.getEntitySpotlight(text);
+		mentionList = SpotlightTools.getEntitySpotlight(text);
 		offsetList = SpotlightTools.getOffsetSpotlight(text);
-		if (entityList.contains(e.getProduction().getValue()) == true)
+		if (mentionList.contains(e.getProduction().getValue()) == true)
 		{	int startPos = e.getProduction().getStartPos();
 			String strOffset = Integer.toString(startPos);
 			int index = offsetList.indexOf(strOffset);
-			uri = entityList.get(index);
+			uri = mentionList.get(index);
 			System.out.println("uri = " + uri);
 		}
 
@@ -134,24 +131,23 @@ public class EventComparison
 	 * Meeting type entity is disambiguated by spotlight
 	 * 
 	 * @param e
-	 * 		The event which contains the Meeting entity. 
-	 * entity type.
+	 * 		The event which contains the Meeting mention. 
 	 * @param text
 	 *       The spotlight response.
 	 * @return
-	 * 		The uri of the Meeting entity if it's disambiguated .
+	 * 		The uri of the Meeting mention if it's disambiguated .
 	 */
 	public static String verifyMeeting(Event e, String text)
 	{	String uri = null;
-		List<String> entityList = new ArrayList<String>();
+		List<String> mentionList = new ArrayList<String>();
 		List<String> offsetList = new ArrayList<String>();
-		entityList = SpotlightTools.getEntitySpotlight(text);
+		mentionList = SpotlightTools.getEntitySpotlight(text);
 		offsetList = SpotlightTools.getOffsetSpotlight(text);
-		if (entityList.contains(e.getMeeting().getValue()) == true)
+		if (mentionList.contains(e.getMeeting().getValue()) == true)
 		{	int startPos = e.getMeeting().getStartPos();
 			String strOffset = Integer.toString(startPos);
 			int index = offsetList.indexOf(strOffset);
-			uri = entityList.get(index);
+			uri = mentionList.get(index);
 			System.out.println("uri = " + uri);
 		}
 
@@ -163,24 +159,23 @@ public class EventComparison
 	 * Person type entity is disambiguated by spotlight
 	 * 
 	 * @param e
-	 * 		The event which contains the Person entity. 
-	 * entity type.
+	 * 		The event which contains the Person mention. 
 	 * @param text
 	 *       The spotlight response.
 	 * @return
-	 * 		The uri of the Person entity if it's disambiguated .
+	 * 		The uri of the Person mention if it's disambiguated .
 	 */
 	public static String verifyPerson(Event e, String text)
 	{	String uri = null;
-		List<String> entityList = new ArrayList<String>();
+		List<String> mentionList = new ArrayList<String>();
 		List<String> offsetList = new ArrayList<String>();
-		entityList = SpotlightTools.getEntitySpotlight(text);
+		mentionList = SpotlightTools.getEntitySpotlight(text);
 		offsetList = SpotlightTools.getOffsetSpotlight(text);
-		if (entityList.contains(e.getPerson().getValue()) == true)
+		if (mentionList.contains(e.getPerson().getValue()) == true)
 		{	int startPos = e.getPerson().getStartPos();
 			String strOffset = Integer.toString(startPos);
 			int index = offsetList.indexOf(strOffset);
-			uri = entityList.get(index);
+			uri = mentionList.get(index);
 			System.out.println("uri = " + uri);
 		}
 
@@ -192,24 +187,23 @@ public class EventComparison
      * Function type entity is disambiguated by spotlight
      * 
      * @param e
-     * 		The event which contains the Function entity. 
-     * entity type.
+     * 		The event which contains the Function mention. 
      * @param text
      *       The spotlight response.
      * @return
-     * 		The uri of the Function entity if it's disambiguated .
+     * 		The uri of the Function mention if it's disambiguated .
      */
 	public static String verifyFunction(Event e, String text)
 	{	String uri = null;
-		List<String> entityList = new ArrayList<String>();
+		List<String> mentionList = new ArrayList<String>();
 		List<String> offsetList = new ArrayList<String>();
-		entityList = SpotlightTools.getEntitySpotlight(text);
+		mentionList = SpotlightTools.getEntitySpotlight(text);
 		offsetList = SpotlightTools.getOffsetSpotlight(text);
-		if (entityList.contains(e.getFunction().getValue()) == true)
+		if (mentionList.contains(e.getFunction().getValue()) == true)
 		{	int startPos = e.getFunction().getStartPos();
 			String strOffset = Integer.toString(startPos);
 			int index = offsetList.indexOf(strOffset);
-			uri = entityList.get(index);
+			uri = mentionList.get(index);
 			System.out.println("uri = " + uri);
 		}
 
@@ -326,7 +320,7 @@ public class EventComparison
 
 	/**
 	 * Calculates the similarity between
-	 * two events.(It's used only for pair of events 
+	 * two events.(It is used only for pair of events 
 	 * having different persons)
 	 * 
 	 * @param e1
