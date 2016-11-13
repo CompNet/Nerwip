@@ -40,13 +40,13 @@ import org.xml.sax.SAXException;
 import tr.edu.gsu.extractor.data.graph.Graph;
 import tr.edu.gsu.extractor.data.graph.Link;
 import tr.edu.gsu.extractor.data.graph.Node;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
-import tr.edu.gsu.nerwip.data.entity.EntityDate;
-import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.data.entity.Entities;
+import tr.edu.gsu.nerwip.data.entity.EntityType;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
+import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
@@ -112,7 +112,7 @@ public class NetworkExtraction
 	{	logger.log("Extract entity network");
 		
 		// init graph
-		Graph graph = new Graph("All Entities", false);
+		Graph graph = new Graph("All Mentions", false);
 		graph.addNodeProperty("Occurrences","xsd:integer");
 		graph.addNodeProperty("Type","xsd:string");
 		graph.addLinkProperty("Weight","xsd:integer");
@@ -133,9 +133,9 @@ public class NetworkExtraction
 			Article article = retriever.process(name);
 			String rawText = article.getRawText();
 			
-			// retrieve the entities
-			logger.log("Retrieve the entities");
-			Entities entities = recognizer.process(article);
+			// retrieve the mentions
+			logger.log("Retrieve the mentions");
+			Mentions mentions = recognizer.process(article);
 			
 			// process each sentence
 			logger.log("Process each sentence");
@@ -144,13 +144,13 @@ public class NetworkExtraction
 			int sp = -1;
 			for(int ep: sentencePos)
 			{	if(sp>=0)
-				{	Set<String> conEntities = new TreeSet<String>();
-					List<AbstractEntity<?>> list = entities.getEntitiesIn(sp, ep);
-					for(AbstractEntity<?> entity: list)
-					{	if(!(entity instanceof EntityDate)) // we don't need the dates
+				{	Set<String> conMentions = new TreeSet<String>();
+					List<AbstractMention<?>> list = mentions.getMentionsIn(sp, ep);
+					for(AbstractMention<?> entity: list)
+					{	if(!(entity instanceof MentionDate)) // we don't need the dates
 						{	// entity name
 							String str = entity.getStringValue(); // TODO ideally, this would rather be a unique id (after DBpedia is integrated, maybe?)
-							conEntities.add(str);
+							conMentions.add(str);
 							// entity type
 							EntityType type = entity.getType();
 							Map<EntityType,Integer> map = mainTypes.get(str);
@@ -165,7 +165,7 @@ public class NetworkExtraction
 							map.put(type, count);
 						}
 					}
-					List<String> connectedEntities = new ArrayList<String>(conEntities);
+					List<String> connectedEntities = new ArrayList<String>(conMentions);
 					
 					// insert the entities into the graph
 					int s = connectedEntities.size();
