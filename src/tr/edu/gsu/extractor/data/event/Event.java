@@ -3,13 +3,13 @@ package tr.edu.gsu.extractor.data.event;
 import java.util.Set;
 import java.util.TreeSet;
 
-import tr.edu.gsu.nerwip.data.entity.EntityFunction;
-import tr.edu.gsu.nerwip.data.entity.EntityLocation;
-import tr.edu.gsu.nerwip.data.entity.EntityMeeting;
-import tr.edu.gsu.nerwip.data.entity.EntityOrganization;
-import tr.edu.gsu.nerwip.data.entity.EntityPerson;
-import tr.edu.gsu.nerwip.data.entity.EntityProduction;
-import tr.edu.gsu.nerwip.data.entity.EntityDate;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionFunction;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionLocation;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionMeeting;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionOrganization;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionPerson;
+import tr.edu.gsu.nerwip.data.entity.mention.MentionProduction;
 
 
 /**
@@ -24,19 +24,19 @@ public class Event
     // PERSONS			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
 	/** Person type entity */
-	private Set<EntityPerson> persons = new TreeSet<EntityPerson>();
+	private Set<MentionPerson> persons = new TreeSet<MentionPerson>();
 	/** Location type entity */
-	private Set<EntityLocation> location;
+	private Set<MentionLocation> location;
 	/** Organization type entity */
-	private Set<EntityOrganization> organization;
+	private Set<MentionOrganization> organization;
 	/** Function type entity */
-	private Set<EntityFunction> function;
+	private Set<MentionFunction> function;
 	/** Production type entity */
-	private Set<EntityProduction> production;
+	private Set<MentionProduction> production;
 	/** Meeting type entity */
-	private Set<EntityMeeting> meeting;
+	private Set<MentionMeeting> meeting;
 	/** Date type entity */
-	private Set<EntityDate> date;
+	private Set<MentionDate> date;
 	
 	//TODO question : how to compare the entities >> need to distinguish mentions and entities
 	
@@ -51,7 +51,7 @@ public class Event
 	 * @param pers
 	 * 		Person type entity.
 	 */
-	public void addPerson(EntityPerson pers)
+	public void addPerson(MentionPerson pers)
 	{ person = pers;
 	}
 	
@@ -61,7 +61,7 @@ public class Event
 	 * @param loc
 	 * 		Location type entity.
 	 */
-	public void addLocation(EntityLocation loc)
+	public void addLocation(MentionLocation loc)
 	{ location = loc;
 	}
 	
@@ -71,7 +71,7 @@ public class Event
 	 * @param org
 	 * 		Organization type entity.
 	 */
-	public void addOrganization(EntityOrganization org)
+	public void addOrganization(MentionOrganization org)
 	{ organization = org;
 	}
 	
@@ -81,7 +81,7 @@ public class Event
 	 * @param func
 	 * 		Function type entity.
 	 */
-	public void addFunction(EntityFunction func)
+	public void addFunction(MentionFunction func)
 	{ function = func;
 	}
 	
@@ -91,7 +91,7 @@ public class Event
 	 * @param prod
 	 * 		Production type entity.
 	 */
-	public void addProduction(EntityProduction prod)
+	public void addProduction(MentionProduction prod)
 	{ production = prod;
 	}
 	
@@ -101,7 +101,7 @@ public class Event
 	 * @param m
 	 * 		Meeting type entity.
 	 */
-	public void addMeeting(EntityMeeting m)
+	public void addMeeting(MentionMeeting m)
 	{ meeting = m;
 	}
 	
@@ -111,7 +111,7 @@ public class Event
 	 * @param d
 	 * 		Date type entity.
 	 */
-	public void addDate(EntityDate d)
+	public void addDate(MentionDate d)
 	{ date = d;
 	}
 	
@@ -125,7 +125,7 @@ public class Event
 	 * @return
 	 * 		Person Type of the event.
 	 */
-	public EntityPerson getPerson()
+	public MentionPerson getPerson()
 	{	return person;
 	}
 	
@@ -136,7 +136,7 @@ public class Event
 	  * @param person
 	 * 		New person type of the event.
 	 */
-	public void setPerson(EntityPerson person)
+	public void setPerson(MentionPerson person)
 	{	this.person = person;
 	}
 	
@@ -148,7 +148,7 @@ public class Event
 	 * @return
 	 * 		Location Type of the event.
 	 */
-	public EntityLocation getLocation()
+	public MentionLocation getLocation()
 	{	return location;
 	}
 	
@@ -159,7 +159,7 @@ public class Event
 	  * @param location
 	 * 		New location type of the event.
 	 */
-	public void setLocation(EntityLocation location)
+	public void setLocation(MentionLocation location)
 	{	this.location = location;
 	}
 	
@@ -171,7 +171,7 @@ public class Event
 	 * @return
 	 * 		Production Type of the event.
 	 */
-	public EntityProduction getProduction()
+	public MentionProduction getProduction()
 	{	return production;
 	}
 	
@@ -182,7 +182,7 @@ public class Event
 	  * @param production
 	 * 		New production type of the event.
 	 */
-	public void setProduction(EntityProduction production)
+	public void setProduction(MentionProduction production)
 	{	this.production = production;
 	}
 	
@@ -193,7 +193,7 @@ public class Event
 	 * @return
 	 * 		Function Type of the event.
 	 */
-	public EntityFunction getFunction()
+	public MentionFunction getFunction()
 	{	return function;
 	}
 	
@@ -204,7 +204,7 @@ public class Event
 	  * @param function
 	 * 		New function type of the event.
 	 */
-	public void setFunction(EntityFunction function)
+	public void setFunction(MentionFunction function)
 	{	this.function = function;
 	}
 	
@@ -215,7 +215,7 @@ public class Event
 	 * @return
 	 * 		Organization Type of the event.
 	 */
-	public EntityOrganization getOrganization()
+	public MentionOrganization getOrganization()
 	{	return organization;
 	}
 	
@@ -226,7 +226,7 @@ public class Event
 	  * @param organization
 	 * 		New organization type of the event.
 	 */
-	public void setOrganization(EntityOrganization organization)
+	public void setOrganization(MentionOrganization organization)
 	{	this.organization = organization;
 	}
 	
@@ -237,7 +237,7 @@ public class Event
 	 * @return
 	 * 		Meeting Type of the event.
 	 */
-	public EntityMeeting getMeeting()
+	public MentionMeeting getMeeting()
 	{	return meeting;
 	}
 	
@@ -248,7 +248,7 @@ public class Event
 	  * @param m
 	 * 		New meeting type of the event.
 	 */
-	public void setMeeting(EntityMeeting m)
+	public void setMeeting(MentionMeeting m)
 	{	this.meeting = m;
 	}
 	
@@ -259,7 +259,7 @@ public class Event
 	 * @return
 	 * 		Date Type of the event.
 	 */
-	public EntityDate getDate()
+	public MentionDate getDate()
 	{	return date;
 	}
 	
@@ -270,7 +270,7 @@ public class Event
 	  * @param date
 	 * 		New date type of the event.
 	 */
-	public void setSate(EntityDate date)
+	public void setSate(MentionDate date)
 	{	this.date = date;
 	}
 	
