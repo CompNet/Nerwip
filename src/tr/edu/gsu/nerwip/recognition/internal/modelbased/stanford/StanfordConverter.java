@@ -96,7 +96,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 //				
 //		// extract mentions from text
 //		Matcher matcher = SEARCH_PATTERN.matcher(text);
-//		List<AbstractMention<?>> mentions = result.getMentions();
+//		List<AbstractEntity<?>> mentions = result.getMentions();
 //		while(matcher.find())
 //		{	String typeStr = matcher.group(1);
 //			ArticleCategory type = CONVERSION_MAP.get(typeStr);
@@ -104,7 +104,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 //			int endPos = matcher.end();
 //			String valueStr = matcher.group();
 //			String value = matcher.group(2);
-//			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, value);
+//			AbstractEntity<?> mention = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr, value);
 //			mentions.add(mention);
 //		}
 //		

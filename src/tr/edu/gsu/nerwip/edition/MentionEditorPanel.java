@@ -859,7 +859,7 @@ if(endPos>document.getLength())
 //	 * @param mention
 //	 * 		Reference mention to add.
 //	 */
-//	public void insertReference(AbstractMention<?> mention)
+//	public void insertReference(AbstractEntity<?> mention)
 //	{	references.add(mention);
 //		updateHighlighting();
 //	}
@@ -871,7 +871,7 @@ if(endPos>document.getLength())
 //	 * @param mentions
 //	 * 		Reference mentions to be removed.
 //	 */
-//	public void removeReferences(List<AbstractMention<?>> mentions)
+//	public void removeReferences(List<AbstractEntity<?>> mentions)
 //	{	references.removeAll(mentions);
 //		updateHighlighting();
 //	}

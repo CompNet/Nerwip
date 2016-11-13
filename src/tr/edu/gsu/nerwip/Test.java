@@ -394,7 +394,7 @@ public class Test
 		Mentions mentions = null;
 		
 		ArticleList folders = ArticleLists.getArticleList();
-		//List<AbstractMention<?>> allMentionsList = null;
+		//List<AbstractEntity<?>> allMentionsList = null;
 		Mentions allMentions =  new Mentions();
 		int i = 0;
 		for(File folder: folders)
@@ -420,11 +420,11 @@ public class Test
 		}
 		int n = allMentions.getMentions().size();
 		logger.log("all folders size + " + n );
-		List<AbstractMention<?>> personMentions = new ArrayList<AbstractMention<?>>();
+		List<AbstractEntity<?>> personMentions = new ArrayList<AbstractEntity<?>>();
 		   
 		@SuppressWarnings("null")
-		List<AbstractMention<?>> ent = allMentions.getMentions();
-		for(AbstractMention<?> e: ent)
+		List<AbstractEntity<?>> ent = allMentions.getMentions();
+		for(AbstractEntity<?> e: ent)
 		{ EntityType entityType = e.getType();
 		  String type = entityType.toString();
 		  //logger.log("type = " + type);

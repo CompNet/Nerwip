@@ -272,7 +272,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 //	 * 		List of mentions to be corrected.
 //	 */
 //	@SuppressWarnings("unchecked")
-//	private void fixRelativePositions(Element root, List<AbstractMention<?>> mentions)
+//	private void fixRelativePositions(Element root, List<AbstractEntity<?>> mentions)
 //	{	if(!mentions.isEmpty())
 //		{	// retrieve full text as recorded in the XML document
 //			Element elt = null;
@@ -291,7 +291,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 //			Matcher matcher = DOC_PATTERN.matcher(fullText);
 //			while(matcher.find())
 //			{	int matcherStart = matcher.start();
-//				for(AbstractMention<?> mention : mentions)
+//				for(AbstractEntity<?> mention : mentions)
 //				{	int startPos = mention.getStartPos();
 //					if(startPos > matcherStart)
 //					{	int newStart = startPos - 1;

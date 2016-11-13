@@ -821,9 +821,9 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 	
 //		// sort mentions by type (we want to prioritize them)
 //		logger.log("Sort mention by type");
-//		TreeSet<AbstractMention<?>> temp = new TreeSet<AbstractMention<?>>(new Comparator<AbstractMention<?>>()
+//		TreeSet<AbstractEntity<?>> temp = new TreeSet<AbstractEntity<?>>(new Comparator<AbstractEntity<?>>()
 //		{	@Override
-//			public int compare(AbstractMention<?> o1, AbstractMention<?> o2)
+//			public int compare(AbstractEntity<?> o1, AbstractEntity<?> o2)
 //			{	int result = 0;
 //				EntityType t1 = o1.getType();
 //				EntityType t2 = o2.getType();

@@ -565,12 +565,12 @@ public abstract class AbstractRecognizer
 //	 * 
 //	 * @author Vincent Labatut
 //	 */
-//	public boolean positionAlreadyUsed(MentionDate mention, List<AbstractMention<?>> mentions)
+//	public boolean positionAlreadyUsed(MentionDate mention, List<AbstractEntity<?>> mentions)
 //	{	boolean result = false;
 //		
-//		Iterator<AbstractMention<?>> it = mentions.iterator();
+//		Iterator<AbstractEntity<?>> it = mentions.iterator();
 //		while(!result && it.hasNext())
-//		{	AbstractMention<?> temp = it.next();
+//		{	AbstractEntity<?> temp = it.next();
 //			result = temp.overlapsWith(mention);
 //		}
 //		

@@ -1030,7 +1030,7 @@ public class SvmCombiner extends AbstractCombiner
 			logger.increaseOffset();
 			Map<AbstractRecognizer,WordMention> wordMentions = new HashMap<AbstractRecognizer,WordMention>();
 //			Map<AbstractRecognizer,EntityType> ovTypes = new HashMap<AbstractRecognizer,EntityType>();
-//			Map<AbstractRecognizer,AbstractMention<?>> ovMentions = new HashMap<AbstractRecognizer,AbstractMention<?>>();
+//			Map<AbstractRecognizer,AbstractEntity<?>> ovMentions = new HashMap<AbstractRecognizer,AbstractEntity<?>>();
 //			Map<AbstractRecognizer,Boolean> ovBeginnings = new HashMap<AbstractRecognizer,Boolean>();
 			Iterator<AbstractRecognizer> itRec = recognizers.iterator();
 			while(itRec.hasNext())
