@@ -242,7 +242,8 @@ public class VoteWeights
 	
 		Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 		
-		// process each NErecognizer	for(AbstractRecognizer recognizer: recognizers)
+		// process each recognizer	
+		for(AbstractRecognizer recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
