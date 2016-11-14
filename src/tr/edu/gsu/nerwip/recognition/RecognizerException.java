@@ -26,7 +26,7 @@ package tr.edu.gsu.nerwip.recognition;
 
 /**
  * Problem while performing the detection
- * of mention in some text.
+ * of mentions in some text.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut

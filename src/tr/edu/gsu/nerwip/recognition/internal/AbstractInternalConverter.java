@@ -35,13 +35,13 @@ import tr.edu.gsu.nerwip.recognition.RecognizerName;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
- * This class represents a converter for an internal NER tool,
+ * This class represents a converter for an internal recognizer,
  * i.e. a tool executed programmatically from Nerwip.
  * It is able to convert data from the tool format towards
  * Nerwip objects. 
  * 
  * @param <T>
- * 		Internal representation of the mention list used by the NER tool.
+ * 		Internal representation of the mention list used by the recognizer.
  * 		 
  * @author Vincent Labatut
  */
@@ -51,9 +51,9 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * Builds a new internal converter.
 	 * 
 	 * @param recognizerName
-	 * 		Name of the associated NER tool.
+	 * 		Name of the associated recognizer.
 	 * @param nerFolder
-	 * 		Name of the associated NER tool folder.
+	 * 		Name of the associated recognizer folder.
 	 * @param rawFile
 	 * 		Name of the raw file (i.e. external format).
 	 */
@@ -73,7 +73,7 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * @param data
 	 * 		Data objects to process.
 	 * @return
-	 * 		List of mentions detected by the associated NER tool.
+	 * 		List of mentions detected by the associated recognizer.
 	 * 
 	 * @throws ConverterException
 	 * 		Problem while performing the conversion.
@@ -91,7 +91,7 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * @param article
 	 * 		Concerned article.
 	 * @param results
-	 * 		String representation of the NER tool result.		
+	 * 		String representation of the recognizer result.		
 	 * 
 	 * @throws IOException 
 	 * 		Problem while recording the file.
@@ -112,7 +112,7 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * @param article
 	 * 		Concerned article.
 	 * @param intRes
-	 * 		Result of the mention detection, represented using the format internal to the NER tool.
+	 * 		Result of the mention detection, represented using the format internal to the recognizer.
 	 * 
 	 * @throws IOException
 	 * 		Problem while writing the file.

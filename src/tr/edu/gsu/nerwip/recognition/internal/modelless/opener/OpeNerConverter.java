@@ -26,7 +26,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
  * This class is the converter associated to OpeNer.
- * It is able to convert the text outputed by this NER tool
+ * It is able to convert the text outputed by this recognizer
  * into objects compatible with Nerwip.
  * <br/>
  * It can also read/write these results using raw text
@@ -41,7 +41,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 * @param parenSplit 
 	 * 		Indicates whether mentions containing parentheses
 	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is plit 

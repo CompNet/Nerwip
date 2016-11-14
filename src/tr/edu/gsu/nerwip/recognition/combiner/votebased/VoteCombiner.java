@@ -63,7 +63,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * The data required for votting must have been trained calculated before, in a 
  * separate process, using the class {@link VoteTrainer}, using the same settings.
  * <br/>
- * The NER tools handled by this combiner are:
+ * The recognizers handled by this combiner are:
  * <ul>
  * 		<li>Illinois NET (see {@link Illinois})</li>
  * 		<li>LingPipe (see {@link LingPipe})</li>
@@ -75,14 +75,14 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * Various options allow changing the behavior of this combiner:
  * <ul>
  * 		<li>{@code voteMode}: How the vote is performed: using uniform weights (each 
- * 		NER tool has the same importance) or using performance-related weights
- * 		(a NER tool has more importance if it was good on the test data). 
+ * 		recognizer has the same importance) or using performance-related weights
+ * 		(a recognizer has more importance if it was good on the test data). 
  * 		See {@link VoteMode}.</li>
  * 		<li>{@code existVote}: whether a vote should be conducted to determine
- * 		the existence of a mention. Otherwise, if at least one NER tool detects
+ * 		the existence of a mention. Otherwise, if at least one recognizer detects
  * 		something, we suppose a mention exists (increases the number of false 
  * 		positves).</li>
- * 		<li>subeeMode: whether to use our NER tool {@link Subee}, and if yes,
+ * 		<li>subeeMode: whether to use our recognizer {@link Subee}, and if yes,
  * 		how to use it. See {@code SubeeMode}.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used to process weights.</li>
  * </ul>
@@ -100,16 +100,16 @@ public class VoteCombiner extends AbstractCombiner
 	 * 		Whether or not the model should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
 	 * @param specific 
-	 *		Whether to use the standalone NER tools with their default models 
+	 *		Whether to use the standalone recognizers with their default models 
 	 *		({@code false}), or ones specifically trained on our corpus ({@code true}).
 	 * @param voteMode 
-	 * 		Indicates how NER tools vote.
+	 * 		Indicates how recognizers vote.
 	 * @param useRecall
 	 * 		 Indicates if recall should be used when voting.
 	 * @param existVote
 	 * 		Indicates if mention existence should be voted. 
 	 * @param subeeMode
-	 * 		Indicates how our NER tool {@link Subee} is used (if it is used). 
+	 * 		Indicates how our recognizer {@link Subee} is used (if it is used). 
 	 *
 	 * @throws RecognizerException
 	 * 		Problem while loading some combiner or tokenizer.
@@ -334,7 +334,7 @@ public class VoteCombiner extends AbstractCombiner
 	 * @author Vincent Labatut
 	 */
 	public enum VoteMode
-	{	/** Each NER tool accounts for one vote */
+	{	/** Each recognizer accounts for one vote */
 		UNIFORM("Unif"),
 		/** Overall scores are used to determine vote weights */
 		WEIGHTED_OVERALL("WghtOvrl"),
@@ -448,7 +448,7 @@ public class VoteCombiner extends AbstractCombiner
 	}
 	
 	/**
-	 * Combine the NER tools results, in order to determine if
+	 * Combine the recognizers results, in order to determine if
 	 * the group of estimated mentions corresponds to an actual
 	 * mention.
 	 * 
@@ -509,7 +509,7 @@ public class VoteCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Combine the NER tools results, in order to determine the
+	 * Combine the recognizers results, in order to determine the
 	 * position of the mention represented by the specified group.
 	 * 
 	 * @param article
@@ -608,7 +608,7 @@ public class VoteCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Combine the NER tools results, in order to determine the
+	 * Combine the recognizers results, in order to determine the
 	 * type of the mention represented by the specified group.
 	 * 
 	 * @param article

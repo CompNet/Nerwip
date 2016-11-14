@@ -74,7 +74,7 @@ public class Mentions
 	 * date and specified source.
 	 * 
 	 * @param source
-	 * 		Source of the mentions (a NER tool).
+	 * 		Source of the mentions (a recognizer).
 	 */
 	public Mentions(RecognizerName source)
 	{	initDates();
@@ -86,7 +86,7 @@ public class Mentions
 //	 * date and source.
 //	 * 
 //	 * @param source
-//	 * 		Source of the mentions (a NER tool).
+//	 * 		Source of the mentions (a recognizer).
 //	 * @param date
 //	 * 		Date the mentions were detected.
 //	 */
@@ -101,7 +101,7 @@ public class Mentions
 	 * dates and source.
 	 * 
 	 * @param source
-	 * 		Source of the mentions (a NER tool).
+	 * 		Source of the mentions (a recognizer).
 	 * @param creationDate
 	 * 		Date the mentions were detected.
 	 * @param modificationDate
@@ -178,26 +178,26 @@ public class Mentions
 	/////////////////////////////////////////////////////////////////
 	// SOURCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** NER tool which detected these mentions (or {@link RecognizerName#REFERENCE} for a manual annotations) */
+	/** Recognizer which detected these mentions (or {@link RecognizerName#REFERENCE} for a manual annotations) */
 	private RecognizerName source = null;
 	
 	/**
-	 * Returns the NER tool which detected
+	 * Returns the recognizer which detected
 	 * these mentions.
 	 * 
 	 * @return
-	 * 		Name of the NER tool having detected these mentions.
+	 * 		Name of the recognizer having detected these mentions.
 	 */
 	public RecognizerName getSource()
 	{	return source;
 	}
 	
 	/**
-	 * Changes the NER tool which detected
+	 * Changes the recognizer which detected
 	 * these mentions.
 	 * 
 	 * @param source
-	 * 		New name of the NER tool having detected these mentions.
+	 * 		New name of the recognizer having detected these mentions.
 	 */
 	public void setSource(RecognizerName source)
 	{	this.source = source;
@@ -542,11 +542,11 @@ public class Mentions
 	}
 	
 	/**
-	 * Takes the output of several NER tools,
+	 * Takes the output of several recognizers,
 	 * and compare the resulting mentions.
 	 * The returned list contains maps of
 	 * overlapping mentions detected
-	 * by distinct NER tools, and which are considered
+	 * by distinct recognizers, and which are considered
 	 * to be the same mention.
 	 * 
 	 * @param mentions

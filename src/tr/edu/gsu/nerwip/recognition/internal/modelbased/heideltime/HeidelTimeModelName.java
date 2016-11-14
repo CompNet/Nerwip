@@ -237,7 +237,7 @@ public enum HeidelTimeModelName
 	 * @param doIntervalTagging
 	 * 		Whether intervals should be detected or ignored (?). 
 	 * @return
-	 * 		Instance of the HeidelTime NER tool.
+	 * 		Instance of the HeidelTime recognizer.
 	 */
 	public HeidelTimeStandalone buildMainTool(boolean doIntervalTagging)
 	{	OutputType outputType = OutputType.TIMEML;
@@ -255,7 +255,7 @@ public enum HeidelTimeModelName
 	 * @param doIntervalTagging
 	 * 		Whether intervals should be detected or ignored (?). 
 	 * @return
-	 * 		Instance of the HeidelTime NER tool.
+	 * 		Instance of the HeidelTime recognizer.
 	 */
 	public HeidelTimeStandalone buildAltTool(boolean doIntervalTagging)
 	{	HeidelTimeStandalone result = null;

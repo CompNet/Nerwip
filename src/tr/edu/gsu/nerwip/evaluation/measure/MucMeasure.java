@@ -50,12 +50,12 @@ public class MucMeasure extends AbstractMeasure
 {	
 	/**
 	 * Builds a new instance of this measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * constructor is used when loading results
 	 * from a file.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 */
 	public MucMeasure(AbstractRecognizer recognizer)
 	{	super(recognizer);
@@ -63,12 +63,12 @@ public class MucMeasure extends AbstractMeasure
 	
 	/**
 	 * Builds a new instance of measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * constructor is used when combining
 	 * several measures into one.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
@@ -78,18 +78,18 @@ public class MucMeasure extends AbstractMeasure
 
 	/**
 	 * Builds a new instance of this measure,
-	 * for the specified NER tool and results.
+	 * for the specified recognizer and results.
 	 * This constructor is used when actually processing
-	 * the NER tool performance.
+	 * the recognizer performance.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
 	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Mentions detected by the NER tool.
+	 * 		Mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
@@ -246,7 +246,7 @@ public class MucMeasure extends AbstractMeasure
 	 * @param reference
 	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the mentions detected by the NER tool.
+	 * 		List of the mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
@@ -286,7 +286,7 @@ public class MucMeasure extends AbstractMeasure
 	 * @param reference
 	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the mentions detected by the NER tool.
+	 * 		List of the mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
@@ -323,7 +323,7 @@ public class MucMeasure extends AbstractMeasure
 	 * Process the wrong hit mentions.
 	 * 
 	 * @param estimation
-	 * 		List of the mentions detected by the NER tool.
+	 * 		List of the mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */

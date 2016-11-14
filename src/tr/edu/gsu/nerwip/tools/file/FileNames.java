@@ -140,13 +140,13 @@ public class FileNames
 	public final static String FI_LINKED_TEXT = "linked" + FileNames.EX_TEXT;
 	/** File containing the reference mentions */
 	public final static String FI_REFERENCE_TEXT = "reference" + FileNames.EX_TEXT;
-	/** File containing the mentions estimated by a NER tool, in a normalized format */
+	/** File containing the mentions estimated by a recognizer, in a normalized format */
 	public final static String FI_MENTION_LIST = "entities" + FileNames.EX_XML;
 	/** XML schema file used to store GUI texts */
 	public final static String FI_LANGUAGE = "language" + FileNames.EX_SCHEMA;
 	/** XML file used to store keys */
 	public final static String FI_KEY_LIST = "keys" + FileNames.EX_XML;
-	/** File containing the mentions estimated by a NER tool, in a tool-specific format */
+	/** File containing the mentions estimated by a recognizer, in a tool-specific format */
 	public final static String FI_OUTPUT_TEXT = "output" + FileNames.EX_TEXT;
 	/** File containing some statistics processed on the corpus */
 	public final static String FI_STATS_TEXT = "stats" + FileNames.EX_TEXT;

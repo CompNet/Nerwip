@@ -70,7 +70,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * The SVM must have been trained before, in a separate process, 
  * using the class {@link SvmTrainer} on the same settings.
  * <br/>
- * The NER tools handled by this combiner are:
+ * The recognizers handled by this combiner are:
  * <ul>
  * 		<li>Illinois NET (see {@link Illinois})</li>
  * 		<li>LingPipe (see {@link LingPipe})</li>
@@ -89,7 +89,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * 		<li>{@code useCategories}: whether the SVM should use article categories
  * 		as input, to try improving its prediction. It is independent from
  * 		whether categories are used or not during the voting process.</li>
- * 		<li>{@code subeeMode}: whether to use our NER tool {@link Subee}, and if yes,
+ * 		<li>{@code subeeMode}: whether to use our recognizer {@link Subee}, and if yes,
  * 		how to use it. See {@code SubeeMode}.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used, in the case
  * 		there is some voting involved in the combination.</li>
@@ -106,14 +106,14 @@ public class SvmCombiner extends AbstractCombiner
 	 * 		Whether or not the model should be loaded when initializing this
 	 * 		recognizer, or only when necessary. 
 	 * @param specific 
-	 *		Whether to use the standalone NER tools with their default models 
+	 *		Whether to use the standalone recognizers with their default models 
 	 *		({@code false}), or ones specifically trained on our corpus ({@code true}).
 	 * @param useCategories 
 	 * 		Indicates if categories should be used when combining mentions.
 	 * @param combineMode
 	 * 		 Indicates how mentions should be combined.
 	 * @param subeeMode
-	 * 		Indicates how our NER tool {@link Subee} is used (if it's used). 
+	 * 		Indicates how our recognizer {@link Subee} is used (if it's used). 
 	 *
 	 * @throws RecognizerException
 	 * 		Problem while loading some combiner or tokenizer.
@@ -347,7 +347,7 @@ public class SvmCombiner extends AbstractCombiner
 	/**
 	 * Loads the previously trained SVM model,
 	 * to be used by this class to combine
-	 * the NER tools outputs.
+	 * the recognizers outputs.
 	 * 
 	 * @throws RecognizerException
 	 * 		Problem while loading the SVM model.
@@ -402,13 +402,13 @@ public class SvmCombiner extends AbstractCombiner
 	}
 	
 	/**
-	 * Converts the outputs of the selected NER tools,
+	 * Converts the outputs of the selected recognizers,
 	 * into an object the SVM can process as an input.
 	 * <br/>
 	 * This method is used when using the mention-by-mention mode.
 	 * 
 	 * @param group
-	 * 		Our internal representation of the NER tools outputs.
+	 * 		Our internal representation of the recognizers outputs.
 	 * @param article
 	 * 		Processed article. 
 	 * @return
@@ -515,7 +515,7 @@ public class SvmCombiner extends AbstractCombiner
 	}
 	
 	/**
-	 * Converts the outputs of the selected NER tools,
+	 * Converts the outputs of the selected recognizers,
 	 * into an object the SVM can process as an input.
 	 * <br/>
 	 * This method is used when using the word-by-word mode.
@@ -574,14 +574,14 @@ public class SvmCombiner extends AbstractCombiner
 	/**
 	 * Produces a mention depending on the class 
 	 * outputed by the SVM, and the mentions estimated
-	 * by the selected NER tools. The mentions have
+	 * by the selected recognizers. The mentions have
 	 * to vote to determine the exact position of the
 	 * mention, which was not outputted by the SVM.
 	 * <br/>
 	 * This method is used when using the mention-by-mention mode.
 	 * 
 	 * @param group
-	 * 		Mentions detected by the NER tools.
+	 * 		Mentions detected by the recognizers.
 	 * @param y
 	 * 		Output of the SVM.
 	 * @param article
@@ -815,7 +815,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * the mention combination is performed.
 	 */
 	public enum CombineMode
-	{	/** Each NER tool accounts for one vote */
+	{	/** Each recognizer accounts for one vote */
 		MENTION_UNIFORM("EntUnif"),
 		/** Overall scores are used to determine vote weights */
 		MENTION_WEIGHTED_OVERALL("EntWghtOvrl"),
@@ -904,7 +904,7 @@ public class SvmCombiner extends AbstractCombiner
 	}
 	
 	/**
-	 * Takes a map representing the outputs of each previously applied NER tool, 
+	 * Takes a map representing the outputs of each previously applied recognizer, 
 	 * and combine those mentions to get a single set. The combination is 
 	 * performed mention by mention. 
 	 * 
@@ -912,7 +912,7 @@ public class SvmCombiner extends AbstractCombiner
      * 		Concerned article.
      * @param mentions
      * 		Map of the mentions detected by the 
-     * 		individual NER tools.
+     * 		individual recognizers.
      * @param rawOutput
      * 		Empty {@code StringBuffer} the combiner can use to
      * 		write a text output for debugging purposes.
@@ -991,7 +991,7 @@ public class SvmCombiner extends AbstractCombiner
 		int wordStart = 0; 
 		int wordEnd = 0;
 		
-		// build an iterator for each NER tool
+		// build an iterator for each recognizer
 		logger.log("Build all needed structures");
 		List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>(mentions.keySet());
 		Map<AbstractRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractRecognizer,Iterator<AbstractMention<?>>>();
@@ -1010,7 +1010,7 @@ public class SvmCombiner extends AbstractCombiner
 			}
 			else
 			{	itR.remove();
-				logger.log("WARNING: NER tool "+recognizer+" did not find any mention for this article, which is possibly worth checking");
+				logger.log("WARNING: recognizer "+recognizer+" did not find any mention for this article, which is possibly worth checking");
 			}
 		}
 		
@@ -1041,7 +1041,7 @@ public class SvmCombiner extends AbstractCombiner
 				Iterator<AbstractMention<?>> it = iterators.get(recognizer);
 				PositionRelation posRel;
 				
-				// go to the appropriate mention for the current NER tool
+				// go to the appropriate mention for the current recognizer
 				do
 				{	posRel = PositionRelation.getRelation(currentMention,wordStart,wordEnd);
 //					logger.log("Current mention [posRel="+posRel+"]: "+currentMention);
@@ -1052,7 +1052,7 @@ public class SvmCombiner extends AbstractCombiner
 				}
 				while(posRel==PositionRelation.COMPLETE_PRECEDES && it.hasNext());
 				
-				// if no more mentions, remove NER tool from list
+				// if no more mentions, remove recognizer from list
 				if(posRel==PositionRelation.COMPLETE_PRECEDES)
 				{	
 //					logger.log(posRel+" >> no more mention >> "+recognizer+" is removed from the list");
@@ -1103,7 +1103,7 @@ public class SvmCombiner extends AbstractCombiner
 	}
 	
 	/**
-	 * Takes a map representing the outputs of each previously applied NER tool, 
+	 * Takes a map representing the outputs of each previously applied recognizer, 
 	 * and combine those mentions to get a single set. The combination is 
 	 * performed chunk-wise (i.e. word-by-word). 
 	 * 
@@ -1111,7 +1111,7 @@ public class SvmCombiner extends AbstractCombiner
      * 		Concerned article.
      * @param mentions
      * 		Map of the mentions detected by the 
-     * 		individual NER tools.
+     * 		individual recognizers.
      * @param rawOutput
      * 		Empty {@code StringBuffer} the combiner can use to
      * 		write a text output for debugging purposes.
@@ -1124,7 +1124,7 @@ public class SvmCombiner extends AbstractCombiner
      * 		Problem while combining mentions.
 	 */
 	private void combineMentionsByWord(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws RecognizerException
-	{	// identify word-mention couples for each NER tool
+	{	// identify word-mention couples for each recognizer
 		List<Map<AbstractRecognizer,WordMention>> wordMentions = identifyWordMentionOverlaps(article,mentions);
 		String rawText = article.getRawText();
 		

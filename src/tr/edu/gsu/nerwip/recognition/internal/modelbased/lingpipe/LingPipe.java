@@ -67,7 +67,7 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
 {
 	/**
 	 * Builds and sets up an object representing
-	 * a LingPipe NER tool.
+	 * a LingPipe recognizer.
 	 * 
 	 * @param chunkingMethod
 	 * 		Method used to detect mentions.

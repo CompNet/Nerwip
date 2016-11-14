@@ -46,7 +46,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
- * This class is used to represent or implement NER tools.
+ * This class is used to represent or implement recognizers.
  * The former case corresponds to external tools, i.e. applications
  * executed externally. The latter to tools invocable internally,
  * i.e. programmatically, from within Nerwip. 
@@ -87,7 +87,7 @@ public abstract class AbstractRecognizer
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Return the (standardized) name of this NER tool.
+	 * Return the (standardized) name of this recognizer.
 	 * 
 	 * @return 
 	 * 		Name of this tool.
@@ -117,7 +117,7 @@ public abstract class AbstractRecognizer
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Returns the list of entity types this NER tool
+	 * Returns the list of entity types this recognizer
 	 * can detect if it is trained for.
 	 * 
 	 * @return 
@@ -148,7 +148,7 @@ public abstract class AbstractRecognizer
 	
 	/**
 	 * Indicates whether or not caching is
-	 * enabled for this NER tool.
+	 * enabled for this recognizer.
 	 *  
 	 * @return
 	 * 		{@code true} iff caching is enabled.
@@ -175,7 +175,7 @@ public abstract class AbstractRecognizer
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Applies this NER tool to the specified article,
+	 * Applies this recognizer to the specified article,
 	 * and returns a list of the detected mentions.
 	 * 
 	 * @param article
@@ -184,7 +184,7 @@ public abstract class AbstractRecognizer
 	 * 		List of the resulting mentions.
 	 * 
 	 * @throws RecognizerException
-	 * 		Problem while applying the NER tool. 
+	 * 		Problem while applying the recognizer. 
 	 */
 	public abstract Mentions process(Article article) throws RecognizerException;
 
@@ -430,7 +430,7 @@ public abstract class AbstractRecognizer
     protected boolean trim = false;
 
     /**
-	 * Some NER tools let punctuation/space at the begining/end of the mention. This
+	 * Some recognizers let punctuation/space at the begining/end of the mention. This
 	 * function trims the mention to remove this noise.
 	 * <br/>
 	 * If the consecutive trimmings remove all characters from the mention, then
@@ -482,7 +482,7 @@ public abstract class AbstractRecognizer
 	 * located at the beginning-end. Unappropriate
 	 * means here neither characters nor letters.
 	 * <br/>
-	 * Not all NER tools need this process. In fact,
+	 * Not all recognizers need this process. In fact,
 	 * most don't!
 	 * 
 	 * @param mentions
@@ -523,7 +523,7 @@ public abstract class AbstractRecognizer
 	/////////////////////////////////////////////////////////////////
 	// MENTIONS		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    /** Whether or not the NER tool can output (spatially) overlapping mentions */
+    /** Whether or not the recognizer can output (spatially) overlapping mentions */
     protected boolean noOverlap = true;
 
     /**

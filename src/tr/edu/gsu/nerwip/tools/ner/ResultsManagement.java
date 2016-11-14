@@ -378,10 +378,10 @@ public class ResultsManagement
 	 * <br/>
 	 * Unlike {@link #removeNerResults(ArticleList)}, the focus 
 	 * is only on the removal of files produced by the specified 
-	 * NER tool.
+	 * recognizer.
 	 * 
 	 * @param recognizer
-	 * 		NER tool whose results files must be removed from
+	 * 		Recognizer whose results files must be removed from
 	 * 		the output folder.
 	 * @param articles
 	 * 		Concerned articles.
@@ -400,10 +400,10 @@ public class ResultsManagement
 	 * <br/>
 	 * Unlike {@link #removeNerResults(ArticleList)}, the focus 
 	 * is only on the removal of files produced by all the specified 
-	 * NER tools.
+	 * recognizers.
 	 * 
 	 * @param recognizers
-	 * 		List of NER tools whose results files must be removed from
+	 * 		List of recognizers whose results files must be removed from
 	 * 		the output folder.
 	 * @param articles
 	 * 		Concerned articles.
@@ -510,10 +510,10 @@ public class ResultsManagement
 	 * <br/>
 	 * Unlike {@link #moveNerResults(ArticleList,String)}, the focus 
 	 * is only on the processing of files produced by the specified 
-	 * NER tools.
+	 * recognizers.
 	 * 
 	 * @param recognizer
-	 * 		NER tool whose results files must be moved from
+	 * 		Recognizer whose results files must be moved from
 	 * 		the output folder to the target folder.
 	 * @param articles
 	 * 		Concerned articles.
@@ -535,10 +535,10 @@ public class ResultsManagement
 	 * <br/>
 	 * Unlike {@link #moveNerResults(ArticleList,String)}, the focus 
 	 * is only on the processing of files produced by all the specified 
-	 * NER tools.
+	 * recognizers.
 	 * 
 	 * @param recognizers
-	 * 		List of NER tools whose results files must be moved from
+	 * 		List of recognizers whose results files must be moved from
 	 * 		the output folder to the target folder.
 	 * @param articles
 	 * 		Concerned articles.

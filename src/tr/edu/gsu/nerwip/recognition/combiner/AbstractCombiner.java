@@ -51,7 +51,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
- * This class implements a specific type of NER tool:
+ * This class implements a specific type of recognizer:
  * it actually combines the outputs of other tools, in order
  * to reach a higher overall performance.
  * 
@@ -80,7 +80,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	
 	/**
 	 * Enable/disable the caches of each individual
-	 * NER tool used by the combiner of this combiner.
+	 * recognizer used by the combiner of this combiner.
 	 * By default, the caches are set to the default
 	 * values of the individual recognizers.
 	 * 
@@ -200,11 +200,11 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// NER TOOLS		/////////////////////////////////////////////
+	// RECOGNIZERS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Whether to use the standalone NER tools with their default models ({@code false}), or ones specifically trained on our corpus ({@code true}) */
+	/** Whether to use the standalone recognizers with their default models ({@code false}), or ones specifically trained on our corpus ({@code true}) */
 	protected boolean specific = false;
-	/** NER tools used by this combiner */
+	/** Recognizers used by this combiner */
 	protected final List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
 
 	/**
@@ -220,7 +220,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	
 	/**
 	 * Creates the objects representing
-	 * the NER tools used by this combiner.
+	 * the recognizers used by this combiner.
 	 * 
 	 * @throws RecognizerException
 	 * 		Problem while loading some combiner or tokenizer.
@@ -240,11 +240,11 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * 		Problem while applying the combiner. 
 	 */
 	protected Mentions applyRecognizers(Article article) throws RecognizerException
-	{	logger.log("Apply each NER tool separately");
+	{	logger.log("Apply each recognizer separately");
 		logger.increaseOffset();
 		Map<AbstractRecognizer,Mentions> mentions = new HashMap<AbstractRecognizer,Mentions>();
 		for(AbstractRecognizer recognizer: recognizers)
-		{	// apply the NER tool
+		{	// apply the recognizer
 			Mentions temp = recognizer.process(article);
 			// keep only the relevant types
 			logger.log("Filter mentions by type");
@@ -254,7 +254,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 		}
 		logger.decreaseOffset();
 		
-		logger.log("Combine the NER tools outputs");
+		logger.log("Combine the recognizers outputs");
 		StringBuffer rawOutput = new StringBuffer();
 		Mentions result = combineMentions(article,mentions,rawOutput);
 
@@ -280,7 +280,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 
     /**
      * Takes a map representing the outputs
-     * of each previously applied NER tool,
+     * of each previously applied recognizer,
      * and combine those mentions to get
      * a single set.
      * 
@@ -288,7 +288,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
      * 		Concerned article.
      * @param mentions
      * 		Map of the mentions detected by the 
-     * 		individual NER tools.
+     * 		individual recognizers.
      * @param rawOutput
      * 		Empty {@code StringBuffer} the combiner can use to
      * 		write a text output for debugging purposes.
@@ -321,11 +321,11 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 			{	// check language
 				ArticleLanguage language = article.getLanguage();
 				if(language==null)
-					logger.log("WARNING: The article language is unknown >> it is possible this NER tool does not handle this language");
+					logger.log("WARNING: The article language is unknown >> it is possible this recognizer does not handle this language");
 				else if(!canHandleLanguage(language))
-					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
+					logger.log("WARNING: This recognizer does not handle the language of this article ("+language+")");
 				
-				// apply the NER tool
+				// apply the recognizer
 				logger.log("Detect the mentions");
 				result = applyRecognizers(article);
 				
@@ -396,7 +396,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	
 	/**
 	 * Loads the previously processed category proportions,
-	 * to be used by this class to combine the NER tools outputs.
+	 * to be used by this class to combine the recognizers outputs.
 	 * 
 	 * @throws RecognizerException
 	 * 		Problem while loading the category proportions.
@@ -438,7 +438,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	
 	/**
 	 * Returns the name of the file containing
-	 * the vote weights for the NER tools. 
+	 * the vote weights for the recognizers. 
 	 * These values must have been processed previously, 
 	 * this class is not meant to perform this calculation.
 	 * 
@@ -592,7 +592,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	/////////////////////////////////////////////////////////////////
 	// RAW OUTPUT		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Name of the file possibly generated by the NER tool */
+	/** Name of the file possibly generated by the recognizer */
 	protected String rawFile = FileNames.FI_OUTPUT_TEXT;
 	
 	/**
@@ -622,7 +622,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * @param article
 	 * 		Concerned article.
 	 * @param results
-	 * 		String representation of the NER tool result.		
+	 * 		String representation of the recognizer result.		
 	 * 
 	 * @throws IOException 
 	 * 		Problem while recording the file.

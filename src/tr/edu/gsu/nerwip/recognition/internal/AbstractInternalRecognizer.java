@@ -39,7 +39,7 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.recognition.RecognizerException;
 
 /**
- * This class is used to represent or implement NER tools invocable 
+ * This class is used to represent or implement recognizers invocable 
  * internally, i.e. programmatically, from within Nerwip. 
  * 
  * @param <T>
@@ -85,7 +85,7 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 	/////////////////////////////////////////////////////////////////
 	// CONVERTER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Converter associated to this NER tool */
+	/** Converter associated to this recognizer */
 	protected T converter;
 	
 	/////////////////////////////////////////////////////////////////
@@ -107,11 +107,11 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 			{	// check language
 				ArticleLanguage language = article.getLanguage();
 				if(language==null)
-					logger.log("WARNING: The article language is unknown >> it is possible this NER tool does not handle this language");
+					logger.log("WARNING: The article language is unknown >> it is possible this recognizer does not handle this language");
 				else if(!canHandleLanguage(language))
-					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
+					logger.log("WARNING: This recognizer does not handle the language of this article ("+language+")");
 				
-				// apply the NER tool
+				// apply the recognizer
 				logger.log("Detect the mentions");
 				prepareRecognizer();
 				U intRes = detectMentions(article);
@@ -195,7 +195,7 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
      * 		Object representing the detected mentions.
      * 
      * @throws RecognizerException
-     * 		Problem while applying the NER tool.
+     * 		Problem while applying the recognizer.
      */
 	protected abstract U detectMentions(Article article) throws RecognizerException;
 }

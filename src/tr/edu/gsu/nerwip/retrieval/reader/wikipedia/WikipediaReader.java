@@ -513,7 +513,7 @@ public class WikipediaReader extends ArticleReader
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
 		if(eltClass==null || 
-			// we don't need phonetic transcriptions, and they can mess up NER tools
+			// we don't need phonetic transcriptions, and they can mess up recognizers
 			(!eltClass.contains(CLASS_IPA)
 			// we also ignore WP buttons such as the "edit" links placed in certain section headers
 			&& !eltClass.contains(CLASS_EDIT)
@@ -952,7 +952,7 @@ public class WikipediaReader extends ArticleReader
 				
 				// small caps are placed before phonetic transcriptions of names, which we avoid
 				else if(eltName.equals(HtmlNames.ELT_SMALL))
-				{	// we don't need them, and they can mess up NER tools
+				{	// we don't need them, and they can mess up recognizers
 				}
 				
 				// we ignore certain types of span (phonetic trancription, WP buttons...) 

@@ -44,13 +44,13 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
  * This abstract class is a frame for implementing
- * a training process, for NER tools supporting it.
+ * a training process, for recognizers supporting it.
  * First, the training set is parsed to retrieve
  * mentions and convert them to a format suitable
  * for training. These data are cached in a single file.
  * Then, the training is performed, resulting in
  * the production of one or several model files
- * (depending on the NER tool), located in a pre-specified
+ * (depending on the recognizer), located in a pre-specified
  * folder. New models can then be used normally
  * to identify named entity mentions.
  * 
@@ -183,7 +183,7 @@ public abstract class AbstractTrainer<T>
 	 * of the first one is copied first, then
 	 * that of the second one. The resulting
 	 * data object is suitable for the training
-	 * of the considered NER tool.
+	 * of the considered recognizer.
 	 * 
 	 * @param data1
 	 * 		One data object.
@@ -220,7 +220,7 @@ public abstract class AbstractTrainer<T>
 //	 * @param article
 //	 * 		Article to process.
 //	 * @param recognizers
-//	 * 		List of concerned NER tools.
+//	 * 		List of concerned recognizers.
 //	 * @param refType
 //	 * 		Type of the reference mention, 
 //	 * 		or {@code null} if no reference mention. 

@@ -49,7 +49,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
  * This class is the converter associated to OpenCalais.
- * It is able to convert the text outputed by this NER tool
+ * It is able to convert the text outputed by this recognizer
  * into objects compatible with Nerwip.
  * <br/>
  * It can also read/write these results using raw text
@@ -64,7 +64,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public OpenCalaisConverter(String nerFolder)
 	{	super(RecognizerName.OPENCALAIS, nerFolder, FileNames.FI_OUTPUT_TEXT);

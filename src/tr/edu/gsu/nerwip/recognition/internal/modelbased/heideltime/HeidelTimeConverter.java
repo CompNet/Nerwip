@@ -52,7 +52,7 @@ import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
  * This class is the converter associated to HeidelTime.
- * It is able to convert the text outputed by this NER tool
+ * It is able to convert the text outputed by this recognizer
  * into objects compatible with Nerwip.
  * <br/>
  * It can also read/write these results using raw text
@@ -85,7 +85,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public HeidelTimeConverter(String nerFolder)
 	{	super(RecognizerName.HEIDELTIME, nerFolder, FileNames.FI_OUTPUT_TEXT);

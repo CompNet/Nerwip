@@ -52,9 +52,9 @@ import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
 
 /**
  * This class is used to evaluate the performance
- * of NER tools. It requires a collection of manually
+ * of recognizers. It requires a collection of manually
  * annotated articles, to be used as references.
- * NER tools are assessd by comparing their estimated
+ * recognizers are assessd by comparing their estimated
  * mentions to the actual ones. Various measures can
  * be used to perform this comparison.
  * 
@@ -70,7 +70,7 @@ public class Evaluator
 	 * @param types
 	 * 		Restricts the evaluation to the specified entity types only.
 	 * @param recognizers
-	 * 		NER tools to be evaluated.
+	 * 		Recognizers to be evaluated.
 	 * @param folders
 	 * 		Articles to use during the evaluation.
 	 * @param template 
@@ -94,7 +94,7 @@ public class Evaluator
 	/////////////////////////////////////////////////////////////////
 	/** Types considered during the evaluation */
 	private final List<EntityType> types = new ArrayList<EntityType>();
-	/** Evaluated NER tools */
+	/** Evaluated recognizers */
 	private final List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
 	/** Articles supporting the evaluation */
 	private ArticleList folders;
@@ -111,20 +111,20 @@ public class Evaluator
 	}
 
 	/**
-	 * Changes the NER tools to be evaluated.
+	 * Changes the recognizers to be evaluated.
 	 * 
 	 * @param recognizers
-	 * 		NER tools considered when performing the evaluation.
+	 * 		Recognizers considered when performing the evaluation.
 	 */
 	public void setRecognizers(List<AbstractRecognizer> recognizers)
 	{	this.recognizers.addAll(recognizers);
 	}
 
 	/**
-	 * Returns the list of NER tools to be evaluated.
+	 * Returns the list of recognizers to be evaluated.
 	 * 
 	 * @return
-	 * 		List of evaluated NER tools.
+	 * 		List of evaluated recognizers.
 	 */
 	public List<AbstractRecognizer> getRecognizers()
 	{	return recognizers;
@@ -197,17 +197,17 @@ public class Evaluator
 	private List<ArticleCategory> lastCategories = null;
 	
 	/**
-	 * Evaluate the NER tools on
+	 * Evaluate the recognizers on
 	 * the specified article. The method
 	 * will first retrieve the article,
-	 * the reference mentions, apply the NER tools, 
+	 * the reference mentions, apply the recognizers, 
 	 * get their estimated mentions and compare them 
 	 * to the reference.
 	 * 
 	 * @param folder
 	 * 		Folder containing the article of interest.
 	 * @return
-	 * 		List of measure objects, each one representing the evaluation of a single NER tool.
+	 * 		List of measure objects, each one representing the evaluation of a single recognizer.
 	 *  
 	 * @throws ReaderException
 	 * 		Problem while retrieving the article.
@@ -220,7 +220,7 @@ public class Evaluator
 	 * @throws ConverterException
 	 * 		Problem while converting the reference file.
 	 * @throws RecognizerException
-	 * 		Problem while applying a NER tool.
+	 * 		Problem while applying a recognizer.
 	 */
 	private List<AbstractMeasure> processArticle(File folder) throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
 	{	logger.increaseOffset();
@@ -237,7 +237,7 @@ public class Evaluator
 		Mentions refMentions = article.getReferenceMentions();
 		
 		// process each recognizer separately
-		logger.log("Process each NER tool separately");
+		logger.log("Process each recognizer separately");
 		logger.increaseOffset();
 		for(AbstractRecognizer recognizer: recognizers)
 		{	logger.log("Dealing with recognizer "+recognizer.getName());
@@ -287,7 +287,7 @@ public class Evaluator
 	 * @throws ConverterException
 	 * 		Problem while converting a reference file.
 	 * @throws RecognizerException
-	 * 		Problem while applying a NER tool.
+	 * 		Problem while applying a recognizer.
 	 */
 	public void process() throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
 	{	logger.increaseOffset();

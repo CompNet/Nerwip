@@ -366,22 +366,22 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	protected RecognizerName source;
 	
 	/**
-	 * Returns the NER tool which
+	 * Returns the recognizer which
 	 * detected this mention.
 	 * 
 	 * @return
-	 * 		NER tool having detected this mention.
+	 * 		recognizer having detected this mention.
 	 */
 	public RecognizerName getSource()
 	{	return source;
 	}
 
 	/**
-	 * Changes the NER tool which
+	 * Changes the recognizer which
 	 * detected this mention.
 	 * 
 	 * @param source
-	 * 		New NER tool having detected this mention.
+	 * 		New recognizer having detected this mention.
 	 */
 	public void setSource(RecognizerName source)
 	{	this.source = source;
@@ -591,7 +591,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @param element
 	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the mention.
+	 * 		Name of the recognizer which detected the mention.
 	 * @return
 	 * 		The mention corresponding to the specified element.
 	 */

@@ -42,7 +42,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class is the converter associated to Nero. It is able to convert the
- * text outputed by this NER tool into objects compatible with Nerwip. 
+ * text outputed by this recognizer into objects compatible with Nerwip. 
  * <br/>
  * It can also read/write these results using raw text and our XML format.
  * 
@@ -55,7 +55,7 @@ public class NeroConverter extends AbstractExternalConverter
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 *            Folder used to stored the results of the NER tool.
+	 *            Folder used to stored the results of the recognizer.
 	 */
 	public NeroConverter(String nerFolder)
 	{	super(RecognizerName.NERO, nerFolder, FileNames.FI_OUTPUT_TEXT);

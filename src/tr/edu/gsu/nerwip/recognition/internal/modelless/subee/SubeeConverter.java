@@ -47,7 +47,7 @@ public class SubeeConverter extends AbstractInternalConverter<List<AbstractMenti
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 * 
 	 * @author Yasa Akbulut
 	 * @author Vincent Labatut

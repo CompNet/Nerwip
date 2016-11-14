@@ -88,7 +88,7 @@ public class GraphExtraction
 	 * same corpus.
 	 * 
 	 * @param recognizer
-	 * 		The NER tool to apply (or previously applied).
+	 * 		The recognizer to apply (or previously applied).
 	 * @throws Exception 
 	 */
    private static void extractNetwork(AbstractRecognizer recognizer)  throws Exception

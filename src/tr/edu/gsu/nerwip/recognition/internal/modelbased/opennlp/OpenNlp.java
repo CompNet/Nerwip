@@ -61,7 +61,7 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 {	
 	/**
 	 * Builds and sets up an object representing
-	 * an OpenNLP NER tool.
+	 * an OpenNLP recognizer.
 	 * 
 	 * @param modelName
 	 * 		Predefined model used for mention detection.

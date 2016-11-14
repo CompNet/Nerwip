@@ -46,7 +46,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 /**
  * This class is the converter associated to the Illinois 
  * Named Entity Tagger. It is able to convert the text outputed 
- * by this NER tool into objects compatible with Nerwip.
+ * by this recognizer into objects compatible with Nerwip.
  * <br/>
  * It can also read/write these results using raw text
  * and our XML format.
@@ -63,7 +63,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to store the results of the NER tool.
+	 * 		Folder used to store the results of the recognizer.
 	 */
 	public IllinoisConverter(String nerFolder)
 	{	super(RecognizerName.ILLINOIS, nerFolder, FileNames.FI_OUTPUT_TEXT);

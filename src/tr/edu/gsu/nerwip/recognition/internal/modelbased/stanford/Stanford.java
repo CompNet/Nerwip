@@ -57,7 +57,7 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 {	
 	/**
 	 * Builds and sets up an object representing
-	 * a Stanford NER tool.
+	 * a Stanford recognizer.
 	 * 
 	 * @param modelName
 	 * 		Predefined classifier used for mention detection.

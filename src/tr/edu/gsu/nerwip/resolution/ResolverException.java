@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.recognition;
+package tr.edu.gsu.nerwip.resolution;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -25,24 +25,20 @@ package tr.edu.gsu.nerwip.recognition;
  */
 
 /**
- * Problem while performing the conversion
- * of the output of a recognizer. This conversion
- * can be internal (the tool was executed directly
- * from within Nerwip) or external (the recognizer
- * generated a file, which was then processed by
- * Nerwip).
+ * Problem while performing the resolution
+ * of coreferences in the text.
  * 
- * @author Yasa Akbulut
+ * @author Vincent Labatut
  */
-public class ConverterException extends Exception
+public class ResolverException extends Exception
 {	/** Class id */
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * Builds a new exception,
 	 * without any message.
 	 */
-	public ConverterException()
+	public ResolverException()
 	{ super();
 	}
 	
@@ -53,7 +49,7 @@ public class ConverterException extends Exception
 	 * @param message
 	 * 		Exception message.
 	 */
-	public ConverterException(String message)
+	public ResolverException(String message)
 	{	super(message);
 	}
 }

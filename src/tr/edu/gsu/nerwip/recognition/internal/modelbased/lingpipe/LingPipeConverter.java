@@ -40,7 +40,7 @@ import com.aliasi.chunk.Chunking;
 
 /**
  * This class is the converter associated to LingPipe.
- * It is able to convert the objects outputed by this NER tool
+ * It is able to convert the objects outputed by this recognizer
  * into those compatible with Nerwip.
  * <br/>
  * It can also read/write these results using raw text
@@ -55,7 +55,7 @@ public class LingPipeConverter extends AbstractInternalConverter<Chunking>
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public LingPipeConverter(String nerFolder)
 	{	super(RecognizerName.LINGPIPE, nerFolder, FileNames.FI_OUTPUT_TEXT);

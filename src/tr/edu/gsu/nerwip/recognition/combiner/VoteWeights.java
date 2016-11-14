@@ -46,7 +46,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
- * This class is used to handle weights associated to NER tools
+ * This class is used to handle weights associated to recognizers
  * in certain combiners.
  * 
  * @author Vincent Labatut
@@ -55,10 +55,10 @@ public class VoteWeights
 {	
 	/**
 	 * Builds a new structure dedicated to storing
-	 * the vote weights of the specified NER tools.
+	 * the vote weights of the specified recognizers.
 	 * 
 	 * @param recognizers
-	 * 		NER tools whose weights are stored in this object.
+	 * 		Recognizers whose weights are stored in this object.
 	 */
 	public VoteWeights(List<AbstractRecognizer> recognizers)
 	{	this.recognizers.addAll(recognizers);
@@ -73,7 +73,7 @@ public class VoteWeights
 	 * only uniform weights (all are 1).
 	 * 
 	 * @param recognizers
-	 * 		NER tools to be represented in the generated object.
+	 * 		Recognizers to be represented in the generated object.
 	 * @return
 	 * 		New VoteWeights instance with uniform weights.
 	 */
@@ -101,7 +101,7 @@ public class VoteWeights
 	
 	/**
 	 * Builds a new VoteWeights object based on the evaluation
-	 * of the specified NER tools performance.
+	 * of the specified recognizers performance.
 	 * 
 	 * @param evaluator
 	 * 		Object used to perform the evaluation.
@@ -168,7 +168,7 @@ public class VoteWeights
 	private final static String UNIFORM_NAME = "Uniform";
 	/** Maps containing all the weights */
 	private final Map<AbstractRecognizer,Map<String,Map<ArticleCategory,Float>>> data = new HashMap<AbstractRecognizer,Map<String,Map<ArticleCategory,Float>>>();
-	/** List of NER tools (important to keep their original order) */
+	/** List of recognizers (important to keep their original order) */
 	private final List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
 	
 	/////////////////////////////////////////////////////////////////
@@ -177,11 +177,11 @@ public class VoteWeights
 	/**
 	 * Processes the relative specified weight for the specified article
 	 * and the specified category proportions, using the weight stored
-	 * in this object, and for the specified NER tool.
+	 * in this object, and for the specified recognizer.
 	 * <br/>
 	 * We basically look up for the category describing the article,
 	 * and use the concerned category weights to modulate the concerned
-	 * NER tool raw voting weights, leading to normalized voting weights. 
+	 * recognizer raw voting weights, leading to normalized voting weights. 
 	 *  
 	 * @param article
 	 * 		Article to be considered.
@@ -218,7 +218,7 @@ public class VoteWeights
 	/**
 	 * Initializes a new VoteWeights object by
 	 * reading data in the specified file, assuming
-	 * it was created to describe the same NER tools
+	 * it was created to describe the same recognizers
 	 * than those specified as parameters.
 	 * 
 	 * @param filePath
@@ -242,8 +242,7 @@ public class VoteWeights
 	
 		Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 		
-		// process each NER tool
-		for(AbstractRecognizer recognizer: recognizers)
+		// process each NErecognizer	for(AbstractRecognizer recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
@@ -320,7 +319,7 @@ public class VoteWeights
 			categories.addAll(mesMap.keySet());
 		}
 		
-		// write each NER tool
+		// write each recognizer
 		for(AbstractRecognizer recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();

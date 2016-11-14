@@ -32,7 +32,7 @@ import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
 
 /**
- * This class is used to represent or implement NER tools invocable 
+ * This class is used to represent or implement recognizers invocable 
  * internally, i.e. programmatically, from within Nerwip, and using
  * a model, i.e. some data stored externally as files. Those must
  * be loaded, which implies a specific processing.

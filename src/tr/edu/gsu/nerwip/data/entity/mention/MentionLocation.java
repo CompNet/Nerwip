@@ -116,7 +116,7 @@ public class MentionLocation extends AbstractMention<String>
 	 * @param element
 	 * 		XML element representing the mention.
 	 * @param source
-	 * 		Name of the NER tool which detected the mention.
+	 * 		Name of the recognizer which detected the mention.
 	 * @return
 	 * 		The location mention corresponding to the specified element.
 	 */

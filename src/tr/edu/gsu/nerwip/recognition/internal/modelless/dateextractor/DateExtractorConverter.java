@@ -46,7 +46,7 @@ public class DateExtractorConverter extends AbstractInternalConverter<List<Menti
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public DateExtractorConverter(String nerFolder)
 	{	super(RecognizerName.DATEEXTRACTOR, nerFolder, FileNames.FI_OUTPUT_TEXT);

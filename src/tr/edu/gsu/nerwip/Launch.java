@@ -106,7 +106,7 @@ public class Launch
 		// The Nerwip Corpus (available on FigShare, see the Installation
 		// section of the README file) is split in two parts: training and
 		// testing. This split is described by two lists of articles located
-		// in the corpus root folder. Certain NER tools can be trained,
+		// in the corpus root folder. Certain recognizers can be trained,
 		// which can be performed using the training set. All tools are
 		// evaluated on the testing set, whether they were trained or not.
 		
@@ -115,18 +115,18 @@ public class Launch
 		// and the other half for evaluation. Of course, it is not
 		// enough to perform a sufficient training.
 		
-		// Also, note you need to get the NER tools related data from
+		// Also, note you need to get the recognizers related data from
 		// FigShare (again, as explained in the README file), before
-		// being able to apply most of the NER tools integrated in
+		// being able to apply most of the recognizers integrated in
 		// Nerwip.
 		
 		
 		///////////////////////////////////////////////
-		// How to train standalone NER tools
+		// How to train standalone recognizers
 		///////////////////////////////////////////////
 		// Only some of the standalone tools can be trained
 		// See the methods for tool-specific details 
-		// Note : for certain NER tools, this step can be very long.
+		// Note : for certain recognizers, this step can be very long.
 		// You can skip this step if you are not interested in training.
 		trainLingPipe();
 		trainIllinois();
@@ -134,14 +134,14 @@ public class Launch
 		trainStanford();
 		
 		///////////////////////////////////////////////
-		// How to apply individually standalone NER tools to a single article
+		// How to apply individually standalone recognizers to a single article
 		///////////////////////////////////////////////
-		// See the invoked methods to see the set up of each NER tools
+		// See the invoked methods to see the set up of each recognizers
 		// Here, each tool is applied to the first article in the corpus
 		// As mentioned in the readme file, it is possible to implement
-		// your own tools, or wrappers for other existing NER tools.
-		applyDateExtractor();		// date-only NER tool
-		applyWikipediaDater();		// another (better) date-only NER tool
+		// your own tools, or wrappers for other existing recognizers.
+		applyDateExtractor();		// date-only recognizer
+		applyWikipediaDater();		// another (better) date-only recognizer
 		applyIllinois();			// Illinois Named Entity Tagger
 		applyLingPipe();			// alias-i LingPipe
 		applyOpenCalais();			// Thomson-Reuters OpenCalais
@@ -178,7 +178,7 @@ public class Launch
 		// How to apply individually NER combiners to a single article
 		///////////////////////////////////////////////
 		// Applying acombiner is exactly like applying a standalone tool (a combiner
-		// is actually just a specific type of NER tool).
+		// is actually just a specific type of recognizer).
 		// Like before, each (trained) tool is applied to the first article in the corpus
 		// And again, we initialize the tools with the same parameters than for training
 		applyVoteCombiner();
@@ -216,7 +216,7 @@ public class Launch
 		// to perform the manual annotation.
 		launchEditor();
 		// The editor also allows visualizing the result
-		// of the NER tools (the mentions they detected).
+		// of the recognizers (the mentions they detected).
 		
 		
 		
@@ -376,7 +376,7 @@ public class Launch
 	}
 	
 	/**
-	 * Applies our (not very good) Date Extractor NER tool
+	 * Applies our (not very good) Date Extractor recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -397,7 +397,7 @@ public class Launch
 	}
 
 	/**
-	 * Applies our Wikipedia Dater NER tool
+	 * Applies our Wikipedia Dater recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -418,7 +418,7 @@ public class Launch
 	}
 
 	/**
-	 * Applies the Illinois NER tool
+	 * Applies the Illinois recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -443,7 +443,7 @@ public class Launch
 	}
 
 	/**
-	 * Applies the LingPipe NER tool
+	 * Applies the LingPipe recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -469,7 +469,7 @@ public class Launch
 	}
 
 	/**
-	 * Applies the OpenCalais NER tool
+	 * Applies the OpenCalais recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -493,7 +493,7 @@ public class Launch
 	}
 
 	/**
-	 * Applies the OpenNLP NER tool
+	 * Applies the OpenNLP recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -517,7 +517,7 @@ public class Launch
 	}
 
 	/**
-	 * Applies the OpenNLP NER tool
+	 * Applies the OpenNLP recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -541,7 +541,7 @@ public class Launch
 	}
 
 	/**
-	 * Applies our Subee NER tool
+	 * Applies our Subee recognizer
 	 * to a single article (first in the corpus).
 	 * 
 	 * @throws Exception
@@ -598,7 +598,7 @@ public class Launch
 	}	
 
 	/**
-	 * Evaluates the performances of a few standalone NER tools,
+	 * Evaluates the performances of a few standalone recognizers,
 	 * on the testing set. 
 	 * 
 	 * @throws Exception
@@ -621,7 +621,7 @@ public class Launch
 			logger.log("Type "+type);
 		logger.decreaseOffset();
 		
-		// set the NER tools we want to evaluate (including their parameters)
+		// set the recognizers we want to evaluate (including their parameters)
 		// note that by default, the mentions detected by a NER are cached.
 		// this means if the result file already exists, it will be loaded.
 		// here, we use the same parameters than for the single-article tests.
@@ -636,7 +636,7 @@ public class Launch
 			new Subee(true, true, true, true, true)
 		};
 		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
-		logger.log("Processed NER tools: ");
+		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
 		for(AbstractRecognizer recognizer: recognizers)
 			logger.log(recognizer.getFolder());
@@ -815,13 +815,13 @@ public class Launch
 			logger.log("Type "+type);
 		logger.decreaseOffset();
 		
-		// set the NER tools we want to evaluate (like before in evaluateStandaloneTools)
+		// set the recognizers we want to evaluate (like before in evaluateStandaloneTools)
 		AbstractRecognizer temp[] =
 		{	new VoteCombiner(true, true, VoteMode.UNIFORM, true, true, SubeeMode.NONE),
 			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE)
 		};
 		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
-		logger.log("Processed NER tools: ");
+		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
 		for(AbstractRecognizer recognizer: recognizers)
 			logger.log(recognizer.getFolder());

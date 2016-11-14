@@ -30,7 +30,7 @@ import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
 
 /**
- * This class is used to represent or implement NER tools invocable 
+ * This class is used to represent or implement recognizers invocable 
  * internally, i.e. programmatically, from within Nerwip, and not
  * using any model, i.e. external files to be loaded (as opposed to
  * {@link AbstractModelBasedInternalRecognizer} recognizers.

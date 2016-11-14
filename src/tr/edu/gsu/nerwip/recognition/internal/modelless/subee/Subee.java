@@ -66,7 +66,7 @@ import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
- * This class implements our own NER tool, called Subee. It takes advantage of
+ * This class implements our own recognizer, called Subee. It takes advantage of
  * hyperlinks present in  Wikipedia pages to identify mentions in the text, and 
  * of Freebase to select their type.
  * <br/>
@@ -89,7 +89,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 {
 	/**
 	 * Builds and sets up an object representing
-	 * Subee, our NER tool taking advantage of text
+	 * Subee, our recognizer taking advantage of text
 	 * containing hyperlinks.
 	 * 
 	 * @param additionalOccurrences

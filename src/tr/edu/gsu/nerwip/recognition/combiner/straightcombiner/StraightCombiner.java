@@ -69,7 +69,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
  *  <li>Position vote: all activated tool vote, the majority positions win.
  * </ol> 
  * <br/>
- * The NER tools used by this combiner are:
+ * The recognizers used by this combiner are:
  * <ul>
  * 		<li>HeidelTime (dates)</li>
  * 		<li>Nero (dates, functions, persons, locations, organizations and productions)</li>
@@ -277,7 +277,7 @@ public class StraightCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Combine the NER tools results, in order to determine the
+	 * Combine the recognizers results, in order to determine the
 	 * type of the mention represented by the specified group.
 	 * 
 	 * @param map 
@@ -321,7 +321,7 @@ public class StraightCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Combine the NER tools results, in order to determine if
+	 * Combine the recognizers results, in order to determine if
 	 * the group of estimated mentions corresponds to an actual
 	 * mention.
 	 * 
@@ -360,7 +360,7 @@ public class StraightCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Combine the NER tools results, in order to determine the
+	 * Combine the recognizers results, in order to determine the
 	 * position of the mention represented by the specified group.
 	 * 
 	 * @param map 

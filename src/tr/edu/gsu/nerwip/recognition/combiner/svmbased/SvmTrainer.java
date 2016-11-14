@@ -72,7 +72,7 @@ import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
 
 /**
  * This class trains a SVM on the corpus. It uses the 
- * outputs of differnt NER tools as the SVM inputs, and
+ * outputs of differnt recognizers as the SVM inputs, and
  * uses the reference files as the theoretical outputs.
  * <br/>
  * Some of the source code is inspired by, or directly
@@ -140,7 +140,7 @@ public class SvmTrainer
 
 	/**
 	 * Enable/disable the caches of each individual
-	 * NER tool used by the combiner of this trainer.
+	 * recognizer used by the combiner of this trainer.
 	 * By default, the caches are set to the default
 	 * values of the individual recognizers.
 	 * 
@@ -175,7 +175,7 @@ public class SvmTrainer
 	 * folder.
 	 * 
 	 * @param recognizers 
-	 * 		List of NER tools to be applied.
+	 * 		List of recognizers to be applied.
 	 * @param folders 
 	 * 		List of articles to be processed.
 	 * @return
@@ -190,7 +190,7 @@ public class SvmTrainer
 	 * @throws ReaderException 
 	 * 		Problem while loading references.
 	 * @throws RecognizerException 
-	 * 		Problem while applying a NER tool.
+	 * 		Problem while applying a recognizer.
 	 */
 	private svm_problem prepareData(List<AbstractRecognizer> recognizers, ArticleList folders) throws IOException, SAXException, ParseException, ReaderException, RecognizerException
 	{	logger.increaseOffset();
@@ -996,9 +996,9 @@ if(data.x[index]==null || index==131)
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException
-	 * 		Problem while applying a NER tool. 
+	 * 		Problem while applying a recognizer. 
 	 * @throws ConverterException 
-	 * 		Problem while processing a NER tool performance. 
+	 * 		Problem while processing a recognizer performance. 
 	 */
 	public void process(ArticleList folders, boolean useDefaultParams) throws IOException, SAXException, ParseException, ReaderException, RecognizerException, ConverterException
 	{	logger.increaseOffset();
@@ -1073,9 +1073,9 @@ if(data.x[index]==null || index==131)
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException
-	 * 		Problem while applying a NER tool. 
+	 * 		Problem while applying a recognizer. 
 	 * @throws ConverterException 
-	 * 		Problem while processing a NER tool performance. 
+	 * 		Problem while processing a recognizer performance. 
 	 */
 	public void process(ArticleList folders, double c, double gamma) throws IOException, SAXException, ParseException, ReaderException, RecognizerException, ConverterException
 	{	logger.increaseOffset();

@@ -41,7 +41,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
  * This class is the converter associated to OpenNLP.
- * It is able to convert the text outputed by this NER tool
+ * It is able to convert the text outputed by this recognizer
  * into objects compatible with Nerwip.
  * <br/>
  * It can also read/write these results using raw text
@@ -55,7 +55,7 @@ public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,L
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public OpenNlpConverter(String nerFolder)
 	{	super(RecognizerName.OPENNLP, nerFolder, FileNames.FI_OUTPUT_TEXT);

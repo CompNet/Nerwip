@@ -91,7 +91,7 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 //	 * @param element
 //	 * 		XML element representing the entity.
 //	 * @param source
-//	 * 		Name of the NER tool which detected the entity.
+//	 * 		Name of the recognizer which detected the entity.
 //	 * @return
 //	 * 		The entity corresponding to the specified element.
 //	 */

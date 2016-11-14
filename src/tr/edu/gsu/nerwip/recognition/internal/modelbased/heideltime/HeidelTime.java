@@ -59,7 +59,7 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 {	
 	/**
 	 * Builds and sets up an object representing
-	 * an HeidelTime NER tool.
+	 * an HeidelTime recognizer.
 	 * 
 	 * @param modelName
 	 * 		Predefined mainModel used for mention detection.

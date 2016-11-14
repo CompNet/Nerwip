@@ -46,7 +46,7 @@ public class WikipediaDaterConverter extends AbstractInternalConverter<List<Ment
 	 * Builds a new converter using the specified info.
 	 * 
 	 * @param nerFolder
-	 * 		Folder used to stored the results of the NER tool.
+	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public WikipediaDaterConverter(String nerFolder)
 	{	super(RecognizerName.WIKIPEDIADATER, nerFolder, FileNames.FI_OUTPUT_TEXT);

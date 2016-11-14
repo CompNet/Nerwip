@@ -269,7 +269,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		else if(viewer.getMustSetCorpus())
 			viewer.doSetCorpus();
 		
-		// select specific NER tools
+		// select specific recognizers
 //		List<String> prefixes = Arrays.asList(new String[]
 //		{	
 //			new DateExtractor().getFolder(),
@@ -735,7 +735,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 * Initialises the status bar,
 	 * at the bottom of the window.
 	 * It displays information regarding
-	 * the currently displayed NER tool
+	 * the currently displayed recognizer
 	 * and the position of the cursor
 	 * in the text.
 	 */

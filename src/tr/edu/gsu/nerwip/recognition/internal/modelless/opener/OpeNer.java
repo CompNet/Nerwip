@@ -79,7 +79,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 {
 	/**
 	 * Builds and sets up an object representing
-	 * the OpeNer NER tool.
+	 * the OpeNer recognizer.
 	 * 
 	 * @param parenSplit 
 	 * 		Indicates whether mentions containing parentheses

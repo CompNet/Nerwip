@@ -67,7 +67,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class contains various methods to manage the data files
- * associated with NER tools.
+ * associated with recognizers.
  *  
  * @author Vincent Labatut
  */
@@ -123,7 +123,7 @@ public class DataProcessing
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * This method was used to build dictionaries using
-	 * the lists from the Illinois NER tool.
+	 * the lists from the Illinois recognizer.
 	 * 
 	 * @param filesStr
 	 * 		Several original files.

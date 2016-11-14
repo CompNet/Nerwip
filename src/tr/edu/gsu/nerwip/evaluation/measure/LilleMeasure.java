@@ -39,7 +39,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
  * This class implements a set of measures allowing
- * to evaluate the performance of a NER tool, as described
+ * to evaluate the performance of a recognizer, as described
  * in <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6632052&amp;tag=1">
  * A Comparison of Named Entity Recognition Tools Applied to 
  * Biographical Texts</a>, S. Atdağ & V. Labatut, 2nd International 
@@ -96,12 +96,12 @@ public class LilleMeasure extends AbstractMeasure
 {	
 	/**
 	 * Builds a new instance of this measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * constructor is used when loading results
 	 * from a file.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 */
 	public LilleMeasure(AbstractRecognizer recognizer)
 	{	super(recognizer);
@@ -109,12 +109,12 @@ public class LilleMeasure extends AbstractMeasure
 	
 	/**
 	 * Builds a new instance of measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * constructor is used when combining
 	 * several measures into one.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
@@ -124,18 +124,18 @@ public class LilleMeasure extends AbstractMeasure
 
 	/**
 	 * Builds a new instance of this measure,
-	 * for the specified NER tool and results.
+	 * for the specified recognizer and results.
 	 * This constructor is used when actually processing
-	 * the NER tool performance.
+	 * the recognizer performance.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
 	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Mentions detected by the NER tool.
+	 * 		Mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
@@ -240,7 +240,7 @@ public class LilleMeasure extends AbstractMeasure
 	 * @param reference
 	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the mentions detected by the NER tool.
+	 * 		List of the mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
@@ -292,7 +292,7 @@ public class LilleMeasure extends AbstractMeasure
 	 * @param reference
 	 * 		List of the mentions of reference.
 	 * @param estimation
-	 * 		List of the mentions detected by the NER tool.
+	 * 		List of the mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
@@ -342,7 +342,7 @@ public class LilleMeasure extends AbstractMeasure
 	 * Process the wrong hit mentions.
 	 * 
 	 * @param estimation
-	 * 		List of the mentions detected by the NER tool.
+	 * 		List of the mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
@@ -439,9 +439,9 @@ public class LilleMeasure extends AbstractMeasure
 	 * @param refType
 	 * 		Type of the mention of reference.
 	 * @param est
-	 * 		Mention detected by the NER tool.
+	 * 		Mention detected by the recognizer.
 	 * @param estType
-	 * 		Type of the mention detected by the NER tool.
+	 * 		Type of the mention detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 * @return

@@ -39,7 +39,7 @@ import tr.edu.gsu.nerwip.recognition.RecognizerException;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
 
 /**
- * This class is used to represent NER tools invocable 
+ * This class is used to represent recognizers invocable 
  * externally only, i.e. through the system and not
  * from within Nerwip, unlike {@link AbstractInternalRecognizer} objects. 
  * 
@@ -70,7 +70,7 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 	/////////////////////////////////////////////////////////////////
 	// CONVERTER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Converter associated to this NER tool */
+	/** Converter associated to this recognizer */
 	protected T converter;
 
 	/////////////////////////////////////////////////////////////////
@@ -92,11 +92,11 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 			{	// check language
 				ArticleLanguage language = article.getLanguage();
 				if(language==null)
-					logger.log("WARNING: The article language is unknown >> it is possible this NER tool does not handle this language");
+					logger.log("WARNING: The article language is unknown >> it is possible this recognizer does not handle this language");
 				else if(!canHandleLanguage(language))
-					logger.log("WARNING: This NER tool does not handle the language of this article ("+language+")");
+					logger.log("WARNING: This recognizer does not handle the language of this article ("+language+")");
 				
-				// apply the NER tool
+				// apply the recognizer
 				logger.log("Detect the mentions");
 				String mentionsStr = detectMentions(article);
 				
@@ -122,9 +122,9 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 				
 				// possibly remove the raw output file
 				if(outRawResults)
-					logger.log("Keep the file produced by the external NER tool");
+					logger.log("Keep the file produced by the external recognizer");
 				else
-				{	logger.log("Delete the file produced by the external NER tool");
+				{	logger.log("Delete the file produced by the external recognizer");
 					converter.deleteRawFile(article);
 				}
 			}
@@ -169,7 +169,7 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
      * 		String representing the detected mentions.
      * 
      * @throws RecognizerException
-     * 		Problem while applying the NER tool.
+     * 		Problem while applying the recognizer.
     */
 	protected abstract String detectMentions(Article article) throws RecognizerException;
 }

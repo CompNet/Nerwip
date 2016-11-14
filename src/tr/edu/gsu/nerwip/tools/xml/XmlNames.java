@@ -56,7 +56,7 @@ public class XmlNames
 	public static final String ATT_MODIFICATION = "modification";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
-	/** NER tool used to detect the mention */
+	/** Recognizer used to detect the mention */
 	public static final String ATT_SOURCE = "source";
 	/** Mention start position */
 	public static final String ATT_START = "start";

@@ -69,7 +69,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	
 	/**
 	 * Builds and sets up an object representing
-	 * an OpenCalais NER tool.
+	 * an OpenCalais recognizer.
 	 * 
 	 * @param lang
 	 * 		Selected language.

@@ -51,7 +51,7 @@ import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
  * implementing performance measures.
  * <br/>
  * Those measures are used to assess how well
- * a NER tool performs on a given (annotated)
+ * a recognizer performs on a given (annotated)
  * dataset.
  * <br/>
  * In these classes, we consider two kinds of
@@ -68,12 +68,12 @@ public abstract class AbstractMeasure
 {	
 	/**
 	 * Builds a new instance of measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * constructor is used when loading results
 	 * from a file.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 */
 	public AbstractMeasure(AbstractRecognizer recognizer)
 	{	this.recognizer = recognizer;
@@ -83,12 +83,12 @@ public abstract class AbstractMeasure
 	
 	/**
 	 * Builds a new instance of measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * constructor is used when combining
 	 * several measures into one.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
@@ -101,18 +101,18 @@ public abstract class AbstractMeasure
 	
 	/**
 	 * Builds a new instance of measure,
-	 * for the specified NER tool and results. 
+	 * for the specified recognizer and results. 
 	 * This constructor is used when actually processing
-	 * the NER tool performance.
+	 * the recognizer performance.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
 	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Mentions detected by the NER tool.
+	 * 		Mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
@@ -130,13 +130,13 @@ public abstract class AbstractMeasure
 	 * for the specified parameters.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @param reference
 	 * 		Mentions used as reference.
 	 * @param estimation
-	 * 		Mentions detected by the NER tool.
+	 * 		Mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 * @return
@@ -146,12 +146,12 @@ public abstract class AbstractMeasure
 	
 	/**
 	 * Builds the appropriate measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * class is used when creating measures
 	 * describing whole collections.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 * @return
@@ -161,12 +161,12 @@ public abstract class AbstractMeasure
 
 	/**
 	 * Builds the appropriate measure,
-	 * for the specified NER tool. This
+	 * for the specified recognizer. This
 	 * class is used when loading results
 	 * from a file.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @return
 	 * 		The created measure. 
 	 */
@@ -194,15 +194,15 @@ public abstract class AbstractMeasure
 	/////////////////////////////////////////////////////////////////
 	// RECOGNIZER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** NER tool assessed by this measure */
+	/** Recognizer assessed by this measure */
 	protected AbstractRecognizer recognizer;
 	
 	/**
-	 * Returns the NER tool
+	 * Returns the recognizer
 	 * assessed by this measure.
 	 * 
 	 * @return
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 */
 	public AbstractRecognizer getRecognizer()
 	{	return recognizer;
@@ -444,7 +444,7 @@ public abstract class AbstractMeasure
 	 * @param referenceOrig
 	 * 		List of mentions of reference.
 	 * @param estimationOrig
-	 * 		List of mentions detected by the NER tool.
+	 * 		List of mentions detected by the recognizer.
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
@@ -851,7 +851,7 @@ return temp;
 	 * @param folder
 	 * 		Where to write the file.
 	 * @param recognizer 
-	 * 		NER tool concerned by these results.
+	 * 		Recognizer concerned by these results.
 	 * @return 
 	 * 		Measure object containing the results.
 	 * 

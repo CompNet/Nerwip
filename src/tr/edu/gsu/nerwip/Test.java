@@ -63,7 +63,6 @@ import tr.edu.gsu.extractor.temp.tools.dbpedia.DbIdTools;
 import tr.edu.gsu.extractor.temp.tools.dbpedia.DbTypeTools;
 import tr.edu.gsu.extractor.temp.tools.dbspotlight.SpotlightTools;
 import tr.edu.gsu.extractor.temp.tools.mediawiki.WikiIdTools;
-import tr.edu.gsu.extractor.temp.tools.mediawiki.WikiTypeTools;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
@@ -614,7 +613,7 @@ public class Test
 		String title = "Barack%20Obama";
 		
 		// retrieve all types
-		List<String> types = WikiTypeTools.getAllTypes(title);
+		List<String> types = new ArrayList<String>();
 		logger.log("Types retrieved for "+title+":");
 		logger.increaseOffset();
 		logger.log(types);
@@ -1458,11 +1457,11 @@ public class Test
 	}
 	
 	/**
-	 * Applies the specified NER tool to the 
+	 * Applies the specified recognizer to the 
 	 * whole corpus.
 	 * 
 	 * @param recognizer
-	 * 		NER tool to apply.
+	 * 		Recognizer to apply.
 	 * @param start
 	 * 		Which article to start from.
 	 * 
@@ -1487,7 +1486,7 @@ public class Test
 					ArticleRetriever retriever = new ArticleRetriever();
 					Article article = retriever.process(name);
 						
-					logger.log("Apply the ner tool");
+					logger.log("Apply the recognizer");
 					recognizer.process(article);
 					
 				logger.decreaseOffset();
@@ -1528,7 +1527,7 @@ public class Test
 			logger.log("Type "+type);
 		logger.decreaseOffset();
 		
-		// set NER tools
+		// set recognizers
 		boolean loadOnDemand = true;
 		AbstractRecognizer temp[] =
 		{	
@@ -1849,7 +1848,7 @@ public class Test
 //			new StraightCombiner()
 		};
 		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
-		logger.log("Processed NER tools: ");
+		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
 		for(AbstractRecognizer recognizer: recognizers)
 			logger.log(recognizer.getFolder());
@@ -2159,4 +2158,9 @@ public class Test
  * - apply all tools again
  * - perform evaluation
  * - compare nero new results with the previous ones
+ */
+
+/*
+ * - Move evaluation to recognition, or create several subfolders in evaluation to reflect the three recognition/resolution/linking tasks
+ *  
  */

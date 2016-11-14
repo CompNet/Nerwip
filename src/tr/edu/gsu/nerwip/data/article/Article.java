@@ -450,7 +450,7 @@ public class Article
 	/**
 	 * Cleans both texts (raw and linked) of the article, in order to
 	 * remove non-standard space characters, punctuation, ligatures, which
-	 * could complicate the task of the NER tools, or any subsequent 
+	 * could complicate the task of the recognizers, or any subsequent 
 	 * processing.
 	 * <br/>
 	 * This method is called when reading an Article from file, and when
@@ -885,10 +885,10 @@ public class Article
 	/**
 	 * Returns the list of mentions
 	 * for this article, as estimated
-	 * by the specified NER tool.
+	 * by the specified recognizer.
 	 * 
 	 * @param recognizer
-	 * 		Concerned NER tool.
+	 * 		Concerned recognizer.
 	 * @return
 	 * 		The list of reference mentions.
 	 * 		

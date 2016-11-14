@@ -52,7 +52,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
  * the training is performed at the level of the combiner
  * this one is built upon. 
  * <br/>
- * The NER tools handled by this combiner are:
+ * The recognizers handled by this combiner are:
  * <ul>
  * 		<li>WikipediaDater to detect dates (see {@link WikipediaDater})</li>
  * 		<li>Either SvmCombiner or VoteCombiner to detect locations, organizations 
