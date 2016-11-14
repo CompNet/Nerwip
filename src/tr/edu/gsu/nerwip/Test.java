@@ -2160,7 +2160,11 @@ public class Test
  * - compare nero new results with the previous ones
  */
 
-/*
+/* TODO
  * - Move evaluation to recognition, or create several subfolders in evaluation to reflect the three recognition/resolution/linking tasks
- *  
+ * - Maybe we should not put linking and resolution in different classes, since some tools do both at once.
+ *   Rather set up a single abstract class, whose process can be "partially" implemented by certain tools.
+ *   Tools just doing the linking part could do the resolving by just assigning each mention to a distinct entity.
+ *   Actually, this could be also done by integrating to recognizers... but we lost the ability to combine (compose) them.
+ *   The same remark applies when composing resolving and linking, in fact... so is it really a good idea?
  */

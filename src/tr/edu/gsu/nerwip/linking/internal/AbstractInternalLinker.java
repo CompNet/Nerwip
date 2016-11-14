@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.recognition.internal;
+package tr.edu.gsu.nerwip.linking.internal;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -32,40 +32,31 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
+import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.linking.AbstractLinker;
+import tr.edu.gsu.nerwip.linking.LinkerException;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
 
 /**
- * This class is used to represent or implement recognizers invocable 
+ * This class is used to represent or implement linkers invocable 
  * internally, i.e. programmatically, from within Nerwip. 
  * 
  * @param <T>
- * 		Class of the converter associated to this recognizer.
+ * 		Class of the converter associated to this linker.
  * @param <U>
  * 		Class of the internal representation of the mentions resulting from the detection.
  * 		 
- * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalConverter<U>> extends AbstractRecognizer
+public abstract class AbstractInternalLinker<U,T extends AbstractInternalConverter<U>> extends AbstractLinker
 {	
 	/**
-	 * Builds a new internal recognizer,
-	 * using the specified options.
-	 * 
-	 * @param trim
-	 * 		Whether or not the beginings and ends of mentions should be 
-	 * 		cleaned from any non-letter/digit chars.
-	 * @param ignorePronouns
-	 * 		Whether or not pronouns should be ignored.
-	 * @param exclusionOn
-	 * 		Whether or not stop words should be ignored.
+	 * Builds a new internal linker.
 	 */
-	public AbstractInternalRecognizer(boolean trim, boolean ignorePronouns, boolean exclusionOn)
-	{	super(trim,ignorePronouns,exclusionOn);
+	public AbstractInternalLinker()
+	{	super();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -73,26 +64,26 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Possibly performs the last operations
-	 * to make this recognizer ready to be applied.
-	 * This method mainly concerns recognizers needing
+	 * to make this linker ready to be applied.
+	 * This method mainly concerns linkers needing
 	 * to load external data.
 	 * 
-	 * @throws RecognizerException
-	 * 		Problem while initializing the recognizer.
+	 * @throws LinkerException
+	 * 		Problem while initializing the linker.
 	 */
-	protected abstract void prepareRecognizer() throws RecognizerException;
+	protected abstract void prepareLinker() throws LinkerException;
 	
 	/////////////////////////////////////////////////////////////////
 	// CONVERTER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Converter associated to this recognizer */
+	/** Converter associated to this linker */
 	protected T converter;
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Mentions process(Article article) throws RecognizerException
+	public void process(Article article, Mentions mentions, Entities entities) throws LinkerException
 	{	logger.log("Start applying "+getName()+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
 		Mentions result = null;
@@ -107,13 +98,13 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 			{	// check language
 				ArticleLanguage language = article.getLanguage();
 				if(language==null)
-					logger.log("WARNING: The article language is unknown >> it is possible this recognizer does not handle this language");
+					logger.log("WARNING: The article language is unknown >> it is possible this linker does not handle this language");
 				else if(!canHandleLanguage(language))
-					logger.log("WARNING: This recognizer does not handle the language of this article ("+language+")");
+					logger.log("WARNING: This linker does not handle the language of this article ("+language+")");
 				
-				// apply the recognizer
+				// apply the linker
 				logger.log("Detect the mentions");
-				prepareRecognizer();
+				prepareLinker();
 				U intRes = detectMentions(article);
 				
 				// possibly record mentions as they are outputted (useful for debug)
@@ -160,19 +151,19 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new LinkerException(e.getMessage());
 		}
 		catch (SAXException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new LinkerException(e.getMessage());
 		}
 		catch (ParseException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new LinkerException(e.getMessage());
 		}
 		catch (ConverterException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new LinkerException(e.getMessage());
 		}
 	
 		int nbrEnt = result.getMentions().size();
@@ -194,8 +185,8 @@ public abstract class AbstractInternalRecognizer<U,T extends AbstractInternalCon
      * @return
      * 		Object representing the detected mentions.
      * 
-     * @throws RecognizerException
+     * @throws LinkerException
      * 		Problem while applying the recognizer.
      */
-	protected abstract U detectMentions(Article article) throws RecognizerException;
+	protected abstract U detectMentions(Article article) throws LinkerException;
 }
