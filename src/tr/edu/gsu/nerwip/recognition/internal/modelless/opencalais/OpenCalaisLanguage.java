@@ -31,7 +31,7 @@ import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 
 /**
- * List the languages supported by both
+ * Lists the languages supported by both
  * OpenCalais and Nerwip.
  * 
  * @author Yasa Akbulut

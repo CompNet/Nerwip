@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
+import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.linking.AbstractConverter;
 import tr.edu.gsu.nerwip.linking.LinkerName;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
@@ -41,7 +41,7 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * Nerwip objects. 
  * 
  * @param <T>
- * 		Internal representation of the mention list used by the linker.
+ * 		Internal representation of an entity used by the linker.
  * 		 
  * @author Vincent Labatut
  */
@@ -68,17 +68,17 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * Convert the specified objects, used internally by the associated NER
 	 * tool, into the mention list used internally by Nerwip.  
 	 * 
-	 * @param article
-	 * 		Original article (might be usefull, in order to get the full text).
+	 * @param entity
+	 * 		The concerned entity.
 	 * @param data
-	 * 		Data objects to process.
+	 * 		Result of the linking process for the specified entity.
 	 * @return
-	 * 		List of mentions detected by the associated linker.
+	 * 		A String representation of the raw linking result.
 	 * 
 	 * @throws ConverterException
 	 * 		Problem while performing the conversion.
 	 */
-	public abstract Mentions convert(Article article, T data) throws ConverterException;
+	public abstract String convert(AbstractEntity entity, T data) throws ConverterException;
 
 	/////////////////////////////////////////////////////////////////
 	// RAW				/////////////////////////////////////////////
@@ -106,7 +106,7 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	}
 
 	/**
-	 * Records the results of the NER task
+	 * Records the results of the linking task
 	 * in a text file, for archiving purposes.
 	 * 
 	 * @param article

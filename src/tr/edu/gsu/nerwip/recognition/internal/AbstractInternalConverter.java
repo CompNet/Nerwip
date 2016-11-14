@@ -106,7 +106,7 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	}
 
 	/**
-	 * Records the results of the NER task
+	 * Records the results of the recognition task
 	 * in a text file, for archiving purposes.
 	 * 
 	 * @param article

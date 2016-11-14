@@ -50,7 +50,7 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
  * 		 
  * @author Vincent Labatut
  */
-public abstract class AbstractInternalLinker<U,T extends AbstractInternalConverter<U>> extends AbstractLinker
+public abstract class AbstractInternalLinker<U,T extends AbstractInternalConverter> extends AbstractLinker
 {	
 	/**
 	 * Builds a new internal linker.
@@ -103,9 +103,9 @@ public abstract class AbstractInternalLinker<U,T extends AbstractInternalConvert
 					logger.log("WARNING: This linker does not handle the language of this article ("+language+")");
 				
 				// apply the linker
-				logger.log("Detect the mentions");
+				logger.log("Link the entities");
 				prepareLinker();
-				U intRes = detectMentions(article);
+				String intRes = linkEntities(article, mentions, entities);
 				
 				// possibly record mentions as they are outputted (useful for debug)
 				if(outRawResults)
@@ -182,11 +182,15 @@ public abstract class AbstractInternalLinker<U,T extends AbstractInternalConvert
      * 
      * @param article
      * 		Article to process.
-     * @return
-     * 		Object representing the detected mentions.
+	 * @param mentions
+	 * 		Previously detected mentions for the considered article, to be updated.
+	 * @param entities
+	 * 		Known entities, to be updated.
+	 * @return
+	 * 		String representation of the linker original output.
      * 
      * @throws LinkerException
      * 		Problem while applying the recognizer.
      */
-	protected abstract U detectMentions(Article article) throws LinkerException;
+	protected abstract String linkEntities(Article article, Mentions mentions, Entities entities) throws LinkerException;
 }
