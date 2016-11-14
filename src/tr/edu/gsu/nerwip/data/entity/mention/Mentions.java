@@ -61,56 +61,55 @@ public class Mentions
 {	
 	/**
 	 * Builds a Mentions object with current
-	 * date and reference source, and the specified
-	 * editor name.
+	 * date and the reference recognizer.
 	 */
 	public Mentions()
 	{	initDates();
-		source = RecognizerName.REFERENCE;
+		recognizer = RecognizerName.REFERENCE;
 	}
 	
 	/**
 	 * Builds a Mentions object with current
-	 * date and specified source.
+	 * date and specified recognizer.
 	 * 
-	 * @param source
-	 * 		Source of the mentions (a recognizer).
+	 * @param recognizer
+	 * 		Recognizer used to get the mentions.
 	 */
-	public Mentions(RecognizerName source)
+	public Mentions(RecognizerName recognizer)
 	{	initDates();
-		this.source = source;
+		this.recognizer = recognizer;
 	}
 	
 //	/**
 //	 * Builds a Mentions object with specified
-//	 * date and source.
+//	 * date and recognizer.
 //	 * 
-//	 * @param source
-//	 * 		Source of the mentions (a recognizer).
+//	 * @param recognizer
+//	 * 		Recognizer used to get the mentions.
 //	 * @param date
 //	 * 		Date the mentions were detected.
 //	 */
-//	public Mentions(RecognizerName source, Date date)
+//	public Mentions(RecognizerName recognizer, Date date)
 //	{	this.creationDate = date;
 //		this.modificationDate = date;
-//		this.source = source;
+//		this.recognizer = recognizer;
 //	}
 	
 	/**
 	 * Builds a Mentions object with specified
-	 * dates and source.
+	 * dates and recognizer.
 	 * 
-	 * @param source
-	 * 		Source of the mentions (a recognizer).
+	 * @param recognizer
+	 * 		Recognizer used to get the mentions.
 	 * @param creationDate
 	 * 		Date the mentions were detected.
 	 * @param modificationDate
 	 * 		Date the mentions were last modified.
 	 */
-	public Mentions(RecognizerName source, Date creationDate, Date modificationDate)
+	public Mentions(RecognizerName recognizer, Date creationDate, Date modificationDate)
 	{	this.creationDate = creationDate;
 		this.modificationDate = modificationDate;
-		this.source = source;
+		this.recognizer = recognizer;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -176,10 +175,10 @@ public class Mentions
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// SOURCE			/////////////////////////////////////////////
+	// RECOGNIZER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Recognizer which detected these mentions (or {@link RecognizerName#REFERENCE} for a manual annotations) */
-	private RecognizerName source = null;
+	/** Recognizer which detected these mentions (or {@link RecognizerName#REFERENCE} for manual annotations) */
+	private RecognizerName recognizer = null;
 	
 	/**
 	 * Returns the recognizer which detected
@@ -188,19 +187,19 @@ public class Mentions
 	 * @return
 	 * 		Name of the recognizer having detected these mentions.
 	 */
-	public RecognizerName getSource()
-	{	return source;
+	public RecognizerName getRecognizer()
+	{	return recognizer;
 	}
 	
 	/**
 	 * Changes the recognizer which detected
 	 * these mentions.
 	 * 
-	 * @param source
+	 * @param recognizer
 	 * 		New name of the recognizer having detected these mentions.
 	 */
-	public void setSource(RecognizerName source)
-	{	this.source = source;
+	public void setRecognizer(RecognizerName recognizer)
+	{	this.recognizer = recognizer;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -305,7 +304,7 @@ public class Mentions
 	}
 	
 	/**
-	 * Adds all the mentions from the specifid object
+	 * Adds all the mentions from the specified object
 	 * to this object.
 	 * <br/>
 	 * No redundance check is performed. 
@@ -666,9 +665,9 @@ public class Mentions
 		// load file
 		Element element = XmlTools.getRootFromFile(dataFile,schemaFile);
 		
-		// get source
-		String sourceStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
-		RecognizerName source = RecognizerName.valueOf(sourceStr);
+		// get recognizer
+		String recognizerStr = element.getAttributeValue(XmlNames.ATT_RECOGNIZER);
+		RecognizerName recognizer = RecognizerName.valueOf(recognizerStr);
 		
 		// get dates
 //String creationDateStr = element.getAttributeValue(XmlNames.ATT_DATE);
@@ -683,12 +682,12 @@ public class Mentions
 		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
 		
 		// get mentions
-//Mentions result = new Mentions(source, date);
-		Mentions result = new Mentions(source, creationDate, modificationDate);
+//Mentions result = new Mentions(recognizer, date);
+		Mentions result = new Mentions(recognizer, creationDate, modificationDate);
 		result.setEditor(editor);
 		List<Element> elements = element.getChildren(XmlNames.ELT_MENTION);
 		for(Element e: elements)
-		{	AbstractMention<?> mention = AbstractMention.importFromElement(e, source);
+		{	AbstractMention<?> mention = AbstractMention.importFromElement(e, recognizer);
 			result.addMention(mention);
 		}
 		Collections.sort(result.mentions);
@@ -715,9 +714,9 @@ public class Mentions
 		// build xml document
 		Element element = new Element(XmlNames.ELT_MENTIONS);
 		
-		// insert source attribute
-		Attribute sourceAttr = new Attribute(XmlNames.ATT_SOURCE, source.toString());
-		element.setAttribute(sourceAttr);
+		// insert recognizer attribute
+		Attribute recognizerAttr = new Attribute(XmlNames.ATT_RECOGNIZER, recognizer.toString());
+		element.setAttribute(recognizerAttr);
 		
 		// insert date attributes
 		String creationDateStr = TimeFormatting.formatXmlTime(creationDate);

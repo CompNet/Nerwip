@@ -57,7 +57,7 @@ public class XmlNames
 	/** Some object name */
 	public static final String ATT_NAME = "name";
 	/** Recognizer used to detect the mention */
-	public static final String ATT_SOURCE = "source";
+	public static final String ATT_RECOGNIZER = "source"; //TODO switch to "recognizer"
 	/** Mention start position */
 	public static final String ATT_START = "start";
 	/** GUI tooltip */

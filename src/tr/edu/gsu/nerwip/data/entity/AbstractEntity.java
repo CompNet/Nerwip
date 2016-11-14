@@ -47,8 +47,6 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 	/////////////////////////////////////////////////////////////////
 	// ENTITY ID		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Counter used to number entities */
-	protected static long nextInternalId = 0;
 	/** Internal id of this entity */
 	protected long internalId = -1;
 	
