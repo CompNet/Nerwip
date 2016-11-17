@@ -165,7 +165,30 @@ public abstract class AbstractLinker
 	 * 		Problem while applying the linker.
 	 */
 	public abstract void process(Article article, Mentions mentions, Entities entities) throws LinkerException;
-
+	
+	/////////////////////////////////////////////////////////////////
+	// RESULTS			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Whether or not to write the raw results in a text file (for debug purposes) */
+	protected boolean outRawResults = false;
+	
+	/**
+	 * Changes the flag regarding the outputting of the linker
+	 * raw results (i.e. before conversion to our format) in a text file.
+	 * Useful for debugging, but it takes space. By default, this is disabled.
+	 * <br/>
+	 * Note that for external tools, this file generally must be produced,
+	 * since it is used for communicating with the external tool. In this
+	 * case, if this option is disabled, the file is deleted when not needed
+	 * anymore.
+	 * 
+	 * @param enabled
+	 * 		{@code true} to output a text file.
+	 */
+	public void setOutputRawResults(boolean enabled)
+	{	this.outRawResults = enabled;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// STRING		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

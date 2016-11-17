@@ -33,11 +33,9 @@ import org.xml.sax.SAXException;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.Entities;
-import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.linking.AbstractLinker;
 import tr.edu.gsu.nerwip.linking.LinkerException;
-import tr.edu.gsu.nerwip.recognition.ConverterException;
 
 /**
  * This class is used to represent or implement linkers invocable 
@@ -50,7 +48,7 @@ import tr.edu.gsu.nerwip.recognition.ConverterException;
  * 		 
  * @author Vincent Labatut
  */
-public abstract class AbstractInternalLinker<U,T extends AbstractInternalConverter> extends AbstractLinker
+public abstract class AbstractInternalLinker<U,T extends AbstractInternalConverter<U>> extends AbstractLinker
 {	
 	/**
 	 * Builds a new internal linker.
@@ -105,9 +103,9 @@ public abstract class AbstractInternalLinker<U,T extends AbstractInternalConvert
 				// apply the linker
 				logger.log("Link the entities");
 				prepareLinker();
-				String intRes = linkEntities(article, mentions, entities);
+				U intRes = linkEntities(article, mentions, entities);
 				
-				// possibly record mentions as they are outputted (useful for debug)
+				// possibly record results as they are outputted (useful for debug)
 				if(outRawResults)
 				{	logger.log("Record raw "+getName()+" results");
 					converter.writeRawResults(article, intRes);
@@ -115,32 +113,9 @@ public abstract class AbstractInternalLinker<U,T extends AbstractInternalConvert
 				else
 					logger.log("Raw results not recorded (option disabled)");
 				
-				// convert mentions to our internal representation
-				logger.log("Convert mentions to internal representation");
-				result = converter.convert(article,intRes);
-	
-				// check if the mentions are consistent
-				String text = article.getRawText();
-				for(AbstractMention<?> mention: result.getMentions())
-				{	if(!mention.checkText(article))
-						logger.log("ERROR: mention text not consistant with text/position, '"+mention.getStringValue()+" vs. '"+text.substring(mention.getStartPos(),mention.getEndPos())+"'");
-				}
-				
-				// possibly trim mentions (remove non-digit/letter chars at beginning/end)
-				logger.log("Possibly clean mentions.");
-				cleanMentions(result);
-				
-				// possibly filter stop-words and pronouns
-				logger.log("Filter mentions (pronouns, stop-words, etc.)");
-				filterNoise(result,language);
-				
-				// filter overlapping mentions
-				logger.log("Filter overlapping mentions");
-				filterRedundancy(result);
-				
-				// record mentions using our xml format
+				// record results using our xml format
 				logger.log("Convert mentions to our XML format");
-				converter.writeXmlResults(article,result);
+				converter.writeXmlResults(article,mentions,entities);
 			}
 			
 			// if the results already exist, we fetch them
@@ -161,16 +136,10 @@ public abstract class AbstractInternalLinker<U,T extends AbstractInternalConvert
 		{	e.printStackTrace();
 			throw new LinkerException(e.getMessage());
 		}
-		catch (ConverterException e)
-		{	e.printStackTrace();
-			throw new LinkerException(e.getMessage());
-		}
-	
+		
 		int nbrEnt = result.getMentions().size();
 		logger.log(getName()+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
 		logger.decreaseOffset();
-
-		return result;
 	}
 	
     /**
@@ -187,10 +156,10 @@ public abstract class AbstractInternalLinker<U,T extends AbstractInternalConvert
 	 * @param entities
 	 * 		Known entities, to be updated.
 	 * @return
-	 * 		String representation of the linker original output.
+	 * 		Object representating the linker original output.
      * 
      * @throws LinkerException
      * 		Problem while applying the recognizer.
      */
-	protected abstract String linkEntities(Article article, Mentions mentions, Entities entities) throws LinkerException;
+	protected abstract U linkEntities(Article article, Mentions mentions, Entities entities) throws LinkerException;
 }

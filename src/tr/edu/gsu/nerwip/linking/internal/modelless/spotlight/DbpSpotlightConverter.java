@@ -31,9 +31,8 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
+import tr.edu.gsu.nerwip.linking.LinkerName;
+import tr.edu.gsu.nerwip.linking.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
@@ -50,21 +49,21 @@ public class DbpSpotlightConverter extends AbstractInternalConverter<List<Mentio
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public DbpSpotlightConverter(String nerFolder)
-	{	super(RecognizerName.WIKIPEDIADATER, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(LinkerName.SPOTLIGHT, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	@Override
-	public Mentions convert(Article article, List<MentionDate> mentions) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
-		
-		for(MentionDate mention: mentions)
-			result.addMention(mention);
-		
-		return result;
-	}
+//	@Override
+//	public Mentions convert(Article article, List<MentionDate> mentions) throws ConverterException
+//	{	Mentions result = new Mentions(recognizerName);
+//		
+//		for(MentionDate mention: mentions)
+//			result.addMention(mention);
+//		
+//		return result;
+//	}
 	
 	/////////////////////////////////////////////////////////////////
 	// RAW				/////////////////////////////////////////////

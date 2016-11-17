@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.recognition.internal;
+package tr.edu.gsu.nerwip.linking.internal.modelless;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -28,57 +28,54 @@ import java.io.File;
 import java.io.IOException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractConverter;
-import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.linking.LinkerName;
+import tr.edu.gsu.nerwip.linking.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
- * This class represents a converter for an internal recognizer,
- * i.e. a tool executed programmatically from Nerwip.
- * It is able to convert data from the tool format towards
- * Nerwip objects. 
- * 
- * @param <T>
- * 		Internal representation of the mention list used by the recognizer.
+ * This class represents a converter for a model-less internal linker,
+ * i.e. a tool executed programmatically from Nerwip, but which does
+ * not require any local resource (generally: a Web service).
+ * It is able to convert data from some string returned by the tool 
+ * towards Nerwip objects. 
  * 		 
  * @author Vincent Labatut
  */
-public abstract class AbstractInternalConverter<T> extends AbstractConverter
+public abstract class AbstractModellessInternalConverter extends AbstractInternalConverter<String>
 {	
 	/**
 	 * Builds a new internal converter.
 	 * 
-	 * @param recognizerName
-	 * 		Name of the associated recognizer.
+	 * @param linkerName
+	 * 		Name of the associated linker.
 	 * @param nerFolder
-	 * 		Name of the associated recognizer folder.
+	 * 		Name of the associated linker folder.
 	 * @param rawFile
 	 * 		Name of the raw file (i.e. external format).
 	 */
-	public AbstractInternalConverter(RecognizerName recognizerName, String nerFolder, String rawFile)
-	{	super(recognizerName,nerFolder,rawFile);
+	public AbstractModellessInternalConverter(LinkerName linkerName, String nerFolder, String rawFile)
+	{	super(linkerName,nerFolder,rawFile);
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Convert the specified objects, used internally by the associated
-	 * recognizer, into the mention list used internally by Nerwip.  
+	 * Convert the specified objects, used internally by the associated 
+	 * linker, into the objects used internally by Nerwip.  
 	 * 
-	 * @param article
-	 * 		Original article (might be usefull, in order to get the full text).
+	 * @param entity
+	 * 		The concerned entity.
 	 * @param data
-	 * 		Data objects to process.
+	 * 		Result of the linking process for the specified entity.
 	 * @return
-	 * 		List of mentions detected by the associated recognizer.
+	 * 		A String representation of the raw linking result.
 	 * 
 	 * @throws ConverterException
 	 * 		Problem while performing the conversion.
 	 */
-	public abstract Mentions convert(Article article, T data) throws ConverterException;
+//	public abstract String convert(AbstractEntity entity, T data) throws ConverterException;
+//TODO maybe do that at the level of a single entity? or atomic data returned by the WS linker
 
 	/////////////////////////////////////////////////////////////////
 	// RAW				/////////////////////////////////////////////
@@ -90,32 +87,19 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * 
 	 * @param article
 	 * 		Concerned article.
-	 * @param results
-	 * 		String representation of the recognizer result.		
+	 * @param intRes
+	 * 		String representation of the linker result.		
 	 * 
 	 * @throws IOException 
 	 * 		Problem while recording the file.
 	 */
-	protected void writeRawResultsStr(Article article, String results) throws IOException
+	@Override
+	protected void writeRawResults(Article article, String intRes) throws IOException
 	{	File file = getRawFile(article);
 		File folder = file.getParentFile();
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		FileTools.writeTextFile(file, results, "UTF-8");
+		FileTools.writeTextFile(file, intRes, "UTF-8");
 	}
-
-	/**
-	 * Records the results of the recognition task
-	 * in a text file, for archiving purposes.
-	 * 
-	 * @param article
-	 * 		Concerned article.
-	 * @param intRes
-	 * 		Result of the mention detection, represented using the format internal to the recognizer.
-	 * 
-	 * @throws IOException
-	 * 		Problem while writing the file.
-	 */
-	protected abstract void writeRawResults(Article article, T intRes) throws IOException;
 }

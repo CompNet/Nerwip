@@ -31,6 +31,7 @@ import java.text.ParseException;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
+import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -139,11 +140,14 @@ public abstract class AbstractConverter
 	 * @param article
 	 * 		Concerned article.
 	 * @param mentions
-	 * 		List of the detected mentions.
+	 * 		List of the processed mentions.
+	 * @param entities
+	 * 		List of the corresponding entities.
+	 * 
 	 * @throws IOException
 	 * 		Problem while writing the file.
 	 */
-	public void writeXmlResults(Article article, Mentions mentions) throws IOException
+	public void writeXmlResults(Article article, Mentions mentions, Entities entities) throws IOException
 	{	// data file
 		File file = getXmlFile(article);
 		
@@ -152,7 +156,7 @@ public abstract class AbstractConverter
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		mentions.writeToXml(file); //TODO needs to add a flag incating we should also write the entity-related stuff (at least the id)
+		mentions.writeToXml(file); //TODO needs to add a flag indicating we should also write the entity-related stuff (at least the id)
 		//TODO the entities themselves can be written in a separate file (maybe put the main name in the mentions file? for the humans, so as a comment?)
 	}
 	

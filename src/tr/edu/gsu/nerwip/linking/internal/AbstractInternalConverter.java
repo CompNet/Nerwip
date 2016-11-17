@@ -28,10 +28,8 @@ import java.io.File;
 import java.io.IOException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
-import tr.edu.gsu.nerwip.data.entity.AbstractEntity;
 import tr.edu.gsu.nerwip.linking.AbstractConverter;
 import tr.edu.gsu.nerwip.linking.LinkerName;
-import tr.edu.gsu.nerwip.recognition.ConverterException;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
@@ -65,8 +63,8 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Convert the specified objects, used internally by the associated NER
-	 * tool, into the mention list used internally by Nerwip.  
+	 * Convert the specified objects, used internally by the associated
+	 * linker, into the objects used internally by Nerwip.  
 	 * 
 	 * @param entity
 	 * 		The concerned entity.
@@ -78,7 +76,8 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 * @throws ConverterException
 	 * 		Problem while performing the conversion.
 	 */
-	public abstract String convert(AbstractEntity entity, T data) throws ConverterException;
+//	public abstract String convert(AbstractEntity entity, T data) throws ConverterException;
+//TODO see which kind of conversion we actually need.
 
 	/////////////////////////////////////////////////////////////////
 	// RAW				/////////////////////////////////////////////
@@ -119,5 +118,3 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	 */
 	protected abstract void writeRawResults(Article article, T intRes) throws IOException;
 }
-
-//TODO see which kind of conversion we actually need.
