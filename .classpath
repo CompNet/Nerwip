@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="lib/httpcore-4.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar" sourcepath="lib/jdom-2.0.6-sources.jar"/>
+	<classpathentry kind="lib" path="lib/dbpedia-spotlight-0.6.5-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
