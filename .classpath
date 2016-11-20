@@ -6,8 +6,6 @@
 	<classpathentry kind="lib" path="lib/filterbuilder.jar"/>
 	<classpathentry kind="lib" path="lib/htmllexer.jar"/>
 	<classpathentry kind="lib" path="lib/htmlparser-src.zip" sourcepath="lib/htmlparser-2-src.zip.zip"/>
-	<classpathentry kind="lib" path="lib/httpclient-4.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/json_simple-1.1.jar" sourcepath="lib/json_simple-1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/lingpipe-4.1.0.jar" sourcepath="lib/lingpipe-4.0.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
@@ -25,12 +23,9 @@
 	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar" sourcepath="lib/commons-codec-1.10-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar" sourcepath="lib/commons-lang3-3.4-src.zip"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar" sourcepath="lib/commons-io-2.4-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-csv-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-4.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-cache-4.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.2.6.jar" sourcepath="lib/httpclient-4.2.6-src.zip"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.2.5.jar" sourcepath="lib/httpcore-4.2.5-src.zip"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar" sourcepath="lib/jdom-2.0.6-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
