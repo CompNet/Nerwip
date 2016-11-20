@@ -92,7 +92,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 */
 	public OpeNer(boolean parenSplit, boolean ignorePronouns, boolean exclusionOn)
 	{	// it seems necessary to clean mentions with OpeNer,
-		// other wise it sometimes includes punctation in the mentions.
+		// otherwise it sometimes includes punctation in the mentions.
 		super(true,ignorePronouns,exclusionOn);
 		
 		setIgnoreNumbers(false);
@@ -193,8 +193,6 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		{	logger.log("Processing OpeNer part #"+(i+1)+"/"+parts.size());
 			logger.increaseOffset();
 			String part = parts.get(i);
-if(i==18)
-	System.out.print("");
 			
 			try
 			{	// tokenize the text
@@ -209,7 +207,7 @@ if(i==18)
 				String parsedText = performParsing(taggedText);
 				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
 				
-				// perform the NER
+				// perform the recognition
 				String nerText = performRecognition(parsedText);
 				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
 

@@ -43,8 +43,8 @@ import tr.edu.gsu.nerwip.linking.LinkerName;
 import tr.edu.gsu.nerwip.linking.internal.modelless.AbstractModellessInternalLinker;
 
 /**
- * Takes advantage of the DBpedia Spotlight Web service to identify
- * entities in the DBpedia database.
+ * Takes advantage of the DBpedia Spotlight Web service to link
+ * mentions to entities from the DBpedia database.
  * 
  * @author Vincent Labatut
  */
@@ -99,7 +99,8 @@ public class DbpSpotlight extends AbstractModellessInternalLinker<List<MentionDa
 	/////////////////////////////////////////////////////////////////
 	/** List of languages this recognizer can treat */
 	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
-		ArticleLanguage.EN //TODO complete
+		ArticleLanguage.EN,
+		ArticleLanguage.FR
 	);
 
 	@Override

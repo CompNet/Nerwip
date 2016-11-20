@@ -86,9 +86,9 @@ public class SpotlightTools
 	private final static String ELT_RESOURCE = "Resource";
 
 	/** Attribute representing the name of an entity */
-	private final static String ATT_NAME = "surfaceForm";
+	private final static String ATT_SURFACE_FORM = "surfaceForm";
 	/** Attribute representing the type of an entity */
-	private final static String ATT_TYPE = "types";
+	private final static String ATT_TYPES = "types";
 	/** Attribute representing the id of an entity */
 	private final static String ATT_URI = "URI";
 
@@ -96,7 +96,10 @@ public class SpotlightTools
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Web service URL */
-	private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/disambiguate";
+//	private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/disambiguate";
+//	private static final String SERVICE_URL = "https://github.com/dbpedia-spotlight/dbpedia-spotlightrest/disambiguate";
+//	private static final String SERVICE_URL = "http://spotlight.sztaki.hu:2222/rest/disambiguate";	//EN
+	private static final String SERVICE_URL = "http://spotlight.sztaki.hu:2225/rest/disambiguate";	//FR
 
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
@@ -132,13 +135,13 @@ public class SpotlightTools
 		{	ListIterator<AbstractMention<?>> itr = entityList.listIterator(i);
 
 			// get the entity	    	
-			AbstractMention<?> entityy = itr.previous(); 
+			AbstractMention<?> mention = itr.previous(); 
 
-			int startPos = entityy.getStartPos(); //offset
+			int startPos = mention.getStartPos(); //offset
 			String startPosition = String.valueOf(startPos);
-			String value = entityy.getStringValue();
+			String value = mention.getStringValue();
 
-			Element surfaceForm = new Element(ATT_NAME);
+			Element surfaceForm = new Element(ATT_SURFACE_FORM);
 			Attribute name = new Attribute("name", value);
 			surfaceForm.setAttribute(name);
 
@@ -382,7 +385,7 @@ public class SpotlightTools
 			Element resources = root.getChild(ELT_RESOURCES);
 			List<Element> wordElts = resources.getChildren(ELT_RESOURCE);
 			for(Element wordElt: wordElts)
-			{	String entityName = wordElt.getAttributeValue(ATT_NAME);
+			{	String entityName = wordElt.getAttributeValue(ATT_SURFACE_FORM);
 				//logger.log("entityName= " + entityName);
 				entityList.add(entityName);
 
@@ -465,7 +468,7 @@ public class SpotlightTools
 			List<Element> wordElts = resources.getChildren(ELT_RESOURCE);
 			List<String> L = new ArrayList<String>();
 			for(Element wordElt: wordElts)
-			{	String types = wordElt.getAttributeValue(ATT_TYPE);
+			{	String types = wordElt.getAttributeValue(ATT_TYPES);
 
 				//logger.log("types= " + types);
 				String[] splitArray = types.split(",");

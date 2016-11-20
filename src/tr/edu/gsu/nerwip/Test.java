@@ -110,6 +110,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.dateextractor.DateExtrac
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalais;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opencalais.OpenCalaisLanguage;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.opener.OpeNer;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.spotlight.DbpSpotlight;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
@@ -158,9 +159,9 @@ public class Test
 //		String name = "Émilien_Brigault";
 //		String name = "Aimé Piton";
  //   	String name = "Albert_Chauly";
-//    	String name = "Achille_Eugène_Fèvre";
+    	String name = "Achille_Eugène_Fèvre";
 //		String name = "Gilles_Marcel_Cachin";
-    	String name = "Alexandre_Bracke";
+//    	String name = "Alexandre_Bracke";
 
 //		String name = "Barack_Obama";
      	
@@ -183,9 +184,9 @@ public class Test
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
+		testSpotlightRecognizer(name);
 //		testSpotlight();
 //     	testNLDistance(S, T);
-		
 //		testEventsExtraction();
 //		testEventComparison();
 //		testFunction();
@@ -213,7 +214,7 @@ public class Test
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -469,7 +470,8 @@ public class Test
 		
 		ArticleList folders = ArticleLists.getArticleList();
 		int i = 0;
-		for(File folder: folders)
+//		for(File folder: folders)
+File folder = folders.get(0);		
 		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
 			logger.increaseOffset();
 			// get the article texts
@@ -1183,6 +1185,36 @@ public class Test
 			// all the corpus
 			testAllCorpus(heidelTime,0);
 		}
+		
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Tests the features related to NER. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testSpotlightRecognizer(String name) throws Exception
+	{	logger.setName("Test-Spotlight-Recognizer");
+		logger.log("Start testing Spotlight");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		DbpSpotlight spotlight = new DbpSpotlight();
+		spotlight.setOutputRawResults(true);
+		spotlight.setCacheEnabled(false);
+		
+		// only the specified article
+		spotlight.process(article);
+		
+		// all the corpus
+//		testAllCorpus(openCalais,0);
 		
 		logger.decreaseOffset();
 	}
@@ -2165,6 +2197,13 @@ public class Test
  * - Maybe we should not put linking and resolution in different classes, since some tools do both at once.
  *   Rather set up a single abstract class, whose process can be "partially" implemented by certain tools.
  *   Tools just doing the linking part could do the resolving by just assigning each mention to a distinct entity.
- *   Actually, this could be also done by integrating to recognizers... but we lost the ability to combine (compose) them.
+ *   Actually, this could be also done by integrating to recognizers... but we'd lose the ability to combine (compose) them.
  *   The same remark applies when composing resolving and linking, in fact... so is it really a good idea?
+ * - Rather: define a generic "tool" class able of performing all three tasks. Some instances do only some of them.
+ *   >> this seems like the best option
+ *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entites can be retrieved a posteriori.
+ *   Also the resolver and the linker need to receive an instance of the tool on which the data they receive are built, in order to know where to record their own results.
+ *   
+ *   1) identify all relevant dbpedia types
+ *   2) understand the format
  */

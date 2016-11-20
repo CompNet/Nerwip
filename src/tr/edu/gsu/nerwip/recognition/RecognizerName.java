@@ -49,6 +49,8 @@ public enum RecognizerName
 	OPENER,
 	/** Apache OpenNLP */
 	OPENNLP, 
+	/** DBpedia Spotlight Web Service */
+	SPOTLIGHT,
 	/** Stanford Named Entity Recognizer */ 
 	STANFORD, 
 	
