@@ -33,7 +33,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
  * some processing related to DBpedia Spotlight.
  * 
  * @author Vincent Labatut
- * @author Abir Hadda
+ * @author Sabrine Ayachi
  */
 public class DbpCommonTools
 {	

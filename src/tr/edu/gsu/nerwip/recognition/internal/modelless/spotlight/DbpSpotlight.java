@@ -69,7 +69,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * TODO Spotlight is available as a set of Java libraries. We could directly 
  * integrate them in Nerwip.
  * 
- * @author Abir Hadda
+ * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
 public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<String>,DpbSpotlightConverter>

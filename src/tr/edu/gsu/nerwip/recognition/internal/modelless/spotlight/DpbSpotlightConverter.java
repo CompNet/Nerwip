@@ -32,7 +32,7 @@ import tr.edu.gsu.nerwip.tools.file.FileNames;
  * It can also read/write these results using raw text
  * and our XML format.
  * 
- * @author Abir Hadda
+ * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
 public class DpbSpotlightConverter extends AbstractInternalConverter<List<String>>

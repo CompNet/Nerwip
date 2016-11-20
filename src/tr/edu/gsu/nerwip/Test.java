@@ -2207,3 +2207,12 @@ File folder = folders.get(0);
  *   1) identify all relevant dbpedia types
  *   2) understand the format
  */
+
+/*
+ * Check libraries
+ * - why commons-csv-1.0.jar ?
+ * - what is filterbuilder.jar ?
+ * - htmlexer.jar ?
+ * - sitecapturer ?
+ * - thumbelina ?
+ */

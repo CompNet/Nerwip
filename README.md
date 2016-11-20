@@ -106,13 +106,16 @@ Here are the dependencies for Nerwip. All of them are included in the Eclipse pr
   * [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), needed by HeidelTime.
   * [Unitex](http://www-igm.univ-mlv.fr/~unitex/), needed by TagEn.
 * Non-included libraries: some libraries are not included in Nerwip and must be installed manually.  
-  * [OpenFST](http://www.openfst.org/), needed by Nero (see its `README` file for instructions).
-  * [Wapiti](http://wapiti.limsi.fr/), needed by Nero (again, see its `README` file for instructions).
+  * [OpenFST](http://www.openfst.org/), needed by Nero (see its `README` file in folder `res`, for instructions).
+  * [Wapiti](http://wapiti.limsi.fr/), needed by Nero (again, see its `README` file in folder `res`, for instructions).
 
 The project also makes use of several Web services:
 * [Reuters OpenCalais](http://new.opencalais.com/)
 * [OpeNER](http://www.opener-project.eu/)
+* [DBpedia Spotlight](https://github.com/dbpedia-spotlight/dbpedia-spotlight)
 
 ## References
 * **[AL'13]** Atdağ, S. & Labatut, V. A Comparison of Named Entity Recognition Tools Applied to Biographical Texts, 2nd International Conference on Systems and Computer Science, 2013, 228-233. 
 http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6632052&tag=1
+* **[L'13]** Labatut, V. Improved Named Entity Recognition Through SVM-Based Combination, Technical Report, 2013. 
+https://hal.archives-ouvertes.fr/hal-01322867/
