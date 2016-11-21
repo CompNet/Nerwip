@@ -246,11 +246,11 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 
 
 //				params.add(new BasicNameValuePair("Accept", "application/json"));
-				params.add(new BasicNameValuePair("Accept", "text/xml"));
+//				params.add(new BasicNameValuePair("Accept", "text/xml"));
 //				params.add(new BasicNameValuePair("output", "xml"));
 				params.add(new BasicNameValuePair("charset", "utf-8"));
-				params.add(new BasicNameValuePair("url", serviceUrl));
 				params.add(new BasicNameValuePair("text", part));
+				method.setHeader("Accept", "text/xml");
 				method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
 				logger.log("Send message to service");

@@ -86,17 +86,17 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private final static String ELT_TERM = "term";
 	/** Element containing the list of all detected mentions */
 	private final static String ELT_ENTITIES = "entities";
-	/** Element representing an mention */
+	/** Element representing a mention */
 	private final static String ELT_ENTITY = "entity";
-	/** Element containing the list of mentions to an mention */
+	/** Element containing the list of mentions to a mention */
 	private final static String ELT_REFERENCES = "references";
-	/** Element containing the list of external references for an mention */
+	/** Element containing the list of external references for a mention */
 	private final static String ELT_EXTERNAL_REFERENCES = "externalReferences";
-	/** Element representing an external reference for an mention */
+	/** Element representing an external reference for a mention */
 	private final static String ELT_EXTERNAL_REFERENCE = "externalReference";
-	/** Element representing a mention to an mention (in a reference element) or a reference to a word (in a term element) */
+	/** Element representing a mention to a mention (in a reference element) or a reference to a word (in a term element) */
 	private final static String ELT_SPAN = "span";
-	/** Element refering to a term constituting an mention mention */
+	/** Element refering to a term constituting a mention mention */
 	private final static String ELT_TARGET = "target";
 	/** Element representing a word (word form) */
 	private final static String ELT_WF = "wf";
@@ -107,7 +107,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	private final static String ATT_TID = "tid";
 	/** Attribute representing the id of a term or word in a target element */
 	private final static String ATT_ID = "id";
-	/** Attribute representing the type of an mention */
+	/** Attribute representing the type of a mention */
 	private final static String ATT_TYPE = "type";
 	/** Attribute representing the starting position of a word in the text */
 	private final static String ATT_OFFSET = "offset";
@@ -208,7 +208,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	/**
 	 * Receives an XML element and extract
 	 * the information necessary to create
-	 * an mention.
+	 * a mention.
 	 *  
 	 * @param element
 	 * 		Element to process.

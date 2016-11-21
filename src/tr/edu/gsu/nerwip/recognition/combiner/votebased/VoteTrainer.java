@@ -186,9 +186,9 @@ public class VoteTrainer
 	 * @throws IOException
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException
-	 * 		Problem while accessing an mention file. 
+	 * 		Problem while accessing a mention file. 
 	 * @throws ParseException
-	 * 		Problem while accessing an mention file. 
+	 * 		Problem while accessing a mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException

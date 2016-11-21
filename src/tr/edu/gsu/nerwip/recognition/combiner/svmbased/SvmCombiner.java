@@ -738,7 +738,7 @@ public class SvmCombiner extends AbstractCombiner
 	}
 
 	/**
-	 * Produces an mention type depending on the class 
+	 * Produces a mention type depending on the class 
 	 * outputed by the SVM.
 	 * <br/>
 	 * This method is used when using the word-by-wprd mode.
@@ -746,7 +746,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * @param y
 	 * 		Output of the SVM.
 	 * @return
-	 * 		An mention type, or {@code null} if no mention was detected.
+	 * 		A mention type, or {@code null} if no mention was detected.
 	 */
 	private EntityType convertSvmToMentionType(double y)
 	{	EntityType result;

@@ -648,7 +648,7 @@ if(data.x[index]==null || index==131)
 		// no mention was detected >> null type
 		if(type==null)
 			result = 1;
-		// an mention was detected >> just get its position
+		// a mention was detected >> just get its position
 		else
 		{	List<EntityType> handledTypes = combiner.getHandledMentionTypes();
 			result = handledTypes.indexOf(type) + 2;
@@ -677,7 +677,7 @@ if(data.x[index]==null || index==131)
 		// no mention was detected >> null type
 		if(wordMention==null)
 			result = 1;
-		// an mention was detected >> just get its position
+		// a mention was detected >> just get its position
 		else
 		{	AbstractMention<?> mention = wordMention.getMention();
 			int wordStart = wordMention.getStartPosition();
@@ -990,9 +990,9 @@ if(data.x[index]==null || index==131)
 	 * @throws IOException
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException
-	 * 		Problem while accessing an mention file. 
+	 * 		Problem while accessing a mention file. 
 	 * @throws ParseException
-	 * 		Problem while accessing an mention file. 
+	 * 		Problem while accessing a mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException
@@ -1067,9 +1067,9 @@ if(data.x[index]==null || index==131)
 	 * @throws IOException
 	 * 		Problem while accessing a file. 
 	 * @throws SAXException
-	 * 		Problem while accessing an mention file. 
+	 * 		Problem while accessing a mention file. 
 	 * @throws ParseException
-	 * 		Problem while accessing an mention file. 
+	 * 		Problem while accessing a mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
 	 * @throws RecognizerException

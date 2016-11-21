@@ -184,7 +184,7 @@ public class Test
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
-		testSpotlightRecognizer(name);
+//		testSpotlightRecognizer(name);
 //		testSpotlight();
 //     	testNLDistance(S, T);
 //		testEventsExtraction();
@@ -214,7 +214,7 @@ public class Test
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-//		testEvaluator();
+		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -1211,10 +1211,10 @@ File folder = folders.get(0);
 		spotlight.setCacheEnabled(false);
 		
 		// only the specified article
-		spotlight.process(article);
+//		spotlight.process(article);
 		
 		// all the corpus
-//		testAllCorpus(openCalais,0);
+		testAllCorpus(spotlight,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1651,14 +1651,14 @@ File folder = folders.get(0);
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
 //			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
-			new OpeNer(false, false, false),
-			new OpeNer(false, false, true),
-			new OpeNer(false, true, false),
-			new OpeNer(false, true, true),
-			new OpeNer(true, false, false),
-			new OpeNer(true, false, true),
-			new OpeNer(true, true, false),
-			new OpeNer(true, true, true),
+//			new OpeNer(false, false, false),
+//			new OpeNer(false, false, true),
+//			new OpeNer(false, true, false),
+//			new OpeNer(false, true, true),
+//			new OpeNer(true, false, false),
+//			new OpeNer(true, false, true),
+//			new OpeNer(true, true, false),
+//			new OpeNer(true, true, true),
 			
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,false),
 //			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL,loadOnDemand, false,true),
@@ -1669,6 +1669,8 @@ File folder = folders.get(0);
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, false),
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, true),	// LOC, ORG, PERS
 
+			new DbpSpotlight(),	// LOC, MEET, ORG, PERS, PROD
+				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, true,  false),
@@ -2203,6 +2205,9 @@ File folder = folders.get(0);
  *   >> this seems like the best option
  *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entites can be retrieved a posteriori.
  *   Also the resolver and the linker need to receive an instance of the tool on which the data they receive are built, in order to know where to record their own results.
+ *   
+ * - See if OpenNer can be adated to process links? And the other tools, too
+ * - Merge all processes in the same class (recog, resolv, link)   
  *   
  *   1) identify all relevant dbpedia types
  *   2) understand the format

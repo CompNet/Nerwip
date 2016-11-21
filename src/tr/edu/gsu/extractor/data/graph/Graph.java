@@ -37,9 +37,9 @@ import java.util.TreeSet;
 import org.jdom2.Comment;
 import org.jdom2.Element;
 
-import tr.edu.gsu.extractor.tools.xml.GraphmlTools;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
+import tr.edu.gsu.nerwip.tools.xml.GraphmlTools;
 import tr.edu.gsu.nerwip.tools.xml.XmlTools;
 
 /**

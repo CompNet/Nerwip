@@ -115,7 +115,8 @@ public class XmlTools
 		for(int i=0;i<files.length;i++)
 		{	if(files[i].isFile())
 			{	String name = files[i].getName();
-				Schema schema = schemaFactory.newSchema(files[i]);
+//if(!name.equals("graphml.xsd")) // URL doesn't respond, at the time of testing			
+{				Schema schema = schemaFactory.newSchema(files[i]);
 				// DOM parser
 				DocumentBuilderFactory documentBuilderfactory = DocumentBuilderFactory.newInstance();
 		        documentBuilderfactory.setNamespaceAware(true);
@@ -137,7 +138,8 @@ public class XmlTools
 			        }
 				});
 				DOCUMENT_BUILDERS.put(name,builder);
-	        }
+}
+			}
 		}
 	}
 	

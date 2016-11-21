@@ -263,9 +263,9 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	/////////////////////////////////////////////////////////////////
 	// POSITION			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Start position of an mention in the text */
+	/** Start position of a mention in the text */
 	protected int startPos = -1;
-	/** End position of an mention in the text */
+	/** End position of a mention in the text */
 	protected int endPos = -1;
 		
 	/**
@@ -585,7 +585,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	public abstract Element exportAsElement();
 	
 	/**
-	 * Builds an mention from the specified
+	 * Builds a mention from the specified
 	 * XML element.
 	 * 
 	 * @param element

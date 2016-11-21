@@ -26,7 +26,7 @@
 	If not, see <http://www.gnu.org/licenses/>.
  -->
 	
-	<group name="Entity" >
+	<group name="Mention" >
 		<text name="Date" value="Date" tooltip="Dates" />
 		<text name="Function" value="Function" tooltip="Functions" />
 		<text name="Location" value="Location" tooltip="Locations" />
@@ -49,20 +49,20 @@
 		<text name="Load" value="Open article" tooltip="Load the files related to an article" />
 		<text name="Previous" value="Previous article" tooltip="Go to the previous article" />
 		<text name="Next" value="Next article" tooltip="Go to the next article" />
-		<text name="Save" value="Save" tooltip="Record the modified text and entities" />
-		<text name="Copy" value="Save copy of reference" tooltip="Save a copy of the reference entities" />
+		<text name="Save" value="Save" tooltip="Record the modified text and mentions" />
+		<text name="Copy" value="Save copy of reference" tooltip="Save a copy of the reference mentions" />
 		<text name="Quit" value="Quit" tooltip="Quit" />
 		<text name="ArticleAnnotatedList" value="List annotated articles" tooltip="Generate a file listing all annotated articles" />
 		<text name="ArticleNonAnnotatedList" value="List non-annotated articles" tooltip="Generate a file listing all articles not annotated yet" />
 		
-		<text name="Insert" value="Insert" tooltip="Insert or convert an entity of type" />
-		<text name="Remove" value="Remove entity" tooltip="Remove an entity" />
-		<text name="ShiftLeft" value="Left-shift entities" tooltip="Left-shift by 1 character all the entities located after the cursor" />
-		<text name="ShiftRight" value="Right-shift entities" tooltip="Right-shift by 1 character all the entities located after the cursor" />
+		<text name="Insert" value="Insert" tooltip="Insert or convert a mention of type" />
+		<text name="Remove" value="Remove mention" tooltip="Remove a mention" />
+		<text name="ShiftLeft" value="Left-shift mentions" tooltip="Left-shift by 1 character all the mentions located after the cursor" />
+		<text name="ShiftRight" value="Right-shift mentions" tooltip="Right-shift by 1 character all the mentions located after the cursor" />
 		
-		<text name="Display" value="View" tooltip="Display/hide entities of type" />
-		<text name="ModeTypes" value="Types" tooltip="Display entity types" />
-		<text name="ModeComp" value="Comparison" tooltip="Compare the detected entities to those of the reference" />
+		<text name="Display" value="View" tooltip="Display/hide mentions of type" />
+		<text name="ModeTypes" value="Types" tooltip="Display mention types" />
+		<text name="ModeComp" value="Comparison" tooltip="Compare the detected mentions to those of the reference" />
 		<text name="Links" value="Hyperlinks" tooltip="Show/Hide the article hyperlinks" />
 		<text name="Larger" value="Larger font" tooltip="Increase the font size" />
 		<text name="Smaller" value="Smaller font" tooltip="Decrease the font size" />
@@ -96,7 +96,7 @@
 		<text name="LanguageError" value="Language error" tooltip="Error while loading the language file" />
 		<text name="LanguageErrorEnd" value="The previously selected language is therefore kept." />
 		<text name="Restart" value="Restart required" tooltip="You need to restart the software for the change to become effective." />
-		<text name="ChangeEditor" value="Editor's name" tooltip="Enter the name of the person currently editing entities (i.e. you):" />
+		<text name="ChangeEditor" value="Editor's name" tooltip="Enter the name of the person currently editing mentions (i.e. yourself):" />
 		
 		<text name="FirstLaunch" value="First launch" tooltip="This is the first launch of" />
 		<text name="FirstLaunchAsked" value="For this time only, you are now going to be asked to:" />

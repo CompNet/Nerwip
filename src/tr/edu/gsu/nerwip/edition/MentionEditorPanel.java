@@ -736,7 +736,7 @@ if(endPos>document.getLength())
 	}
 	
 	/**
-	 * Remove an mention from the list represented in this panel.
+	 * Remove a mention from the list represented in this panel.
 	 * The mention at the current carret position is removed, if there
 	 * is any. All mentions in the selection are removed, if some text is selected.
 	 * <br/>
@@ -1071,7 +1071,7 @@ if(endPos>document.getLength())
 			Document document = textPane.getDocument();
 			String text = document.getText(start, length);
 			
-//			// if the text is right before or after an mention: do not highlight it
+//			// if the text is right before or after a mention: do not highlight it
 //			boolean mentionAdjacent = isMentionAdjacent(start);
 			
 			// no need to update estimated mentions, since they're the same than reference, in this specific case

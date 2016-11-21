@@ -26,7 +26,7 @@
 	If not, see <http://www.gnu.org/licenses/>.
  -->
 	
-	<group name="Entity" >
+	<group name="Mention" >
 		<text name="Date" value="Date" tooltip="Dates" />
 		<text name="Function" value="Fonction" tooltip="Fonctions" />
 		<text name="Location" value="Lieu" tooltip="Lieux" />
@@ -49,20 +49,20 @@
 		<text name="Load" value="Ouvrir un article" tooltip="Charger tous les fichiers relatifs à un article" />
 		<text name="Previous" value="Article précédent" tooltip="Aller à l'article précédent" />
 		<text name="Next" value="Article suivant" tooltip="Aller à l'article suivant" />
-		<text name="Save" value="Enregistrer" tooltip="Enregistrer les modifications apportées au texte et/ou aux entités de la référence" />
-		<text name="Copy" value="Enregistrer une copie" tooltip="Enregistrer une copie des entités de la reférence" />
+		<text name="Save" value="Enregistrer" tooltip="Enregistrer les modifications apportées au texte et/ou aux mentions de la référence" />
+		<text name="Copy" value="Enregistrer une copie" tooltip="Enregistrer une copie des mentions de la reférence" />
 		<text name="Quit" value="Quitter" tooltip="Quitter" />
 		<text name="ArticleAnnotatedList" value="Lister les articles annotés" tooltip="Génère un fichier listant les articles annotés" />
 		<text name="ArticleNonAnnotatedList" value="Lister les articles non-annotés" tooltip="Génère un fichier listant les articles pas encore annotés" />
 		
-		<text name="Insert" value="Insérer" tooltip="Insérer ou convertir une entité de type" />
-		<text name="Remove" value="Supprimer une entité" tooltip="Supprimer une entité existante" />
-		<text name="ShiftLeft" value="Reculer les entités" tooltip="Décaler d'un caractère à gauche toutes les entités situées après le curseur" />
-		<text name="ShiftRight" value="Avancer les entités" tooltip="Décaler d'un caractère à droite toutes les entités situées après le curseur" />
+		<text name="Insert" value="Insérer" tooltip="Insérer ou convertir une mentions de type" />
+		<text name="Remove" value="Supprimer une mention" tooltip="Supprimer une mention existante" />
+		<text name="ShiftLeft" value="Reculer les mentions" tooltip="Décaler d'un caractère à gauche toutes les mentions situées après le curseur" />
+		<text name="ShiftRight" value="Avancer les mentions" tooltip="Décaler d'un caractère à droite toutes les mentions situées après le curseur" />
 		
-		<text name="Display" value="Afficher" tooltip="Afficher/masquer les entités de type" />
-		<text name="ModeTypes" value="Types" tooltip="Afficher les types des entités" />
-		<text name="ModeComp" value="Comparaison" tooltip="Comparer les entities détectées à celles de la reference" />
+		<text name="Display" value="Afficher" tooltip="Afficher/masquer les mentions de type" />
+		<text name="ModeTypes" value="Types" tooltip="Afficher les types des mentions" />
+		<text name="ModeComp" value="Comparaison" tooltip="Comparer les mentions détectées à celles de la reference" />
 		<text name="Links" value="Hyperliens" tooltip="Afficher/masquer les hyperliens contenus dans l'article" />
 		<text name="Larger" value="Agrandir texte" tooltip="Augmenter la taille de la police de caractères" />
 		<text name="Smaller" value="Réduire texte" tooltip="Diminuer la taille de la police de caractères" />
@@ -96,11 +96,11 @@
 		<text name="LanguageError" value="Erreur de chargement" tooltip="Impossible de charger le fichier de langue" />
 		<text name="LanguageErrorEnd" value="La langue précédemment sélectionnée est donc conservée." />
 		<text name="Restart" value="Redémarrage nécessaire" tooltip="Vous avez besoin de redémarrer le logiciel afin que le changement prenne effet." />
-		<text name="ChangeEditor" value="Nom de l'éditeur" tooltip="Entrez le nom de la personne éditant actuellement les entités (i.e. vous) :" />
+		<text name="ChangeEditor" value="Nom de l'éditeur" tooltip="Entrez le nom de la personne éditant actuellement les mentions (i.e. vous) :" />
 		
 		<text name="FirstLaunch" value="Première exécution" tooltip="Il s'agit de la première exécution de" />
 		<text name="FirstLaunchAsked" value="Pour cette fois seulement, vous allez devoir indiquer les informations suivantes:" />
-		<text name="FirstLaunchName" value="Votre nom en tant qu'éditeur des entités de référence" />
+		<text name="FirstLaunchName" value="Votre nom en tant qu'éditeur des mentions de référence" />
 		<text name="FirstLaunchFolder" value="Le dossier principal contenant le corpus" />
 		<text name="FirstLaunchWarning" value="Attention :" />
 		<text name="FirstLaunchMain" value="le dossier principal, et non pas le dossier d'un article" />

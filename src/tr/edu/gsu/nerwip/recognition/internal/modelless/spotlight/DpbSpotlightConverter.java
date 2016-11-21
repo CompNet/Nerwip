@@ -2,10 +2,14 @@ package tr.edu.gsu.nerwip.recognition.internal.modelless.spotlight;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -42,10 +46,6 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 	 * 
 	 * @param nerFolder
 	 * 		Folder used to stored the results of the recognizer.
-	 * @param parenSplit 
-	 * 		Indicates whether mentions containing parentheses
-	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is plit 
-	 * 		in two distinct mentions).
 	 */
 	public DpbSpotlightConverter(String nerFolder)
 	{	super(RecognizerName.SPOTLIGHT, nerFolder, FileNames.FI_OUTPUT_TEXT);
@@ -54,68 +54,50 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 	/////////////////////////////////////////////////////////////////
 	// TYPE CONVERSION MAP	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Prefix used to distinguish types from DBpedia classes or concepts */
+	private final static String TYPE_PREFIX = "Schema:";
+	/** List of strings to ignore during the type conversion */
+	private final static List<String> IGNORE_LIST = Arrays.asList(
+		TYPE_PREFIX+"Language"
+	);
 	/** Map of string to mention type conversion */
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
 	
 	/** Initialization of the conversion map */
 	static
-	{	CONVERSION_MAP.put("PERSON", EntityType.PERSON);
-		CONVERSION_MAP.put("LOCATION", EntityType.LOCATION);
-		CONVERSION_MAP.put("ORGANIZATION", EntityType.ORGANIZATION);
-		CONVERSION_MAP.put("DATE", EntityType.DATE);
+	{	CONVERSION_MAP.put(TYPE_PREFIX+"Event", EntityType.MEETING);
+		CONVERSION_MAP.put(TYPE_PREFIX+"Person", EntityType.PERSON);
+		CONVERSION_MAP.put(TYPE_PREFIX+"Place", EntityType.LOCATION);
+		CONVERSION_MAP.put(TYPE_PREFIX+"Organization", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put(TYPE_PREFIX+"CreativeWork", EntityType.PRODUCTION);
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// XML NAMES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Element containing the list of all tokenized words */
-	private final static String ELT_TEXT = "text";
-	/** Element containing the list of all identified terms */
-	private final static String ELT_TERMS = "terms";
-	/** Element representing a term */
-	private final static String ELT_TERM = "term";
 	/** Element containing the list of all detected mentions */
-	private final static String ELT_ENTITIES = "entities";
-	/** Element representing an mention */
-	private final static String ELT_ENTITY = "entity";
-	/** Element containing the list of mentions to an mention */
-	private final static String ELT_REFERENCES = "references";
-	/** Element containing the list of external references for an mention */
-	private final static String ELT_EXTERNAL_REFERENCES = "externalReferences";
-	/** Element representing an external reference for an mention */
-	private final static String ELT_EXTERNAL_REFERENCE = "externalReference";
-	/** Element representing a mention to an mention (in a reference element) or a reference to a word (in a term element) */
-	private final static String ELT_SPAN = "span";
-	/** Element refering to a term constituting an mention mention */
-	private final static String ELT_TARGET = "target";
-	/** Element representing a word (word form) */
-	private final static String ELT_WF = "wf";
+	private final static String ELT_RESOURCES = "Resources";
+	/** Element describing one detected mention */
+	private final static String ELT_RESOURCE = "Resource";
 
-	/** Attribute representing the id of a word */
-	private final static String ATT_WID = "wid";
-	/** Attribute representing the id of a term */
-	private final static String ATT_TID = "tid";
-	/** Attribute representing the id of a term or word in a target element */
-	private final static String ATT_ID = "id";
-	/** Attribute representing the type of an mention */
-	private final static String ATT_TYPE = "type";
-	/** Attribute representing the starting position of a word in the text */
+	/** Attribute representing the DBpedia URI associated to a mention */
+	private final static String ATT_URI = "URI";
+	/** List of types associated to a mention */
+	private final static String ATT_TYPES = "types";
+	/** Position of a mention in the original text */
 	private final static String ATT_OFFSET = "offset";
-	/** Attribute representing the length of a word in the text */
-	private final static String ATT_LENGTH = "length";
-	/** Attribute representing a knowledge base in an external reference */
-	private final static String ATT_RESOURCE = "resource";
-	/** Attribute representing a knowledge base id in an external reference */
-	private final static String ATT_REFERENCE = "resource";
-	/** Attribute representing a confidence score in an external reference */
-	private final static String ATT_CONFIDENCE = "confidence";
+	/** Number of occurrences of the entity in Wikipedia */
+	private final static String ATT_SUPPORT = "support";
+	/** Surface form of the mention */
+	private final static String ATT_SURFACE_FORM = "surfaceForm";
+	/** Relevance score (how good the second entity choice is compared to the returned one) */
+	private final static String ATT_SECOND_RANK = "percentageOfSecondRank";
+	/** Don't know what this is */
+	private final static String ATT_SIMILARITY_SCORE = "similarityScore";
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Indicates if mentions containing parentheses should be split */
-	private boolean parenSplit = true;
-	
 	@Override
 	public Mentions convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
@@ -130,53 +112,24 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 		{	i++;
 			logger.log("Processing part "+i+"/"+data.size()/2);
 			String originalText = it.next();
-			String openerAnswer = it.next();
+			String spotlightAnswer = it.next();
 			
 			try
 			{	// build DOM
 				logger.log("Build DOM");
 				SAXBuilder sb = new SAXBuilder();
-				Document doc = sb.build(new StringReader(openerAnswer));
+				Document doc = sb.build(new StringReader(spotlightAnswer));
 				Element root = doc.getRootElement();
 				
-				// index all the detected words
-				logger.log("Index all detected words");
-				Map<String,Element> wordMap = new HashMap<String,Element>();
-				Element textElt = root.getChild(ELT_TEXT);
-				List<Element> wordElts = textElt.getChildren(ELT_WF);
-				for(Element wordElt: wordElts)
-				{	String wid = wordElt.getAttributeValue(ATT_WID); 
-					wordMap.put(wid,wordElt);
-				}
-				
-				// index all the detected terms
-				logger.log("Index all detected terms");
-				Map<String,Element> termMap = new HashMap<String,Element>();
-				Element termsElt = root.getChild(ELT_TERMS);
-				List<Element> termElts = termsElt.getChildren(ELT_TERM);
-				for(Element termElt: termElts)
-				{	String tid = termElt.getAttributeValue(ATT_TID); 
-					termMap.put(tid,termElt);
-				}
-				
-				// process all mention elements
-				logger.log("Create mention objects");
-				Element entitiesElt = root.getChild(ELT_ENTITIES);
-				if(entitiesElt!=null)
-				{	List<Element> entityElts = entitiesElt.getChildren(ELT_ENTITY);
-					for(Element entityElt: entityElts)
-					{	AbstractMention<?> mention = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
-						if(mention!=null)
-						{	// possibly split in two distinct, smaller mentions when containing parentheses
-							AbstractMention<?>[] temp = processParentheses(mention);
-							if(temp==null)
-								result.addMention(mention);
-							else
-							{	for(AbstractMention<?> t: temp)
-									result.addMention(t);
-							}
-						}
-					}
+				// process each detected mention
+				logger.log("Process each detected mention");
+				Element eltResources = root.getChild(ELT_RESOURCES);
+				List<Element> eltResourceList = eltResources.getChildren(ELT_RESOURCE);
+				for(Element eltResource: eltResourceList)
+				{	AbstractMention<?> mention = convertElement(eltResource,prevSize,originalText);
+					if(mention!=null)
+						result.addMention(mention);
+					//TODO maybe a type could simply be retrieved from the DBpedia URI...
 				}
 				
 				// update size
@@ -198,14 +151,10 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 	/**
 	 * Receives an XML element and extract
 	 * the information necessary to create
-	 * an mention.
+	 * a mention.
 	 *  
 	 * @param element
 	 * 		Element to process.
-	 * @param wordMap
-	 * 		List of identified words.
-	 * @param termMap
-	 * 		List of identified terms.
 	 * @param prevSize
 	 * 		Size of the parts already processed. 
 	 * @param part
@@ -214,136 +163,86 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 	 * 		The resulting mention, or {@code null} if its
 	 * 		type is not supported.
 	 */
-	private AbstractMention<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
+	private AbstractMention<?> convertElement(Element element, int prevSize, String part)
 	{	AbstractMention<?> result = null;
+		logger.increaseOffset();
 		
-		String typeCode = element.getAttributeValue(ATT_TYPE);
-		EntityType type = CONVERSION_MAP.get(typeCode);
-		
-		if(type!=null)
-		{	// internal references
-			Element referencesElt = element.getChild(ELT_REFERENCES);
+		// parse the element
+		StringBuffer msg = new StringBuffer();
+			// surface form (check: compare with original text)
+			String surfaceForm = element.getAttributeValue(ATT_SURFACE_FORM);
+			msg.append("SurfaceForm="+surfaceForm);
+			// type associated to the mention/entity
+			String types = element.getAttributeValue(ATT_TYPES);
+			msg.append(" Types="+types);
+			// URI associated to the entity
+			String uri = element.getAttributeValue(ATT_URI);
+			msg.append(" URI="+uri);
+			// position of the mention
+			String offsetStr = element.getAttributeValue(ATT_OFFSET);
+			int offset = Integer.parseInt(offsetStr);
+			msg.append(" Offset="+offset);
+			// support of the entity in Wikipedia
+			String supportStr = element.getAttributeValue(ATT_SUPPORT);
+			int support = Integer.parseInt(supportStr);
+			msg.append(" Support="+support);
+			// relevance score 
+			String secondRankStr = element.getAttributeValue(ATT_SECOND_RANK);
+			Float secondRank = Float.parseFloat(secondRankStr);
+			msg.append(" PerSecondRank="+secondRank);
+			// don't know exactly what this is...
+			String similarityScoreStr = element.getAttributeValue(ATT_SIMILARITY_SCORE);
+			Float similarityScore = Float.parseFloat(similarityScoreStr);
+			msg.append(" SimilarityScore="+similarityScore);
+		logger.log(msg.toString());
 			
-			// process each span element
-			List<Element> spanElts = referencesElt.getChildren(ELT_SPAN);
-			if(spanElts.size()>1)
-				logger.log("WARNING: several mentions to the same entity, this info could be used!");
-			for(Element spanElt: spanElts)
-			{	// process each target (=term) in the span
-				List<Element> targetElts = spanElt.getChildren(ELT_TARGET);
-				int startPos = -1;
-				int endPos = 0;
-				for(Element targetElt: targetElts)
-				{	// get the refered term id
-					String id = targetElt.getAttributeValue(ATT_ID);
-					// get the corresponding term element
-					Element termElt = termMap.get(id);
-					
-					// retrieve its constituting words
-					Element spanElt2 = termElt.getChild(ELT_SPAN);
-					List<Element> targetElts2 = spanElt2.getChildren(ELT_TARGET);
-					int startPos2 = -1;
-					int endPos2 = 0;
-					for(Element targetElt2: targetElts2)
-					{	// get the referred word id
-						String id2 = targetElt2.getAttributeValue(ATT_ID);
-						// get the corresponding word element
-						Element wordElt = wordMap.get(id2);
-						
-						// get its position
-						String offsetStr = wordElt.getAttributeValue(ATT_OFFSET);
-						int offset = Integer.parseInt(offsetStr);
-						String lengthStr = wordElt.getAttributeValue(ATT_LENGTH);
-						int length = Integer.parseInt(lengthStr);
-						
-						// update term position
-						if(startPos2<0)
-							startPos2 = offset;
-						endPos2 = offset + length;
-					}
-					
-					// update mention position
-					if(startPos<0)
-						startPos = startPos2;
-					endPos = endPos2;
+		// get the mention type
+		EntityType type = null;
+		String[] temp = types.split(",");
+		Set<EntityType> typeList = new TreeSet<EntityType>(); 
+		Set<String> candidateList = new TreeSet<String>(); 
+		for(String tmp: temp)
+		{	if(!IGNORE_LIST.contains(tmp))
+			{	EntityType t = CONVERSION_MAP.get(tmp);
+				if(t==null)
+				{	if(tmp.startsWith(TYPE_PREFIX))
+						candidateList.add(tmp);
 				}
-				
-				// create mention
-				String valueStr = part.substring(startPos, endPos);
-				startPos = startPos + prevSize;
-				endPos = endPos + prevSize;
-				result = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
-				
-				// TODO we could add a unique code to the several mentions of the same entity
+				else
+					typeList.add(t);
 			}
+		}
+		
+		// continue only if there's a type
+		if(typeList.isEmpty())
+		{	// this is mainly in case we miss some important types when reverse engineering Spotlight's output
+			if(!candidateList.isEmpty())
+				logger.log("WARNING: could not find any type, when some of them started with "+TYPE_PREFIX+": "+candidateList.toString());
+			else
+				logger.log("Entity without a type >> ignoring");
+		}
+		else
+		{	// get the type
+			type = typeList.iterator().next();
+			if(typeList.size()>1)
+				logger.log("WARNING: several different types for the same entity ("+typeList.toString()+") >> Selecting the first one ("+type+")");
 			
-			// external references
-			Element extReferencesElt = element.getChild(ELT_EXTERNAL_REFERENCES);
-			if(extReferencesElt!=null)
-			{	// TODO we could retrieve the assocated knowledge base references
-				// https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc
-				List<Element> extReferenceElts = extReferencesElt.getChildren(ELT_EXTERNAL_REFERENCE);
-				logger.log("Found the following external references for mention "+result);
-				logger.increaseOffset();
-					for(Element extReferenceElt: extReferenceElts)
-					{	String resource = extReferenceElt.getAttributeValue(ATT_RESOURCE);
-						String reference = extReferenceElt.getAttributeValue(ATT_REFERENCE);
-						String confidence = extReferenceElt.getAttributeValue(ATT_CONFIDENCE);
-						logger.log("resource:"+resource+" reference:"+reference+" confidence:"+confidence);
-					}
-				logger.decreaseOffset();
+			// get the mention position
+			int startPos = prevSize + offset;
+			int length = surfaceForm.length();
+			int endPos = startPos + length;
+			
+			// compare detected surface form and original text
+			String valueStr = part.substring(offset, offset+length);
+			if(!valueStr.equalsIgnoreCase(surfaceForm))
+				logger.log("WARNING: the original and returned texts differ: \""+valueStr+"\" vs. \""+surfaceForm+"\"");
+			else
+			{	result = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				logger.log("Created mention "+result.toString());
 			}
 		}
 		
-		return result;
-	}
-	
-	/**
-	 * On strings such as "Limoges (Haute-Vienne)", OpeNer tends to detect a single mention
-	 * when there are actually two ("Limoges" and "Haute-Vienne"). This method allows to
-	 * post-process such results, in order to get both mentions.
-	 * 
-	 * @param mention
-	 * 		The original mention, containing both mentions.
-	 * @return
-	 * 		An array containing the two smaller mentions, or {@code null} if
-	 * 		the specified mention was not of the desired form.
-	 */
-	private AbstractMention<?>[] processParentheses(AbstractMention<?> mention)
-	{	AbstractMention<?>[] result = null;
-		
-		if(parenSplit && !(mention instanceof MentionDate))
-		{	// get mention info
-			String original = mention.getStringValue();
-			int startPos = mention.getStartPos();
-			EntityType type = mention.getType();
-			RecognizerName source = mention.getSource();
-	
-			// analyze the original string
-			int startPar = original.lastIndexOf('(');
-			int endPar = original.lastIndexOf(')');
-			if(startPar!=-1 && endPar!=-1 && startPar<endPar  // we need both opening and closing parentheses
-					&& !(startPar==0 && endPar==original.length()-1)) // to avoid treating things like "(Paris)" 
-			{	// first mention
-				String valueStr1 = original.substring(0,startPar);
-				int startPos1 = startPos;
-				int endPos1 = startPos + startPar;
-				AbstractMention<?> mention1 = AbstractMention.build(type, startPos1, endPos1, source, valueStr1);
-//if(valueStr1.isEmpty())
-//	System.out.print("");
-
-				// second mention
-				String valueStr2 = original.substring(startPar+1,endPar);
-				int startPos2 = startPos + startPar + 1;
-				int endPos2 = startPos + endPar;
-				AbstractMention<?> mention2 = AbstractMention.build(type, startPos2, endPos2, source, valueStr2);
-//if(valueStr2.isEmpty())
-//	System.out.print("");
-				
-				result = new AbstractMention<?>[]{mention1,mention2};
-			}
-		}
-		
+		logger.decreaseOffset();
 		return result;
 	}
 	
@@ -371,7 +270,7 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 					String kafTxt = xo.outputString(doc);
 					
 					// add formatted kaf
-					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - OpeNer Response <<<\n" + kafTxt + "\n";
+					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - Spotlight Response <<<\n" + kafTxt + "\n";
         		}
         		catch (JDOMException e)
         		{	e.printStackTrace();

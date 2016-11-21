@@ -25,7 +25,8 @@ package tr.edu.gsu.nerwip.data.entity;
  */
 
 /**
- * Type of the entities and mentions.
+ * Type of the entities and mentions. 
+ * The value {@code null} can be used to represent an unknown type.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut

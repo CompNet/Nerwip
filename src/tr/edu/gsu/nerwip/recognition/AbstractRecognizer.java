@@ -535,7 +535,7 @@ public abstract class AbstractRecognizer
 	 * @param mentions
 	 * 		The mentions already built.
 	 * @return
-	 * 		{@code true} iff the position is already included in an mention.
+	 * 		{@code true} iff the position is already included in a mention.
 	 */
 	protected boolean positionAlreadyUsed(int pos, List<AbstractMention<?>> mentions)
 	{	boolean result = false;
@@ -603,7 +603,7 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Gets an Mentions object and detects the overlapping mentions.
+	 * Gets a Mentions object and detects the overlapping mentions.
 	 * Only keeps the longest ones amongst them. This method uses
 	 * {@link #filterRedundancy(List)}.
 	 * 
