@@ -2206,7 +2206,11 @@ File folder = folders.get(0);
  *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entites can be retrieved a posteriori.
  *   Also the resolver and the linker need to receive an instance of the tool on which the data they receive are built, in order to know where to record their own results.
  *   
- * - See if OpenNer can be adated to process links? And the other tools, too
+ * - Spotlight: add some numerical params, re-do the calculations with various values
+ *   the support can be fixed, though.
+ * - Then see the generalisation to linking only and both. Resolving also, can be deduced from the linked entities.
+ *   
+ * - See if OpenNer can be adapted to process links? And the other tools, too.
  * - Merge all processes in the same class (recog, resolv, link)   
  *   
  *   1) identify all relevant dbpedia types
