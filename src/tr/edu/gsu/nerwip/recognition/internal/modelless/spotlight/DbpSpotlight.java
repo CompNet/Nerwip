@@ -78,24 +78,20 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 	 * Builds and sets up an object representing
 	 * the Spotlight recognizer.
 	 * 
-	 * @param parenSplit 
-	 * 		Indicates whether mentions containing parentheses
-	 * 		should be split (e.g. "Limoges (Haute-Vienne)" is split 
-	 * 		in two distinct mentions).
-	 * @param ignorePronouns
-	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param exclusionOn
-	 * 		Whether or not stop words should be excluded from the detection.
+	 * @param minConf 
+	 * 		Minimal confidence for the returned entities.
 	 */
-	public DbpSpotlight()
+	public DbpSpotlight(float minConf)
 	{	super(true,false,false);
+		
+		this.minConf = minConf;
 		
 		setIgnoreNumbers(false);
 		
 		// init converter
 		converter = new DpbSpotlightConverter(getFolder());
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -103,12 +99,6 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 	public RecognizerName getName()
 	{	return RecognizerName.SPOTLIGHT;
 	}
-
-	/////////////////////////////////////////////////////////////////
-	// CONVERTER		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Indicates if mentions containing parentheses should be split */
-	private boolean parenSplit = true;
 	
 	/////////////////////////////////////////////////////////////////
 	// FOLDER			/////////////////////////////////////////////
@@ -117,13 +107,11 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 	public String getFolder()
 	{	String result = getName().toString();
 		
-//		result = result + "_" + "parenSplit=" + parenSplit;
-//		result = result + "_" + "ignPro=" + ignorePronouns;
-//		result = result + "_" + "exclude=" + exclusionOn;
+		result = result + "_" + "minConf=" + minConf;
 		
 		return result;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -154,6 +142,12 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 	{	boolean result = HANDLED_LANGUAGES.contains(language);
 		return result;
 	}
+
+	/////////////////////////////////////////////////////////////////
+	// MINIMAL CONFIDENCE	/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Minimal confidence */
+	private float minConf;
 
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
@@ -205,12 +199,12 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 					// which means the lower this score, the further the first ranked entity was "in the lead".
 					// Available in: /candidates, /annotate
 					// Default vale: 0.1
-//					params.add(new BasicNameValuePair("confidence", "0.1"));
+					params.add(new BasicNameValuePair("confidence", Float.toString(minConf)));
 				}
 				{	// Selects all entities that have a support greater than informed.
 					// Support expresses how prominent an entity is. Based on the number of inlinks in Wikipedia.
 					// Default value: 10
-//					params.add(new BasicNameValuePair("support", "10"));
+					params.add(new BasicNameValuePair("support", "1"));
 				}
 				{	// Combined with policy parameter, select all entities that have the same type - if policy is whitelist. 
 					// Otherwise - if policy is blacklist - select all entities that have not the same type.
@@ -242,13 +236,12 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 					//	x SpotXmlParser: assumes that another tool has performed spotting and encoded the spots as SpotXml.
 					//	- AhoCorasickSpotter: undocumented...
 //					params.add(new BasicNameValuePair("spotter", "NESpotter"));
+					// Note: that only work with the previous, Lucene-based version of Spotlight
 				}
-
-
 //				params.add(new BasicNameValuePair("Accept", "application/json"));
 //				params.add(new BasicNameValuePair("Accept", "text/xml"));
 //				params.add(new BasicNameValuePair("output", "xml"));
-				params.add(new BasicNameValuePair("charset", "utf-8"));
+//				params.add(new BasicNameValuePair("charset", "utf-8"));
 				params.add(new BasicNameValuePair("text", part));
 				method.setHeader("Accept", "text/xml");
 				method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

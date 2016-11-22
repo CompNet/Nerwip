@@ -184,7 +184,7 @@ public class Test
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
-//		testSpotlightRecognizer(name);
+		testSpotlightRecognizer(name);
 //		testSpotlight();
 //     	testNLDistance(S, T);
 //		testEventsExtraction();
@@ -1206,7 +1206,7 @@ File folder = folders.get(0);
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
-		DbpSpotlight spotlight = new DbpSpotlight();
+		DbpSpotlight spotlight = new DbpSpotlight(0.1f);
 		spotlight.setOutputRawResults(true);
 		spotlight.setCacheEnabled(false);
 		
@@ -1669,7 +1669,7 @@ File folder = folders.get(0);
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, false),
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, true),	// LOC, ORG, PERS
 
-			new DbpSpotlight(),	// LOC, MEET, ORG, PERS, PROD
+			new DbpSpotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
 				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
@@ -2206,15 +2206,10 @@ File folder = folders.get(0);
  *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entites can be retrieved a posteriori.
  *   Also the resolver and the linker need to receive an instance of the tool on which the data they receive are built, in order to know where to record their own results.
  *   
- * - Spotlight: add some numerical params, re-do the calculations with various values
- *   the support can be fixed, though.
- * - Then see the generalisation to linking only and both. Resolving also, can be deduced from the linked entities.
+ * - Spotlight: See the generalisation to linking only and both. Resolving also, can be deduced from the linked entities.
  *   
  * - See if OpenNer can be adapted to process links? And the other tools, too.
  * - Merge all processes in the same class (recog, resolv, link)   
- *   
- *   1) identify all relevant dbpedia types
- *   2) understand the format
  */
 
 /*
