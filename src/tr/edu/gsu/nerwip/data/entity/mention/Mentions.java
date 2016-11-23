@@ -666,7 +666,7 @@ public class Mentions
 		Element element = XmlTools.getRootFromFile(dataFile,schemaFile);
 		
 		// get recognizer
-		String recognizerStr = element.getAttributeValue(XmlNames.ATT_RECOGNIZER);
+		String recognizerStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
 		ProcessorName recognizer = ProcessorName.valueOf(recognizerStr);
 		
 		// get dates
@@ -715,7 +715,7 @@ public class Mentions
 		Element element = new Element(XmlNames.ELT_MENTIONS);
 		
 		// insert recognizer attribute
-		Attribute recognizerAttr = new Attribute(XmlNames.ATT_RECOGNIZER, recognizer.toString());
+		Attribute recognizerAttr = new Attribute(XmlNames.ATT_SOURCE, recognizer.toString());
 		element.setAttribute(recognizerAttr);
 		
 		// insert date attributes

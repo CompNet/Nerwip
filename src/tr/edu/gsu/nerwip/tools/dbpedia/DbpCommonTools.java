@@ -24,7 +24,6 @@ package tr.edu.gsu.nerwip.tools.dbpedia;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 
@@ -43,23 +42,23 @@ public class DbpCommonTools
 	/** Common object used for logging */
 	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
-	/////////////////////////////////////////////////////////////////
-	// CACHE		 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Whether or not DBpedia results should be cached */
-	protected static boolean cache = true;
-	
-	/**
-	 * Enable or disable the memory cache
-	 * for DBpedia requests.
-	 *  
-	 * @param enabled
-	 * 		If {@code true}, the results from DBpedia are
-	 * 		stored in memory.
-	 */
-	public static void setCacheEnabled(boolean enabled)
-	{	DbpCommonTools.cache = enabled;
-	}
+//	/////////////////////////////////////////////////////////////////
+//	// CACHE		 		/////////////////////////////////////////
+//	/////////////////////////////////////////////////////////////////
+//	/** Whether or not DBpedia results should be cached */
+//	protected static boolean cache = true;
+//	
+//	/**
+//	 * Enable or disable the memory cache
+//	 * for DBpedia requests.
+//	 *  
+//	 * @param enabled
+//	 * 		If {@code true}, the results from DBpedia are
+//	 * 		stored in memory.
+//	 */
+//	public static void setCacheEnabled(boolean enabled)
+//	{	DbpCommonTools.cache = enabled;
+//	}
 	
 	/////////////////////////////////////////////////////////////////
 	// URL			 		/////////////////////////////////////////
@@ -75,7 +74,7 @@ public class DbpCommonTools
 	/** Linker URL */
 	public static final String LINKER_SERVICE = "disambiguate";
 	/** Recognizer+Linker (at once) URL */
-	public static final String BOTH_SERVICE = "annotate";
+	public static final String BOTH_SERVICES = "annotate";
 	
 	/////////////////////////////////////////////////////////////////
 	// XML			 		/////////////////////////////////////////
@@ -92,4 +91,5 @@ public class DbpCommonTools
 	/** Attribute representing the DBpedia URI of an entity */
 	public final static String ATT_URI = "URI";
 
+	//TODO this should be moved to spotlight processor or converter
 }

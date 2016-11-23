@@ -149,7 +149,7 @@ public class FileNames
 	public final static String FI_LANGUAGE = "language" + FileNames.EX_SCHEMA;
 	/** XML file used to store keys */
 	public final static String FI_KEY_LIST = "keys" + FileNames.EX_XML;
-	/** File containing the mentions estimated by a recognizer, in a tool-specific format */
+	/** File output by a processor, using its own format */
 	public final static String FI_OUTPUT_TEXT = "output" + FileNames.EX_TEXT;
 	/** File containing some statistics processed on the corpus */
 	public final static String FI_STATS_TEXT = "stats" + FileNames.EX_TEXT;

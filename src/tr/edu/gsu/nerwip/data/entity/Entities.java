@@ -45,7 +45,6 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
-import tr.edu.gsu.nerwip.linking.LinkerName;
 import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -68,7 +67,7 @@ public class Entities
 	 */
 	public Entities()
 	{	initDates();
-		linker = LinkerName.REFERENCE;
+		linker = ProcessorName.REFERENCE;
 	}
 	
 	/**
@@ -78,7 +77,7 @@ public class Entities
 	 * @param linker
 	 * 		Linker used on these entities.
 	 */
-	public Entities(LinkerName linker)
+	public Entities(ProcessorName linker)
 	{	initDates();
 		this.linker = linker;
 	}
@@ -94,7 +93,7 @@ public class Entities
 	 * @param modificationDate
 	 * 		Date the entities were last processed.
 	 */
-	public Entities(LinkerName linker, Date creationDate, Date modificationDate)
+	public Entities(ProcessorName linker, Date creationDate, Date modificationDate)
 	{	this.creationDate = creationDate;
 		this.modificationDate = modificationDate;
 		this.linker = linker;
@@ -165,8 +164,8 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	// LINKER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Linker used to link these entities (or {@link LinkerName#REFERENCE} for manual annotations) */
-	private LinkerName linker = null;
+	/** Linker used to link these entities (or {@link ProcessorName#REFERENCE} for manual annotations) */
+	private ProcessorName linker = null;
 	
 	/**
 	 * Returns the linker which detected
@@ -175,7 +174,7 @@ public class Entities
 	 * @return
 	 * 		Name of the linker used to process these entities.
 	 */
-	public LinkerName getSource()
+	public ProcessorName getSource()
 	{	return linker;
 	}
 	
@@ -185,7 +184,7 @@ public class Entities
 	 * @param linker
 	 * 		New name of the linker used to process these entities.
 	 */
-	public void setLinker(LinkerName linker)
+	public void setLinker(ProcessorName linker)
 	{	this.linker = linker;
 	}
 	
@@ -194,13 +193,13 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	// EDITOR			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Human person that originally annotated these entities (only relevant if the recognizer name is REFERENCE) */
+	/** Human person that originally annotated these entities (only relevant if the recognizer name is {@link ProcessorName#REFERENCE}) */
 	private String editor = null;
 	
 	/**
 	 * Returns the name of the person which
 	 * originally annotated these entities.
-	 * This is relevant only if the recognizer
+	 * This is relevant only if the linker
 	 * name is {@link ProcessorName#REFERENCE},
 	 * otherwise the method returns {@code null}.
 	 * 
@@ -305,7 +304,7 @@ public class Entities
 //		Element element = XmlTools.getRootFromFile(dataFile,schemaFile);
 //		
 //		// get source
-//		String sourceStr = element.getAttributeValue(XmlNames.ATT_RECOGNIZER);
+//		String sourceStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
 //		ProcessorName source = ProcessorName.valueOf(sourceStr);
 //		
 //		// get dates
@@ -354,7 +353,7 @@ public class Entities
 //		Element element = new Element(XmlNames.ELT_MENTIONS);
 //		
 //		// insert source attribute
-//		Attribute sourceAttr = new Attribute(XmlNames.ATT_RECOGNIZER, source.toString());
+//		Attribute sourceAttr = new Attribute(XmlNames.ATT_SOURCE, source.toString());
 //		element.setAttribute(sourceAttr);
 //		
 //		// insert date attributes

@@ -883,8 +883,7 @@ public class Article
 	}
 	
 	/**
-	 * Returns the list of mentions
-	 * for this article, as estimated
+	 * Returns the list of mentions for this article, as estimated
 	 * by the specified recognizer.
 	 * 
 	 * @param recognizer

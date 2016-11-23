@@ -173,7 +173,7 @@ public class DbpSpotlight extends AbstractModellessInternalProcessor<List<String
 				serviceUrl = DbpCommonTools.SERVICE_FR_URL;
 				break;
 		}
-		serviceUrl = serviceUrl + DbpCommonTools.BOTH_SERVICE;
+		serviceUrl = serviceUrl + DbpCommonTools.BOTH_SERVICES;
 		
 		// we need to break down the text
 		List<String> parts = StringTools.splitText(text, MAX_SIZE);
@@ -284,7 +284,7 @@ public class DbpSpotlight extends AbstractModellessInternalProcessor<List<String
 				e.printStackTrace();
 			}
 			catch (InterruptedException e)
-			{	// problem while sleeping
+			{	// a problem occured while sleeping
 				e.printStackTrace();
 			}
 			logger.decreaseOffset();

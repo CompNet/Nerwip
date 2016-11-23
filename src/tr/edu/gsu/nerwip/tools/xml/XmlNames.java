@@ -56,8 +56,8 @@ public class XmlNames
 	public static final String ATT_MODIFICATION = "modification";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
-	/** Recognizer used to detect the mention */
-	public static final String ATT_RECOGNIZER = "source"; //TODO switch to "recognizer"
+	/** Processor used to handle the mention/entity */
+	public static final String ATT_SOURCE = "source";
 	/** Mention start position */
 	public static final String ATT_START = "start";
 	/** GUI tooltip */

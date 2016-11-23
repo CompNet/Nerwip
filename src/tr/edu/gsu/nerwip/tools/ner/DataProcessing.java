@@ -67,7 +67,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
  * This class contains various methods to manage the data files
- * associated with recognizers.
+ * associated with processors (recognizers, resolvers, linkers).
  *  
  * @author Vincent Labatut
  */

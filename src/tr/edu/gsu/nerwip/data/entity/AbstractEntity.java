@@ -1,5 +1,8 @@
 package tr.edu.gsu.nerwip.data.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
@@ -45,7 +48,7 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITY ID		/////////////////////////////////////////////
+	// INTERNAL ID		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Internal id of this entity */
 	protected long internalId = -1;
@@ -68,6 +71,38 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 	 */
 	public void setInternalId(long internalId)
 	{	this.internalId = internalId;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// EXTERNAL IDS		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Internal ids of this entity */
+	protected Map<KnowledgeBase,String> externalIds = new HashMap<KnowledgeBase,String>();
+	
+	/**
+	 * Returns the requested external id of this entity, or {@code null}
+	 * if none was defined.
+	 * 
+	 * @param knowledgeBase 
+	 * 		Name of the concerned knowledge base.
+	 * @return
+	 * 		External id of this entity in the knowledge base. 
+	 */
+	public String getInternalId(KnowledgeBase knowledgeBase)
+	{	return externalIds.get(knowledgeBase);
+	}
+	
+	/**
+	 * Changes the internal id of this entity, for
+	 * the specified knowledge base.
+	 * 
+	 * @param knowledgeBase 
+	 * 		Name of the knowledge base.
+	 * @param externalId
+	 * 		External id of this entity in the knowledge base.
+	 */
+	public void setExternalId(KnowledgeBase knowledgeBase, String externalId)
+	{	externalIds.put(knowledgeBase,externalId);
 	}
 	
 //	/////////////////////////////////////////////////////////////////
