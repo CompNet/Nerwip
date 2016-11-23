@@ -74,8 +74,8 @@ import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.IstanbulMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.MucMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
@@ -318,13 +318,13 @@ public class Test
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractRecognizer recognizer = new StraightCombiner();
+		    AbstractProcessor recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
 		    // retrieve the mentions
 		   logger.log("Retrieve the mentions");
-		   mentions = recognizer.process(article);
+		   mentions = recognizer.recognize(article);
 		   
 		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions); 
 		   allEventsList.addAll(extractedEvents);
@@ -357,13 +357,13 @@ public class Test
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractRecognizer recognizer = new StraightCombiner();
+		    AbstractProcessor recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
 		    // retrieve the mentions
 		   logger.log("Retrieve the mentions");
-		   mentions = recognizer.process(article);
+		   mentions = recognizer.recognize(article);
 	    
 		   //event comparison
 		List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
@@ -403,7 +403,7 @@ public class Test
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractRecognizer recognizer = new StraightCombiner();
+		    AbstractProcessor recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
@@ -477,13 +477,13 @@ File folder = folders.get(0);
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractRecognizer recognizer = new StraightCombiner();
+		    AbstractProcessor recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
 		    // retrieve the entities
 		   logger.log("Retrieve the entities");
-		   mentions = recognizer.process(article);
+		   mentions = recognizer.recognize(article);
 		   logger.log("start applying Spotlight to " + name);
 		   String xmlText = SpotlightTools.process(mentions, article);
 		   //logger.log("xmltext = " + xmlText);
@@ -564,13 +564,13 @@ File folder = folders.get(0);
 		    // get the article texts
 		    logger.log("Retrieve the article");
 		    String name = folder.getName();
-	        AbstractRecognizer recognizer = new StraightCombiner();
+	        AbstractProcessor recognizer = new StraightCombiner();
 	        ArticleRetriever retriever = new ArticleRetriever();
 	        article = retriever.process(name);
 	        String rawText = article.getRawText();
 	        // retrieve the entities
 	       logger.log("Retrieve the entities");
-	       mentions = recognizer.process(article);
+	       mentions = recognizer.recognize(article);
 	   
 		   
 	
@@ -787,7 +787,7 @@ File folder = folders.get(0);
 		openCalais.setCacheEnabled(false);
 		
 		// only the specified article
-		openCalais.process(article);
+		openCalais.recognize(article);
 		
 		// all the corpus
 //		testAllCorpus(openCalais,0);
@@ -855,7 +855,7 @@ File folder = folders.get(0);
 		tagen.setCacheEnabled(false);
 		
 		// only the specified article
-		tagen.process(article);
+		tagen.recognize(article);
 		
 		// all the corpus
 //		testAllCorpus(tagen,0);
@@ -888,7 +888,7 @@ File folder = folders.get(0);
 		opener.setCacheEnabled(false);
 		
 		// only the specified article
-		opener.process(article);
+		opener.recognize(article);
 		
 		// all the corpus
 //		testAllCorpus(opener,0);
@@ -939,7 +939,7 @@ File folder = folders.get(0);
 			StanfordModelName modelName = StanfordModelName.CONLLMUC_MODEL;
 			Stanford stanford = new Stanford(modelName, true, ignorePronouns, exclusionOn);
 			stanford.setCacheEnabled(false);
-			stanford.process(article);
+			stanford.recognize(article);
 		}
 		
 		logger.decreaseOffset();
@@ -966,7 +966,7 @@ File folder = folders.get(0);
 		boolean ignorePronouns = false;
 		DateExtractor dateExtractor = new DateExtractor();
 		dateExtractor.setCacheEnabled(false);
-		dateExtractor.process(article);
+		dateExtractor.recognize(article);
 
 		logger.decreaseOffset();
 	}
@@ -1045,7 +1045,7 @@ File folder = folders.get(0);
 		boolean discardDemonyms = true;
 		Subee subee = new Subee(additionalOccurrences, useTitle, notableType, useAcronyms, discardDemonyms);
 		subee.setCacheEnabled(false);
-		subee.process(article);
+		subee.recognize(article);
 
 		logger.decreaseOffset();
 	}
@@ -1069,7 +1069,7 @@ File folder = folders.get(0);
 
 		WikipediaDater wikipediaDater = new WikipediaDater();
 		wikipediaDater.setCacheEnabled(false);
-		wikipediaDater.process(article);
+		wikipediaDater.recognize(article);
 
 		logger.decreaseOffset();
 	}
@@ -1206,7 +1206,7 @@ File folder = folders.get(0);
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
-		DbpSpotlight spotlight = new DbpSpotlight(0.1f);
+		DbpSpotlight spotlight = new DbpSpotlight(0.3f);
 		spotlight.setOutputRawResults(true);
 		spotlight.setCacheEnabled(false);
 		
@@ -1500,7 +1500,7 @@ File folder = folders.get(0);
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testAllCorpus(AbstractRecognizer recognizer, int start) throws Exception
+	private static void testAllCorpus(AbstractProcessor recognizer, int start) throws Exception
 	{	logger.log("Process each article individually");
 		logger.increaseOffset();
 		
@@ -1519,7 +1519,7 @@ File folder = folders.get(0);
 					Article article = retriever.process(name);
 						
 					logger.log("Apply the recognizer");
-					recognizer.process(article);
+					recognizer.recognize(article);
 					
 				logger.decreaseOffset();
 			}
@@ -1561,7 +1561,7 @@ File folder = folders.get(0);
 		
 		// set recognizers
 		boolean loadOnDemand = true;
-		AbstractRecognizer temp[] =
+		AbstractProcessor temp[] =
 		{	
 //			new DateExtractor(),
 //			new WikipediaDater(),
@@ -1669,7 +1669,9 @@ File folder = folders.get(0);
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, false),
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, true),	// LOC, ORG, PERS
 
-			new DbpSpotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
+//			new DbpSpotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
+//			new DbpSpotlight(0.2f),	// LOC, MEET, ORG, PERS, PROD
+			new DbpSpotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
 				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
@@ -1881,15 +1883,15 @@ File folder = folders.get(0);
 			
 //			new StraightCombiner()
 		};
-		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
+		List<AbstractProcessor> recognizers = Arrays.asList(temp);
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 			logger.log(recognizer.getFolder());
 		logger.decreaseOffset();
 		
 		// cache/no cache at the recognizer level
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	recognizer.setCacheEnabled(true);	//TODO
 //			((AbstractCombiner)recognizer).setSubCacheEnabled(true);	//just to check combiner subcache
 		}
@@ -2187,13 +2189,6 @@ File folder = folders.get(0);
 }
 
 
-/**
- * TODO
- * - apply all tools again
- * - perform evaluation
- * - compare nero new results with the previous ones
- */
-
 /* TODO
  * - Move evaluation to recognition, or create several subfolders in evaluation to reflect the three recognition/resolution/linking tasks
  * - Maybe we should not put linking and resolution in different classes, since some tools do both at once.
@@ -2203,13 +2198,14 @@ File folder = folders.get(0);
  *   The same remark applies when composing resolving and linking, in fact... so is it really a good idea?
  * - Rather: define a generic "tool" class able of performing all three tasks. Some instances do only some of them.
  *   >> this seems like the best option
- *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entites can be retrieved a posteriori.
+ *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entities can be retrieved a posteriori.
  *   Also the resolver and the linker need to receive an instance of the tool on which the data they receive are built, in order to know where to record their own results.
  *   
  * - Spotlight: See the generalisation to linking only and both. Resolving also, can be deduced from the linked entities.
  *   
  * - See if OpenNer can be adapted to process links? And the other tools, too.
- * - Merge all processes in the same class (recog, resolv, link)   
+ * - Merge all processes in the same class (recog, resolv, link)
+ * - Rename recognizer to processor where appropriate   
  */
 
 /*

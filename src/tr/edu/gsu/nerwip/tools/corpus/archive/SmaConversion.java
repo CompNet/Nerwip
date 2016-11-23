@@ -37,7 +37,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
@@ -60,7 +60,7 @@ public class SmaConversion extends AbstractExternalConverter
 	 * Builds a new SMAT converter.
 	 */
 	public SmaConversion()
-	{	super(RecognizerName.REFERENCE, null, FileNames.FI_REFERENCE_TEXT);
+	{	super(ProcessorName.REFERENCE, null, FileNames.FI_REFERENCE_TEXT);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ public class SmaConversion extends AbstractExternalConverter
 
 	@Override
 	public Mentions convert(Article article, String content) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 		
 	// change the form of tags
 		// quick and dirty fix. a better version would be to replace the main regex.
@@ -100,7 +100,7 @@ if(typeStr.equals("/LOCATION"))
 			EntityType type = EntityType.valueOf(typeStr);
 			int startPos = matcher.start();
 			int endPos = matcher.end();
-			RecognizerName source = RecognizerName.REFERENCE;
+			ProcessorName source = ProcessorName.REFERENCE;
 			String valueStr = matcher.group(2);//matcher.group();
 //			String value = matcher.group(2);
 			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, source, valueStr);

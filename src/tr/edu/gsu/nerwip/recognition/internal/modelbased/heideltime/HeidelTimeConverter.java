@@ -44,7 +44,7 @@ import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.time.Date;
@@ -88,7 +88,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public HeidelTimeConverter(String nerFolder)
-	{	super(RecognizerName.HEIDELTIME, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.HEIDELTIME, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	@Override
 	public Mentions convert(Article article, String data) throws ConverterException
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(recognizerName);
+		Mentions result = new Mentions(processorName);
 		
 		// parse the xml source
 		logger.log("Parsing the XML source previously produced by HeidelTime");
@@ -213,7 +213,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); //TODO WARNING: 
 				else
 				{	int length = text.length();
-					result = (MentionDate) AbstractMention.build(EntityType.DATE, index, index+length, recognizerName, text);
+					result = (MentionDate) AbstractMention.build(EntityType.DATE, index, index+length, processorName, text);
 					result.setValue(date);
 				}
 			}

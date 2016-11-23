@@ -63,7 +63,7 @@ import javax.swing.text.TextAction;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 
 /**
  * This class implements a panel designed to
@@ -680,7 +680,7 @@ if(endPos>document.getLength())
 				{	// update mention
 					index = mentionList.indexOf(mention);
 					it.remove();
-					RecognizerName source = mention.getSource();
+					ProcessorName source = mention.getSource();
 					String valueStr = mention.getStringValue();
 					mention = AbstractMention.build(type, startPos, endPos, source, valueStr);
 					result = mention;
@@ -720,7 +720,7 @@ if(endPos>document.getLength())
 		
 		// update mentions
 		String valueStr = textPane.getSelectedText();
-		RecognizerName source = RecognizerName.REFERENCE;
+		ProcessorName source = ProcessorName.REFERENCE;
 		result = AbstractMention.build(type, start, end, source, valueStr);
 		mentions.addMention(result);
 		

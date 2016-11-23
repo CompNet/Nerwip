@@ -36,6 +36,7 @@ import java.util.Scanner;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
+import tr.edu.gsu.nerwip.data.entity.Entities;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
@@ -46,7 +47,7 @@ import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
- * This class is used to represent or implement recognizers.
+ * This class is used to represent or implement recognizers, resolvers and linkers.
  * The former case corresponds to external tools, i.e. applications
  * executed externally. The latter to tools invocable internally,
  * i.e. programmatically, from within Nerwip. 
@@ -55,10 +56,10 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Samet Atdağ
  * @author Vincent Labatut
  */
-public abstract class AbstractRecognizer
+public abstract class AbstractProcessor
 {	
 	/**
-	 * Builds a new recognizer,
+	 * Builds a new processor,
 	 * using the specified default options.
 	 * 
 	 * @param trim
@@ -69,7 +70,7 @@ public abstract class AbstractRecognizer
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 */
-	public AbstractRecognizer(boolean trim, boolean ignorePronouns, boolean exclusionOn)
+	public AbstractProcessor(boolean trim, boolean ignorePronouns, boolean exclusionOn)
 	{	this.trim = trim;
 		this.ignorePronouns = ignorePronouns;
 		this.exclusionOn = exclusionOn;
@@ -87,12 +88,12 @@ public abstract class AbstractRecognizer
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Return the (standardized) name of this recognizer.
+	 * Return the (standardized) name of this processor.
 	 * 
 	 * @return 
 	 * 		Name of this tool.
 	 */
-	public abstract RecognizerName getName();
+	public abstract ProcessorName getName();
 
 	/////////////////////////////////////////////////////////////////
 	// FOLDER			/////////////////////////////////////////////
@@ -117,25 +118,26 @@ public abstract class AbstractRecognizer
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Returns the list of entity types this recognizer
-	 * can detect if it is trained for.
+	 * Returns the types of entities this processor
+	 * can handle with its current model/parameters.
+	 * TODO maybe only for the recognizer?
 	 * 
 	 * @return 
 	 * 		A list of entity types.
 	 */
-	public abstract List<EntityType> getHandledMentionTypes();
+	public abstract List<EntityType> getHandledEntityTypes();
 	
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Checks whether the specified language is supported by this
-	 * recognizer, given its current settings (parameters, model...).
+	 * processor, given its current settings (parameters, model...).
 	 * 
 	 * @param language
 	 * 		The language to be checked.
 	 * @return 
-	 * 		{@code true} iff this recognizer supports the specified
+	 * 		{@code true} iff this processor supports the specified
 	 * 		language, with its current parameters (model, etc.).
 	 */
 	public abstract boolean canHandleLanguage(ArticleLanguage language);
@@ -148,7 +150,7 @@ public abstract class AbstractRecognizer
 	
 	/**
 	 * Indicates whether or not caching is
-	 * enabled for this recognizer.
+	 * enabled for this processor.
 	 *  
 	 * @return
 	 * 		{@code true} iff caching is enabled.
@@ -158,8 +160,10 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Changes the cache flag. If {@code true}, the {@link #process(Article) process}
-	 * method will first check if the results already
+	 * Changes the cache flag. If {@code true}, the {@link #recognize(Article) process},
+	 * {@link #resolve(Article, Mentions, AbstractProcessor)} and 
+	 * {@code #link(Article, Mentions, Entities, AbstractProcessor, AbstractProcessor)}
+	 * methods will first check if the results already
 	 * exist as a file. In this case, they will be loaded
 	 * from this file. Otherwise, the process will be
 	 * conducted normally, then recorded.
@@ -175,36 +179,98 @@ public abstract class AbstractRecognizer
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Applies this recognizer to the specified article,
-	 * and returns a list of the detected mentions.
+	 * Applies this processor to the specified article,
+	 * in order to recognize entity mentions.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
 	 * @return
-	 * 		List of the resulting mentions.
+	 * 		List of the recognized mentions.
 	 * 
-	 * @throws RecognizerException
-	 * 		Problem while applying the recognizer. 
+	 * @throws ProcessorException
+	 * 		Problem while recognizing the mentions. 
 	 */
-	public abstract Mentions process(Article article) throws RecognizerException;
+	public abstract Mentions recognize(Article article) throws ProcessorException;
+
+	/**
+	 * Applies this processor to the specified article,
+	 * in order to resolve co-occurrences.
+	 * <br/>
+	 * If {@code mentions} is {@code null}, the recognizer is applied to get
+	 * the mentions. If {@code recognizer} is this object and must be applied, 
+	 * then Nerwip tries to perform simultaneously mention recognition and coreference 
+	 * resolution, if the processor allows it. Otherwise, the same processor is applied 
+	 * separately for both tasks.
+	 * <br/>
+	 * Note the {@code Mention} object will be completed so as to point towards 
+	 * their assigned entities.
+	 * 
+	 * @param article
+	 * 		Article to be processed.
+	 * @param mentions
+	 * 		List of the previously recognized mentions.
+	 * @param recognizer
+	 * 		Processor used to recognize the entity mentions.
+	 * @return
+	 * 		List of the entities associated to the mentions.
+	 * 
+	 * @throws ProcessorException
+	 * 		Problem while resolving co-occurrences. 
+	 */
+	public abstract Entities resolve(Article article, Mentions mentions, AbstractProcessor recognizer) throws ProcessorException;
+
+	/**
+	 * Applies this processor to the specified article,
+	 * in order to link entities to unique identifiers in 
+	 * databases such as DBpedia or Freelink.
+	 * <br/>
+	 * If {@code mentions} is {@code null}, the recognizer is applied to get
+	 * the mentions. Similarly, if {@code entities} is {@code null}, the
+	 * resolver is applied to get the entities. If {@code recognizer} and/or
+	 * {@code resolver} is this object and must be applied, then Nerwip tries 
+	 * to perform simultaneously the concerned tasks, provided this processor
+	 * allows it. Otherwise, the same processor is applied separately for all
+	 * tasks.
+	 * <br/>
+	 * Note that if the resolver is applied, the {@code Mention} object will be 
+	 * completed so as to point towards their assigned entities. When the linker
+	 * is applied, some entities can be completed (i.e. unique URI) and removed/added,
+	 * whereas the  mentions can be modified (link towards their entities). 
+	 * 
+	 * @param article
+	 * 		Article to be processed.
+	 * @param mentions
+	 * 		List of the previously recognized mentions.
+	 * @param entities
+	 * 		List of the entities associated to the mentions.
+	 * @param recognizer
+	 * 		Processor used to recognize the entity mentions.
+	 * @param resolver
+	 * 		Processor used to resolve the coreferences.
+	 * 
+	 * @throws ProcessorException
+	 * 		Problem while resolving co-occurrences. 
+	 */
+	public abstract void link(Article article, Mentions mentions, Entities entities, AbstractProcessor recognizer, AbstractProcessor resolver) throws ProcessorException;
 
 	/////////////////////////////////////////////////////////////////
 	// FILTERING NOISE 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Whether or not stop words should be ignored */
+	/** Whether or not stop words should be ignored during recognition */
 	protected boolean exclusionOn = true;
-	/** Whether or not pronouns should be ignored */
+	/** Whether or not pronouns should be ignored during recognition */
 	protected boolean ignorePronouns = true;
-	/** Whether or not numbers should be ignored */
+	/** Whether or not numbers should be ignored during recognition */
 	protected boolean ignoreNumbers = true;
 	
-	/** Lists of forbidden words, used for filtering mentions */	
+	/** Lists of forbidden words, used for filtering mentions during recognition */	
 	private static final Map<ArticleLanguage,List<String>> EXCLUSION_LISTS = new HashMap<ArticleLanguage,List<String>>();
-	/** List of pronouns, used for filtering mentions */	
+	/** List of pronouns, used for filtering mentions during recognition */	
 	private static final Map<ArticleLanguage,List<String>> PRONOUN_LISTS = new HashMap<ArticleLanguage,List<String>>();
 	
 	/**
 	 * Loads a set of language-dependant list of words.
+	 * This is only used during recognition.
 	 * 
 	 * @param prefix
 	 * 		Prefix of the filename (will be completed with language name).
@@ -242,6 +308,7 @@ public abstract class AbstractRecognizer
 	/**
 	 * Loads the exclusion lists, i.e. the
 	 * lists of stop-words, for each language.
+	 * This is only used during recognition.
 	 */
 	private static void loadExclusionList()
 	{	logger.log("Loading exclusion lists");
@@ -255,6 +322,7 @@ public abstract class AbstractRecognizer
 	
 	/**
 	 * Enables/disables the removal of stop words.
+	 * This is only used during recognition.
 	 * 
 	 * @param exclusionOn
 	 * 		If {@code true}, stop words are ignored.
@@ -265,6 +333,7 @@ public abstract class AbstractRecognizer
 	
 	/**
 	 * Whether or not stop words should be ignored.
+	 * This is only used during recognition.
 	 * 
 	 * @return
 	 * 		{@code true} iff stop words are ignored.
@@ -275,6 +344,7 @@ public abstract class AbstractRecognizer
 	
 	/**
 	 * Determines if a string represents a stop-word.
+	 * This is only used during recognition.
 	 * 
 	 * @param text
 	 * 		String to check.
@@ -301,6 +371,7 @@ public abstract class AbstractRecognizer
 
 	/**
 	 * Loads the pronouns lists for each language.
+	 * This is only used during recognition.
 	 */
 	private static void loadPronounList()
 	{	logger.log("Loading pronoun lists");
@@ -314,6 +385,7 @@ public abstract class AbstractRecognizer
 	
 	/**
 	 * Enables/disables the removal of pronouns.
+	 * This is only used during recognition.
 	 * 
 	 * @param ignorePronouns
 	 * 		If {@code true}, pronouns are ignored.
@@ -324,6 +396,7 @@ public abstract class AbstractRecognizer
 	
 	/**
 	 * Whether or not pronouns should be ignored.
+	 * This is only used during recognition.
 	 * 
 	 * @return
 	 * 		{@code true} iff pronouns are ignored.
@@ -333,8 +406,8 @@ public abstract class AbstractRecognizer
 	}
 
 	/**
-	 * Determines if a string represents
-	 * a pronoun.
+	 * Determines if a string represents a pronoun.
+	 * This is only used during recognition.
 	 * 
 	 * @param text
 	 * 		String to check.
@@ -361,8 +434,8 @@ public abstract class AbstractRecognizer
 	}
 
 	/**
-	 * Disables/enables the removal of purely
-	 * numerical mentions.
+	 * Disables/enables the removal of purely numerical mentions.
+	 * This is only used during recognition.
 	 * 
 	 * @param ignoreNumbers
 	 * 		If {@code true}, numbers are ignored.
@@ -372,8 +445,8 @@ public abstract class AbstractRecognizer
 	}
 	
 	/**
-	 * Whether or not purely numerical mentions
-	 * should be ignored.
+	 * Whether or not purely numerical mentions should be ignored.
+	 * This is only used during recognition.
 	 * 
 	 * @return
 	 * 		{@code true} iff numbers are ignored.
@@ -386,6 +459,7 @@ public abstract class AbstractRecognizer
 	 * Gets a list of mentions and removes some of them,
 	 * considered as noise depending on the current options: 
 	 * stop-words, pronouns, numerical expressions, etc.
+	 * This is only used during recognition.
 	 * 
 	 * @param mentions
 	 * 		List to be filtered.
@@ -426,7 +500,7 @@ public abstract class AbstractRecognizer
 	/////////////////////////////////////////////////////////////////
 	// CLEANING		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    /** Whether or not the beginings and ends of mentions should be cleaned from any non-letter/digit chars */
+    /** Whether or not the beginings and ends of mentions should be cleaned from any non-letter/digit chars (used only during recognition) */
     protected boolean trim = false;
 
     /**
@@ -436,6 +510,8 @@ public abstract class AbstractRecognizer
 	 * If the consecutive trimmings remove all characters from the mention, then
 	 * this method returns {@code false}, and {@code true} otherwise (non-empty
 	 * string for the mention).
+	 * <br/>
+	 * This is only used during recognition.
 	 * 
 	 * @param mention
 	 * 		Mention to be processed.
@@ -482,8 +558,8 @@ public abstract class AbstractRecognizer
 	 * located at the beginning-end. Unappropriate
 	 * means here neither characters nor letters.
 	 * <br/>
-	 * Not all recognizers need this process. In fact,
-	 * most don't!
+	 * This is only used during recognition.
+	 * Not all recognizers need this process. In fact, most don't!
 	 * 
 	 * @param mentions
 	 * 		List to be cleaned.
@@ -523,12 +599,13 @@ public abstract class AbstractRecognizer
 	/////////////////////////////////////////////////////////////////
 	// MENTIONS		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    /** Whether or not the recognizer can output (spatially) overlapping mentions */
+    /** Whether or not the recognizer can output (spatially) overlapping mentions (used only during recognition) */
     protected boolean noOverlap = true;
 
     /**
 	 * Checks if the specified text position
 	 * is already a part of an existing mention.
+	 * This is only used during recognition.
 	 * 
 	 * @param pos
 	 * 		Position to be checked
@@ -555,6 +632,7 @@ public abstract class AbstractRecognizer
 //	 * Checks whether a part of the specified
 //	 * mention was already detected as another
 //	 * mention.
+//	 * This is only used during recognition.
 //	 * 
 //	 * @param mention
 //	 * 		Newly detected mention.
@@ -580,6 +658,7 @@ public abstract class AbstractRecognizer
 	/**
 	 * Checks whether a part of the specified mention was already detected as another
 	 * mention. Returns the concerned mention.
+	 * This is only used during recognition.
 	 * 
 	 * @param mention
 	 * 		Newly detected mention.
@@ -606,6 +685,7 @@ public abstract class AbstractRecognizer
 	 * Gets a Mentions object and detects the overlapping mentions.
 	 * Only keeps the longest ones amongst them. This method uses
 	 * {@link #filterRedundancy(List)}.
+	 * This is only used during recognition.
 	 * 
 	 * @param mentions
 	 * 		List to be filtered.
@@ -618,6 +698,7 @@ public abstract class AbstractRecognizer
 	/**
 	 * Gets a list of mentions and detects the overlapping ones.
 	 * Only keeps the longest ones amongst them.
+	 * This is only used during recognition.
 	 * 
 	 * @param mentions
 	 * 		List to be filtered.
@@ -659,15 +740,18 @@ public abstract class AbstractRecognizer
 		logger.decreaseOffset();
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// RAW RESULTS	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	/** Whether or not to write the raw results in a text file (for debug purposes) */
 	protected boolean outRawResults = false;
 	
 	/**
-	 * Changes the flag regarding the outputting of the recognizer
+	 * Changes the flag regarding the outputting of the processor
 	 * raw results (i.e. before conversion to our format) in a text file.
 	 * Useful for debugging, but it takes space. By default, this is disabled.
 	 * <br/>
-	 * Note that for external tools, this file generally must be produced,
+	 * Note that for external tools, this file generally <i>must</i> be produced,
 	 * since it is used for communicating with the external tool. In this
 	 * case, if this option is disabled, the file is deleted when not needed
 	 * anymore.
@@ -684,7 +768,7 @@ public abstract class AbstractRecognizer
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
-	{	RecognizerName name = getName();
+	{	ProcessorName name = getName();
 		String result = name.toString();
 		return result;
 	}

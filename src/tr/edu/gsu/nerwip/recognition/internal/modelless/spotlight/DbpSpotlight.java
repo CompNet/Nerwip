@@ -46,9 +46,9 @@ import org.apache.http.message.BasicNameValuePair;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalProcessor;
 import tr.edu.gsu.nerwip.tools.dbpedia.DbpCommonTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
@@ -72,7 +72,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<String>,DpbSpotlightConverter>
+public class DbpSpotlight extends AbstractModellessInternalProcessor<List<String>,DpbSpotlightConverter>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -96,8 +96,8 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.SPOTLIGHT;
+	public ProcessorName getName()
+	{	return ProcessorName.SPOTLIGHT;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 	);
 
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -158,7 +158,7 @@ public class DbpSpotlight extends AbstractModellessInternalRecognizer<List<Strin
 	private static final long SLEEP_PERIOD = 100;
 	
 	@Override
-	protected List<String> detectMentions(Article article) throws RecognizerException
+	protected List<String> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();

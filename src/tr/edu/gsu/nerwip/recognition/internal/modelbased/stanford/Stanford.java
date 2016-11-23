@@ -33,9 +33,9 @@ import edu.stanford.nlp.ling.CoreLabel;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalProcessor;
 
 /**
  * This class acts as an interface with Stanford Named Entity Recognizer.
@@ -53,7 +53,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInter
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<CoreLabel>>, StanfordConverter, StanfordModelName>
+public class Stanford extends AbstractModelBasedInternalProcessor<List<List<CoreLabel>>, StanfordConverter, StanfordModelName>
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -69,10 +69,10 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem while loading the model data.
 	 */
-	public Stanford(StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws RecognizerException
+	public Stanford(StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
 	{	super(modelName,loadModelOnDemand,false,ignorePronouns,exclusionOn);
 		
 		// init converter
@@ -83,8 +83,8 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.STANFORD;
+	public ProcessorName getName()
+	{	return ProcessorName.STANFORD;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -138,7 +138,7 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
     }
 
 	@Override
-	protected void loadModel() throws RecognizerException
+	protected void loadModel() throws ProcessorException
     {	logger.increaseOffset();
     	
     	// load classifier
@@ -148,15 +148,15 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 		}
     	catch (ClassCastException e)
     	{	e.printStackTrace();
-    		throw new RecognizerException(e.getMessage());
+    		throw new ProcessorException(e.getMessage());
 		}
     	catch (ClassNotFoundException e)
     	{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
     	catch (IOException e)
     	{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
     	    	
     	logger.decreaseOffset();
@@ -166,7 +166,7 @@ public class Stanford extends AbstractModelBasedInternalRecognizer<List<List<Cor
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<List<CoreLabel>> detectMentions(Article article) throws RecognizerException
+	protected List<List<CoreLabel>> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		List<List<CoreLabel>> result = null;
 		

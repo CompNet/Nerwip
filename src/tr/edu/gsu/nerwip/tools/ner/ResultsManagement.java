@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.article.ArticleList;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
@@ -67,7 +67,7 @@ public class ResultsManagement
 //		moveNerResults(articles, targetFolder);
 		
 		boolean loadOnDemand = true;
-		AbstractRecognizer temp[] =
+		AbstractProcessor temp[] =
 		{	
 //			new DateExtractor(),
 //			new WikipediaDater(),
@@ -321,7 +321,7 @@ public class ResultsManagement
 //			new FullCombiner(Combiner.SVM),
 //			new FullCombiner(Combiner.VOTE)
 		};
-		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
+		List<AbstractProcessor> recognizers = Arrays.asList(temp);
 //		moveNerResults(recognizers, articles, targetFolder);
 		
 		removeNerResults(articles);
@@ -386,8 +386,8 @@ public class ResultsManagement
 	 * @param articles
 	 * 		Concerned articles.
 	 */
-	private static void removeNerResults(AbstractRecognizer recognizer, ArticleList articles)
-	{	List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
+	private static void removeNerResults(AbstractProcessor recognizer, ArticleList articles)
+	{	List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>();
 		recognizers.add(recognizer);
 		removeNerResults(recognizers, articles);
 	}
@@ -408,7 +408,7 @@ public class ResultsManagement
 	 * @param articles
 	 * 		Concerned articles.
 	 */
-	private static void removeNerResults(List<AbstractRecognizer> recognizers, ArticleList articles)
+	private static void removeNerResults(List<AbstractProcessor> recognizers, ArticleList articles)
 	{	logger.log("Deleting NER results for "+recognizers.toString());
 		logger.increaseOffset();
 		
@@ -421,7 +421,7 @@ public class ResultsManagement
 			logger.increaseOffset();
 			
 			// process each recognizer
-			for(AbstractRecognizer recognizer: recognizers)
+			for(AbstractProcessor recognizer: recognizers)
 			{	String fStr = recognizer.getFolder();
 				String fPath = path + File.separator + fStr;
 				File f = new File(fPath);
@@ -520,8 +520,8 @@ public class ResultsManagement
 	 * @param targetPath
 	 * 		Path of the destination folder.
 	 */
-	private static void moveNerResults(AbstractRecognizer recognizer, ArticleList articles, String targetPath)
-	{	List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
+	private static void moveNerResults(AbstractProcessor recognizer, ArticleList articles, String targetPath)
+	{	List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>();
 		recognizers.add(recognizer);
 		moveNerResults(recognizers, articles, targetPath);
 	}
@@ -545,7 +545,7 @@ public class ResultsManagement
 	 * @param targetPath
 	 * 		Path of the destination folder.
 	 */
-	private static void moveNerResults(List<AbstractRecognizer> recognizers, ArticleList articles, String targetPath)
+	private static void moveNerResults(List<AbstractProcessor> recognizers, ArticleList articles, String targetPath)
 	{	logger.log("Moving NER results for "+recognizers.toString());
 		logger.log("Destination folder: "+targetPath);
 		logger.increaseOffset();
@@ -571,7 +571,7 @@ public class ResultsManagement
 				targetArt.mkdirs();
 			
 			// process each recognizer
-			for(AbstractRecognizer recognizer: recognizers)
+			for(AbstractProcessor recognizer: recognizers)
 			{	String fStr = recognizer.getFolder();
 				String fPath = path + File.separator + fStr;
 				File f = new File(fPath);

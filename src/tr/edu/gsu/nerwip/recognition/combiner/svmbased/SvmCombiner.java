@@ -45,9 +45,9 @@ import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.data.entity.mention.PositionRelation;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.CategoryProportions;
 import tr.edu.gsu.nerwip.recognition.combiner.VoteWeights;
@@ -115,10 +115,10 @@ public class SvmCombiner extends AbstractCombiner
 	 * @param subeeMode
 	 * 		Indicates how our recognizer {@link Subee} is used (if it's used). 
 	 *
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public SvmCombiner(boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode, SubeeMode subeeMode) throws RecognizerException
+	public SvmCombiner(boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode, SubeeMode subeeMode) throws ProcessorException
 	{	super();
 		
 		this.specific = specific;
@@ -139,8 +139,8 @@ public class SvmCombiner extends AbstractCombiner
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.SVMCOMBINER;
+	public ProcessorName getName()
+	{	return ProcessorName.SVMCOMBINER;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ public class SvmCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -197,7 +197,7 @@ public class SvmCombiner extends AbstractCombiner
 	// TOOLS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void initRecognizers() throws RecognizerException
+	protected void initRecognizers() throws ProcessorException
 	{	logger.increaseOffset();
 		boolean loadModelOnDemand = true;
 	
@@ -290,10 +290,10 @@ public class SvmCombiner extends AbstractCombiner
 	 * Loads the objects necessary to the combination process,
 	 * including the SVM model.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading the model.
 	 */
-	private void loadModel() throws RecognizerException
+	private void loadModel() throws ProcessorException
 	{	loadSvmModel();
 		if(combineMode.hasWeights())
 		{	loadVoteWeights();
@@ -349,17 +349,17 @@ public class SvmCombiner extends AbstractCombiner
 	 * to be used by this class to combine
 	 * the recognizers outputs.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading the SVM model.
 	 */
-	private void loadSvmModel() throws RecognizerException
+	private void loadSvmModel() throws ProcessorException
 	{	String filename = getSvmModelPath();
 		try
 		{	svmModel = svm.svm_load_model(filename);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 	}
 	
@@ -414,7 +414,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * @return
 	 * 		The SVM representation of the same data.
 	 */
-	protected svm_node[] convertMentionGroupToSvm(Map<AbstractRecognizer, AbstractMention<?>> group, Article article)
+	protected svm_node[] convertMentionGroupToSvm(Map<AbstractProcessor, AbstractMention<?>> group, Article article)
 	{	ArticleCategory categoryValues[] = ArticleCategory.values();
 		int inSize;													// total number of SVM inputs
 		int nerSize = recognizers.size() * HANDLED_TYPES.size();	// NER-related inputs
@@ -433,7 +433,7 @@ public class SvmCombiner extends AbstractCombiner
 			j = convertCategoryToSvm(j, article, result);
 
 		// convert NER outputs
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	AbstractMention<?> mention = group.get(recognizer);
 			EntityType type = null;
 			if(mention!=null)
@@ -531,7 +531,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * @return
 	 * 		The SVM representation of the same data.
 	 */
-	protected svm_node[] convertMentionWordToSvm(EntityType previousType, Boolean previousBeginning, Map<AbstractRecognizer,WordMention> wordMentions, Article article)
+	protected svm_node[] convertMentionWordToSvm(EntityType previousType, Boolean previousBeginning, Map<AbstractProcessor,WordMention> wordMentions, Article article)
 	{	ArticleCategory categoryValues[] = ArticleCategory.values();
 		int nerSize = recognizers.size() * (HANDLED_TYPES.size()+2);	// NER-related inputs (2 extras for BIO)
 		int catSize = categoryValues.length;							// category-related inputs
@@ -555,7 +555,7 @@ public class SvmCombiner extends AbstractCombiner
 			j = convertMentionWordSglToSvm(j, previousType, previousBeginning, result);
 		
 		// convert NER outputs
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	WordMention wordMention = wordMentions.get(recognizer);
 		
 			EntityType type = null;
@@ -589,7 +589,7 @@ public class SvmCombiner extends AbstractCombiner
 	 * @return
 	 * 		A mention, or {@code null} if none was detected.
 	 */
-	private AbstractMention<?> convertSvmToMention(Map<AbstractRecognizer, AbstractMention<?>> group, double y, Article article)
+	private AbstractMention<?> convertSvmToMention(Map<AbstractProcessor, AbstractMention<?>> group, double y, Article article)
 	{	logger.log("Vote-based conversion of a mention group");
 		logger.increaseOffset();
 		logger.log(group.values().toString());
@@ -617,7 +617,7 @@ public class SvmCombiner extends AbstractCombiner
 			Map<Integer,Float> endScores = new HashMap<Integer, Float>();
 			
 			// first: pro votes
-			for(AbstractRecognizer recognizer: recognizers)
+			for(AbstractProcessor recognizer: recognizers)
 			{	AbstractMention<?> mention = group.get(recognizer);
 				
 				// check existence
@@ -652,7 +652,7 @@ public class SvmCombiner extends AbstractCombiner
 			
 			// second: against votes
 			if(useRecall)
-			{	for(AbstractRecognizer recognizer: recognizers)
+			{	for(AbstractProcessor recognizer: recognizers)
 				{	AbstractMention<?> mention = group.get(recognizer);
 					
 					// check existence
@@ -703,7 +703,7 @@ public class SvmCombiner extends AbstractCombiner
 			
 			// set other attributes
 			String valueStr = rawText.substring(startPos,endPos);
-			RecognizerName source = getName();
+			ProcessorName source = getName();
 			
 			// build mention
 			result = AbstractMention.build(type, startPos, endPos, source, valueStr);
@@ -886,7 +886,7 @@ public class SvmCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException
 	{	logger.increaseOffset();
 		Mentions result = new Mentions(getName());
 		
@@ -921,22 +921,22 @@ public class SvmCombiner extends AbstractCombiner
      * 		Result of the combination of those
      * 		individual mentions.
      * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
      * 		Problem while combining mentions.
 	 */
-	private void combineMentionsByMention(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws RecognizerException
+	private void combineMentionsByMention(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws ProcessorException
 	{	// get overlapping mentions
 		logger.log("Get list of overlapping mentions");
-		List<Map<AbstractRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<AbstractProcessor, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// process each group of mentions
 		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<AbstractRecognizer, AbstractMention<?>> overlap: overlaps)
+		for(Map<AbstractProcessor, AbstractMention<?>> overlap: overlaps)
 		{	// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<AbstractRecognizer, AbstractMention<?>> entry: overlap.entrySet())
-			{	AbstractRecognizer recognizer = entry.getKey();
+			for(Entry<AbstractProcessor, AbstractMention<?>> entry: overlap.entrySet())
+			{	AbstractProcessor recognizer = entry.getKey();
 				AbstractMention<?> mention = entry.getValue();
 				rawOutput.append("\t"+recognizer.getName()+": "+mention+"\n");
 			}
@@ -980,8 +980,8 @@ public class SvmCombiner extends AbstractCombiner
 	 * 		List of word-mention maps: each map corresponds to one word with at least
 	 * 		an overlap with a previously detected mention.
 	 */
-	protected List<Map<AbstractRecognizer,WordMention>> identifyWordMentionOverlaps(Article article, Map<AbstractRecognizer,Mentions> mentions)
-	{	List<Map<AbstractRecognizer,WordMention>> result = new ArrayList<Map<AbstractRecognizer, WordMention>>();
+	protected List<Map<AbstractProcessor,WordMention>> identifyWordMentionOverlaps(Article article, Map<AbstractProcessor,Mentions> mentions)
+	{	List<Map<AbstractProcessor,WordMention>> result = new ArrayList<Map<AbstractProcessor, WordMention>>();
 		
 		// break text into words
 		String rawText = article.getRawText();
@@ -993,13 +993,13 @@ public class SvmCombiner extends AbstractCombiner
 		
 		// build an iterator for each recognizer
 		logger.log("Build all needed structures");
-		List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>(mentions.keySet());
-		Map<AbstractRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractRecognizer,Iterator<AbstractMention<?>>>();
-		Map<AbstractRecognizer,AbstractMention<?>> currentMentions = new HashMap<AbstractRecognizer,AbstractMention<?>>();
-		Map<AbstractRecognizer,Integer> currentIndices = new HashMap<AbstractRecognizer,Integer>();
-		Iterator<AbstractRecognizer> itR = recognizers.iterator();
+		List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>(mentions.keySet());
+		Map<AbstractProcessor,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractProcessor,Iterator<AbstractMention<?>>>();
+		Map<AbstractProcessor,AbstractMention<?>> currentMentions = new HashMap<AbstractProcessor,AbstractMention<?>>();
+		Map<AbstractProcessor,Integer> currentIndices = new HashMap<AbstractProcessor,Integer>();
+		Iterator<AbstractProcessor> itR = recognizers.iterator();
 		while(itR.hasNext())
-		{	AbstractRecognizer recognizer = itR.next();
+		{	AbstractProcessor recognizer = itR.next();
 			Mentions e = mentions.get(recognizer);
 			Iterator<AbstractMention<?>> it = e.getMentions().iterator();
 			if(it.hasNext())
@@ -1028,13 +1028,13 @@ public class SvmCombiner extends AbstractCombiner
 			// get mentions containing this word or overlapping it
 //			logger.log("Comparing the word to each NER output");
 			logger.increaseOffset();
-			Map<AbstractRecognizer,WordMention> wordMentions = new HashMap<AbstractRecognizer,WordMention>();
-//			Map<AbstractRecognizer,EntityType> ovTypes = new HashMap<AbstractRecognizer,EntityType>();
-//			Map<AbstractRecognizer,AbstractEntity<?>> ovMentions = new HashMap<AbstractRecognizer,AbstractEntity<?>>();
-//			Map<AbstractRecognizer,Boolean> ovBeginnings = new HashMap<AbstractRecognizer,Boolean>();
-			Iterator<AbstractRecognizer> itRec = recognizers.iterator();
+			Map<AbstractProcessor,WordMention> wordMentions = new HashMap<AbstractProcessor,WordMention>();
+//			Map<AbstractProcessor,EntityType> ovTypes = new HashMap<AbstractProcessor,EntityType>();
+//			Map<AbstractProcessor,AbstractEntity<?>> ovMentions = new HashMap<AbstractProcessor,AbstractEntity<?>>();
+//			Map<AbstractProcessor,Boolean> ovBeginnings = new HashMap<AbstractProcessor,Boolean>();
+			Iterator<AbstractProcessor> itRec = recognizers.iterator();
 			while(itRec.hasNext())
-			{	AbstractRecognizer recognizer = itRec.next();
+			{	AbstractProcessor recognizer = itRec.next();
 //				logger.log("Managing NER "+recognizer);
 				logger.increaseOffset();
 				AbstractMention<?> currentMention = currentMentions.get(recognizer);
@@ -1120,12 +1120,12 @@ public class SvmCombiner extends AbstractCombiner
      * 		Result of the combination of those
      * 		individual mentions.
      * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
      * 		Problem while combining mentions.
 	 */
-	private void combineMentionsByWord(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws RecognizerException
+	private void combineMentionsByWord(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws ProcessorException
 	{	// identify word-mention couples for each recognizer
-		List<Map<AbstractRecognizer,WordMention>> wordMentions = identifyWordMentionOverlaps(article,mentions);
+		List<Map<AbstractProcessor,WordMention>> wordMentions = identifyWordMentionOverlaps(article,mentions);
 		String rawText = article.getRawText();
 		
 		// process each word in the text
@@ -1135,11 +1135,11 @@ public class SvmCombiner extends AbstractCombiner
 		EntityType currentType = null;
 		Boolean previousBeginning = null;
 		EntityType previousType = null;
-		Iterator<Map<AbstractRecognizer,WordMention>> it = wordMentions.iterator();
+		Iterator<Map<AbstractProcessor,WordMention>> it = wordMentions.iterator();
 		logger.increaseOffset();
 		while(it.hasNext())
 		{	// get the next word-mention map
-			Map<AbstractRecognizer,WordMention> weMap = it.next();
+			Map<AbstractProcessor,WordMention> weMap = it.next();
 			
 			// no overlapping mention at all >> it is an outside word, we treat it as such
 			if(weMap.isEmpty())
@@ -1181,8 +1181,8 @@ public class SvmCombiner extends AbstractCombiner
 				logger.increaseOffset();
 				// add overlap to raw output
 				rawOutput.append("Overlap: \""+word+"\" ("+wordStart+")\n");
-				for(Entry<AbstractRecognizer, WordMention> entry: weMap.entrySet())
-				{	AbstractRecognizer recognizer = entry.getKey();
+				for(Entry<AbstractProcessor, WordMention> entry: weMap.entrySet())
+				{	AbstractProcessor recognizer = entry.getKey();
 					WordMention wordMention = entry.getValue();
 					AbstractMention<?> mention = wordMention.getMention();
 					Boolean beginning = wordMention.isBeginning();

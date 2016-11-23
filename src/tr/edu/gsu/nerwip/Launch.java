@@ -37,7 +37,7 @@ import tr.edu.gsu.nerwip.edition.MentionEditor;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner.CombineMode;
@@ -391,7 +391,7 @@ public class Launch
 		
 		DateExtractor dateExtractor = new DateExtractor();
 		dateExtractor.setCacheEnabled(false);
-		dateExtractor.process(article);
+		dateExtractor.recognize(article);
 
 		logger.decreaseOffset();
 	}
@@ -412,7 +412,7 @@ public class Launch
 		
 		WikipediaDater wikipediaDater = new WikipediaDater();
 		wikipediaDater.setCacheEnabled(false);
-		wikipediaDater.process(article);
+		wikipediaDater.recognize(article);
 
 		logger.decreaseOffset();
 	}
@@ -437,7 +437,7 @@ public class Launch
 		boolean exclusionOn = false;
 		Illinois illinois = new Illinois(modelName, true, trim, ignorePronouns, exclusionOn);
 		illinois.setCacheEnabled(false);
-		illinois.process(article);
+		illinois.recognize(article);
 		
 		logger.decreaseOffset();
 	}
@@ -463,7 +463,7 @@ public class Launch
 		boolean exclusionOn = false;
 		LingPipe lingPipe = new LingPipe(chunkingMethod, true, splitSentences, trim, ignorePronouns, exclusionOn);
 		lingPipe.setCacheEnabled(false);
-		lingPipe.process(article);
+		lingPipe.recognize(article);
 		
 		logger.decreaseOffset();
 	}
@@ -487,7 +487,7 @@ public class Launch
 		boolean exclusionOn = false;
 		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setCacheEnabled(false);
-		openCalais.process(article);
+		openCalais.recognize(article);
 
 		logger.decreaseOffset();
 	}
@@ -511,7 +511,7 @@ public class Launch
 		boolean exclusionOn = false;
 		OpenNlp openNlp = new OpenNlp(modelName, true, ignorePronouns, exclusionOn);
 		openNlp.setCacheEnabled(false);
-		openNlp.process(article);
+		openNlp.recognize(article);
 		
 		logger.decreaseOffset();
 	}
@@ -535,7 +535,7 @@ public class Launch
 		boolean exclusionOn = false;
 		Stanford stanford = new Stanford(modelName, true, ignorePronouns, exclusionOn);
 		stanford.setCacheEnabled(false);
-		stanford.process(article);
+		stanford.recognize(article);
 			
 		logger.decreaseOffset();
 	}
@@ -561,7 +561,7 @@ public class Launch
 		boolean discardDemonyms = true;
 		Subee subee = new Subee(additionalOccurrences, useTitle, notableType, useAcronyms, discardDemonyms);
 		subee.setCacheEnabled(false);
-		subee.process(article);
+		subee.recognize(article);
 
 		logger.decreaseOffset();
 	}
@@ -625,7 +625,7 @@ public class Launch
 		// note that by default, the mentions detected by a NER are cached.
 		// this means if the result file already exists, it will be loaded.
 		// here, we use the same parameters than for the single-article tests.
-		AbstractRecognizer temp[] =
+		AbstractProcessor temp[] =
 		{	new DateExtractor(),
 			new WikipediaDater(),
 			new Illinois(IllinoisModelName.CONLL_MODEL, true, true, false, false),
@@ -635,10 +635,10 @@ public class Launch
 			new Stanford(StanfordModelName.CONLLMUC_MODEL, true, false, false),
 			new Subee(true, true, true, true, true)
 		};
-		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
+		List<AbstractProcessor> recognizers = Arrays.asList(temp);
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 			logger.log(recognizer.getFolder());
 		logger.decreaseOffset();
 
@@ -756,7 +756,7 @@ public class Launch
 		SubeeMode subeeMode = SubeeMode.NONE;
 		VoteCombiner voteCombiner = new VoteCombiner(loadModelOnDemand, specific, voteMode, useRecall, existVote, subeeMode);
 		voteCombiner.setCacheEnabled(false);
-		voteCombiner.process(article);
+		voteCombiner.recognize(article);
 		
 		logger.decreaseOffset();
 	}
@@ -782,7 +782,7 @@ public class Launch
 		SubeeMode subeeMode = SubeeMode.NONE;
 		SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCategories, combineMode, subeeMode);
 		svmCombiner.setCacheEnabled(false);
-		svmCombiner.process(article);
+		svmCombiner.recognize(article);
 		
 		logger.decreaseOffset();
 	}
@@ -816,14 +816,14 @@ public class Launch
 		logger.decreaseOffset();
 		
 		// set the recognizers we want to evaluate (like before in evaluateStandaloneTools)
-		AbstractRecognizer temp[] =
+		AbstractProcessor temp[] =
 		{	new VoteCombiner(true, true, VoteMode.UNIFORM, true, true, SubeeMode.NONE),
 			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE)
 		};
-		List<AbstractRecognizer> recognizers = Arrays.asList(temp);
+		List<AbstractProcessor> recognizers = Arrays.asList(temp);
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 			logger.log(recognizer.getFolder());
 		logger.decreaseOffset();
 

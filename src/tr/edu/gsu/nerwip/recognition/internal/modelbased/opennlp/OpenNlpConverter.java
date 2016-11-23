@@ -35,7 +35,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -58,7 +58,7 @@ public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,L
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public OpenNlpConverter(String nerFolder)
-	{	super(RecognizerName.OPENNLP, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.OPENNLP, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,L
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Mentions convert(Article article, Map<EntityType,List<Span>> data) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 		
 		String rawText = article.getRawText();
 		for(Entry<EntityType,List<Span>> entry: data.entrySet())
@@ -77,7 +77,7 @@ public class OpenNlpConverter extends AbstractInternalConverter<Map<EntityType,L
 				int startPos = span.getStart();
 				int endPos = span.getEnd();
 				String valueStr = rawText.substring(startPos,endPos);
-				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
 				
 				// ignore overlapping mentions
 //				if(!result.hasMention(mention))	//TODO don't remember if i'm supposed to change that, or what?

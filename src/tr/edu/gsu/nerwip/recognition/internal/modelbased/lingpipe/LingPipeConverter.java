@@ -31,7 +31,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -58,7 +58,7 @@ public class LingPipeConverter extends AbstractInternalConverter<Chunking>
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public LingPipeConverter(String nerFolder)
-	{	super(RecognizerName.LINGPIPE, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.LINGPIPE, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ public class LingPipeConverter extends AbstractInternalConverter<Chunking>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Mentions convert(Article article, Chunking chunking) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 		
 		String text = chunking.charSequence().toString();
 		for(Chunk chunk: chunking.chunkSet())
@@ -74,7 +74,7 @@ public class LingPipeConverter extends AbstractInternalConverter<Chunking>
 			int startPos = chunk.start();
 			int endPos = chunk.end();
 			String valueStr = text.substring(startPos,endPos);
-			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
 			result.addMention(mention);
 		}
 		

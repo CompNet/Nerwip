@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.recognition.external;
+package tr.edu.gsu.nerwip.recognition.internal;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -32,52 +32,67 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
+import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 
 /**
- * This class is used to represent recognizers invocable 
- * externally only, i.e. through the system and not
- * from within Nerwip, unlike {@link AbstractInternalRecognizer} objects. 
+ * This class is used to represent or implement recognizers invocable 
+ * internally, i.e. programmatically, from within Nerwip. 
  * 
  * @param <T>
  * 		Class of the converter associated to this recognizer.
+ * @param <U>
+ * 		Class of the internal representation of the mentions resulting from the detection.
  * 		 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public abstract class AbstractExternalRecognizer<T extends AbstractExternalConverter> extends AbstractRecognizer
+public abstract class AbstractInternalProcessor<U,T extends AbstractInternalConverter<U>> extends AbstractProcessor
 {	
 	/**
 	 * Builds a new internal recognizer,
-	 * using the specified default options.
+	 * using the specified options.
 	 * 
 	 * @param trim
 	 * 		Whether or not the beginings and ends of mentions should be 
 	 * 		cleaned from any non-letter/digit chars.
-	 * @param exclusionOn
-	 * 		Whether or not stop words should be ignored.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
+	 * @param exclusionOn
+	 * 		Whether or not stop words should be ignored.
 	 */
-	public AbstractExternalRecognizer(boolean trim, boolean ignorePronouns, boolean exclusionOn)
+	public AbstractInternalProcessor(boolean trim, boolean ignorePronouns, boolean exclusionOn)
 	{	super(trim,ignorePronouns,exclusionOn);
 	}
+	
+	/////////////////////////////////////////////////////////////////
+	// MISC				/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Possibly performs the last operations
+	 * to make this recognizer ready to be applied.
+	 * This method mainly concerns recognizers needing
+	 * to load external data.
+	 * 
+	 * @throws ProcessorException
+	 * 		Problem while initializing the recognizer.
+	 */
+	protected abstract void prepareRecognizer() throws ProcessorException;
 	
 	/////////////////////////////////////////////////////////////////
 	// CONVERTER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Converter associated to this recognizer */
 	protected T converter;
-
+	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Mentions process(Article article) throws RecognizerException
+	public Mentions recognize(Article article) throws ProcessorException
 	{	logger.log("Start applying "+getName()+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
 		Mentions result = null;
@@ -98,18 +113,34 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 				
 				// apply the recognizer
 				logger.log("Detect the mentions");
-				String mentionsStr = detectMentions(article);
+				prepareRecognizer();
+				U intRes = detectMentions(article);
+				
+				// possibly record mentions as they are outputted (useful for debug)
+				if(outRawResults)
+				{	logger.log("Record raw "+getName()+" results");
+					converter.writeRawResults(article, intRes);
+				}
+				else
+					logger.log("Raw results not recorded (option disabled)");
 				
 				// convert mentions to our internal representation
-				logger.log("Convert mentions to our internal representation");
-				result = converter.convert(article,mentionsStr);
+				logger.log("Convert mentions to internal representation");
+				result = converter.convert(article,intRes);
+	
+				// check if the mentions are consistent
+				String text = article.getRawText();
+				for(AbstractMention<?> mention: result.getMentions())
+				{	if(!mention.checkText(article))
+						logger.log("ERROR: mention text not consistant with text/position, '"+mention.getStringValue()+" vs. '"+text.substring(mention.getStartPos(),mention.getEndPos())+"'");
+				}
 				
 				// possibly trim mentions (remove non-digit/letter chars at beginning/end)
 				logger.log("Possibly clean mentions.");
 				cleanMentions(result);
 				
-				// possibly filter stop words and pronouns
-				logger.log("Possibly filter mentions (pronouns, stop-words, etc.)");
+				// possibly filter stop-words and pronouns
+				logger.log("Filter mentions (pronouns, stop-words, etc.)");
 				filterNoise(result,language);
 				
 				// filter overlapping mentions
@@ -117,59 +148,54 @@ public abstract class AbstractExternalRecognizer<T extends AbstractExternalConve
 				filterRedundancy(result);
 				
 				// record mentions using our xml format
-				logger.log("Record mentions using our XML format");
+				logger.log("Convert mentions to our XML format");
 				converter.writeXmlResults(article,result);
-				
-				// possibly remove the raw output file
-				if(outRawResults)
-					logger.log("Keep the file produced by the external recognizer");
-				else
-				{	logger.log("Delete the file produced by the external recognizer");
-					converter.deleteRawFile(article);
-				}
 			}
 			
 			// if the results already exist, we fetch them
 			else
-			{	result = converter.readXmlResults(article);
+			{	logger.log("Loading mentions from cached file");
+				result = converter.readXmlResults(article);
 			}
-		}
-		catch (ConverterException e)
-		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (SAXException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (ParseException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
+		}
+		catch (ConverterException e)
+		{	e.printStackTrace();
+			throw new ProcessorException(e.getMessage());
 		}
 	
-		logger.log(getName()+" over ["+article.getName()+"]");
+		int nbrEnt = result.getMentions().size();
+		logger.log(getName()+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
 		logger.decreaseOffset();
 
 		return result;
 	}
 	
     /**
-     * Takes the raw text of the article, and
-     * returns a string representing the detected 
-     * mentions. Those must then be converted 
-     * to objects compatible with the rest of Nerwip.
+     * Takes an object representation of the article, 
+     * and returns the internal representation of
+     * the detected mentions. Those must then
+     * be converted to objects compatible
+     * with the rest of Nerwip.
      * 
      * @param article
      * 		Article to process.
      * @return
-     * 		String representing the detected mentions.
+     * 		Object representing the detected mentions.
      * 
-     * @throws RecognizerException
+     * @throws ProcessorException
      * 		Problem while applying the recognizer.
-    */
-	protected abstract String detectMentions(Article article) throws RecognizerException;
+     */
+	protected abstract U detectMentions(Article article) throws ProcessorException;
 }

@@ -108,8 +108,8 @@ import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.edition.language.Language;
 import tr.edu.gsu.nerwip.edition.language.LanguageLoader;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner.SubeeMode;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.fullcombiner.FullCombiner.Combiner;
@@ -2797,7 +2797,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			
 			// update actions
 			String title = tabbedPane.getTitleAt(index);
-			boolean activation = title.equals(RecognizerName.REFERENCE.toString());
+			boolean activation = title.equals(ProcessorName.REFERENCE.toString());
 			for(EntityType type: EntityType.values())
 			{	Action action = mentionInsertActions.get(type);
 				action.setEnabled(activation);
@@ -3247,7 +3247,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		
 		// get the reference file
 		File articleFolder = new File(articlePath);
-		{	String algoName = RecognizerName.REFERENCE.toString();
+		{	String algoName = ProcessorName.REFERENCE.toString();
 			File[] mentionFiles = articleFolder.listFiles(FILTER);
 			if(mentionFiles.length>0)
 				result.put(algoName,mentionFiles[0]);
@@ -3397,7 +3397,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			statusInformationTexts.clear();
 			
 			// put them in a tab
-			String refName = RecognizerName.REFERENCE.toString();
+			String refName = ProcessorName.REFERENCE.toString();
 			Mentions references = mentionLists.get(refName);
 			if(references==null)
 			{	references = new Mentions();

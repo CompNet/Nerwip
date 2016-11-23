@@ -47,8 +47,8 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
@@ -77,7 +77,7 @@ public class NetworkExtraction
 	 * 		Problem while extracting.
 	 */
 	public static void main(String[] args) throws Exception
-	{	AbstractRecognizer recognizer = new StraightCombiner();
+	{	AbstractProcessor recognizer = new StraightCombiner();
 		extractNetwork(recognizer);
 	}
 		
@@ -97,7 +97,7 @@ public class NetworkExtraction
 	 * @param recognizer
 	 * 		The recognizer to apply (or previously applied).
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while retrieving the detected entities.
 	 * @throws ParseException
 	 * 		Problem while retrieving the article.
@@ -108,7 +108,7 @@ public class NetworkExtraction
 	 * @throws ReaderException
 	 * 		Problem while accessing a file.
 	 */
-	private static void extractNetwork(AbstractRecognizer recognizer) throws RecognizerException, ParseException, SAXException, IOException, ReaderException
+	private static void extractNetwork(AbstractProcessor recognizer) throws ProcessorException, ParseException, SAXException, IOException, ReaderException
 	{	logger.log("Extract entity network");
 		
 		// init graph
@@ -135,7 +135,7 @@ public class NetworkExtraction
 			
 			// retrieve the mentions
 			logger.log("Retrieve the mentions");
-			Mentions mentions = recognizer.process(article);
+			Mentions mentions = recognizer.recognize(article);
 			
 			// process each sentence
 			logger.log("Process each sentence");

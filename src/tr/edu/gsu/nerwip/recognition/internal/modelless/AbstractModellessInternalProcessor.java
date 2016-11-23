@@ -24,16 +24,16 @@ package tr.edu.gsu.nerwip.recognition.internal.modelless;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
-import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalProcessor;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalProcessor;
 
 /**
  * This class is used to represent or implement recognizers invocable 
  * internally, i.e. programmatically, from within Nerwip, and not
  * using any model, i.e. external files to be loaded (as opposed to
- * {@link AbstractModelBasedInternalRecognizer} recognizers.
+ * {@link AbstractModelBasedInternalProcessor} recognizers.
  * 
  * @param <T>
  * 		Class of the converter associated to this recognizer.
@@ -42,7 +42,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInter
  * 		 
  * @author Vincent Labatut
  */
-public abstract class AbstractModellessInternalRecognizer<U,T extends AbstractInternalConverter<U>> extends AbstractInternalRecognizer<U,T>
+public abstract class AbstractModellessInternalProcessor<U,T extends AbstractInternalConverter<U>> extends AbstractInternalProcessor<U,T>
 {	
 	/**
 	 * Builds a new internal recognizer,
@@ -56,7 +56,7 @@ public abstract class AbstractModellessInternalRecognizer<U,T extends AbstractIn
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 */
-	public AbstractModellessInternalRecognizer(boolean trim, boolean ignorePronouns, boolean exclusionOn)
+	public AbstractModellessInternalProcessor(boolean trim, boolean ignorePronouns, boolean exclusionOn)
 	{	super(trim,ignorePronouns,exclusionOn);
 	}
 	
@@ -64,7 +64,7 @@ public abstract class AbstractModellessInternalRecognizer<U,T extends AbstractIn
 	// MISC				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void prepareRecognizer() throws RecognizerException
+	protected void prepareRecognizer() throws ProcessorException
 	{	// nothing to do here
 	}
 }

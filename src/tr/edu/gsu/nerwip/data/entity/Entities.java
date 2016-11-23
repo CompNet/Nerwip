@@ -46,8 +46,8 @@ import org.xml.sax.SAXException;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.linking.LinkerName;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
@@ -201,7 +201,7 @@ public class Entities
 	 * Returns the name of the person which
 	 * originally annotated these entities.
 	 * This is relevant only if the recognizer
-	 * name is {@link RecognizerName#REFERENCE},
+	 * name is {@link ProcessorName#REFERENCE},
 	 * otherwise the method returns {@code null}.
 	 * 
 	 * @return
@@ -306,7 +306,7 @@ public class Entities
 //		
 //		// get source
 //		String sourceStr = element.getAttributeValue(XmlNames.ATT_RECOGNIZER);
-//		RecognizerName source = RecognizerName.valueOf(sourceStr);
+//		ProcessorName source = ProcessorName.valueOf(sourceStr);
 //		
 //		// get dates
 ////String creationDateStr = element.getAttributeValue(XmlNames.ATT_DATE);

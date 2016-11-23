@@ -33,9 +33,9 @@ import de.unihd.dbs.heideltime.standalone.exceptions.DocumentCreationTimeMissing
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalProcessor;
 
 /**
  * This class acts as an interface with the HeidelTime tool.
@@ -55,7 +55,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInter
  * 
  * @author Vincent Labatut
  */
-public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, HeidelTimeConverter, HeidelTimeModelName>
+public class HeidelTime extends AbstractModelBasedInternalProcessor<String, HeidelTimeConverter, HeidelTimeModelName>
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -69,10 +69,10 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 	 * @param doIntervalTagging
 	 * 		Whether intervals should be detected or ignored (?). 
 	 * 
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem while loading the models or tokenizers.
 	 */
-	public HeidelTime(HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws RecognizerException
+	public HeidelTime(HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws ProcessorException
 	{	super(modelName,loadModelOnDemand,false,false,false);
 	
 		setIgnoreNumbers(false);
@@ -87,8 +87,8 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.HEIDELTIME;
+	public ProcessorName getName()
+	{	return ProcessorName.HEIDELTIME;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
     }
 	
 	@Override
-	protected void loadModel() throws RecognizerException
+	protected void loadModel() throws ProcessorException
 	{	logger.increaseOffset();
 		
 		mainModel = modelName.buildMainTool(doIntervalTagging);
@@ -165,7 +165,7 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected String detectMentions(Article article) throws RecognizerException
+	protected String detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		String result = null;
 		
@@ -193,7 +193,7 @@ public class HeidelTime extends AbstractModelBasedInternalRecognizer<String, Hei
 		catch (DocumentCreationTimeMissingException e)
 		{	logger.log("ERROR: problem with the date given to HeidelTime ("+date+")");
 //			e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		
 	    logger.decreaseOffset();

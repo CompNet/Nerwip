@@ -40,7 +40,7 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
@@ -60,9 +60,9 @@ public class VoteWeights
 	 * @param recognizers
 	 * 		Recognizers whose weights are stored in this object.
 	 */
-	public VoteWeights(List<AbstractRecognizer> recognizers)
+	public VoteWeights(List<AbstractProcessor> recognizers)
 	{	this.recognizers.addAll(recognizers);
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	Map<String,Map<ArticleCategory,Float>> map = new HashMap<String, Map<ArticleCategory,Float>>();
 			data.put(recognizer,map);
 		}
@@ -77,14 +77,14 @@ public class VoteWeights
 	 * @return
 	 * 		New VoteWeights instance with uniform weights.
 	 */
-	public static VoteWeights buildUniformWeights(List<AbstractRecognizer> recognizers)
+	public static VoteWeights buildUniformWeights(List<AbstractProcessor> recognizers)
 	{	logger.log("Builds uniform weights for recognizers "+recognizers.toString());
 		logger.increaseOffset();
 		
 		VoteWeights result = new VoteWeights(recognizers);
 		List<ArticleCategory> categories = Arrays.asList(ArticleCategory.values());
 			
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			Map<String,Map<ArticleCategory,Float>> recMap = result.data.get(recognizer);
 			Map<ArticleCategory,Float> mesMap = new HashMap<ArticleCategory, Float>();
@@ -116,12 +116,12 @@ public class VoteWeights
 	{	logger.log("Initializes vote weights with evaluator "+evaluator);
 		logger.increaseOffset();
 		
-		List<AbstractRecognizer> recognizers = evaluator.getRecognizers();
+		List<AbstractProcessor> recognizers = evaluator.getRecognizers();
 		VoteWeights result = new VoteWeights(recognizers);
 		List<ArticleCategory> categories = Arrays.asList(ArticleCategory.values());
 		Collections.sort(names);
 		
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
@@ -167,9 +167,9 @@ public class VoteWeights
 	/** Name used for uniform weights */
 	private final static String UNIFORM_NAME = "Uniform";
 	/** Maps containing all the weights */
-	private final Map<AbstractRecognizer,Map<String,Map<ArticleCategory,Float>>> data = new HashMap<AbstractRecognizer,Map<String,Map<ArticleCategory,Float>>>();
+	private final Map<AbstractProcessor,Map<String,Map<ArticleCategory,Float>>> data = new HashMap<AbstractProcessor,Map<String,Map<ArticleCategory,Float>>>();
 	/** List of recognizers (important to keep their original order) */
-	private final List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
+	private final List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>();
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
@@ -194,7 +194,7 @@ public class VoteWeights
 	 * @return
 	 * 		Voting weight resulting from the process.
 	 */
-	public float processVotingWeight(Article article, AbstractRecognizer recognizer, String name, Map<ArticleCategory,Float> categoryWeights)
+	public float processVotingWeight(Article article, AbstractProcessor recognizer, String name, Map<ArticleCategory,Float> categoryWeights)
 	{	float result = 0;
 		List<ArticleCategory> categories = article.getCategories();
 		Map<String,Map<ArticleCategory,Float>> recMap = data.get(recognizer);
@@ -233,7 +233,7 @@ public class VoteWeights
 	 * @throws UnsupportedEncodingException
 	 * 		Could not handle the encoding.
 	 */
-	public static VoteWeights loadVoteWeights(String filePath, List<AbstractRecognizer> recognizers) throws FileNotFoundException, UnsupportedEncodingException
+	public static VoteWeights loadVoteWeights(String filePath, List<AbstractProcessor> recognizers) throws FileNotFoundException, UnsupportedEncodingException
 	{	logger.log("Loading vote weights");
 		logger.increaseOffset();
 		
@@ -243,7 +243,7 @@ public class VoteWeights
 		Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 		
 		// process each recognizer	
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
@@ -321,7 +321,7 @@ public class VoteWeights
 		}
 		
 		// write each recognizer
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 		

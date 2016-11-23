@@ -46,7 +46,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -70,7 +70,7 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public DpbSpotlightConverter(String nerFolder)
-	{	super(RecognizerName.SPOTLIGHT, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.SPOTLIGHT, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -80,7 +80,8 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 	private final static String TYPE_PREFIX = "Schema:";
 	/** List of strings to ignore during the type conversion */
 	private final static List<String> IGNORE_LIST = Arrays.asList(
-		TYPE_PREFIX+"Language"
+		TYPE_PREFIX+"Language",
+		TYPE_PREFIX+"Product"
 	);
 	/** Map of string to mention type conversion */
 	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
@@ -123,7 +124,7 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 	@Override
 	public Mentions convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(recognizerName);
+		Mentions result = new Mentions(processorName);
 		
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = data.iterator();
@@ -259,7 +260,7 @@ public class DpbSpotlightConverter extends AbstractInternalConverter<List<String
 			if(!valueStr.equalsIgnoreCase(surfaceForm))
 				logger.log("WARNING: the original and returned texts differ: \""+valueStr+"\" vs. \""+surfaceForm+"\"");
 			else
-			{	result = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+			{	result = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
 				logger.log("Created mention "+result.toString());
 			}
 		}

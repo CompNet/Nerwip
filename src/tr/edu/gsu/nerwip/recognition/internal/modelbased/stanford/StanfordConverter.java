@@ -40,7 +40,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -64,7 +64,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public StanfordConverter(String nerFolder)
-	{	super(RecognizerName.STANFORD, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.STANFORD, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 // old version	
 //	@Override
 //	public Mentions convert(List<List<CoreLabel>> data) throws ConverterException
-//	{	Mentions result = new Mentions(recognizerName);
+//	{	Mentions result = new Mentions(processorName);
 //				
 //		// extract mentions from text
 //		Matcher matcher = SEARCH_PATTERN.matcher(text);
@@ -104,7 +104,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 //			int endPos = matcher.end();
 //			String valueStr = matcher.group();
 //			String value = matcher.group(2);
-//			AbstractEntity<?> mention = AbstractEntity.build(type, startPos, endPos, recognizerName, valueStr, value);
+//			AbstractEntity<?> mention = AbstractEntity.build(type, startPos, endPos, processorName, valueStr, value);
 //			mentions.add(mention);
 //		}
 //		
@@ -116,7 +116,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 
 	@Override
 	public Mentions convert(Article article, List<List<CoreLabel>> data) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 		
 		// consecutive words with the same type are not considered as a single mention by Stanford
 		// (at least in the default models)
@@ -147,7 +147,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 					// check for continuity with the previous mention
 					if(type!=prevType)
 					{	// case where we start a new mention
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
 						result.addMention(mention);
 						lastMention = mention;
 					}
@@ -156,7 +156,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 					{	// case where we update (recreate, actually) the previous mention
 						startPos = lastMention.getStartPos();
 						valueStr = lastMention.getStringValue() + before + valueStr;
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
 						result.addMention(mention);
 						result.removeMention(lastMention);
 						lastMention = mention;

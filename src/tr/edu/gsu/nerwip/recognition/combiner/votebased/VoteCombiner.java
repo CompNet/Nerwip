@@ -39,9 +39,9 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.CategoryProportions;
 import tr.edu.gsu.nerwip.recognition.combiner.VoteWeights;
@@ -111,10 +111,10 @@ public class VoteCombiner extends AbstractCombiner
 	 * @param subeeMode
 	 * 		Indicates how our recognizer {@link Subee} is used (if it is used). 
 	 *
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public VoteCombiner(boolean loadModelOnDemand, boolean specific, VoteMode voteMode, boolean useRecall, boolean existVote, SubeeMode subeeMode) throws RecognizerException
+	public VoteCombiner(boolean loadModelOnDemand, boolean specific, VoteMode voteMode, boolean useRecall, boolean existVote, SubeeMode subeeMode) throws ProcessorException
 	{	super();
 	
 		this.specific = specific;
@@ -136,8 +136,8 @@ public class VoteCombiner extends AbstractCombiner
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.VOTECOMBINER;
+	public ProcessorName getName()
+	{	return ProcessorName.VOTECOMBINER;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ public class VoteCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 	
@@ -195,7 +195,7 @@ public class VoteCombiner extends AbstractCombiner
 	// TOOLS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void initRecognizers() throws RecognizerException
+	protected void initRecognizers() throws ProcessorException
 	{	logger.increaseOffset();
 		boolean loadModelOnDemand = true;
 	
@@ -288,10 +288,10 @@ public class VoteCombiner extends AbstractCombiner
 	 * Loads the objects necessary to the combination process,
 	 * including the vote weights.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading the model.
 	 */
-	private void loadModel() throws RecognizerException
+	private void loadModel() throws ProcessorException
 	{	if(voteMode.hasWeights())
 		{	loadVoteWeights();
 			if(voteMode==VoteMode.WEIGHTED_CATEGORY)
@@ -387,7 +387,7 @@ public class VoteCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException
 	{	logger.increaseOffset();
 		String text = article.getRawText();
 		Mentions result = new Mentions(getName());
@@ -398,7 +398,7 @@ public class VoteCombiner extends AbstractCombiner
 		
 		// get overlapping mentions
 		logger.log("Get the list of overlapping mentions");
-		List<Map<AbstractRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<AbstractProcessor, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// process the weights associated to article categories
 		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
@@ -406,14 +406,14 @@ public class VoteCombiner extends AbstractCombiner
 		// compare/combine them
 		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<AbstractRecognizer, AbstractMention<?>> map: overlaps)
+		for(Map<AbstractProcessor, AbstractMention<?>> map: overlaps)
 		{	logger.log(map.values().toString());
 			logger.increaseOffset();
 			
 			// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<AbstractRecognizer, AbstractMention<?>> entry: map.entrySet())
-			{	AbstractRecognizer recognizer = entry.getKey();
+			for(Entry<AbstractProcessor, AbstractMention<?>> entry: map.entrySet())
+			{	AbstractProcessor recognizer = entry.getKey();
 				AbstractMention<?> mention = entry.getValue();
 				rawOutput.append("\t"+recognizer+": "+mention+"\n");
 			}
@@ -461,7 +461,7 @@ public class VoteCombiner extends AbstractCombiner
 	 * @return 
 	 * 		{@code true} iff the conclusion is that the mention is correct.
 	 */
-	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractMention<?>> map)
+	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractProcessor, AbstractMention<?>> map)
 	{	logger.log("Start voting for existence:");
 		logger.increaseOffset();
 		boolean result = false;
@@ -470,7 +470,7 @@ public class VoteCombiner extends AbstractCombiner
 		{	float voteFor = 0;
 			float voteAgainst = 0;
 			
-			for(AbstractRecognizer recognizer: recognizers)
+			for(AbstractProcessor recognizer: recognizers)
 			{	AbstractMention<?> mention = map.get(recognizer);
 				// existence
 				if(mention==null)
@@ -521,14 +521,14 @@ public class VoteCombiner extends AbstractCombiner
 	 * @return 
 	 * 		An array of two integers corresponding to the mention position.
 	 */
-	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractMention<?>> map)
+	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractProcessor, AbstractMention<?>> map)
 	{	logger.log("Start voting for position:");
 		logger.increaseOffset();
 		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
 		Map<Integer,Float> endScores = new HashMap<Integer, Float>();
 		
 		// pro votes
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	AbstractMention<?> mention = map.get(recognizer);
 		
 			// check existence
@@ -560,7 +560,7 @@ public class VoteCombiner extends AbstractCombiner
 		
 		// con votes
 		if(useRecall)
-		{	for(AbstractRecognizer recognizer: recognizers)
+		{	for(AbstractProcessor recognizer: recognizers)
 			{	AbstractMention<?> mention = map.get(recognizer);
 			
 				// check existence
@@ -620,13 +620,13 @@ public class VoteCombiner extends AbstractCombiner
 	 * @return 
 	 * 		Type of the mention represnted by the group.
 	 */
-	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractRecognizer, AbstractMention<?>> map)
+	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractProcessor, AbstractMention<?>> map)
 	{	logger.log("Start voting for type: ");
 		logger.increaseOffset();
 		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
 		
 		// pro votes
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	AbstractMention<?> mention = map.get(recognizer);
 			
 			// retrieve weight
@@ -648,7 +648,7 @@ public class VoteCombiner extends AbstractCombiner
 		
 		// con votes
 		if(useRecall)
-		{	for(AbstractRecognizer recognizer: recognizers)
+		{	for(AbstractProcessor recognizer: recognizers)
 			{	AbstractMention<?> mention = map.get(recognizer);
 					
 				// retrieve weight

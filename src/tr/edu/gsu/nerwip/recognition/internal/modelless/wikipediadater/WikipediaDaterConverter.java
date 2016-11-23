@@ -31,7 +31,7 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -49,7 +49,7 @@ public class WikipediaDaterConverter extends AbstractInternalConverter<List<Ment
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public WikipediaDaterConverter(String nerFolder)
-	{	super(RecognizerName.WIKIPEDIADATER, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.WIKIPEDIADATER, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ public class WikipediaDaterConverter extends AbstractInternalConverter<List<Ment
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Mentions convert(Article article, List<MentionDate> mentions) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 		
 		for(MentionDate mention: mentions)
 			result.addMention(mention);

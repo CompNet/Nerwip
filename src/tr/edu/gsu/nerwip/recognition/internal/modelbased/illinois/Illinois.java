@@ -40,9 +40,9 @@ import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.PlainTextReader;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalProcessor;
 import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisConverter;
 
 /**
@@ -60,7 +60,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.illinois.IllinoisConver
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class Illinois extends AbstractModelBasedInternalRecognizer<Data,IllinoisConverter,IllinoisModelName>
+public class Illinois extends AbstractModelBasedInternalProcessor<Data,IllinoisConverter,IllinoisModelName>
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -79,10 +79,10 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
      * 		Problem while loading the model data.
 	 */
-	public Illinois(IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws RecognizerException
+	public Illinois(IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
 	{	super(modelName,loadModelOnDemand,trim,ignorePronouns,exclusionOn);
 		
 		// init converter
@@ -93,8 +93,8 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.ILLINOIS;
+	public ProcessorName getName()
+	{	return ProcessorName.ILLINOIS;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
     }
 
 	@Override
-	protected void loadModel() throws RecognizerException
+	protected void loadModel() throws ProcessorException
     {	logger.increaseOffset();
 		logger.log("Load model data");
 		
@@ -162,7 +162,7 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 		}
 		catch (Exception e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
     	tagger1 = (NETaggerLevel1) models[0];
     	tagger2 = (NETaggerLevel2) models[1];
@@ -174,7 +174,7 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Data detectMentions(Article article) throws RecognizerException
+	protected Data detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		Data result = null;
 		String text = article.getRawText();
@@ -191,7 +191,7 @@ public class Illinois extends AbstractModelBasedInternalRecognizer<Data,Illinois
 		}
 		catch(Exception e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		
 		logger.decreaseOffset();

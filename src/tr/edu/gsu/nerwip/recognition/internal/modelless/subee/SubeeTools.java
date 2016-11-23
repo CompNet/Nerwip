@@ -32,7 +32,7 @@ import java.util.TreeSet;
 import org.apache.http.client.ClientProtocolException;
 
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.tools.freebase.FbTypeTools;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLogger;
 import tr.edu.gsu.nerwip.tools.log.HierarchicalLoggerManager;
@@ -119,7 +119,7 @@ public class SubeeTools
 	 * all types retrieved from Freebase not already present in the
 	 * existing type files.
 	 * 
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem while loading/retrieving the FB types.
 	 * @throws org.json.simple.parser.ParseException 
 	 * 		Problem while loading/retrieving the FB types.
@@ -128,7 +128,7 @@ public class SubeeTools
 	 * @throws ClientProtocolException 
 	 * 		Problem while loading/retrieving the FB types.
 	 */
-	public static void updateUnknownTypes() throws RecognizerException, ClientProtocolException, IOException, org.json.simple.parser.ParseException
+	public static void updateUnknownTypes() throws ProcessorException, ClientProtocolException, IOException, org.json.simple.parser.ParseException
 	{	logger.setName("Updating-Subee-List");
 		logger.log("Updating Subee unknown FB types list");
 		

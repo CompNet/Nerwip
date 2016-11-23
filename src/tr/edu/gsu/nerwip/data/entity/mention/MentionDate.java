@@ -28,7 +28,7 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.tools.time.Date;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
@@ -54,7 +54,7 @@ public class MentionDate extends AbstractMention<Date>
 	 * @param value
 	 * 		Actual value of the mention.
 	 */
-	public MentionDate(int startPos, int endPos, RecognizerName source, String valueStr, Date value)
+	public MentionDate(int startPos, int endPos, ProcessorName source, String valueStr, Date value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
@@ -70,7 +70,7 @@ public class MentionDate extends AbstractMention<Date>
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public MentionDate(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionDate(int startPos, int endPos, ProcessorName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -122,7 +122,7 @@ public class MentionDate extends AbstractMention<Date>
 	 * @return
 	 * 		The date mention corresponding to the specified element.
 	 */
-	public static MentionDate importFromElement(Element element, RecognizerName source)
+	public static MentionDate importFromElement(Element element, ProcessorName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		

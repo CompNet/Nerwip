@@ -44,7 +44,7 @@ import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -72,7 +72,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	 * 		in two distinct mentions).
 	 */
 	public OpeNerConverter(String nerFolder, boolean parenSplit)
-	{	super(RecognizerName.OPENER, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.OPENER, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	
 		this.parenSplit = parenSplit;
 	}
@@ -153,7 +153,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 	@Override
 	public Mentions convert(Article article, List<String> data) throws ConverterException
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(recognizerName);
+		Mentions result = new Mentions(processorName);
 		
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = data.iterator();
@@ -306,7 +306,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 				String valueStr = part.substring(startPos, endPos);
 				startPos = startPos + prevSize;
 				endPos = endPos + prevSize;
-				result = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				result = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
 				
 				// TODO we could add a unique code to the several mentions of the same entity
 			}
@@ -351,7 +351,7 @@ public class OpeNerConverter extends AbstractInternalConverter<List<String>>
 			String original = mention.getStringValue();
 			int startPos = mention.getStartPos();
 			EntityType type = mention.getType();
-			RecognizerName source = mention.getSource();
+			ProcessorName source = mention.getSource();
 	
 			// analyze the original string
 			int startPar = original.lastIndexOf('(');

@@ -31,7 +31,7 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractConverter;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 
 /**
@@ -50,15 +50,15 @@ public abstract class AbstractInternalConverter<T> extends AbstractConverter
 	/**
 	 * Builds a new internal converter.
 	 * 
-	 * @param recognizerName
+	 * @param processorName
 	 * 		Name of the associated recognizer.
 	 * @param nerFolder
 	 * 		Name of the associated recognizer folder.
 	 * @param rawFile
 	 * 		Name of the raw file (i.e. external format).
 	 */
-	public AbstractInternalConverter(RecognizerName recognizerName, String nerFolder, String rawFile)
-	{	super(recognizerName,nerFolder,rawFile);
+	public AbstractInternalConverter(ProcessorName processorName, String nerFolder, String rawFile)
+	{	super(processorName,nerFolder,rawFile);
 	}
 	
 	/////////////////////////////////////////////////////////////////

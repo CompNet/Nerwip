@@ -56,9 +56,9 @@ import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.recognition.combiner.CategoryProportions;
 import tr.edu.gsu.nerwip.recognition.combiner.VoteWeights;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner.CombineMode;
@@ -99,10 +99,10 @@ public class SvmTrainer
 	 * @param combiner
 	 * 		SVM combiner considered for the training.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while creating the dummy combiner.
 	 */
-	public SvmTrainer(SvmCombiner combiner) throws RecognizerException
+	public SvmTrainer(SvmCombiner combiner) throws ProcessorException
 	{	this.combiner = combiner;
 	}
 	
@@ -189,10 +189,10 @@ public class SvmTrainer
 	 * 		Problem while loading references.
 	 * @throws ReaderException 
 	 * 		Problem while loading references.
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem while applying a recognizer.
 	 */
-	private svm_problem prepareData(List<AbstractRecognizer> recognizers, ArticleList folders) throws IOException, SAXException, ParseException, ReaderException, RecognizerException
+	private svm_problem prepareData(List<AbstractProcessor> recognizers, ArticleList folders) throws IOException, SAXException, ParseException, ReaderException, ProcessorException
 	{	logger.increaseOffset();
 		svm_problem result = null;
 	
@@ -211,7 +211,7 @@ public class SvmTrainer
 				ArticleRetriever retriever = new ArticleRetriever();
 				Article article = retriever.process(name);
 					
-				Map<AbstractRecognizer,Mentions> mentions = new HashMap<AbstractRecognizer, Mentions>();
+				Map<AbstractProcessor,Mentions> mentions = new HashMap<AbstractProcessor, Mentions>();
 				
 				// get reference mentions
 				Mentions refMentions = article.getReferenceMentions();
@@ -220,8 +220,8 @@ public class SvmTrainer
 				mentions.put(null, refMentions);
 				
 				// get estimated mentions for each recognizer
-				for(AbstractRecognizer recognizer: recognizers)
-				{	Mentions estMentions = recognizer.process(article);
+				for(AbstractProcessor recognizer: recognizers)
+				{	Mentions estMentions = recognizer.recognize(article);
 					combiner.filterType(estMentions);
 					mentions.put(recognizer, estMentions);
 				}
@@ -415,7 +415,7 @@ public class SvmTrainer
 	 * 		A 'problem' object, representing SVM inputs and outputs
 	 * 		using an appropriate format.
 	 */
-	private svm_problem convertMentions(Article article, Map<AbstractRecognizer,Mentions> mentions)
+	private svm_problem convertMentions(Article article, Map<AbstractProcessor,Mentions> mentions)
 	{	logger.increaseOffset();
 		svm_problem result;
 		CombineMode combineMode = combiner.getCombineMode();
@@ -441,12 +441,12 @@ public class SvmTrainer
 	 * 		A 'problem' object, representing SVM inputs and outputs
 	 * 		using an appropriate format.
 	 */
-	private svm_problem convertMentionsByMention(Article article, Map<AbstractRecognizer,Mentions> mentions)
+	private svm_problem convertMentionsByMention(Article article, Map<AbstractProcessor,Mentions> mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		
 		// retrieve overlapping mentions
-		List<Map<AbstractRecognizer,AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<AbstractProcessor,AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// init data object
 		svm_problem result = new svm_problem();
@@ -456,15 +456,15 @@ public class SvmTrainer
 		int index = 0;
 		
 		// convert to SVM format
-		for(Map<AbstractRecognizer, AbstractMention<?>> overlap: overlaps)
-		{	Map<AbstractRecognizer, AbstractMention<?>> estimations = overlap;
+		for(Map<AbstractProcessor, AbstractMention<?>> overlap: overlaps)
+		{	Map<AbstractProcessor, AbstractMention<?>> estimations = overlap;
 			AbstractMention<?> refMention = overlap.get(null);
 			EntityType refType = null;
 			
 			// get reference entity type
 			if(refMention!=null)
 			{	refType = refMention.getType();
-				estimations = new HashMap<AbstractRecognizer, AbstractMention<?>>(overlap);
+				estimations = new HashMap<AbstractProcessor, AbstractMention<?>>(overlap);
 				estimations.remove(null);
 			}
 			
@@ -490,16 +490,16 @@ public class SvmTrainer
 	 * 		A 'problem' object, representing SVM inputs and outputs
 	 * 		using an appropriate format.
 	 */
-	private svm_problem convertMentionsByWord(Article article, Map<AbstractRecognizer,Mentions> mentions)
+	private svm_problem convertMentionsByWord(Article article, Map<AbstractProcessor,Mentions> mentions)
 	{	logger.increaseOffset();
 		logger.log("Processing article "+article.getName());
 		String rawText = article.getRawText();
 		
 		// retrieve word-mention couples
-		List<Map<AbstractRecognizer,WordMention>> wordMentions = combiner.identifyWordMentionOverlaps(article,mentions);
+		List<Map<AbstractProcessor,WordMention>> wordMentions = combiner.identifyWordMentionOverlaps(article,mentions);
 		// count non-empty maps (length of the output)
 		int size = 0;
-		for(Map<AbstractRecognizer,WordMention> weMap: wordMentions)
+		for(Map<AbstractProcessor,WordMention> weMap: wordMentions)
 		{	if(!weMap.isEmpty())
 				size++;
 		}
@@ -517,8 +517,8 @@ public class SvmTrainer
 		int index = 0;
 		Boolean prevBeginning = null;
 		EntityType prevType = null;
-		for(Map<AbstractRecognizer,WordMention> weMap: wordMentions)
-		{	Map<AbstractRecognizer,WordMention> estimations = weMap;
+		for(Map<AbstractProcessor,WordMention> weMap: wordMentions)
+		{	Map<AbstractProcessor,WordMention> estimations = weMap;
 			
 			if(weMap.isEmpty())
 			{	prevBeginning = null;
@@ -533,7 +533,7 @@ public class SvmTrainer
 				{	String word = rawText.substring(refWe.getStartPosition(),refWe.getEndPosition());
 					logger.log("Processing word \""+word+"\" ("+refWe.getMention()+")");
 					
-					estimations = new HashMap<AbstractRecognizer, WordMention>(weMap);
+					estimations = new HashMap<AbstractProcessor, WordMention>(weMap);
 					estimations.remove(null);
 				}
 				else
@@ -579,7 +579,7 @@ public class SvmTrainer
 	 * @param estMentions
 	 * 		Corresponding estimated mentions.
 	 */
-	private void convertMentionGroupToSvm(svm_problem data, int index, Article article, EntityType refType, Map<AbstractRecognizer,AbstractMention<?>> estMentions)
+	private void convertMentionGroupToSvm(svm_problem data, int index, Article article, EntityType refType, Map<AbstractProcessor,AbstractMention<?>> estMentions)
 	{	logger.increaseOffset();
 		
 		// use combiner to process output
@@ -614,7 +614,7 @@ public class SvmTrainer
 	 * @param estWe
 	 * 		Corresponding estimated word-mention couples.
 	 */
-	private void convertMentionWordToSvm(svm_problem data, int index, Article article, EntityType prevType, Boolean prevBeginning, WordMention refWe, Map<AbstractRecognizer,WordMention> estWe)
+	private void convertMentionWordToSvm(svm_problem data, int index, Article article, EntityType prevType, Boolean prevBeginning, WordMention refWe, Map<AbstractProcessor,WordMention> estWe)
 	{	logger.increaseOffset();
 		
 		// use combiner to process output
@@ -650,7 +650,7 @@ if(data.x[index]==null || index==131)
 			result = 1;
 		// a mention was detected >> just get its position
 		else
-		{	List<EntityType> handledTypes = combiner.getHandledMentionTypes();
+		{	List<EntityType> handledTypes = combiner.getHandledEntityTypes();
 			result = handledTypes.indexOf(type) + 2;
 		}
 		
@@ -681,7 +681,7 @@ if(data.x[index]==null || index==131)
 		else
 		{	AbstractMention<?> mention = wordMention.getMention();
 			int wordStart = wordMention.getStartPosition();
-			List<EntityType> handledTypes = combiner.getHandledMentionTypes();
+			List<EntityType> handledTypes = combiner.getHandledEntityTypes();
 			EntityType type = mention.getType();
 			result = (handledTypes.indexOf(type)+1)*2;
 			int startPos = mention.getStartPos();
@@ -895,18 +895,18 @@ if(data.x[index]==null || index==131)
 	 * 		Problem while retrieving an article.
 	 * @throws SAXException
 	 * 		Problem while retrieving an article.
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem applying the evaluator.
 	 * @throws ConverterException 
 	 * 		Problem applying the evaluator.
 	 */
-	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
+	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ConverterException, ProcessorException
 	{	CombineMode combineMode = combiner.getCombineMode();
 		if(combineMode.hasWeights())
 		{	// vote weights
 			{	// process
-				List<EntityType> types = combiner.getHandledMentionTypes();
-				List<AbstractRecognizer> recognizers = combiner.getRecognizers();
+				List<EntityType> types = combiner.getHandledEntityTypes();
+				List<AbstractProcessor> recognizers = combiner.getRecognizers();
 				AbstractMeasure measure = new LilleMeasure(null);
 				Evaluator evaluator = new Evaluator(types, recognizers, folders, measure);
 				evaluator.process();
@@ -995,16 +995,16 @@ if(data.x[index]==null || index==131)
 	 * 		Problem while accessing a mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer. 
 	 * @throws ConverterException 
 	 * 		Problem while processing a recognizer performance. 
 	 */
-	public void process(ArticleList folders, boolean useDefaultParams) throws IOException, SAXException, ParseException, ReaderException, RecognizerException, ConverterException
+	public void process(ArticleList folders, boolean useDefaultParams) throws IOException, SAXException, ParseException, ReaderException, ProcessorException, ConverterException
 	{	logger.increaseOffset();
 		
 		// get the recognizers
-		List<AbstractRecognizer> recognizers = combiner.getRecognizers();
+		List<AbstractProcessor> recognizers = combiner.getRecognizers();
 		// prepare the data
 		logger.log("Preparing the training data");
 		svm_problem data = prepareData(recognizers,folders);
@@ -1072,16 +1072,16 @@ if(data.x[index]==null || index==131)
 	 * 		Problem while accessing a mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer. 
 	 * @throws ConverterException 
 	 * 		Problem while processing a recognizer performance. 
 	 */
-	public void process(ArticleList folders, double c, double gamma) throws IOException, SAXException, ParseException, ReaderException, RecognizerException, ConverterException
+	public void process(ArticleList folders, double c, double gamma) throws IOException, SAXException, ParseException, ReaderException, ProcessorException, ConverterException
 	{	logger.increaseOffset();
 		
 		// get the recognizers
-		List<AbstractRecognizer> recognizers = combiner.getRecognizers();
+		List<AbstractProcessor> recognizers = combiner.getRecognizers();
 		// prepare the data
 		logger.log("Preparing the training data");
 		svm_problem data = prepareData(recognizers,folders);

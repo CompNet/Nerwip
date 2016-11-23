@@ -34,7 +34,7 @@ import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
@@ -70,7 +70,7 @@ public class IstanbulMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 */
-	public IstanbulMeasure(AbstractRecognizer recognizer)
+	public IstanbulMeasure(AbstractProcessor recognizer)
 	{	super(recognizer);
 	}
 	
@@ -85,7 +85,7 @@ public class IstanbulMeasure extends AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
-	public IstanbulMeasure(AbstractRecognizer recognizer, List<EntityType> types)
+	public IstanbulMeasure(AbstractProcessor recognizer, List<EntityType> types)
 	{	super(recognizer,types);
 	}
 	/**
@@ -105,24 +105,24 @@ public class IstanbulMeasure extends AbstractMeasure
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public IstanbulMeasure(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public IstanbulMeasure(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	super(recognizer,types,reference,estimation,categories);
 	}	
 
 	@Override
-	public AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	IstanbulMeasure result = new IstanbulMeasure(recognizer, types, reference, estimation, categories);
 		return result;
 	}
 
 	@Override
-	public AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types)
+	public AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types)
 	{	IstanbulMeasure result = new IstanbulMeasure(recognizer,types);
 		return result;
 	}
 
 	@Override
-	public AbstractMeasure build(AbstractRecognizer recognizer)
+	public AbstractMeasure build(AbstractProcessor recognizer)
 	{	IstanbulMeasure result = new IstanbulMeasure(recognizer);
 		return result;
 	}

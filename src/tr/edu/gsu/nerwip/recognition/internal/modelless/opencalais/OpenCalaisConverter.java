@@ -43,7 +43,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -67,7 +67,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public OpenCalaisConverter(String nerFolder)
-	{	super(RecognizerName.OPENCALAIS, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.OPENCALAIS, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 	@Override
 	public Mentions convert(Article article, List<String> text) throws ConverterException
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(recognizerName);
+		Mentions result = new Mentions(processorName);
 
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = text.iterator();
@@ -256,7 +256,7 @@ public class OpenCalaisConverter extends AbstractInternalConverter<List<String>>
 			String lengthStr = lengthElt.getText();
 			int length = Integer.parseInt(lengthStr);
 			int endPos = startPos + length;
-			result = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+			result = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
 		}
 		
 		return result;

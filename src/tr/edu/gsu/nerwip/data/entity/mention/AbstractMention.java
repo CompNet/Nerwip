@@ -33,7 +33,7 @@ import org.jdom2.Element;
 
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
@@ -61,7 +61,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @param value
 	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public AbstractMention(int startPos, int endPos, RecognizerName source, String valueStr, T value)
+	public AbstractMention(int startPos, int endPos, ProcessorName source, String valueStr, T value)
 	{	this.startPos = startPos;
 		this.endPos = endPos;
 		this.source = source;
@@ -87,7 +87,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		An object representing the mention.
 	 */
-	public static <T> AbstractMention<?> build(EntityType type, int startPos, int endPos, RecognizerName source, String valueStr)
+	public static <T> AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr)
 	{	AbstractMention<?> result = null;
 
 // debug
@@ -146,7 +146,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 		};
 		for(String valueStr: valuesStr)
 		{	int endPos = startPos + valueStr.length();
-			AbstractMention<?> mention = build(EntityType.PERSON, startPos, endPos, RecognizerName.STANFORD, valueStr); 
+			AbstractMention<?> mention = build(EntityType.PERSON, startPos, endPos, ProcessorName.STANFORD, valueStr); 
 			mention.correctMentionSpan();
 			System.out.println("\""+valueStr + "\"\t\t>>\t\t" + mention);
 		}
@@ -363,7 +363,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	// SOURCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Origin of the mention (what detected it) */
-	protected RecognizerName source;
+	protected ProcessorName source;
 	
 	/**
 	 * Returns the recognizer which
@@ -372,7 +372,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		recognizer having detected this mention.
 	 */
-	public RecognizerName getSource()
+	public ProcessorName getSource()
 	{	return source;
 	}
 
@@ -383,7 +383,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @param source
 	 * 		New recognizer having detected this mention.
 	 */
-	public void setSource(RecognizerName source)
+	public void setSource(ProcessorName source)
 	{	this.source = source;
 	}
 	
@@ -595,7 +595,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		The mention corresponding to the specified element.
 	 */
-	public static AbstractMention<?> importFromElement(Element element, RecognizerName source)
+	public static AbstractMention<?> importFromElement(Element element, ProcessorName source)
 	{	AbstractMention<?> result = null;
 		
 		String typeStr = element.getAttributeValue(XmlNames.ATT_TYPE);

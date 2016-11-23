@@ -42,9 +42,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalProcessor;
 import tr.edu.gsu.nerwip.tools.keys.KeyHandler;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
@@ -64,7 +64,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>,OpenCalaisConverter>
+public class OpenCalais extends AbstractModellessInternalProcessor<List<String>,OpenCalaisConverter>
 {	// user guide: http://new.opencalais.com/wp-content/uploads/2015/06/Thomson-Reuters-Open-Calais-API-User-Guide-v3.pdf
 	
 	/**
@@ -92,8 +92,8 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.OPENCALAIS;
+	public ProcessorName getName()
+	{	return ProcessorName.OPENCALAIS;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	List<EntityType> result = selectedLanguage.getHandledTypes(); 
 		return result;
 	}
@@ -144,7 +144,7 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 	private static final long DELAY = 250;
 	
 	@Override
-	protected List<String> detectMentions(Article article) throws RecognizerException
+	protected List<String> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();
@@ -215,15 +215,15 @@ public class OpenCalais extends AbstractModellessInternalRecognizer<List<String>
 			}
 			catch (UnsupportedEncodingException e)
 			{	e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 			catch (ClientProtocolException e)
 			{	e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 			catch (IOException e)
 			{	e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 			
 			logger.decreaseOffset();

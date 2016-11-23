@@ -28,7 +28,7 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
 
 /**
@@ -52,7 +52,7 @@ public class MentionPerson extends AbstractMention<String>
 	 * @param value
 	 * 		Actual value of the mention (can be the same as {@link #valueStr}).
 	 */
-	public MentionPerson(int startPos, int endPos, RecognizerName source, String valueStr, String value)
+	public MentionPerson(int startPos, int endPos, ProcessorName source, String valueStr, String value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
@@ -68,7 +68,7 @@ public class MentionPerson extends AbstractMention<String>
 	 * @param valueStr
 	 * 		String representation in the text.
 	 */
-	public MentionPerson(int startPos, int endPos, RecognizerName source, String valueStr)
+	public MentionPerson(int startPos, int endPos, ProcessorName source, String valueStr)
 	{	super(startPos, endPos, source, valueStr, null);
 	}
 	
@@ -120,7 +120,7 @@ public class MentionPerson extends AbstractMention<String>
 	 * @return
 	 * 		The person mention corresponding to the specified element.
 	 */
-	public static MentionPerson importFromElement(Element element, RecognizerName source)
+	public static MentionPerson importFromElement(Element element, ProcessorName source)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		

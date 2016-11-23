@@ -34,9 +34,9 @@ import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner;
 import tr.edu.gsu.nerwip.recognition.combiner.svmbased.SvmCombiner.CombineMode;
@@ -75,10 +75,10 @@ public class FullCombiner extends AbstractCombiner
 	 * 		Combiner used to handle locations, organizations and persons
 	 * 		(either SVM- or vote-based).
 	 *  
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public FullCombiner(Combiner combiner) throws RecognizerException
+	public FullCombiner(Combiner combiner) throws ProcessorException
 	{	super();
 		
 		this.combiner = combiner;
@@ -93,8 +93,8 @@ public class FullCombiner extends AbstractCombiner
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.FULLCOMBINER;
+	public ProcessorName getName()
+	{	return ProcessorName.FULLCOMBINER;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ public class FullCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -183,7 +183,7 @@ public class FullCombiner extends AbstractCombiner
 	}
 	
 	@Override
-	protected void initRecognizers() throws RecognizerException
+	protected void initRecognizers() throws ProcessorException
 	{	logger.increaseOffset();
 		boolean loadModelOnDemand = true;
 	
@@ -230,18 +230,18 @@ public class FullCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException
 	{	logger.increaseOffset();
 		Mentions result = new Mentions(getName());
-		Iterator<AbstractRecognizer> it = recognizers.iterator();
+		Iterator<AbstractProcessor> it = recognizers.iterator();
 		
 		// first get the dates
-		AbstractRecognizer wikipediaDater = it.next();
+		AbstractProcessor wikipediaDater = it.next();
 		Mentions dates = mentions.get(wikipediaDater);
 		result.addMentions(dates);
 		
 		// then add the rest of the (non-overlapping) mentions
-		AbstractRecognizer combiner = it.next();
+		AbstractProcessor combiner = it.next();
 		Mentions ents = mentions.get(combiner);
 		List<AbstractMention<?>> mentList = ents.getMentions();
 		for(AbstractMention<?> mention: mentList)

@@ -31,7 +31,7 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -53,7 +53,7 @@ public class SubeeConverter extends AbstractInternalConverter<List<AbstractMenti
 	 * @author Vincent Labatut
 	 */
 	public SubeeConverter(String nerFolder)
-	{	super(RecognizerName.SUBEE, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.SUBEE, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ public class SubeeConverter extends AbstractInternalConverter<List<AbstractMenti
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Mentions convert(Article article, List<AbstractMention<?>> mentions) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 		
 		for(AbstractMention<?> mention: mentions)
 			result.addMention(mention);

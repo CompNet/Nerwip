@@ -40,9 +40,9 @@ import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.MentionDate;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalProcessor;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.WikipediaDater;
 
 /**
@@ -57,7 +57,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelless.wikipediadater.Wikipedia
  * 
  * @author Burcu Küpelioğlu
  */
-public class DateExtractor extends AbstractModellessInternalRecognizer<List<MentionDate>, DateExtractorConverter>
+public class DateExtractor extends AbstractModellessInternalProcessor<List<MentionDate>, DateExtractorConverter>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -76,8 +76,8 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Ment
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.DATEEXTRACTOR;
+	public ProcessorName getName()
+	{	return ProcessorName.DATEEXTRACTOR;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Ment
 	);
 	
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -157,7 +157,7 @@ public class DateExtractor extends AbstractModellessInternalRecognizer<List<Ment
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<MentionDate> detectMentions(Article article) throws RecognizerException
+	protected List<MentionDate> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		List<MentionDate> result = new ArrayList<MentionDate>();
 		

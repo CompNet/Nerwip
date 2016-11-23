@@ -36,9 +36,9 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.evaluation.Evaluator;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
 import tr.edu.gsu.nerwip.evaluation.measure.LilleMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.recognition.combiner.CategoryProportions;
 import tr.edu.gsu.nerwip.recognition.combiner.VoteWeights;
 import tr.edu.gsu.nerwip.recognition.combiner.votebased.VoteCombiner.VoteMode;
@@ -62,10 +62,10 @@ public class VoteTrainer
 	 * @param combiner
 	 * 		Vote-based combiner considered for the training.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while creating the dummy combiner.
 	 */
-	public VoteTrainer(VoteCombiner combiner) throws RecognizerException
+	public VoteTrainer(VoteCombiner combiner) throws ProcessorException
 	{	this.combiner = combiner;
 	}
 	
@@ -131,18 +131,18 @@ public class VoteTrainer
 	 * 		Problem while retrieving an article.
 	 * @throws SAXException
 	 * 		Problem while retrieving an article.
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem applying the evaluator.
 	 * @throws ConverterException 
 	 * 		Problem applying the evaluator.
 	 */
-	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
+	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ConverterException, ProcessorException
 	{	VoteMode voteMode = combiner.getVoteMode();
 		if(voteMode.hasWeights())
 		{	// vote weights
 			{	// process
-				List<EntityType> types = combiner.getHandledMentionTypes();
-				List<AbstractRecognizer> recognizers = combiner.getRecognizers();
+				List<EntityType> types = combiner.getHandledEntityTypes();
+				List<AbstractProcessor> recognizers = combiner.getRecognizers();
 				AbstractMeasure measure = new LilleMeasure(null);
 				Evaluator evaluator = new Evaluator(types, recognizers, folders, measure);
 				evaluator.process();
@@ -191,12 +191,12 @@ public class VoteTrainer
 	 * 		Problem while accessing a mention file. 
 	 * @throws ReaderException
 	 * 		Problem while accessing a file. 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer. 
 	 * @throws ConverterException 
 	 * 		Problem while processing a recognizer performance. 
 	 */
-	public void process(ArticleList folders) throws IOException, SAXException, ParseException, ReaderException, RecognizerException, ConverterException
+	public void process(ArticleList folders) throws IOException, SAXException, ParseException, ReaderException, ProcessorException, ConverterException
 	{	logger.increaseOffset();
 		
 		// process and record the voting weights

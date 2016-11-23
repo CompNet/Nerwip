@@ -27,9 +27,9 @@ package tr.edu.gsu.nerwip.recognition.internal.modelbased;
 import java.util.List;
 
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
-import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalProcessor;
 
 /**
  * This class is used to represent or implement recognizers invocable 
@@ -46,7 +46,7 @@ import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer;
  * 		 
  * @author Vincent Labatut
  */
-public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractInternalConverter<U>,V> extends AbstractInternalRecognizer<U,T>
+public abstract class AbstractModelBasedInternalProcessor<U,T extends AbstractInternalConverter<U>,V> extends AbstractInternalProcessor<U,T>
 {	
 	/**
 	 * Builds a new internal recognizer,
@@ -65,10 +65,10 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
      * 		Problem while loading the model data.
 	 */
-	public AbstractModelBasedInternalRecognizer(V modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws RecognizerException
+	public AbstractModelBasedInternalProcessor(V modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
 	{	super(trim,ignorePronouns,exclusionOn);
 		
 		// init model and supported entity types
@@ -80,7 +80,7 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
 	// MISC				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void prepareRecognizer() throws RecognizerException
+	protected void prepareRecognizer() throws ProcessorException
 	{	if(!isLoadedModel())
 			loadModel();
 	}
@@ -92,7 +92,7 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
 	protected List<EntityType> handledTypes;
 	
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return handledTypes;
 	}
 
@@ -118,10 +118,10 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
      * @param modelName
      * 		Internal representation of the predefined model to use.
      * 
-     * @throws RecognizerException
+     * @throws ProcessorException
      * 		Problem while loading the model data.
     */
-    public void setModelName(V modelName) throws RecognizerException
+    public void setModelName(V modelName) throws ProcessorException
     {	logger.increaseOffset();
     	
     	// updat emodel name
@@ -154,10 +154,10 @@ public abstract class AbstractModelBasedInternalRecognizer<U,T extends AbstractI
 	/**
 	 * Loads the model data.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
      * 		Problem while loading the model data.
 	 */
-	protected abstract void loadModel() throws RecognizerException;
+	protected abstract void loadModel() throws ProcessorException;
 
 	/**
 	 * Resets the previously loaded model.

@@ -44,8 +44,8 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.AbstractConverter;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.recognition.internal.modelless.subee.Subee;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
@@ -57,16 +57,16 @@ import tr.edu.gsu.nerwip.tools.file.FileTools;
  * 
  * @author Vincent Labatut
  */
-public abstract class AbstractCombiner extends AbstractRecognizer
+public abstract class AbstractCombiner extends AbstractProcessor
 {	
 	/**
 	 * Builds a new combiner,
 	 * using the specified combiner.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading some combiner.
 	 */
-	public AbstractCombiner() throws RecognizerException
+	public AbstractCombiner() throws ProcessorException
 	{	super(false, false, false);
 	}
 	
@@ -88,7 +88,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * 		Whether or not the combiner cache should be enabled.
 	 */
 	public void setSubCacheEnabled(boolean enabled)
-	{	for(AbstractRecognizer recognizer: recognizers)
+	{	for(AbstractProcessor recognizer: recognizers)
 			recognizer.setCacheEnabled(enabled);
 	}
 
@@ -130,7 +130,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * 		List to be filtered.
 	 */
 	public void filterType(Mentions mentions)
-	{	List<EntityType> handledTypes = getHandledMentionTypes();
+	{	List<EntityType> handledTypes = getHandledEntityTypes();
 		logger.log("Handled types: "+handledTypes.toString()+".)");
 		logger.increaseOffset();
 		
@@ -205,7 +205,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	/** Whether to use the standalone recognizers with their default models ({@code false}), or ones specifically trained on our corpus ({@code true}) */
 	protected boolean specific = false;
 	/** Recognizers used by this combiner */
-	protected final List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
+	protected final List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>();
 
 	/**
 	 * Returns the list of recognizers used
@@ -214,7 +214,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * @return
 	 * 		A list of recognizers.
 	 */
-	public List<AbstractRecognizer> getRecognizers()
+	public List<AbstractProcessor> getRecognizers()
 	{	return recognizers;
 	}
 	
@@ -222,10 +222,10 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * Creates the objects representing
 	 * the recognizers used by this combiner.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	protected abstract void initRecognizers() throws RecognizerException;
+	protected abstract void initRecognizers() throws ProcessorException;
 	
 	/**
 	 * Applies this combiner to the specified article,
@@ -236,16 +236,16 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * @return
 	 * 		List of the resulting mentions.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while applying the combiner. 
 	 */
-	protected Mentions applyRecognizers(Article article) throws RecognizerException
+	protected Mentions applyRecognizers(Article article) throws ProcessorException
 	{	logger.log("Apply each recognizer separately");
 		logger.increaseOffset();
-		Map<AbstractRecognizer,Mentions> mentions = new HashMap<AbstractRecognizer,Mentions>();
-		for(AbstractRecognizer recognizer: recognizers)
+		Map<AbstractProcessor,Mentions> mentions = new HashMap<AbstractProcessor,Mentions>();
+		for(AbstractProcessor recognizer: recognizers)
 		{	// apply the recognizer
-			Mentions temp = recognizer.process(article);
+			Mentions temp = recognizer.recognize(article);
 			// keep only the relevant types
 			logger.log("Filter mentions by type");
 			filterType(temp);
@@ -268,7 +268,7 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 				}
 				catch (IOException e)
 				{	//e.printStackTrace();
-					throw new RecognizerException(e.getMessage());
+					throw new ProcessorException(e.getMessage());
 				}
 			}
 		}
@@ -297,16 +297,16 @@ public abstract class AbstractCombiner extends AbstractRecognizer
      * 		Result of the combination of those
      * 		individual mentions.
      * 
-     * @throws RecognizerException
+     * @throws ProcessorException
      * 		Problem while combining mentions.
     */
-	protected abstract Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException;
+	protected abstract Mentions combineMentions(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException;
 
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Mentions process(Article article) throws RecognizerException
+	public Mentions recognize(Article article) throws ProcessorException
 	{	logger.log("Start applying "+getName()+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
 		Mentions result = null;
@@ -342,19 +342,19 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 		}
 		catch(FileNotFoundException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (SAXException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (ParseException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		
 		int nbrEnt = result.getMentions().size();
@@ -398,17 +398,17 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * Loads the previously processed category proportions,
 	 * to be used by this class to combine the recognizers outputs.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading the category proportions.
 	 */
-	protected void loadCategoryProportions() throws RecognizerException
+	protected void loadCategoryProportions() throws ProcessorException
 	{	String filename = getCategoryProportionsPath();
 		try
 		{	categoryProportions = CategoryProportions.loadCategoryProportions(filename);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 	}
 	
@@ -422,17 +422,17 @@ public abstract class AbstractCombiner extends AbstractRecognizer
 	 * Loads all the necessary weights
 	 * to allow NER voting.
 	 * 
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem while loading the vote weights.
 	 */
-	protected void loadVoteWeights() throws RecognizerException
+	protected void loadVoteWeights() throws ProcessorException
 	{	String filePath = getVoteWeightsPath();
 		try
 		{	voteWeights = VoteWeights.loadVoteWeights(filePath,recognizers);
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 	}
 	

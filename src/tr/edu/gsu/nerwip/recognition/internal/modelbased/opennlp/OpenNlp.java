@@ -40,9 +40,9 @@ import opennlp.tools.util.Span;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalProcessor;
 
 /**
  * This class acts as an interface with the Apache OpenNLP tool.
@@ -57,7 +57,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInter
  * 
  * @author Vincent Labatut
  */
-public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType,List<Span>>, OpenNlpConverter, OpenNlpModelName>
+public class OpenNlp extends AbstractModelBasedInternalProcessor<Map<EntityType,List<Span>>, OpenNlpConverter, OpenNlpModelName>
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -73,10 +73,10 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 * 		Problem while loading the models or tokenizers.
 	 */
-	public OpenNlp(OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws RecognizerException
+	public OpenNlp(OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
 	{	super(modelName,loadModelOnDemand,false,ignorePronouns,exclusionOn);
 	
 		// init converter
@@ -87,8 +87,8 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.OPENNLP;
+	public ProcessorName getName()
+	{	return ProcessorName.OPENNLP;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -148,7 +148,7 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
     }
 	
 	@Override
-	protected void loadModel() throws RecognizerException
+	protected void loadModel() throws ProcessorException
 	{	logger.increaseOffset();
 		
 		try
@@ -161,11 +161,11 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 		} 
 		catch (InvalidFormatException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		
 		logger.decreaseOffset();
@@ -178,7 +178,7 @@ public class OpenNlp extends AbstractModelBasedInternalRecognizer<Map<EntityType
 	private static final List<EntityType> TYPE_PRIORITIES = Arrays.asList(EntityType.ORGANIZATION,EntityType.PERSON,EntityType.LOCATION,EntityType.DATE);
 
 	@Override
-	protected Map<EntityType,List<Span>> detectMentions(Article article) throws RecognizerException
+	protected Map<EntityType,List<Span>> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		Map<EntityType,List<Span>> result = new HashMap<EntityType, List<Span>>();
 		

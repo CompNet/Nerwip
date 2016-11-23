@@ -39,7 +39,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
@@ -66,7 +66,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	 * 		Folder used to store the results of the recognizer.
 	 */
 	public IllinoisConverter(String nerFolder)
-	{	super(RecognizerName.ILLINOIS, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.ILLINOIS, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Mentions convert(Article article, Data data) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 	
 		String text = article.getRawText();
 		int position = 0;
@@ -153,7 +153,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	            		if(close)
 	            		{	// consider all detected words to constitute the mention
 	            			String valueStr = text.substring(startPos,position);
-	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, recognizerName, valueStr);
+	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, processorName, valueStr);
 	            			result.addMention(mention);
 	            			// reset variables to (possibly) start a new mention
 	            			open = false;

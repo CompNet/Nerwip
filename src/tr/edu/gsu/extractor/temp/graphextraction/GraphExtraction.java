@@ -43,7 +43,7 @@ import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
@@ -69,7 +69,7 @@ public class GraphExtraction
 	 * 		Problem while extracting.
 	 */
 	public static void main(String[] args) throws Exception
-	{	AbstractRecognizer recognizer = new StraightCombiner();
+	{	AbstractProcessor recognizer = new StraightCombiner();
 		extractNetwork(recognizer);
 	}
 	
@@ -91,7 +91,7 @@ public class GraphExtraction
 	 * 		The recognizer to apply (or previously applied).
 	 * @throws Exception 
 	 */
-   private static void extractNetwork(AbstractRecognizer recognizer)  throws Exception
+   private static void extractNetwork(AbstractProcessor recognizer)  throws Exception
    {	logger.log("Extract event network");
 		
 		//init graph
@@ -120,7 +120,7 @@ public class GraphExtraction
 			
 			// retrieve the entities
 			logger.log("Retrieve the entities");
-			mentions = recognizer.process(article);
+			mentions = recognizer.recognize(article);
 			allEntities.addMentions(mentions);
 			
 			logger.decreaseOffset();
@@ -163,7 +163,7 @@ public class GraphExtraction
 			
 			// retrieve the entities
 			logger.log("Retrieve the entities");
-			mentions = recognizer.process(article);
+			mentions = recognizer.recognize(article);
 			
 			List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions); 
 			allEventsList.addAll(extractedEvents);

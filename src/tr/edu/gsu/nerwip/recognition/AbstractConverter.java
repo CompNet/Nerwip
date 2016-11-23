@@ -51,15 +51,15 @@ public abstract class AbstractConverter
 	/**
 	 * Builds a new converter.
 	 * 
-	 * @param recognizerName
+	 * @param processorName
 	 * 		Name of the associated recognizer.
 	 * @param nerFolder
 	 * 		Name of the associated recognizer folder.
 	 * @param rawFile
 	 * 		Name of the raw file (i.e. external format).
 	 */
-	public AbstractConverter(RecognizerName recognizerName, String nerFolder, String rawFile)
-	{	this.recognizerName = recognizerName;
+	public AbstractConverter(ProcessorName processorName, String nerFolder, String rawFile)
+	{	this.processorName = processorName;
 		this.recognizerFolder = nerFolder;
 		this.rawFile = rawFile;
 	}
@@ -74,7 +74,7 @@ public abstract class AbstractConverter
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**  Name of the associated recognizer */
-	protected RecognizerName recognizerName = null;
+	protected ProcessorName processorName = null;
 	
 	/////////////////////////////////////////////////////////////////
 	// FOLDER			/////////////////////////////////////////////

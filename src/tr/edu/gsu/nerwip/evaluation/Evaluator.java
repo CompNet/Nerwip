@@ -40,9 +40,9 @@ import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.retrieval.reader.ReaderException;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
@@ -76,7 +76,7 @@ public class Evaluator
 	 * @param template 
 	 * 		Object used to process performances.
 	 */
-	public Evaluator(List<EntityType> types, List<AbstractRecognizer> recognizers, ArticleList folders, AbstractMeasure template)
+	public Evaluator(List<EntityType> types, List<AbstractProcessor> recognizers, ArticleList folders, AbstractMeasure template)
 	{	this.types.addAll(types);
 		this.recognizers.addAll(recognizers);
 		this.folders = folders;
@@ -95,7 +95,7 @@ public class Evaluator
 	/** Types considered during the evaluation */
 	private final List<EntityType> types = new ArrayList<EntityType>();
 	/** Evaluated recognizers */
-	private final List<AbstractRecognizer> recognizers = new ArrayList<AbstractRecognizer>();
+	private final List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>();
 	/** Articles supporting the evaluation */
 	private ArticleList folders;
 	
@@ -116,7 +116,7 @@ public class Evaluator
 	 * @param recognizers
 	 * 		Recognizers considered when performing the evaluation.
 	 */
-	public void setRecognizers(List<AbstractRecognizer> recognizers)
+	public void setRecognizers(List<AbstractProcessor> recognizers)
 	{	this.recognizers.addAll(recognizers);
 	}
 
@@ -126,7 +126,7 @@ public class Evaluator
 	 * @return
 	 * 		List of evaluated recognizers.
 	 */
-	public List<AbstractRecognizer> getRecognizers()
+	public List<AbstractProcessor> getRecognizers()
 	{	return recognizers;
 	}
 	
@@ -184,7 +184,7 @@ public class Evaluator
 	 * @return
 	 * 		Corresponding measure object.
 	 */
-	public AbstractMeasure getMeasure(AbstractRecognizer recognizer)
+	public AbstractMeasure getMeasure(AbstractProcessor recognizer)
 	{	int index = recognizers.indexOf(recognizer);
 		AbstractMeasure result = measures.get(index);
 		return result;
@@ -219,10 +219,10 @@ public class Evaluator
 	 * 		Problem while accessing a file.
 	 * @throws ConverterException
 	 * 		Problem while converting the reference file.
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer.
 	 */
-	private List<AbstractMeasure> processArticle(File folder) throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
+	private List<AbstractMeasure> processArticle(File folder) throws ReaderException, IOException, ParseException, SAXException, ConverterException, ProcessorException
 	{	logger.increaseOffset();
 		List<AbstractMeasure> result = new ArrayList<AbstractMeasure>();
 		
@@ -239,7 +239,7 @@ public class Evaluator
 		// process each recognizer separately
 		logger.log("Process each recognizer separately");
 		logger.increaseOffset();
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	logger.log("Dealing with recognizer "+recognizer.getName());
 			
 			// check if evaluation results already exist
@@ -252,7 +252,7 @@ public class Evaluator
 			// process results
 			if(!cache || processNeeded)
 			{	logger.log("Processing results");
-				Mentions estMentions = recognizer.process(article);
+				Mentions estMentions = recognizer.recognize(article);
 				AbstractMeasure res = template.build(recognizer, types, refMentions, estMentions, lastCategories);
 				
 				logger.log("Writing results to cache");
@@ -286,16 +286,16 @@ public class Evaluator
 	 * 		Problem while accessing a file.
 	 * @throws ConverterException
 	 * 		Problem while converting a reference file.
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer.
 	 */
-	public void process() throws ReaderException, IOException, ParseException, SAXException, ConverterException, RecognizerException
+	public void process() throws ReaderException, IOException, ParseException, SAXException, ConverterException, ProcessorException
 	{	logger.increaseOffset();
 		
 		// init
 		logger.log("Init measure objects");
 		measures = new ArrayList<AbstractMeasure>();
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	AbstractMeasure measure = template.build(recognizer,types);
 			measures.add(measure);
 		}
@@ -346,7 +346,7 @@ public class Evaluator
 			
 			// rename file
 			File oldFile = new File(FileNames.FO_OUTPUT + File.separator + measure.getFileName());
-			AbstractRecognizer recognizer = recognizers.get(i);
+			AbstractProcessor recognizer = recognizers.get(i);
 			String newName = FileNames.FO_OUTPUT + File.separator 
 				+ TimeFormatting.formatCurrentFileTime()
 				+ "." + recognizer.getFolder()

@@ -46,9 +46,9 @@ import org.apache.http.message.BasicNameValuePair;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalProcessor;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
 
 /**
@@ -75,7 +75,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,OpeNerConverter>
+public class OpeNer extends AbstractModellessInternalProcessor<List<String>,OpeNerConverter>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -106,8 +106,8 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.OPENER;
+	public ProcessorName getName()
+	{	return ProcessorName.OPENER;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	);
 
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -180,7 +180,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	private static final long SLEEP_PERIOD = 100;
 	
 	@Override
-	protected List<String> detectMentions(Article article) throws RecognizerException
+	protected List<String> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();
@@ -222,19 +222,19 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 			}
 			catch (UnsupportedEncodingException e)
 			{	//e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 			catch (ClientProtocolException e)
 			{	//e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 			catch (IOException e)
 			{	//e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 			catch (InterruptedException e)
 			{	//e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 			
 			logger.decreaseOffset();
@@ -253,14 +253,14 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 * @return
 	 * 		Corresponding tokenized text.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while accessing the tokenizer service.
 	 * @throws ClientProtocolException
 	 * 		Problem while accessing the tokenizer service.
 	 * @throws IOException
 	 * 		Problem while accessing the tokenizer service.
 	 */
-	private String performTokenization(String part) throws RecognizerException, ClientProtocolException, IOException
+	private String performTokenization(String part) throws ProcessorException, ClientProtocolException, IOException
 	{	logger.log("Perform tokenization");
 		logger.increaseOffset();
 		
@@ -289,14 +289,14 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 * @return
 	 * 		Corresponding tagged text.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while accessing the tagger service.
 	 * @throws ClientProtocolException
 	 * 		Problem while accessing the tagger service.
 	 * @throws IOException
 	 * 		Problem while accessing the tagger service.
 	 */
-	private String performTagging(String tokenizedText) throws RecognizerException, ClientProtocolException, IOException
+	private String performTagging(String tokenizedText) throws ProcessorException, ClientProtocolException, IOException
 	{	logger.log("Perform PoS tagging");
 		logger.increaseOffset();
 		
@@ -323,14 +323,14 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 * @return
 	 * 		Corresponding parsed text.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while accessing the parser service.
 	 * @throws ClientProtocolException
 	 * 		Problem while accessing the parser service.
 	 * @throws IOException
 	 * 		Problem while accessing the parser service.
 	 */
-	private String performParsing(String taggedText) throws RecognizerException, ClientProtocolException, IOException
+	private String performParsing(String taggedText) throws ProcessorException, ClientProtocolException, IOException
 	{	logger.log("Perform constituent parsing");
 		logger.increaseOffset();
 	
@@ -357,14 +357,14 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 * @return
 	 * 		Text with the detected mentions.
 	 * 
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while accessing the recognizer service.
 	 * @throws ClientProtocolException
 	 * 		Problem while accessing the recognizer service.
 	 * @throws IOException
 	 * 		Problem while accessing the recognizer service.
 	 */
-	private String performRecognition(String parsedText) throws RecognizerException, ClientProtocolException, IOException
+	private String performRecognition(String parsedText) throws ProcessorException, ClientProtocolException, IOException
 	{	logger.log("Perform mention recognition");
 		logger.increaseOffset();
 		
@@ -396,10 +396,10 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 	 * 		Problem while accessing the OpenNer service.
 	 * @throws IOException
 	 * 		Problem while accessing the OpenNer service.
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while accessing the OpenNer service.
 	 */
-	private String sendReceiveRequest(HttpPost method) throws ClientProtocolException, IOException, RecognizerException
+	private String sendReceiveRequest(HttpPost method) throws ClientProtocolException, IOException, ProcessorException
 	{	// send to service
 		logger.log("Send message to service");
 		HttpClient client = new DefaultHttpClient();
@@ -407,7 +407,7 @@ public class OpeNer extends AbstractModellessInternalRecognizer<List<String>,Ope
 		int responseCode = response.getStatusLine().getStatusCode();
 		logger.log("Response Code : " + responseCode);
 		if(responseCode!=200)
-		{	throw new RecognizerException("Received an error code ("+responseCode+") while accessing the service");
+		{	throw new ProcessorException("Received an error code ("+responseCode+") while accessing the service");
 			//TODO maybe we should try again and issue a warning?
 			//logger.log("WARNING: received an error code ("+responseCode+") from the OpenNer service");
 		}

@@ -34,7 +34,7 @@ import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 
 /**
@@ -57,7 +57,7 @@ public class MucMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 */
-	public MucMeasure(AbstractRecognizer recognizer)
+	public MucMeasure(AbstractProcessor recognizer)
 	{	super(recognizer);
 	}
 	
@@ -72,7 +72,7 @@ public class MucMeasure extends AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
-	public MucMeasure(AbstractRecognizer recognizer, List<EntityType> types)
+	public MucMeasure(AbstractProcessor recognizer, List<EntityType> types)
 	{	super(recognizer,types);
 	}
 
@@ -93,24 +93,24 @@ public class MucMeasure extends AbstractMeasure
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public MucMeasure(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public MucMeasure(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	super(recognizer,types,reference,estimation,categories);
 	}	
 	
 	@Override
-	public MucMeasure build(AbstractRecognizer recognizer)
+	public MucMeasure build(AbstractProcessor recognizer)
 	{	MucMeasure result = new MucMeasure(recognizer);
 		return result;
 	}
 	
 	@Override
-	public AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types)
+	public AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types)
 	{	MucMeasure result = new MucMeasure(recognizer, types);
 		return result;
 	}
 	
 	@Override
-	public MucMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public MucMeasure build(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	MucMeasure result = new MucMeasure(recognizer,types,reference,estimation,categories);
 		return result;
 	}

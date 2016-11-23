@@ -37,9 +37,9 @@ import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero;
 import tr.edu.gsu.nerwip.recognition.external.nero.Nero.NeroTagger;
@@ -86,10 +86,10 @@ public class StraightCombiner extends AbstractCombiner
 	/**
 	 * Builds a new straight combiner.
 	 *  
-	 * @throws RecognizerException
+	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public StraightCombiner() throws RecognizerException
+	public StraightCombiner() throws ProcessorException
 	{	super();
 		
 		initRecognizers();
@@ -102,8 +102,8 @@ public class StraightCombiner extends AbstractCombiner
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.STRAIGHTCOMBINER;
+	public ProcessorName getName()
+	{	return ProcessorName.STRAIGHTCOMBINER;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ public class StraightCombiner extends AbstractCombiner
 	);
 	
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -159,7 +159,7 @@ public class StraightCombiner extends AbstractCombiner
 	// TOOLS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void initRecognizers() throws RecognizerException
+	protected void initRecognizers() throws ProcessorException
 	{	logger.increaseOffset();
 	
 		// HeidelTime
@@ -223,26 +223,26 @@ public class StraightCombiner extends AbstractCombiner
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Mentions combineMentions(Article article, Map<AbstractRecognizer,Mentions> mentions, StringBuffer rawOutput) throws RecognizerException
+	protected Mentions combineMentions(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException
 	{	logger.increaseOffset();
 		String text = article.getRawText();
 		Mentions result = new Mentions(getName());
 		
 		// get overlapping mentions
 		logger.log("Get the list of overlapping mentions");
-		List<Map<AbstractRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<AbstractProcessor, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// compare/combine them
 		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<AbstractRecognizer, AbstractMention<?>> map: overlaps)
+		for(Map<AbstractProcessor, AbstractMention<?>> map: overlaps)
 		{	logger.log(map.values().toString());
 			logger.increaseOffset();
 			
 			// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<AbstractRecognizer, AbstractMention<?>> entry: map.entrySet())
-			{	AbstractRecognizer recognizer = entry.getKey();
+			for(Entry<AbstractProcessor, AbstractMention<?>> entry: map.entrySet())
+			{	AbstractProcessor recognizer = entry.getKey();
 				AbstractMention<?> mention = entry.getValue();
 				rawOutput.append("\t"+recognizer+": "+mention+"\n");
 			}
@@ -285,13 +285,13 @@ public class StraightCombiner extends AbstractCombiner
 	 * @return 
 	 * 		Type of the mention represnted by the group.
 	 */
-	protected EntityType voteForType(Map<AbstractRecognizer, AbstractMention<?>> map)
+	protected EntityType voteForType(Map<AbstractProcessor, AbstractMention<?>> map)
 	{	logger.log("Start voting for type: ");
 		logger.increaseOffset();
 		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
 		
 		// process votes
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	AbstractMention<?> mention = map.get(recognizer);
 			if(mention!=null)
 			{	EntityType type = mention.getType();
@@ -332,15 +332,15 @@ public class StraightCombiner extends AbstractCombiner
 	 * @return 
 	 * 		{@code true} iff the conclusion is that the mention is correct.
 	 */
-	protected boolean voteForExistence(Map<AbstractRecognizer, AbstractMention<?>> map, EntityType type)
+	protected boolean voteForExistence(Map<AbstractProcessor, AbstractMention<?>> map, EntityType type)
 	{	logger.log("Start voting for existence:");
 		logger.increaseOffset();
 		
 		float voteFor = 0;
 		float voteAgainst = 0;
 		
-		for(AbstractRecognizer recognizer: recognizers)
-		{	List<EntityType> handledTypes = recognizer.getHandledMentionTypes();
+		for(AbstractProcessor recognizer: recognizers)
+		{	List<EntityType> handledTypes = recognizer.getHandledEntityTypes();
 			if(handledTypes.contains(type))
 			{	AbstractMention<?> mention = map.get(recognizer);
 				if(mention==null)
@@ -368,14 +368,14 @@ public class StraightCombiner extends AbstractCombiner
 	 * @return 
 	 * 		An array of two integers corresponding to the mention position.
 	 */
-	protected int[] voteForPosition(Map<AbstractRecognizer, AbstractMention<?>> map)
+	protected int[] voteForPosition(Map<AbstractProcessor, AbstractMention<?>> map)
 	{	logger.log("Start voting for position:");
 		logger.increaseOffset();
 		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
 		Map<Integer,Float> endScores = new HashMap<Integer, Float>();
 		
 		// pro votes
-		for(AbstractRecognizer recognizer: recognizers)
+		for(AbstractProcessor recognizer: recognizers)
 		{	AbstractMention<?> mention = map.get(recognizer);
 		
 			// check existence

@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.linking;
+package tr.edu.gsu.nerwip.recognition;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -26,35 +26,63 @@ package tr.edu.gsu.nerwip.linking;
 
 /**
  * Each value of this enum type
- * represents one way of performing entity
- * linking. 
+ * represents one way of detecting
+ * named entity mentions. 
  * 
+ * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public enum LinkerName
+public enum ProcessorName
 {	
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL 3rd PARTY TOOLS		/////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Xxxx */
+	/** HeidelTime */
+	HEIDELTIME, 
+	/** Illinois Named Entity Tagger */
+	ILLINOIS, 
+	/** Alias-i Ling Pipe */
+	LINGPIPE,
+	/** OpenCalais Web Service */
+	OPENCALAIS,
+	/** OpeNer Web Service */
+	OPENER,
+	/** Apache OpenNLP */
+	OPENNLP, 
+	/** DBpedia Spotlight Web Service */
+	SPOTLIGHT,
+	/** Stanford Named Entity Recognizer */ 
+	STANFORD, 
 	
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL CUSTOM TOOLS	/////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Xxxx */
+	/** Tool specifically developped to detect dates */
+	DATEEXTRACTOR,
+	/** Takes advantage of hyperlinks to detect named entity mentions */ 
+	SUBEE,
+	/** Tool specifically developped to detect dates in Wikipedia articles */
+	WIKIPEDIADATER,
 	
 	/////////////////////////////////////////////////////////////////
 	// EXTERNAL TOOLS	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** DBpedia Spotlight webservice */
-	SPOTLIGHT,
-	/** WikiMedia database */
-	WIKIDATA,
+	/** NERO tool */
+	NERO,
+	/** TagEN  tool */
+	TAGEN,
 	
 	/////////////////////////////////////////////////////////////////
 	// COMBINERS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Xxxx */
+	/** Combination of WikipediaDater for dates and another combiner for the other types */
+	FULLCOMBINER,
+	/** Combination of HeidelTime for dates and OpenCalais for the other types */
+	STRAIGHTCOMBINER,
+	/** Combination of several recognizers through an SVM classifier */
+	SVMCOMBINER,
+	/** Combination of several recognizers through a simple voting process */
+	VOTECOMBINER,
 	
 	/////////////////////////////////////////////////////////////////
 	// MISC				/////////////////////////////////////////////

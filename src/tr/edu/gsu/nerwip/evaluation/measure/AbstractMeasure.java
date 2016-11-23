@@ -42,7 +42,7 @@ import tr.edu.gsu.nerwip.data.article.ArticleCategory;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
 
@@ -75,7 +75,7 @@ public abstract class AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 */
-	public AbstractMeasure(AbstractRecognizer recognizer)
+	public AbstractMeasure(AbstractProcessor recognizer)
 	{	this.recognizer = recognizer;
 		
 		initialize();
@@ -92,7 +92,7 @@ public abstract class AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
-	public AbstractMeasure(AbstractRecognizer recognizer, List<EntityType> types)
+	public AbstractMeasure(AbstractProcessor recognizer, List<EntityType> types)
 	{	this.recognizer = recognizer;
 		this.types.addAll(types);
 		
@@ -116,7 +116,7 @@ public abstract class AbstractMeasure
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public AbstractMeasure(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public AbstractMeasure(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	this.recognizer = recognizer;
 		this.types.addAll(types);
 		
@@ -142,7 +142,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories);
+	public abstract AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories);
 	
 	/**
 	 * Builds the appropriate measure,
@@ -157,7 +157,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractMeasure build(AbstractRecognizer recognizer, List<EntityType> types);
+	public abstract AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types);
 
 	/**
 	 * Builds the appropriate measure,
@@ -170,7 +170,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractMeasure build(AbstractRecognizer recognizer);
+	public abstract AbstractMeasure build(AbstractProcessor recognizer);
 	
 	/**
 	 * Initializes the lists used during processing.
@@ -195,7 +195,7 @@ public abstract class AbstractMeasure
 	// RECOGNIZER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Recognizer assessed by this measure */
-	protected AbstractRecognizer recognizer;
+	protected AbstractProcessor recognizer;
 	
 	/**
 	 * Returns the recognizer
@@ -204,7 +204,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		Concerned recognizer.
 	 */
-	public AbstractRecognizer getRecognizer()
+	public AbstractProcessor getRecognizer()
 	{	return recognizer;
 	}
 	
@@ -858,7 +858,7 @@ return temp;
 	 * @throws FileNotFoundException
 	 * 		Problem while writing the file.
 	 */
-	public AbstractMeasure readNumbers(File folder, AbstractRecognizer recognizer) throws FileNotFoundException
+	public AbstractMeasure readNumbers(File folder, AbstractProcessor recognizer) throws FileNotFoundException
 	{	AbstractMeasure result = build(recognizer);
 
 		// open file

@@ -93,7 +93,7 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 //	 * @return
 //	 * 		The entity corresponding to the specified element.
 //	 */
-//	public static AbstractEntity<?> importFromElement(Element element, RecognizerName source)
+//	public static AbstractEntity<?> importFromElement(Element element, ProcessorName source)
 //	{	AbstractEntity<?> result = null;
 //		
 //		String typeStr = element.getAttributeValue(XmlNames.ATT_TYPE);

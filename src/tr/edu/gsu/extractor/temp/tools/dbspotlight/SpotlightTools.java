@@ -56,7 +56,7 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleList;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.recognition.combiner.straightcombiner.StraightCombiner;
 import tr.edu.gsu.nerwip.retrieval.ArticleRetriever;
 import tr.edu.gsu.nerwip.tools.corpus.ArticleLists;
@@ -305,13 +305,13 @@ public class SpotlightTools
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-			AbstractRecognizer recognizer = new StraightCombiner();
+			AbstractProcessor recognizer = new StraightCombiner();
 			ArticleRetriever retriever = new ArticleRetriever();
 			article = retriever.process(name);
 			String rawText = article.getRawText();
 			// retrieve the entities
 			logger.log("Retrieve the entities");
-			mentions = recognizer.process(article);
+			mentions = recognizer.recognize(article);
 
 			logger.log("start applying Spotlight to " + name);
 			String xmlText = SpotlightTools.process(mentions, article);

@@ -1,4 +1,4 @@
-package tr.edu.gsu.nerwip.linking;
+package tr.edu.gsu.nerwip.recognition;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -25,11 +25,13 @@ package tr.edu.gsu.nerwip.linking;
  */
 
 /**
- * Problem while performing entity linking.
+ * Problem while performing the detection
+ * of mentions in some text.
  * 
+ * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class LinkerException extends Exception
+public class ProcessorException extends Exception
 {	/** Class id */
 	private static final long serialVersionUID = 1L;
 	
@@ -37,7 +39,7 @@ public class LinkerException extends Exception
 	 * Builds a new exception,
 	 * without any message.
 	 */
-	public LinkerException()
+	public ProcessorException()
 	{ super();
 	}
 	
@@ -48,7 +50,7 @@ public class LinkerException extends Exception
 	 * @param message
 	 * 		Exception message.
 	 */
-	public LinkerException(String message)
+	public ProcessorException(String message)
 	{	super(message);
 	}
 }

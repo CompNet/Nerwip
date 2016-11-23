@@ -41,7 +41,7 @@ import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
@@ -899,7 +899,7 @@ public class Article
 	 * @throws ParseException 
 	 * 		Problem while accessing the file.
 	 */
-	public Mentions getEstimatedMentions(AbstractRecognizer recognizer) throws SAXException, IOException, ParseException
+	public Mentions getEstimatedMentions(AbstractProcessor recognizer) throws SAXException, IOException, ParseException
 	{	String path = folderPath + File.separator + recognizer.getFolder() + File.separator + FileNames.FI_MENTION_LIST;
 		File file = new File(path);
 		Mentions result = Mentions.readFromXml(file);

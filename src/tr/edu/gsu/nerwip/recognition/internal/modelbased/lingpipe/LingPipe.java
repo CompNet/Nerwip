@@ -42,9 +42,9 @@ import java.util.List;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInternalProcessor;
 
 /**
  * This class acts as an interface with the LingPipe library.
@@ -63,7 +63,7 @@ import tr.edu.gsu.nerwip.recognition.internal.modelbased.AbstractModelBasedInter
  * @author Samet Atdağ
  * @author Vincent Labatut
  */
-public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, LingPipeConverter, LingPipeModelName>
+public class LingPipe extends AbstractModelBasedInternalProcessor<Chunking, LingPipeConverter, LingPipeModelName>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -84,10 +84,10 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
-	 * @throws RecognizerException 
+	 * @throws ProcessorException 
 	 *		Problem while initializing the model.
 	 */
-	public LingPipe(LingPipeModelName chunkingMethod, boolean loadChunkerOnDemand, boolean splitSentences, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws RecognizerException
+	public LingPipe(LingPipeModelName chunkingMethod, boolean loadChunkerOnDemand, boolean splitSentences, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
 	{	super(chunkingMethod,loadChunkerOnDemand,trim,ignorePronouns,exclusionOn);
 		this.splitSentences = splitSentences;
 		
@@ -99,8 +99,8 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.LINGPIPE;
+	public ProcessorName getName()
+	{	return ProcessorName.LINGPIPE;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
     }
 
 	@Override
-	protected void loadModel() throws RecognizerException
+	protected void loadModel() throws ProcessorException
     {	// sentence chunker
 		//if(splitSentences)
     	{	logger.log("Build sentence splitter");
@@ -175,11 +175,11 @@ public class LingPipe extends AbstractModelBasedInternalRecognizer<Chunking, Lin
 		}
     	catch (ClassNotFoundException e)
     	{	e.printStackTrace();
-    		throw new RecognizerException(e.getMessage());
+    		throw new ProcessorException(e.getMessage());
 		}
     	catch (IOException e)
     	{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
     }
 	

@@ -35,7 +35,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
@@ -58,7 +58,7 @@ public class NeroConverter extends AbstractExternalConverter
 	 *            Folder used to stored the results of the recognizer.
 	 */
 	public NeroConverter(String nerFolder)
-	{	super(RecognizerName.NERO, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.NERO, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ public class NeroConverter extends AbstractExternalConverter
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Mentions convert(Article article, String data) throws ConverterException
-	{	Mentions result = new Mentions(recognizerName);
+	{	Mentions result = new Mentions(processorName);
 		String originalText = article.getRawText();
 
 		LinkedList<EntityType> types = new LinkedList<EntityType>();
@@ -144,7 +144,7 @@ if(i2>2800)
 					{
 //						String valueStr = data.substring(sp2,k2);
 						String valueStr = originalText.substring(sp1,i1);
-						AbstractMention<?> mention = AbstractMention.build(type, sp1, i1, RecognizerName.NERO, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, sp1, i1, ProcessorName.NERO, valueStr);
 						mention.correctMentionSpan(); // to remove some spaces located at the end of mentions
 						result.addMention(mention);
 					}

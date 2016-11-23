@@ -43,8 +43,8 @@ import org.xml.sax.SAXException;
 
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
-import tr.edu.gsu.nerwip.recognition.AbstractRecognizer;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.AbstractProcessor;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.time.TimeFormatting;
 import tr.edu.gsu.nerwip.tools.xml.XmlNames;
@@ -65,7 +65,7 @@ public class Mentions
 	 */
 	public Mentions()
 	{	initDates();
-		recognizer = RecognizerName.REFERENCE;
+		recognizer = ProcessorName.REFERENCE;
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class Mentions
 	 * @param recognizer
 	 * 		Recognizer used to get the mentions.
 	 */
-	public Mentions(RecognizerName recognizer)
+	public Mentions(ProcessorName recognizer)
 	{	initDates();
 		this.recognizer = recognizer;
 	}
@@ -89,7 +89,7 @@ public class Mentions
 //	 * @param date
 //	 * 		Date the mentions were detected.
 //	 */
-//	public Mentions(RecognizerName recognizer, Date date)
+//	public Mentions(ProcessorName recognizer, Date date)
 //	{	this.creationDate = date;
 //		this.modificationDate = date;
 //		this.recognizer = recognizer;
@@ -106,7 +106,7 @@ public class Mentions
 	 * @param modificationDate
 	 * 		Date the mentions were last modified.
 	 */
-	public Mentions(RecognizerName recognizer, Date creationDate, Date modificationDate)
+	public Mentions(ProcessorName recognizer, Date creationDate, Date modificationDate)
 	{	this.creationDate = creationDate;
 		this.modificationDate = modificationDate;
 		this.recognizer = recognizer;
@@ -177,8 +177,8 @@ public class Mentions
 	/////////////////////////////////////////////////////////////////
 	// RECOGNIZER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Recognizer which detected these mentions (or {@link RecognizerName#REFERENCE} for manual annotations) */
-	private RecognizerName recognizer = null;
+	/** Recognizer which detected these mentions (or {@link ProcessorName#REFERENCE} for manual annotations) */
+	private ProcessorName recognizer = null;
 	
 	/**
 	 * Returns the recognizer which detected
@@ -187,7 +187,7 @@ public class Mentions
 	 * @return
 	 * 		Name of the recognizer having detected these mentions.
 	 */
-	public RecognizerName getRecognizer()
+	public ProcessorName getRecognizer()
 	{	return recognizer;
 	}
 	
@@ -198,7 +198,7 @@ public class Mentions
 	 * @param recognizer
 	 * 		New name of the recognizer having detected these mentions.
 	 */
-	public void setRecognizer(RecognizerName recognizer)
+	public void setRecognizer(ProcessorName recognizer)
 	{	this.recognizer = recognizer;
 	}
 	
@@ -212,7 +212,7 @@ public class Mentions
 	 * Returns the name of the person which
 	 * originally annotated these mentions.
 	 * This is relevant only if the recognizer
-	 * name is {@link RecognizerName#REFERENCE},
+	 * name is {@link ProcessorName#REFERENCE},
 	 * otherwise the method returns {@code null}.
 	 * 
 	 * @return
@@ -553,16 +553,16 @@ public class Mentions
 	 * @return
 	 * 		List of maps of equivalent mentions.
 	 */
-	public static List<Map<AbstractRecognizer,AbstractMention<?>>> identifyOverlaps(Map<AbstractRecognizer,Mentions> mentions)
-	{	List<Map<AbstractRecognizer,AbstractMention<?>>> result = new ArrayList<Map<AbstractRecognizer,AbstractMention<?>>>();
+	public static List<Map<AbstractProcessor,AbstractMention<?>>> identifyOverlaps(Map<AbstractProcessor,Mentions> mentions)
+	{	List<Map<AbstractProcessor,AbstractMention<?>>> result = new ArrayList<Map<AbstractProcessor,AbstractMention<?>>>();
 		
 		// sort all mentions
 		for(Mentions e: mentions.values())
 			e.sortByPosition();
 		
 		// init iterators
-		Map<AbstractRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractRecognizer, Iterator<AbstractMention<?>>>();
-		for(AbstractRecognizer recognizer: mentions.keySet())
+		Map<AbstractProcessor,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractProcessor, Iterator<AbstractMention<?>>>();
+		for(AbstractProcessor recognizer: mentions.keySet())
 		{	Mentions e = mentions.get(recognizer);
 			Iterator<AbstractMention<?>> it = e.getMentions().iterator();
 			if(it.hasNext())
@@ -570,8 +570,8 @@ public class Mentions
 		}
 		
 		// init current mentions
-		Map<AbstractMention<?>,AbstractRecognizer> current = new HashMap<AbstractMention<?>, AbstractRecognizer>();
-		for(AbstractRecognizer recognizer: iterators.keySet())
+		Map<AbstractMention<?>,AbstractProcessor> current = new HashMap<AbstractMention<?>, AbstractProcessor>();
+		for(AbstractProcessor recognizer: iterators.keySet())
 		{	Iterator<AbstractMention<?>> it = iterators.get(recognizer);
 			AbstractMention<?> mention = it.next();
 			current.put(mention,recognizer);
@@ -580,7 +580,7 @@ public class Mentions
 		// detect overlapping mentions
 		while(iterators.size()>1)
 		{	// init map
-			Map<AbstractRecognizer,AbstractMention<?>> map = new HashMap<AbstractRecognizer, AbstractMention<?>>();
+			Map<AbstractProcessor,AbstractMention<?>> map = new HashMap<AbstractProcessor, AbstractMention<?>>();
 			
 			// identify the first mention
 			Iterator<AbstractMention<?>> it = current.keySet().iterator();
@@ -593,10 +593,10 @@ public class Mentions
 			
 			// compare other mentions to the the first one
 			it = current.keySet().iterator();
-			Map<AbstractMention<?>,AbstractRecognizer> newCurrent = new HashMap<AbstractMention<?>, AbstractRecognizer>();
+			Map<AbstractMention<?>,AbstractProcessor> newCurrent = new HashMap<AbstractMention<?>, AbstractProcessor>();
 			while(it.hasNext())
 			{	AbstractMention<?> mention = it.next();
-				AbstractRecognizer recognizer = current.get(mention);
+				AbstractProcessor recognizer = current.get(mention);
 				
 				if(mention.overlapsWith(first))
 				{	// update map
@@ -623,11 +623,11 @@ public class Mentions
 		
 		// add the remaining mentions
 		if(!iterators.isEmpty())
-		{	Entry<AbstractRecognizer,Iterator<AbstractMention<?>>> entry = iterators.entrySet().iterator().next();
-			AbstractRecognizer recognizer = entry.getKey();
+		{	Entry<AbstractProcessor,Iterator<AbstractMention<?>>> entry = iterators.entrySet().iterator().next();
+			AbstractProcessor recognizer = entry.getKey();
 			Iterator<AbstractMention<?>> it = entry.getValue();
 			while(it.hasNext())
-			{	Map<AbstractRecognizer,AbstractMention<?>> map = new HashMap<AbstractRecognizer, AbstractMention<?>>();
+			{	Map<AbstractProcessor,AbstractMention<?>> map = new HashMap<AbstractProcessor, AbstractMention<?>>();
 				AbstractMention<?> mention = it.next();
 				map.put(recognizer,mention);
 				result.add(map);
@@ -667,7 +667,7 @@ public class Mentions
 		
 		// get recognizer
 		String recognizerStr = element.getAttributeValue(XmlNames.ATT_RECOGNIZER);
-		RecognizerName recognizer = RecognizerName.valueOf(recognizerStr);
+		ProcessorName recognizer = ProcessorName.valueOf(recognizerStr);
 		
 		// get dates
 //String creationDateStr = element.getAttributeValue(XmlNames.ATT_DATE);

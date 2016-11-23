@@ -34,9 +34,9 @@ import java.util.List;
 import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.external.AbstractExternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.external.AbstractExternalProcessor;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.string.StringTools;
@@ -68,7 +68,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class Nero extends AbstractExternalRecognizer<NeroConverter>
+public class Nero extends AbstractExternalProcessor<NeroConverter>
 {	
 	/**
 	 * Builds and sets up an object representing the Nero tool.
@@ -100,8 +100,8 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	// NAME 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.NERO;
+	public ProcessorName getName()
+	{	return ProcessorName.NERO;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	);
 
 	@Override
-	public List<EntityType> getHandledMentionTypes() 
+	public List<EntityType> getHandledEntityTypes() 
 	{	return HANDLED_TYPES;
 	}
 
@@ -204,7 +204,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 	}
 	
 	@Override
-	protected String detectMentions(Article article) throws RecognizerException
+	protected String detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		StringBuffer tempRes = new StringBuffer();
 		String text = article.getRawText();
@@ -292,7 +292,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 					}
 				}
 				else
-					throw new RecognizerException(error);
+					throw new ProcessorException(error);
 				
 				// possibly remove the temp file
 				if(!outRawResults)
@@ -302,7 +302,7 @@ public class Nero extends AbstractExternalRecognizer<NeroConverter>
 			}
 			catch (IOException e)
 			{	//e.printStackTrace();
-				throw new RecognizerException(e.getMessage());
+				throw new ProcessorException(e.getMessage());
 			}
 		}
 		

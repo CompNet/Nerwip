@@ -56,9 +56,9 @@ import tr.edu.gsu.nerwip.data.article.Article;
 import tr.edu.gsu.nerwip.data.article.ArticleLanguage;
 import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
-import tr.edu.gsu.nerwip.recognition.RecognizerException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
-import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalRecognizer;
+import tr.edu.gsu.nerwip.recognition.ProcessorException;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
+import tr.edu.gsu.nerwip.recognition.internal.modelless.AbstractModellessInternalProcessor;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.file.FileTools;
 import tr.edu.gsu.nerwip.tools.freebase.FbCommonTools;
@@ -85,7 +85,7 @@ import tr.edu.gsu.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMention<?>>, SubeeConverter>
+public class Subee extends AbstractModellessInternalProcessor<List<AbstractMention<?>>, SubeeConverter>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -126,8 +126,8 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public RecognizerName getName()
-	{	return RecognizerName.SUBEE;
+	public ProcessorName getName()
+	{	return ProcessorName.SUBEE;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 	);
 	
 	@Override
-	public List<EntityType> getHandledMentionTypes()
+	public List<EntityType> getHandledEntityTypes()
 	{	return HANDLED_TYPES;
 	}
 
@@ -180,7 +180,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<AbstractMention<?>> detectMentions(Article article) throws RecognizerException
+	protected List<AbstractMention<?>> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
@@ -212,23 +212,23 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 		}
 		catch (ParserException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (ClientProtocolException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (ParseException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (IOException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (org.json.simple.parser.ParseException e)
 		{	e.printStackTrace();
-			throw new RecognizerException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		
 		logger.decreaseOffset();
@@ -377,7 +377,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 			{	int startPos = m.start();
 				int endPos = m.end();
 				String valueStr = m.group();
-				AbstractMention<?> ent = AbstractMention.build(EntityType.PERSON, startPos, endPos, RecognizerName.SUBEE, valueStr);
+				AbstractMention<?> ent = AbstractMention.build(EntityType.PERSON, startPos, endPos, ProcessorName.SUBEE, valueStr);
 				result.add(ent);
 			}
 		}
@@ -533,7 +533,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
 //	System.out.println("ERROR: mention acronym and article do not match (position problem)");
-									AbstractMention<?> mention = AbstractMention.build(type, s, e, RecognizerName.SUBEE, acro);
+									AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
 									result.add(mention);
 									logger.log("Creation of an extra mention (acronym) "+mention);
 								}
@@ -559,7 +559,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
 //	System.out.println("ERROR: mention acronym and article do not match (position problem)");
-										AbstractMention<?> mention = AbstractMention.build(type, s, e, RecognizerName.SUBEE, acro);
+										AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
 										result.add(mention);
 										logger.log("Creation of an extra mention (acronym) "+mention);
 									}
@@ -569,7 +569,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 					}
 					
 					// create the mention
-					AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, RecognizerName.SUBEE, valueStr);
+					AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
 					result.add(mention);
 					logger.log("Creation of the mention "+mention);
 				}
@@ -594,7 +594,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 	protected static final Map<String,EntityType> TYPE_MAP = new HashMap<String,EntityType>();
 	
 	@Override
-	protected void prepareRecognizer() throws RecognizerException
+	protected void prepareRecognizer() throws ProcessorException
 	{	try
 		{	loadTypeMaps();
 			loadUnknownTypes();
@@ -602,7 +602,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 				loadDemonyms();
 		}
 		catch (FileNotFoundException e)
-		{	throw new RecognizerException(e.getMessage());
+		{	throw new ProcessorException(e.getMessage());
 		}
 		catch (UnsupportedEncodingException e) 
 		{	e.printStackTrace();
@@ -855,7 +855,7 @@ public class Subee extends AbstractModellessInternalRecognizer<List<AbstractMent
 //				if(!positionAlreadyUsed(startPos, result))	// this test is now done later 
 				{	int endPos = m.end();
 					EntityType type = mention.getType();
-					AbstractMention<?> ent = AbstractMention.build(type, startPos, endPos, RecognizerName.SUBEE, valueStr);
+					AbstractMention<?> ent = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
 					result.add(ent);
 				}
 			}

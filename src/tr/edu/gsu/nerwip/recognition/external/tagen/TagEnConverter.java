@@ -45,7 +45,7 @@ import tr.edu.gsu.nerwip.data.entity.EntityType;
 import tr.edu.gsu.nerwip.data.entity.mention.AbstractMention;
 import tr.edu.gsu.nerwip.data.entity.mention.Mentions;
 import tr.edu.gsu.nerwip.recognition.ConverterException;
-import tr.edu.gsu.nerwip.recognition.RecognizerName;
+import tr.edu.gsu.nerwip.recognition.ProcessorName;
 import tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter;
 import tr.edu.gsu.nerwip.tools.file.FileNames;
 import tr.edu.gsu.nerwip.tools.xml.XmlTools;
@@ -70,7 +70,7 @@ public class TagEnConverter extends AbstractExternalConverter
 	 * 		Folder used to stored the results of the recognizer.
 	 */
 	public TagEnConverter(String nerFolder)
-	{	super(RecognizerName.TAGEN, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	{	super(ProcessorName.TAGEN, nerFolder, FileNames.FI_OUTPUT_TEXT);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ public class TagEnConverter extends AbstractExternalConverter
 	@Override
     public Mentions convert(Article article, String data) throws ConverterException
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(recognizerName);
+		Mentions result = new Mentions(processorName);
 		
 		// the result file is basically an XML file, only the header is missing
 		// so add a fake header and parse it like an xml file
@@ -248,7 +248,7 @@ public class TagEnConverter extends AbstractExternalConverter
 			else
 			{	String valueStr = element.getText();
 				int length = valueStr.length();
-				result = AbstractMention.build(type, index, index+length, recognizerName, valueStr);
+				result = AbstractMention.build(type, index, index+length, processorName, valueStr);
 			}
 		}
 		
@@ -361,7 +361,7 @@ public class TagEnConverter extends AbstractExternalConverter
 					AbstractMention<?> mention = AbstractMention.build
 					(	EntityType.DATE, 
 						index+offset, index+offset+length, 
-						recognizerName, valueStr
+						processorName, valueStr
 					);
 //					result.setValue(date);
 					result.add(mention);

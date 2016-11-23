@@ -227,7 +227,7 @@ public abstract class AbstractTrainer<T>
 //	 * @param estMentions
 //	 * 		Corresponding estimated mentions.
 //	 */
-//	protected abstract void convertData(svm_problem data, int index, Article article, List<AbstractRecognizer> recognizers, EntityType refType, Map<AbstractRecognizer,AbstractEntity<?>> estMentions);
+//	protected abstract void convertData(svm_problem data, int index, Article article, List<AbstractProcessor> recognizers, EntityType refType, Map<AbstractProcessor,AbstractEntity<?>> estMentions);
 	
 	/**
 	 * Verifies if the specified data file(s) already exist.
