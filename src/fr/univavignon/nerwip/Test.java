@@ -2,10 +2,7 @@ package fr.univavignon.nerwip;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
- * Copyright 2011 Yasa Akbulut, Burcu Küpelioğlu & Vincent Labatut
- * Copyright 2012 Burcu Küpelioğlu, Samet Atdağ & Vincent Labatut
- * Copyright 2013 Samet Atdağ & Vincent Labatut
- * Copyright 2014-15 Vincent Labatut
+ * Copyright 2011-16 Vincent Labatut et al.
  * 
  * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
  * 
