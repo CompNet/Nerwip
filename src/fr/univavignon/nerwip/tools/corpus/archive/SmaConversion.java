@@ -33,9 +33,9 @@ import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.recognition.ConverterException;
-import fr.univavignon.nerwip.recognition.ProcessorName;
-import fr.univavignon.nerwip.recognition.external.AbstractExternalConverter;
+import fr.univavignon.nerwip.processing.ConverterException;
+import fr.univavignon.nerwip.processing.ProcessorName;
+import fr.univavignon.nerwip.processing.external.AbstractExternalConverter;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 

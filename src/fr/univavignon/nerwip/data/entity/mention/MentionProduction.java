@@ -25,7 +25,7 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.recognition.ProcessorName;
+import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**

@@ -38,7 +38,7 @@ import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.recognition.AbstractProcessor;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.string.StringTools;

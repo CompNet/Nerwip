@@ -31,7 +31,7 @@ import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.recognition.AbstractProcessor;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.tools.file.FileNames;
 
 /**
