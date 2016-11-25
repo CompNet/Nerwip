@@ -38,6 +38,7 @@ import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.evaluation.Evaluator;
 import fr.univavignon.nerwip.evaluation.measure.AbstractMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
@@ -46,9 +47,13 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
  * This class is used to handle weights associated to recognizers
  * in certain combiners.
  * 
+ * @param <T> 
+ * 		Type of processing concerned by the weights: recognizer, 
+ * 		resolver or linker.
+ * 
  * @author Vincent Labatut
  */
-public class VoteWeights
+public class VoteWeights<T extends InterfaceProcessor>
 {	
 	/**
 	 * Builds a new structure dedicated to storing
@@ -57,9 +62,9 @@ public class VoteWeights
 	 * @param recognizers
 	 * 		Recognizers whose weights are stored in this object.
 	 */
-	public VoteWeights(List<AbstractProcessor> recognizers)
+	public VoteWeights(List<T> recognizers)
 	{	this.recognizers.addAll(recognizers);
-		for(AbstractProcessor recognizer: recognizers)
+		for(T recognizer: recognizers)
 		{	Map<String,Map<ArticleCategory,Float>> map = new HashMap<String, Map<ArticleCategory,Float>>();
 			data.put(recognizer,map);
 		}
@@ -74,14 +79,14 @@ public class VoteWeights
 	 * @return
 	 * 		New VoteWeights instance with uniform weights.
 	 */
-	public static VoteWeights buildUniformWeights(List<AbstractProcessor> recognizers)
+	public static <U extends InterfaceProcessor> VoteWeights<U> buildUniformWeights(List<U> recognizers)
 	{	logger.log("Builds uniform weights for recognizers "+recognizers.toString());
 		logger.increaseOffset();
 		
-		VoteWeights result = new VoteWeights(recognizers);
+		VoteWeights<U> result = new VoteWeights<U>(recognizers);
 		List<ArticleCategory> categories = Arrays.asList(ArticleCategory.values());
 			
-		for(AbstractProcessor recognizer: recognizers)
+		for(U recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			Map<String,Map<ArticleCategory,Float>> recMap = result.data.get(recognizer);
 			Map<ArticleCategory,Float> mesMap = new HashMap<ArticleCategory, Float>();
@@ -109,16 +114,16 @@ public class VoteWeights
 	 * @return
 	 * 		New VoteWeights instance with the weights resulting from the evaluation.
 	 */
-	public static VoteWeights buildWeightsFromEvaluator(Evaluator evaluator, List<String> names, boolean byCategory)
+	public static <U extends InterfaceProcessor> VoteWeights<U> buildWeightsFromEvaluator(Evaluator evaluator, List<String> names, boolean byCategory)
 	{	logger.log("Initializes vote weights with evaluator "+evaluator);
 		logger.increaseOffset();
 		
-		List<AbstractProcessor> recognizers = evaluator.getRecognizers();
-		VoteWeights result = new VoteWeights(recognizers);
+		List<U> recognizers = evaluator.getRecognizers();
+		VoteWeights<U> result = new VoteWeights<U>(recognizers);
 		List<ArticleCategory> categories = Arrays.asList(ArticleCategory.values());
 		Collections.sort(names);
 		
-		for(AbstractProcessor recognizer: recognizers)
+		for(U recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
@@ -164,9 +169,9 @@ public class VoteWeights
 	/** Name used for uniform weights */
 	private final static String UNIFORM_NAME = "Uniform";
 	/** Maps containing all the weights */
-	private final Map<AbstractProcessor,Map<String,Map<ArticleCategory,Float>>> data = new HashMap<AbstractProcessor,Map<String,Map<ArticleCategory,Float>>>();
+	private final Map<T,Map<String,Map<ArticleCategory,Float>>> data = new HashMap<T,Map<String,Map<ArticleCategory,Float>>>();
 	/** List of recognizers (important to keep their original order) */
-	private final List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>();
+	private final List<T> recognizers = new ArrayList<T>();
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
@@ -191,7 +196,7 @@ public class VoteWeights
 	 * @return
 	 * 		Voting weight resulting from the process.
 	 */
-	public float processVotingWeight(Article article, AbstractProcessor recognizer, String name, Map<ArticleCategory,Float> categoryWeights)
+	public float processVotingWeight(Article article, T recognizer, String name, Map<ArticleCategory,Float> categoryWeights)
 	{	float result = 0;
 		List<ArticleCategory> categories = article.getCategories();
 		Map<String,Map<ArticleCategory,Float>> recMap = data.get(recognizer);
@@ -230,17 +235,17 @@ public class VoteWeights
 	 * @throws UnsupportedEncodingException
 	 * 		Could not handle the encoding.
 	 */
-	public static VoteWeights loadVoteWeights(String filePath, List<AbstractProcessor> recognizers) throws FileNotFoundException, UnsupportedEncodingException
+	public static <U extends InterfaceProcessor> VoteWeights<U> loadVoteWeights(String filePath, List<U> recognizers) throws FileNotFoundException, UnsupportedEncodingException
 	{	logger.log("Loading vote weights");
 		logger.increaseOffset();
 		
-		VoteWeights result = new VoteWeights(recognizers);
+		VoteWeights<U> result = new VoteWeights<U>(recognizers);
 		List<ArticleCategory> categories = new ArrayList<ArticleCategory>();
 	
 		Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 		
 		// process each recognizer	
-		for(AbstractProcessor recognizer: recognizers)
+		for(U recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
@@ -318,7 +323,7 @@ public class VoteWeights
 		}
 		
 		// write each recognizer
-		for(AbstractProcessor recognizer: recognizers)
+		for(T recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 		

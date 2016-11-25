@@ -2204,10 +2204,8 @@ File folder = folders.get(0);
  * - Merge all processes in the same class (recog, resolv, link)
  * - Rename recognizer to processor where appropriate
  * 
- * - refactoring:
- *   - recognizer,resolver,linker=interfaces inheriting from interface processor
- *   - current abstractprocessor >> delegates (LinkerDelegate, etc.)
- *   - if one tool does not implement one of the three roles, it just does not implement the corresponding interface
+	//TODO AbstractProcessor should be replaced by InterfaceProcessor in VoteWeights (combiner)
+	//TODO the evaluator should be parameterized depending on InterfaceXxxxx
  */
 
 /*

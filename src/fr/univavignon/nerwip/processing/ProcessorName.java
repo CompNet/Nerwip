@@ -34,39 +34,39 @@ public enum ProcessorName
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL 3rd PARTY TOOLS		/////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** HeidelTime */
+	/** HeidelTime, a recognizer for dates */
 	HEIDELTIME, 
-	/** Illinois Named Entity Tagger */
+	/** Illinois Named Entity Tagger, a recognizer */
 	ILLINOIS, 
-	/** Alias-i Ling Pipe */
+	/** Alias-i Ling Pipe, a recognizer */
 	LINGPIPE,
-	/** OpenCalais Web Service */
+	/** OpenCalais Web Service, a recognizer */
 	OPENCALAIS,
-	/** OpeNer Web Service */
+	/** OpeNer Web Service, a recognizer */
 	OPENER,
-	/** Apache OpenNLP */
+	/** Apache OpenNLP, a recognizer */
 	OPENNLP, 
-	/** DBpedia Spotlight Web Service */
+	/** DBpedia Spotlight Web Service, a recognizer, a resolver and a linker */
 	SPOTLIGHT,
-	/** Stanford Named Entity Recognizer */ 
+	/** Stanford Named Entity Recognizer, a recognizer */ 
 	STANFORD, 
 	
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL CUSTOM TOOLS	/////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Tool specifically developped to detect dates */
+	/** Tool specifically developped to recognize dates */
 	DATEEXTRACTOR,
-	/** Takes advantage of hyperlinks to detect named entity mentions */ 
+	/** Takes advantage of hyperlinks to recognize named entity mentions */ 
 	SUBEE,
-	/** Tool specifically developped to detect dates in Wikipedia articles */
+	/** Tool specifically developped to recognize dates in Wikipedia articles */
 	WIKIPEDIADATER,
 	
 	/////////////////////////////////////////////////////////////////
 	// EXTERNAL TOOLS	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** NERO tool */
+	/** NERO, a recognizer */
 	NERO,
-	/** TagEN  tool */
+	/** TagEN, a recognizer */
 	TAGEN,
 	
 	/////////////////////////////////////////////////////////////////
