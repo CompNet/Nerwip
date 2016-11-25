@@ -2202,7 +2202,12 @@ File folder = folders.get(0);
  *   
  * - See if OpenNer can be adapted to process links? And the other tools, too.
  * - Merge all processes in the same class (recog, resolv, link)
- * - Rename recognizer to processor where appropriate   
+ * - Rename recognizer to processor where appropriate
+ * 
+ * - refactoring:
+ *   - recognizer,resolver,linker=interfaces inheriting from interface processor
+ *   - current abstractprocessor >> delegates (LinkerDelegate, etc.)
+ *   - if one tool does not implement one of the three roles, it just does not implement the corresponding interface
  */
 
 /*

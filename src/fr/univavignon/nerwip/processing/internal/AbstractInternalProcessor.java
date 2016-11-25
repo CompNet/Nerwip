@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
@@ -195,4 +196,34 @@ public abstract class AbstractInternalProcessor<U,T extends AbstractInternalConv
      * 		Problem while applying the recognizer.
      */
 	protected abstract U detectMentions(Article article) throws ProcessorException;
+
+	@Override
+	public Entities resolve(Article article, Mentions mentions, AbstractProcessor recognizer) throws ProcessorException
+	{	Entities result = new Entities();
+		//TODO
+		return result;
+	}
+
+    /**
+     * Takes an object representation of the article, 
+     * and returns the internal representation of
+     * the detected mentions. Those must then
+     * be converted to objects compatible
+     * with the rest of Nerwip.
+     * 
+     * @param article
+     * 		Article to process.
+     * @return
+     * 		Object representing the detected mentions.
+     * 
+     * @throws ProcessorException
+     * 		Problem while applying the recognizer.
+     */
+	protected abstract U resolveCooccurrences(Article article) throws ProcessorException;
+
+	@Override
+	public void link(Article article, Mentions mentions, Entities entities, AbstractProcessor recognizer, AbstractProcessor resolver) throws ProcessorException
+	{
+		//TODO
+	}
 }

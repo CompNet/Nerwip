@@ -169,4 +169,5 @@ public abstract class AbstractExternalProcessor<T extends AbstractExternalConver
      * 		Problem while applying the recognizer.
     */
 	protected abstract String detectMentions(Article article) throws ProcessorException;
+
 }
