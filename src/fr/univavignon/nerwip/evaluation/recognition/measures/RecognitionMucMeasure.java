@@ -1,4 +1,4 @@
-package fr.univavignon.nerwip.evaluation.measure;
+package fr.univavignon.nerwip.evaluation.recognition.measures;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -31,7 +31,7 @@ import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.tools.file.FileNames;
 
 /**
@@ -43,7 +43,7 @@ import fr.univavignon.nerwip.tools.file.FileNames;
  *  
  * @author Vincent Labatut
  */
-public class MucMeasure extends AbstractMeasure
+public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 {	
 	/**
 	 * Builds a new instance of this measure,
@@ -54,7 +54,7 @@ public class MucMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 */
-	public MucMeasure(AbstractProcessor recognizer)
+	public RecognitionMucMeasure(InterfaceRecognizer recognizer)
 	{	super(recognizer);
 	}
 	
@@ -69,7 +69,7 @@ public class MucMeasure extends AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
-	public MucMeasure(AbstractProcessor recognizer, List<EntityType> types)
+	public RecognitionMucMeasure(InterfaceRecognizer recognizer, List<EntityType> types)
 	{	super(recognizer,types);
 	}
 
@@ -90,25 +90,25 @@ public class MucMeasure extends AbstractMeasure
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public MucMeasure(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public RecognitionMucMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	super(recognizer,types,reference,estimation,categories);
 	}	
 	
 	@Override
-	public MucMeasure build(AbstractProcessor recognizer)
-	{	MucMeasure result = new MucMeasure(recognizer);
+	public RecognitionMucMeasure build(InterfaceRecognizer recognizer)
+	{	RecognitionMucMeasure result = new RecognitionMucMeasure(recognizer);
 		return result;
 	}
 	
 	@Override
-	public AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types)
-	{	MucMeasure result = new MucMeasure(recognizer, types);
+	public AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types)
+	{	RecognitionMucMeasure result = new RecognitionMucMeasure(recognizer, types);
 		return result;
 	}
 	
 	@Override
-	public MucMeasure build(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
-	{	MucMeasure result = new MucMeasure(recognizer,types,reference,estimation,categories);
+	public RecognitionMucMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	{	RecognitionMucMeasure result = new RecognitionMucMeasure(recognizer,types,reference,estimation,categories);
 		return result;
 	}
 	

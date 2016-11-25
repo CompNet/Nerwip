@@ -1,4 +1,4 @@
-package fr.univavignon.nerwip.evaluation.measure;
+package fr.univavignon.nerwip.evaluation.recognition.measures;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -31,7 +31,7 @@ import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.tools.file.FileNames;
 
 /**
@@ -89,7 +89,7 @@ import fr.univavignon.nerwip.tools.file.FileNames;
  *  
  * @author Vincent Labatut
  */
-public class LilleMeasure extends AbstractMeasure
+public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 {	
 	/**
 	 * Builds a new instance of this measure,
@@ -100,7 +100,7 @@ public class LilleMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 */
-	public LilleMeasure(AbstractProcessor recognizer)
+	public RecognitionLilleMeasure(InterfaceRecognizer recognizer)
 	{	super(recognizer);
 	}
 	
@@ -115,7 +115,7 @@ public class LilleMeasure extends AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
-	public LilleMeasure(AbstractProcessor recognizer, List<EntityType> types)
+	public RecognitionLilleMeasure(InterfaceRecognizer recognizer, List<EntityType> types)
 	{	super(recognizer,types);
 	}
 
@@ -136,25 +136,25 @@ public class LilleMeasure extends AbstractMeasure
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public LilleMeasure(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public RecognitionLilleMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	super(recognizer,types,reference,estimation,categories);
 	}	
 	
 	@Override
-	public LilleMeasure build(AbstractProcessor recognizer)
-	{	LilleMeasure result = new LilleMeasure(recognizer);
+	public RecognitionLilleMeasure build(InterfaceRecognizer recognizer)
+	{	RecognitionLilleMeasure result = new RecognitionLilleMeasure(recognizer);
 		return result;
 	}
 	
 	@Override
-	public AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types)
-	{	LilleMeasure result = new LilleMeasure(recognizer, types);
+	public AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types)
+	{	RecognitionLilleMeasure result = new RecognitionLilleMeasure(recognizer, types);
 		return result;
 	}
 	
 	@Override
-	public LilleMeasure build(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
-	{	LilleMeasure result = new LilleMeasure(recognizer,types,reference,estimation,categories);
+	public RecognitionLilleMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	{	RecognitionLilleMeasure result = new RecognitionLilleMeasure(recognizer,types,reference,estimation,categories);
 		return result;
 	}
 	

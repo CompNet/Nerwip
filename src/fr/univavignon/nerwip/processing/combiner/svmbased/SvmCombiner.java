@@ -38,7 +38,7 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.data.entity.mention.PositionRelation;
-import fr.univavignon.nerwip.evaluation.measure.LilleMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
@@ -623,7 +623,7 @@ public class SvmCombiner extends AbstractCombiner
 					if(combineMode==CombineMode.MENTION_UNIFORM)
 						weight = 1f;
 					else
-						weight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FP, categoryWeights);
+						weight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FP, categoryWeights);
 					
 					// start position
 					{	int startPos = mention.getStartPos();
@@ -658,7 +658,7 @@ public class SvmCombiner extends AbstractCombiner
 						if(combineMode==CombineMode.MENTION_UNIFORM)
 							weight = 1f;
 						else
-							weight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FR, categoryWeights);
+							weight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FR, categoryWeights);
 						
 						// start position
 						{	int startPos = mention.getStartPos();

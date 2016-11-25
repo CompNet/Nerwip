@@ -66,11 +66,11 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.edition.MentionEditor;
-import fr.univavignon.nerwip.evaluation.Evaluator;
-import fr.univavignon.nerwip.evaluation.measure.AbstractMeasure;
-import fr.univavignon.nerwip.evaluation.measure.IstanbulMeasure;
-import fr.univavignon.nerwip.evaluation.measure.LilleMeasure;
-import fr.univavignon.nerwip.evaluation.measure.MucMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
+import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionIstanbulMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionMucMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.AbstractCombiner;
@@ -1536,7 +1536,7 @@ File folder = folders.get(0);
 	 * 		Something went wrong... 
 	 */
 	private static void testEvaluator() throws Exception
-	{	logger.setName("Test-Evaluator");
+	{	logger.setName("Test-RecognitionEvaluator");
 		logger.log("Start evaluation test ");
 		logger.increaseOffset();
 		
@@ -1910,16 +1910,16 @@ File folder = folders.get(0);
 		logger.decreaseOffset();
 		
 		// set evaluation measure
-//		AbstractMeasure evaluation = new MucMeasure(null);
-		AbstractMeasure evaluation = new LilleMeasure(null);
-//		AbstractMeasure evaluation = new IstanbulMeasure(null);
+//		AbstractMeasure evaluation = new RecognitionMucMeasure(null);
+		AbstractRecognitionMeasure evaluation = new RecognitionLilleMeasure(null);
+//		AbstractMeasure evaluation = new RecognitionIstanbulMeasure(null);
 		logger.log("Using assmessment measure "+evaluation.getClass().getName());
 
 		// launch evaluation
 		logger.log("Evaluation started");
-		Evaluator evaluator = new Evaluator(types, recognizers, folders, evaluation);
-		evaluator.setCacheEnabled(false);
-		evaluator.process();
+		RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, evaluation);
+		recognitionEvaluator.setCacheEnabled(false);
+		recognitionEvaluator.process();
 //		logger.log(((Subee)recognizers.get(0)).UNUSED_TYPES);
 		
 		logger.log("Evaluation finished");

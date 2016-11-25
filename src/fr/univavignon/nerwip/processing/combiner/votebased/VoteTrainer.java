@@ -30,9 +30,9 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.evaluation.Evaluator;
-import fr.univavignon.nerwip.evaluation.measure.AbstractMeasure;
-import fr.univavignon.nerwip.evaluation.measure.LilleMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
+import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ConverterException;
 import fr.univavignon.nerwip.processing.ProcessorException;
@@ -140,16 +140,16 @@ public class VoteTrainer
 			{	// process
 				List<EntityType> types = combiner.getHandledEntityTypes();
 				List<AbstractProcessor> recognizers = combiner.getRecognizers();
-				AbstractMeasure measure = new LilleMeasure(null);
-				Evaluator evaluator = new Evaluator(types, recognizers, folders, measure);
-				evaluator.process();
+				AbstractRecognitionMeasure measure = new RecognitionLilleMeasure(null);
+				RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, measure);
+				recognitionEvaluator.process();
 				List<String> names = Arrays.asList(
-					LilleMeasure.SCORE_FP, LilleMeasure.SCORE_TP,
-					LilleMeasure.SCORE_FR, LilleMeasure.SCORE_TR,
-					LilleMeasure.SCORE_P, LilleMeasure.SCORE_R
+					RecognitionLilleMeasure.SCORE_FP, RecognitionLilleMeasure.SCORE_TP,
+					RecognitionLilleMeasure.SCORE_FR, RecognitionLilleMeasure.SCORE_TR,
+					RecognitionLilleMeasure.SCORE_P, RecognitionLilleMeasure.SCORE_R
 				);
 				boolean byCategory = voteMode==VoteMode.WEIGHTED_CATEGORY;
-				VoteWeights voteWeights = VoteWeights.buildWeightsFromEvaluator(evaluator,names,byCategory);
+				VoteWeights voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names,byCategory);
 				
 				// record
 				String filePath = combiner.getVoteWeightsPath();

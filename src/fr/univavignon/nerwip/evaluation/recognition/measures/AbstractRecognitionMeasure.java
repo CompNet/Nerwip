@@ -1,4 +1,4 @@
-package fr.univavignon.nerwip.evaluation.measure;
+package fr.univavignon.nerwip.evaluation.recognition.measures;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -39,7 +39,8 @@ import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.evaluation.AbstractMeasure;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.time.TimeFormatting;
 
@@ -61,7 +62,7 @@ import fr.univavignon.nerwip.tools.time.TimeFormatting;
  * 
  * @author Vincent Labatut
  */
-public abstract class AbstractMeasure
+public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 {	
 	/**
 	 * Builds a new instance of measure,
@@ -72,7 +73,7 @@ public abstract class AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 */
-	public AbstractMeasure(AbstractProcessor recognizer)
+	public AbstractRecognitionMeasure(InterfaceRecognizer recognizer)
 	{	this.recognizer = recognizer;
 		
 		initialize();
@@ -89,7 +90,7 @@ public abstract class AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
-	public AbstractMeasure(AbstractProcessor recognizer, List<EntityType> types)
+	public AbstractRecognitionMeasure(InterfaceRecognizer recognizer, List<EntityType> types)
 	{	this.recognizer = recognizer;
 		this.types.addAll(types);
 		
@@ -113,7 +114,7 @@ public abstract class AbstractMeasure
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public AbstractMeasure(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public AbstractRecognitionMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	this.recognizer = recognizer;
 		this.types.addAll(types);
 		
@@ -139,7 +140,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories);
+	public abstract AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories);
 	
 	/**
 	 * Builds the appropriate measure,
@@ -154,7 +155,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types);
+	public abstract AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types);
 
 	/**
 	 * Builds the appropriate measure,
@@ -167,7 +168,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractMeasure build(AbstractProcessor recognizer);
+	public abstract AbstractRecognitionMeasure build(InterfaceRecognizer recognizer);
 	
 	/**
 	 * Initializes the lists used during processing.
@@ -178,21 +179,10 @@ public abstract class AbstractMeasure
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// NAME				/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Returns the name of the measure.
-	 * 
-	 * @return
-	 * 		Name used to represent the measure (particularly in log files).
-	 */
-	public abstract String getName(); 
-	
-	/////////////////////////////////////////////////////////////////
 	// RECOGNIZER		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Recognizer assessed by this measure */
-	protected AbstractProcessor recognizer;
+	protected InterfaceRecognizer recognizer;
 	
 	/**
 	 * Returns the recognizer
@@ -201,7 +191,7 @@ public abstract class AbstractMeasure
 	 * @return
 	 * 		Concerned recognizer.
 	 */
-	public AbstractProcessor getRecognizer()
+	public InterfaceRecognizer getRecognizer()
 	{	return recognizer;
 	}
 	
@@ -461,7 +451,7 @@ public abstract class AbstractMeasure
 	 * @param result 
 	 * 		Values to add to this object.
 	 */
-	public void updateCounts(AbstractMeasure result)
+	public void updateCounts(AbstractRecognitionMeasure result)
 	{	List<ArticleCategory> categories = result.getCategories();
 		for(String count: getCountNames())
 		{	// total counts
@@ -539,15 +529,6 @@ public abstract class AbstractMeasure
 	/** Scores by article category */
 	protected Map<String,Map<ArticleCategory,Float>> scoresByCategory = null;
 	
-	/**
-	 * Returns the list of the scores
-	 * supported by this class.
-	 * 
-	 * @return
-	 * 		List of strings representing score names.
-	 */
-	public abstract List<String> getScoreNames();
-
 //	protected void initScores()
 //	{	scoresAll = new HashMap<String,Integer>();
 //		scoresByType = new HashMap<String,Map<EntityType,Integer>>();
@@ -562,52 +543,20 @@ public abstract class AbstractMeasure
 //	}
 //	
 
-	/**
-	 * Get the total value for
-	 * the specified score.
-	 * 
-	 * @param score
-	 * 		Score required by the user.
-	 * @return
-	 * 		Associated total value.
-	 */
+	@Override
 	public float getScoreAll(String score)
 	{	float result = scoresAll.get(score);
 		return result;
 	}
 	
-	/**
-	 * Get the value for
-	 * the specified score,
-	 * when considering only
-	 * the specified entity type.
-	 * 
-	 * @param score
-	 * 		Score required by the user.
-	 * @param type
-	 * 		Type of interest.
-	 * @return
-	 * 		Associated value.
-	 */
+	@Override
 	public float getScoreByType(String score, EntityType type)
 	{	Map<EntityType,Float> map = scoresByType.get(score);
 		float result = map.get(type);
 		return result;
 	}
 
-	/**
-	 * Get the value for
-	 * the specified score,
-	 * when considering only
-	 * the specified article category.
-	 * 
-	 * @param score
-	 * 		Score required by the user.
-	 * @param category
-	 * 		Category of interest.
-	 * @return
-	 * 		Associated value.
-	 */
+	@Override
 	public float getScoreByCategory(String score, ArticleCategory category)
 	{	Map<ArticleCategory,Float> map = scoresByCategory.get(score);
 Float temp = map.get(category);
@@ -731,29 +680,7 @@ return temp;
 	/** String used when reading/writing results in files */
 	private static final String SCORES_STRING = "Scores";
 
-	/**
-	 * Returns the file name associated
-	 * with the results stored in this measure object.
-	 * 
-	 * @return
-	 * 		The file name of the corresponding results file.
-	 */
-	public abstract String getFileName();
-	
-	/**
-	 * Writes the scores and counts stored
-	 * in this object.
-	 * 
-	 * @param folder
-	 * 		Where to write the file.
-	 * @param dataName
-	 * 		Name of the evaluated data.
-	 * 
-	 * @throws FileNotFoundException
-	 * 		Problem while writing the file.
-	 * @throws UnsupportedEncodingException
-	 * 		Problem while writing the file.
-	 */
+	@Override
 	public void writeNumbers(File folder, String dataName) throws FileNotFoundException, UnsupportedEncodingException
 	{	String filePath = folder.getPath() + File.separator + getFileName();
 		PrintWriter pw = FileTools.openTextFileWrite(filePath,"UTF-8");
@@ -855,8 +782,8 @@ return temp;
 	 * @throws FileNotFoundException
 	 * 		Problem while writing the file.
 	 */
-	public AbstractMeasure readNumbers(File folder, AbstractProcessor recognizer) throws FileNotFoundException
-	{	AbstractMeasure result = build(recognizer);
+	public AbstractRecognitionMeasure readNumbers(File folder, InterfaceRecognizer recognizer) throws FileNotFoundException
+	{	AbstractRecognitionMeasure result = build(recognizer);
 
 		// open file
 		String filePath = folder.getPath() + File.separator + getFileName();

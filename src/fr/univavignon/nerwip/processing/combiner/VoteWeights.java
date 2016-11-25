@@ -35,9 +35,8 @@ import java.util.TreeSet;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleCategory;
-import fr.univavignon.nerwip.evaluation.Evaluator;
-import fr.univavignon.nerwip.evaluation.measure.AbstractMeasure;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.evaluation.AbstractEvaluator;
+import fr.univavignon.nerwip.evaluation.AbstractMeasure;
 import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
@@ -105,7 +104,7 @@ public class VoteWeights<T extends InterfaceProcessor>
 	 * Builds a new VoteWeights object based on the evaluation
 	 * of the specified recognizers performance.
 	 * 
-	 * @param evaluator
+	 * @param recognitionEvaluator
 	 * 		Object used to perform the evaluation.
 	 * @param names
 	 * 		Names of the scores of interest.
@@ -114,11 +113,11 @@ public class VoteWeights<T extends InterfaceProcessor>
 	 * @return
 	 * 		New VoteWeights instance with the weights resulting from the evaluation.
 	 */
-	public static <U extends InterfaceProcessor> VoteWeights<U> buildWeightsFromEvaluator(Evaluator evaluator, List<String> names, boolean byCategory)
-	{	logger.log("Initializes vote weights with evaluator "+evaluator);
+	public static <U extends InterfaceProcessor, V extends  AbstractMeasure, W extends AbstractEvaluator<U,V>> VoteWeights<U> buildWeightsFromEvaluator(W recognitionEvaluator, List<String> names, boolean byCategory)
+	{	logger.log("Initializes vote weights with evaluator "+recognitionEvaluator);
 		logger.increaseOffset();
 		
-		List<U> recognizers = evaluator.getRecognizers();
+		List<U> recognizers = recognitionEvaluator.getRecognizers();
 		VoteWeights<U> result = new VoteWeights<U>(recognizers);
 		List<ArticleCategory> categories = Arrays.asList(ArticleCategory.values());
 		Collections.sort(names);
@@ -127,7 +126,7 @@ public class VoteWeights<T extends InterfaceProcessor>
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
-			AbstractMeasure measure = evaluator.getMeasure(recognizer);
+			V measure = recognitionEvaluator.getMeasure(recognizer);
 			Map<String,Map<ArticleCategory,Float>> recMap = result.data.get(recognizer);
 			for(String name: names)
 			{	logger.log("Processing measure "+name+":");

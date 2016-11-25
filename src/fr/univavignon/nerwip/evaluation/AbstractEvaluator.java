@@ -31,16 +31,11 @@ import java.util.List;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.evaluation.measure.AbstractMeasure;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
-import fr.univavignon.nerwip.processing.ConverterException;
+import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
@@ -55,10 +50,15 @@ import fr.univavignon.nerwip.tools.time.TimeFormatting;
  * mentions to the actual ones. Various measures can
  * be used to perform this comparison.
  * 
+ * @param <T>
+ * 		TODO 
+ * @param <U>
+ * 		TODO 
+ * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class Evaluator
+public abstract class AbstractEvaluator<T extends InterfaceProcessor, U extends AbstractMeasure>
 {	
 	/**
 	 * Builds a new evaluator, 
@@ -73,7 +73,7 @@ public class Evaluator
 	 * @param template 
 	 * 		Object used to process performances.
 	 */
-	public Evaluator(List<EntityType> types, List<AbstractProcessor> recognizers, ArticleList folders, AbstractMeasure template)
+	public AbstractEvaluator(List<EntityType> types, List<T> recognizers, ArticleList folders, U template)
 	{	this.types.addAll(types);
 		this.recognizers.addAll(recognizers);
 		this.folders = folders;
@@ -90,11 +90,11 @@ public class Evaluator
 	// OPTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Types considered during the evaluation */
-	private final List<EntityType> types = new ArrayList<EntityType>();
+	protected final List<EntityType> types = new ArrayList<EntityType>();
 	/** Evaluated recognizers */
-	private final List<AbstractProcessor> recognizers = new ArrayList<AbstractProcessor>();
+	protected final List<T> recognizers = new ArrayList<T>();
 	/** Articles supporting the evaluation */
-	private ArticleList folders;
+	protected ArticleList folders;
 	
 	/**
 	 * Changes the types used during
@@ -113,7 +113,7 @@ public class Evaluator
 	 * @param recognizers
 	 * 		Recognizers considered when performing the evaluation.
 	 */
-	public void setRecognizers(List<AbstractProcessor> recognizers)
+	public void setRecognizers(List<T> recognizers)
 	{	this.recognizers.addAll(recognizers);
 	}
 
@@ -123,7 +123,7 @@ public class Evaluator
 	 * @return
 	 * 		List of evaluated recognizers.
 	 */
-	public List<AbstractProcessor> getRecognizers()
+	public List<T> getRecognizers()
 	{	return recognizers;
 	}
 	
@@ -167,10 +167,15 @@ public class Evaluator
 	// MEASURES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Object used to create new measure instances when needed */
-	private AbstractMeasure template = null;
+	protected U template = null;
 	/** List of measures containing current evaluation data */
-	private List<AbstractMeasure> measures = null;
+	protected List<U> measures = null;
 
+	/**
+	 * Initialises the Measure objects.
+	 */
+	protected abstract void initMeasures();
+	
 	/**
 	 * Returns the measure object processed for the
 	 * specified recognizer. This method is meant to 
@@ -181,9 +186,9 @@ public class Evaluator
 	 * @return
 	 * 		Corresponding measure object.
 	 */
-	public AbstractMeasure getMeasure(AbstractProcessor recognizer)
+	public U getMeasure(T recognizer)
 	{	int index = recognizers.indexOf(recognizer);
-		AbstractMeasure result = measures.get(index);
+		U result = measures.get(index);
 		return result;
 	}
 	
@@ -191,7 +196,7 @@ public class Evaluator
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the last article category processed */
-	private List<ArticleCategory> lastCategories = null;
+	protected List<ArticleCategory> lastCategories = null;
 	
 	/**
 	 * Evaluate the recognizers on
@@ -214,62 +219,19 @@ public class Evaluator
 	 * 		Problem while accessing a file.
 	 * @throws SAXException
 	 * 		Problem while accessing a file.
-	 * @throws ConverterException
-	 * 		Problem while converting the reference file.
 	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer.
 	 */
-	private List<AbstractMeasure> processArticle(File folder) throws ReaderException, IOException, ParseException, SAXException, ConverterException, ProcessorException
-	{	logger.increaseOffset();
-		List<AbstractMeasure> result = new ArrayList<AbstractMeasure>();
-		
-		// get article
-		logger.log("Retrieve the article");
-		String name = folder.getName();
-		ArticleRetriever retriever = new ArticleRetriever();
-		Article article = retriever.process(name);
-		lastCategories = article.getCategories();
-		
-		// get reference mentions
-		Mentions refMentions = article.getReferenceMentions();
-		
-		// process each recognizer separately
-		logger.log("Process each recognizer separately");
-		logger.increaseOffset();
-		for(AbstractProcessor recognizer: recognizers)
-		{	logger.log("Dealing with recognizer "+recognizer.getName());
-			
-			// check if evaluation results already exist
-			String folderPath = folder.getPath() + File.separator + recognizer.getFolder();
-			File resultsFolder = new File(folderPath);
-			String resultsPath = folderPath + File.separator + template.getFileName();
-			File resultsFile = new File(resultsPath);
-			boolean processNeeded = !resultsFile.exists(); 
-			
-			// process results
-			if(!cache || processNeeded)
-			{	logger.log("Processing results");
-				Mentions estMentions = recognizer.recognize(article);
-				AbstractMeasure res = template.build(recognizer, types, refMentions, estMentions, lastCategories);
-				
-				logger.log("Writing results to cache");
-				res.writeNumbers(resultsFolder,name);
-				result.add(res);
-			}
-			
-			// load results
-			else
-			{	logger.log("Results already cached >> just load them");
-				AbstractMeasure res = template.readNumbers(resultsFolder, recognizer);
-				result.add(res);
-			}
-		}
-		logger.decreaseOffset();
-		
-		logger.decreaseOffset();
-		return result;
-	}
-		
+	protected abstract List<U> processArticle(File folder) throws ReaderException, IOException, ParseException, SAXException, ProcessorException;
+	
+	/**
+	 * Update the counts for each concerned measure.
+	 * 
+	 * @param results
+	 * 		List of current results, to be used during the update.
+	 */
+	protected abstract void updateCounts(List<U> results);
+	
 	/**
 	 * Starts the evaluation process.
 	 * 
@@ -281,21 +243,15 @@ public class Evaluator
 	 * 		Problem while accessing a file.
 	 * @throws SAXException
 	 * 		Problem while accessing a file.
-	 * @throws ConverterException
-	 * 		Problem while converting a reference file.
 	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer.
 	 */
-	public void process() throws ReaderException, IOException, ParseException, SAXException, ConverterException, ProcessorException
+	public void process() throws ReaderException, IOException, ParseException, SAXException, ProcessorException
 	{	logger.increaseOffset();
 		
 		// init
 		logger.log("Init measure objects");
-		measures = new ArrayList<AbstractMeasure>();
-		for(AbstractProcessor recognizer: recognizers)
-		{	AbstractMeasure measure = template.build(recognizer,types);
-			measures.add(measure);
-		}
+		initMeasures();
 		
 		// process each article
 		logger.log("Process each article individually");
@@ -303,15 +259,11 @@ public class Evaluator
 		for(File folder: folders)
 		{	// get the results
 			logger.log("Process article "+folder.getName());
-			List<AbstractMeasure> results = processArticle(folder);
+			List<U> results = processArticle(folder);
 			
 			// update counts
 			logger.log("Update counts");
-			for(int i=0;i<recognizers.size();i++)
-			{	AbstractMeasure result = results.get(i);
-				AbstractMeasure measure = measures.get(i);
-				measure.updateCounts(result);
-			}
+			updateCounts(results);
 		}
 		logger.decreaseOffset();
 		
@@ -337,13 +289,13 @@ public class Evaluator
 		
 		for(int i=0;i<measures.size();i++)
 		{	// record values
-			AbstractMeasure measure = measures.get(i);
+			U measure = measures.get(i);
 			String dataName = folders.getName();
 			measure.writeNumbers(folder,dataName);
 			
 			// rename file
 			File oldFile = new File(FileNames.FO_OUTPUT + File.separator + measure.getFileName());
-			AbstractProcessor recognizer = recognizers.get(i);
+			T recognizer = recognizers.get(i);
 			String newName = FileNames.FO_OUTPUT + File.separator 
 				+ TimeFormatting.formatCurrentFileTime()
 				+ "." + recognizer.getFolder()
@@ -352,7 +304,7 @@ public class Evaluator
 			oldFile.renameTo(newFile);
 		}
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// STRING			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

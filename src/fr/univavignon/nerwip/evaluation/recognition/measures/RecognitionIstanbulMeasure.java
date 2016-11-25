@@ -1,4 +1,4 @@
-package fr.univavignon.nerwip.evaluation.measure;
+package fr.univavignon.nerwip.evaluation.recognition.measures;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -31,7 +31,7 @@ import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.tools.file.FileNames;
 
 /**
@@ -56,7 +56,7 @@ import fr.univavignon.nerwip.tools.file.FileNames;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class IstanbulMeasure extends AbstractMeasure
+public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 {
 	/**
 	 * Builds a new instance of this measure,
@@ -67,7 +67,7 @@ public class IstanbulMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 */
-	public IstanbulMeasure(AbstractProcessor recognizer)
+	public RecognitionIstanbulMeasure(InterfaceRecognizer recognizer)
 	{	super(recognizer);
 	}
 	
@@ -82,7 +82,7 @@ public class IstanbulMeasure extends AbstractMeasure
 	 * @param types
 	 * 		Types to consider in the assessmnent.
 	 */
-	public IstanbulMeasure(AbstractProcessor recognizer, List<EntityType> types)
+	public RecognitionIstanbulMeasure(InterfaceRecognizer recognizer, List<EntityType> types)
 	{	super(recognizer,types);
 	}
 	/**
@@ -102,25 +102,25 @@ public class IstanbulMeasure extends AbstractMeasure
 	 * @param categories
 	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public IstanbulMeasure(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public RecognitionIstanbulMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
 	{	super(recognizer,types,reference,estimation,categories);
 	}	
 
 	@Override
-	public AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
-	{	IstanbulMeasure result = new IstanbulMeasure(recognizer, types, reference, estimation, categories);
+	public AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	{	RecognitionIstanbulMeasure result = new RecognitionIstanbulMeasure(recognizer, types, reference, estimation, categories);
 		return result;
 	}
 
 	@Override
-	public AbstractMeasure build(AbstractProcessor recognizer, List<EntityType> types)
-	{	IstanbulMeasure result = new IstanbulMeasure(recognizer,types);
+	public AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types)
+	{	RecognitionIstanbulMeasure result = new RecognitionIstanbulMeasure(recognizer,types);
 		return result;
 	}
 
 	@Override
-	public AbstractMeasure build(AbstractProcessor recognizer)
-	{	IstanbulMeasure result = new IstanbulMeasure(recognizer);
+	public AbstractRecognitionMeasure build(InterfaceRecognizer recognizer)
+	{	RecognitionIstanbulMeasure result = new RecognitionIstanbulMeasure(recognizer);
 		return result;
 	}
 

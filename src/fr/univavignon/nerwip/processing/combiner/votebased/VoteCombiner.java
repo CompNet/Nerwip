@@ -35,7 +35,7 @@ import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.evaluation.measure.LilleMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
@@ -476,9 +476,9 @@ public class VoteCombiner extends AbstractCombiner
 						conWeight = 1f;
 					else
 					{	if(useRecall)
-							conWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_TR, categoryWeights);
+							conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TR, categoryWeights);
 						else
-							conWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_TP, categoryWeights);
+							conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
 					}
 					voteAgainst = voteAgainst + conWeight;
 				}
@@ -487,7 +487,7 @@ public class VoteCombiner extends AbstractCombiner
 					if(voteMode==VoteMode.UNIFORM)
 						proWeight = 1f;
 					else
-						proWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_TP, categoryWeights);
+						proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
 					voteFor = voteFor + proWeight;
 				}
 			}
@@ -535,7 +535,7 @@ public class VoteCombiner extends AbstractCombiner
 				if(voteMode==VoteMode.UNIFORM)
 					proWeight = 1f;
 				else
-					proWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FP, categoryWeights);
+					proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FP, categoryWeights);
 				
 				// start position
 				int startPos = mention.getStartPos();
@@ -567,7 +567,7 @@ public class VoteCombiner extends AbstractCombiner
 					if(voteMode==VoteMode.UNIFORM)
 						conWeight = 1f;
 					else
-						conWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_FR, categoryWeights);
+						conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FR, categoryWeights);
 					
 					// start position
 					{	int startPos = mention.getStartPos();
@@ -631,7 +631,7 @@ public class VoteCombiner extends AbstractCombiner
 			if(voteMode==VoteMode.UNIFORM)
 				proWeight = 1f;
 			else
-				proWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_TP, categoryWeights);
+				proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
 			
 			if(mention!=null)
 			{	EntityType type = mention.getType();
@@ -653,7 +653,7 @@ public class VoteCombiner extends AbstractCombiner
 				if(voteMode==VoteMode.UNIFORM)
 					conWeight = 1f;
 				else
-					conWeight = voteWeights.processVotingWeight(article, recognizer, LilleMeasure.SCORE_TR, categoryWeights);
+					conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TR, categoryWeights);
 					
 				if(mention!=null)
 				{	EntityType type = mention.getType();

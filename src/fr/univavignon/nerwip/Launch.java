@@ -31,9 +31,9 @@ import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.edition.MentionEditor;
-import fr.univavignon.nerwip.evaluation.Evaluator;
-import fr.univavignon.nerwip.evaluation.measure.AbstractMeasure;
-import fr.univavignon.nerwip.evaluation.measure.LilleMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
+import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.combiner.AbstractCombiner.SubeeMode;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;
@@ -648,16 +648,16 @@ public class Launch
 		logger.decreaseOffset();
 		
 		// set the evaluation measure (several exists)
-//		AbstractMeasure evaluation = new MucMeasure(null);
-		AbstractMeasure evaluation = new LilleMeasure(null);
-//		AbstractMeasure evaluation = new IstanbulMeasure(null);
+//		AbstractMeasure evaluation = new RecognitionMucMeasure(null);
+		AbstractRecognitionMeasure evaluation = new RecognitionLilleMeasure(null);
+//		AbstractMeasure evaluation = new RecognitionIstanbulMeasure(null);
 		logger.log("Using assmessment measure "+evaluation.getClass().getName());
 		
 		// launch evaluation
 		logger.log("Evaluation started");
-		Evaluator evaluator = new Evaluator(types, recognizers, folders, evaluation);
-		evaluator.setCacheEnabled(false); // force the re-processing of the performance measures
-		evaluator.process();
+		RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, evaluation);
+		recognitionEvaluator.setCacheEnabled(false); // force the re-processing of the performance measures
+		recognitionEvaluator.process();
 		
 		logger.log("Evaluation finished");
 		logger.decreaseOffset();
@@ -833,16 +833,16 @@ public class Launch
 		logger.decreaseOffset();
 		
 		// set the evaluation measure (several exists)
-//		AbstractMeasure evaluation = new MucMeasure(null);
-		AbstractMeasure evaluation = new LilleMeasure(null);
-//		AbstractMeasure evaluation = new IstanbulMeasure(null);
+//		AbstractMeasure evaluation = new RecognitionMucMeasure(null);
+		AbstractRecognitionMeasure evaluation = new RecognitionLilleMeasure(null);
+//		AbstractMeasure evaluation = new RecognitionIstanbulMeasure(null);
 		logger.log("Using assmessment measure "+evaluation.getClass().getName());
 		
 		// launch evaluation
 		logger.log("Evaluation started");
-		Evaluator evaluator = new Evaluator(types, recognizers, folders, evaluation);
-		evaluator.setCacheEnabled(false); // force the re-processing of the performance measures
-		evaluator.process();
+		RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, evaluation);
+		recognitionEvaluator.setCacheEnabled(false); // force the re-processing of the performance measures
+		recognitionEvaluator.process();
 		
 		logger.log("Evaluation finished");
 		logger.decreaseOffset();

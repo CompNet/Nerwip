@@ -50,9 +50,9 @@ import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.evaluation.Evaluator;
-import fr.univavignon.nerwip.evaluation.measure.AbstractMeasure;
-import fr.univavignon.nerwip.evaluation.measure.LilleMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
+import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
+import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ConverterException;
 import fr.univavignon.nerwip.processing.ProcessorException;
@@ -904,15 +904,15 @@ if(data.x[index]==null || index==131)
 			{	// process
 				List<EntityType> types = combiner.getHandledEntityTypes();
 				List<AbstractProcessor> recognizers = combiner.getRecognizers();
-				AbstractMeasure measure = new LilleMeasure(null);
-				Evaluator evaluator = new Evaluator(types, recognizers, folders, measure);
-				evaluator.process();
+				AbstractRecognitionMeasure measure = new RecognitionLilleMeasure(null);
+				RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, measure);
+				recognitionEvaluator.process();
 				List<String> names = Arrays.asList(
-					LilleMeasure.SCORE_FP,
-					LilleMeasure.SCORE_FR
+					RecognitionLilleMeasure.SCORE_FP,
+					RecognitionLilleMeasure.SCORE_FR
 				);
 				boolean byCategory = combineMode==CombineMode.MENTION_WEIGHTED_CATEGORY;
-				VoteWeights voteWeights = VoteWeights.buildWeightsFromEvaluator(evaluator,names,byCategory);
+				VoteWeights voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names,byCategory);
 				
 				// record
 				String filePath = combiner.getVoteWeightsPath();
