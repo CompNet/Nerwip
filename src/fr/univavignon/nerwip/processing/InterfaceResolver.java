@@ -33,6 +33,22 @@ import fr.univavignon.nerwip.data.entity.mention.Mentions;
 public interface InterfaceResolver extends InterfaceProcessor
 {	
 	/////////////////////////////////////////////////////////////////
+	// FOLDER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the name of the folder containing the results of this
+	 * resolver.
+	 * <br/>
+	 * This name takes into account the name of the tool, but also the 
+	 * parameters it uses. It can also be used just whenever a string 
+	 * representation of the tool and its parameters is needed.
+	 * 
+	 * @return 
+	 * 		Name of the appropriate folder.
+	 */
+//	public String getResolverFolder();
+	
+	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**

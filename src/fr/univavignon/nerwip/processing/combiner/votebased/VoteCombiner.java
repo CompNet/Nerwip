@@ -39,7 +39,6 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMea
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombiner;
 import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;

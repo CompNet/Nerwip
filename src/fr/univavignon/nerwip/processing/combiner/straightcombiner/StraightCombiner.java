@@ -37,7 +37,6 @@ import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombiner;
 import fr.univavignon.nerwip.processing.external.nero.Nero;
 import fr.univavignon.nerwip.processing.external.nero.Nero.NeroTagger;
 import fr.univavignon.nerwip.processing.external.tagen.TagEn;

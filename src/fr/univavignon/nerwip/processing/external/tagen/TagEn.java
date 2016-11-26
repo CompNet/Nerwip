@@ -21,23 +21,16 @@ package fr.univavignon.nerwip.processing.external.tagen;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.external.AbstractExternalProcessor;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
 
 /**
  * This class acts as an interface with TagEN.
@@ -53,7 +46,7 @@ import fr.univavignon.nerwip.tools.file.FileTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class TagEn extends AbstractExternalProcessor<TagEnConverter>
+public class TagEn extends AbstractProcessor implements InterfaceRecognizer
 {	
 	/**
 	 * Builds and sets up an object representing the TagEN tool.
@@ -66,13 +59,7 @@ public class TagEn extends AbstractExternalProcessor<TagEnConverter>
 	 *      Whether or not stop words should be excluded from the detection.
 	 */
 	public TagEn(TagEnModelName model, boolean ignorePronouns, boolean exclusionOn)
-	{	super(false, ignorePronouns, exclusionOn);
-		
-		this.model = model;
-		setIgnoreNumbers(false);
-		
-		//init converter
-		converter = new TagEnConverter(getFolder());
+	{	delegateRecognizer = new TagEnDelegateRecognizer(this, model, ignorePronouns, exclusionOn);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -88,155 +75,32 @@ public class TagEn extends AbstractExternalProcessor<TagEnConverter>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "model=" + model.toString();
-		result = result + "_" + "ignPro=" + ignorePronouns;
-		result = result + "_" + "exclude=" + exclusionOn;
-		
+	{	String result = null;
+		//TODO
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Delegate in charge of recognizing entity mentions */
+	private TagEnDelegateRecognizer delegateRecognizer;
+	
+	@Override
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
 		return result;
 	}
 
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES 	/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
 	@Override
-	public List<EntityType> getHandledEntityTypes() 
-	{	List<EntityType> result = model.getHandledTypes();
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
 		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES 		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = model.canHandleLanguage(language);
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// MODEL		 	/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Model used during the mention detection */
-	private TagEnModelName model = null;
-	
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING 			/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Name of the temporary file generated for TagEn */
-	private static final String TEMP_FILE = "temp.txt";
-	/** Name of the file storing the TagEn console outputs */
-	private static final String CONSOLE_FILE = "console.txt";
-	/** TagEn parameters the user does not need to change */
-	private static final String STATIC_PARAMS = ""
-			+ "--align "		// resets the text exactly like it originally was (cancelling whatever preprocessin/cleaning was performed) 
-			+ "--yes";			// automatically answers yes to all question of the type "do you want to overwrite some file?"
-	/** Sets the level of verbosity for the TagEn tool */
-	private static final Map<Integer,String> VERBOSITY_LEVEL = new HashMap<Integer,String>();
-	{	VERBOSITY_LEVEL.put(0, "--silent");
-		VERBOSITY_LEVEL.put(1, "--verbose");
-		VERBOSITY_LEVEL.put(2, "--Verbose");
-	}
-	
-	/**
-	 * Returns the path of the temporary file created for TagEn (containing the article
-	 * content).
-	 * 
-	 * @param article
-	 * 		The concerned article.
-	 * @return
-	 * 		Path of the input file.
-	 */
-	private String getTempFile(Article article)
-	{	String result = article.getFolderPath()
-			+ File.separator + getFolder() 
-			+ File.separator + TEMP_FILE;
-		return result; 
-	}
-	
-	/**
-	 * Returns the path of the console file created to store the console 
-	 * output of TagEn (for debug purposes).
-	 * 
-	 * @param article
-	 * 		The concerned article.
-	 * @return
-	 * 		Path of the console file.
-	 */
-	private String getConsoleFile(Article article)
-	{	String result = article.getFolderPath()
-			+ File.separator + getFolder() 
-			+ File.separator + CONSOLE_FILE;
-		return result; 
 	}
 	
 	@Override
-	protected String detectMentions(Article article) throws ProcessorException
-	{	logger.increaseOffset();
-		String result = null;
-		
-        try
-        {	// write article raw text in a file
-        	String text = article.getRawText();
-			String inputPath = getTempFile(article);
-			File inputFile = new File(inputPath);
-			logger.log("Copying the article content in input file "+inputFile);
-			FileTools.writeTextFile(inputFile, text, "ISO-8859-1"); //"UTF-8" or "ISO-8859-1"
-			
-			// invoke the external tool and retrieve its output
-			logger.log("Invoking TagEn: ");
-			logger.increaseOffset();
-				File outputFile = converter.getRawFile(article);
-				String outputPath = outputFile.getPath();
-				Runtime rt = Runtime.getRuntime();
-				String mainCommand = "." + File.separator 
-						+ FileNames.FO_TAGEN + File.separator + FileNames.FI_TAGEN_EXE 
-						+ " :" + model.getParameter() + " "
-						+ STATIC_PARAMS + " " + VERBOSITY_LEVEL.get(2)
-						+ " " + inputPath + " " + outputPath;
-		    	String[] commands = 
-				{	"/bin/sh", "-c", 
-					mainCommand
-				};
-		    	logger.log(Arrays.asList(commands));
-				Process proc = rt.exec(commands);
-			logger.decreaseOffset();
-			
-			// standard error (which is actually used by TagEn as the standard output)
-			String console = "";
-			{	BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-				String line;
-				while((line=stdError.readLine()) != null)
-				{	System.out.println(line);
-					console = console + "\n" + line;
-				}
-			}
-			logger.log("Console output:");
-			logger.increaseOffset();
-				logger.log(console);
-			logger.decreaseOffset();
-			
-			// possibly record the console output (for debug purposes)
-			if(outRawResults)
-			{	String consolePath = getConsoleFile(article);
-				logger.log("Writing the console output in file "+consolePath);
-				FileTools.writeTextFile(consolePath, console, "UTF-8");
-			}
-			
-			// possibly remove the temp file
-			if(!outRawResults)
-				inputFile.delete();
-			
-	        // read the result file
-			result = FileTools.readTextFile(outputPath, "ISO-8859-1");
-        }
-		catch (IOException e)
-		{	//e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-        
-		logger.decreaseOffset();
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
-    }
+	}
 }

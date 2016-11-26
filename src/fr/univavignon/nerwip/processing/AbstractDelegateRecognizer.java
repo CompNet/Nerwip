@@ -92,6 +92,22 @@ public abstract class AbstractDelegateRecognizer
 	protected InterfaceRecognizer recognizer;
 	
 	/////////////////////////////////////////////////////////////////
+	// FOLDER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the name of the folder containing the results of this
+	 * delegate recognizer.
+	 * <br/>
+	 * This name takes into account the name of the tool, but also 
+	 * the parameters it uses. It can also be used just whenever a 
+	 * string representation of the tool and its parameters is needed.
+	 * 
+	 * @return 
+	 * 		Name of the appropriate folder.
+	 */
+	public abstract String getFolder();
+	
+	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**

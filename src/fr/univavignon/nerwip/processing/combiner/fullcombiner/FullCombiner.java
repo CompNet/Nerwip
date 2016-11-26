@@ -34,7 +34,6 @@ import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombiner;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner.CombineMode;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner;
