@@ -43,7 +43,7 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
- * This class is used to handle weights associated to recognizers
+ * This class is used to handle weights associated to processors
  * in certain combiners.
  * 
  * @param <T> 

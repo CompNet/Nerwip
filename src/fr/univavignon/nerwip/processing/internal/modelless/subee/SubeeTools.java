@@ -97,11 +97,11 @@ public class SubeeTools
 		
 		// build Subee and loads the necessary files
 		logger.log("Load the Subee files");
-		Subee subee = new Subee(true, true, true, true, true);
-		subee.prepareRecognizer();
+		SubeeDelegateRecognizer DelegateRecognizer = new SubeeDelegateRecognizer(null,true, true, true, true, true);
+		DelegateRecognizer.prepareRecognizer();
 		
 		// convert types
-		EntityType type = subee.retrieveMentionType(types);
+		EntityType type = DelegateRecognizer.retrieveMentionType(types);
 		logger.log("Corresponding entity type: "+type);
 		
 		logger.log("Type conversion complete");
@@ -131,14 +131,14 @@ public class SubeeTools
 		
 		// build Subee and loads the necessary files
 		logger.log("Load the Subee files");
-		Subee subee = new Subee(true, true, true, true, true);
-		subee.prepareRecognizer();
+		SubeeDelegateRecognizer subeeDelegateRecognizer = new SubeeDelegateRecognizer(null, true, true, true, true, true);
+		subeeDelegateRecognizer.prepareRecognizer();
 		
 		// retrieve the loaded lists
 		logger.log("Get the existing type lists from these files");
 		Set<String> knownTypes = new TreeSet<String>();
-		knownTypes.addAll(Subee.TYPE_MAP.keySet());
-		knownTypes.addAll(Subee.UNKNOWN_TYPES);
+		knownTypes.addAll(SubeeDelegateRecognizer.TYPE_MAP.keySet());
+		knownTypes.addAll(SubeeDelegateRecognizer.UNKNOWN_TYPES);
 		
 		// retrieve the last types from Freebase
 		logger.log("Get the last type from Freebase");
@@ -149,8 +149,8 @@ public class SubeeTools
 		fbTypes.removeAll(knownTypes);
 		
 		// append them to the 'unknown' file
-		subee.updateUnknownTypes("-NOT A TYPE^^---------------------");
+		subeeDelegateRecognizer.updateUnknownTypes("-NOT A TYPE^^---------------------");
 		for(String type: fbTypes)
-			subee.updateUnknownTypes(type);
+			subeeDelegateRecognizer.updateUnknownTypes(type);
 	}
 }

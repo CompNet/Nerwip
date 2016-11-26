@@ -21,29 +21,16 @@ package fr.univavignon.nerwip.processing.internal.modelless.opencalais;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalProcessor;
-import fr.univavignon.nerwip.tools.keys.KeyHandler;
-import fr.univavignon.nerwip.tools.string.StringTools;
 
 /**
  * This class acts as an interface with the OpenCalais Web service.
@@ -61,7 +48,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class OpenCalais extends AbstractModellessInternalProcessor<List<String>,OpenCalaisConverter>
+public class OpenCalais extends AbstractProcessor implements InterfaceRecognizer
 {	// user guide: http://new.opencalais.com/wp-content/uploads/2015/06/Thomson-Reuters-Open-Calais-API-User-Guide-v3.pdf
 	
 	/**
@@ -76,13 +63,7 @@ public class OpenCalais extends AbstractModellessInternalProcessor<List<String>,
 	 * 		Whether or not stop-words should be excluded from the detection.
 	 */
 	public OpenCalais(OpenCalaisLanguage lang, boolean ignorePronouns, boolean exclusionOn)
-	{	super(false,ignorePronouns,exclusionOn);
-		
-		selectedLanguage = lang;
-		setIgnoreNumbers(false);
-		
-		// init converter
-		converter = new OpenCalaisConverter(getFolder());
+	{	delegateRecognizer = new OpenCalaisDelegateRecognizer(this,lang,ignorePronouns,exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -98,135 +79,32 @@ public class OpenCalais extends AbstractModellessInternalProcessor<List<String>,
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "ignPro=" + ignorePronouns;
-		result = result + "_" + "exclude=" + exclusionOn;
-		
+	{	String result = null;
+		//TODO
 		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
+	// RECOGNIZER	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Delegate in charge of recognizing entity mentions */
+	private OpenCalaisDelegateRecognizer delegateRecognizer;
+	
 	@Override
-	public List<EntityType> getHandledEntityTypes()
-	{	List<EntityType> result = selectedLanguage.getHandledTypes(); 
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
 		return result;
 	}
 
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Language we want OpenCalais to process */
-	private OpenCalaisLanguage selectedLanguage;
-	
 	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = selectedLanguage.handlesLanguage(language);
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
 		return result;
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Web service URL */
-//	private static final String SERVICE_URL = "http://api.opencalais.com/tag/rs/enrich"; // old version (pre 08/2015)
-	private static final String SERVICE_URL = "https://api.thomsonreuters.com/permid/calais";
-	/** Key name for OpenCalais */
-	public static final String KEY_NAME = "OpenCalais";
-	/** Maximal request size */
-	private static final int MAX_SIZE = 10000;
-	/** Delay between two remote invocations (4 queries per second max, as of 08/2015) */
-	private static final long DELAY = 250;
-	
 	@Override
-	protected List<String> detectMentions(Article article) throws ProcessorException
-	{	logger.increaseOffset();
-		List<String> result = new ArrayList<String>();
-		String text = article.getRawText();
-
-		// check if the key was set
-		String key = KeyHandler.KEYS.get(KEY_NAME);
-		if(key==null)
-			throw new NullPointerException("In order to use OpenCalais, you first need to set up your user key in file res/misc/keys.xml using the exact name \"OpenCalais\".");
-		
-		// we need to break down the text: OpenCalais can't handle more than 10000 chars at once
-//		List<String> parts = new ArrayList<String>();
-//		while(text.length()>95000)
-//		{	int index = text.indexOf("\n",90000) + 1;
-//			String part = text.substring(0, index);
-//			parts.add(part);
-//			text = text.substring(index);
-//		}
-//		parts.add(text);
-		List<String> parts = StringTools.splitText(text, MAX_SIZE);
-		
-		for(int i=0;i<parts.size();i++)
-		{	logger.log("Processing OpenCalais part #"+(i+1)+"/"+parts.size());
-			logger.increaseOffset();
-			String part = parts.get(i);
-			
-			try
-			{	// define HTTP message
-				logger.log("Build OpenCalais HTTP message");
-				HttpPost method = new HttpPost(SERVICE_URL);
-//				method.setHeader("x-calais-licenseID", key);	// old version (pre 08/2015)
-				method.setHeader("x-ag-access-token", key);
-				method.setHeader("Content-Type", "text/raw; charset=UTF-8");
-//				method.setHeader("Accept", "xml/rdf");			// old version (pre 08/2015)
-				method.setHeader("outputFormat", "xml/rdf");				
-				method.setEntity(new StringEntity(part, "UTF-8"));
-				
-				// send to open calais
-				logger.log("Send message to OpenCalais");
-				HttpClient client = new DefaultHttpClient();
-				HttpResponse response = client.execute(method);
-				InputStream stream = response.getEntity().getContent();
-				InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
-				BufferedReader bufferedReader = new BufferedReader(streamReader);
-				
-				// read answer
-				logger.log("Read OpenCalais answer");
-				StringBuilder builder = new StringBuilder();
-				String line;
-				int nbr = 0;
-				while((line = bufferedReader.readLine())!=null)
-				{	builder.append(line+"\n");
-					nbr++;
-					logger.log("Line:" +line);
-				}
-				logger.log("Lines read: "+nbr);
-				
-				String answer = builder.toString();
-				result.add(part);
-				result.add(answer);
-				
-				// sleep a bit
-	            try
-	            {	Thread.sleep(DELAY);
-				}
-	            catch (InterruptedException e)
-	            {	e.printStackTrace();
-				}
-			}
-			catch (UnsupportedEncodingException e)
-			{	e.printStackTrace();
-				throw new ProcessorException(e.getMessage());
-			}
-			catch (ClientProtocolException e)
-			{	e.printStackTrace();
-				throw new ProcessorException(e.getMessage());
-			}
-			catch (IOException e)
-			{	e.printStackTrace();
-				throw new ProcessorException(e.getMessage());
-			}
-			
-			logger.decreaseOffset();
-		}
-	
-		logger.decreaseOffset();
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }
