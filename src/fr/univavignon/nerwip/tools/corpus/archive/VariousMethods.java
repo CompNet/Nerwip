@@ -32,8 +32,8 @@ import org.xml.sax.SAXException;
 import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.ConverterException;
-import fr.univavignon.nerwip.processing.external.AbstractExternalConverter;
+import fr.univavignon.nerwip.processing.ProcessorException;
+import fr.univavignon.nerwip.processing.external.AbstractExternalDelegateRecognizer;
 import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
 import fr.univavignon.nerwip.tools.file.FileNames;
@@ -144,8 +144,6 @@ public class VariousMethods
 	 * 		Object used for conversion (depends on the original 
 	 * 		reference format, eg. StanfordOld Manual Annotation Tool)
 	 * 
-	 * @throws ConverterException
-	 * 		Problem while performing the conversion.
 	 * @throws IOException
 	 * 		Problem while accessing a file.
 	 * @throws ReaderException
@@ -154,12 +152,14 @@ public class VariousMethods
 	 * 		Problem while accessing a file.
 	 * @throws SAXException
 	 * 		Problem while accessing a file.
+	 * @throws ProcessorException
+	 * 		Problem while performing the conversion.
 	 * 
 	 * @deprecated
 	 * 		Should not be used, not the corpus	
 	 * 		has been converted to the new format.
 	 */
-	private static void convertReferences(AbstractExternalConverter converter) throws ConverterException, IOException, ReaderException, ParseException, SAXException
+	private static void convertReferences(AbstractExternalDelegateRecognizer converter) throws IOException, ReaderException, ParseException, SAXException, ProcessorException
 	{	logger.log("Converting reference files to our own XML format");
 		logger.increaseOffset();
 		
