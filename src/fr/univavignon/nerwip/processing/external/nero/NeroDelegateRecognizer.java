@@ -369,8 +369,6 @@ public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 		while(i1<originalText.length() && i2<data.length())
 		{	c1 = originalText.codePointAt(i1);
 			c2 = data.codePointAt(i2);
-if(i2>2800)
-	System.out.print("");
 			
 			// beginning of a tag
 			if(c2=='<')

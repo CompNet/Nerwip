@@ -315,8 +315,8 @@ public class ResultsManagement
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
 					
-//			new FullCombiner(Combiner.SVM),
-//			new FullCombiner(Combiner.VOTE)
+//			new FullCombiner(CombinerName.SVM),
+//			new FullCombiner(CombinerName.VOTE)
 		};
 		List<AbstractProcessor> recognizers = Arrays.asList(temp);
 //		moveNerResults(recognizers, articles, targetFolder);

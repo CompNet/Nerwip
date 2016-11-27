@@ -21,38 +21,23 @@ package fr.univavignon.nerwip.processing.combiner.votebased;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleCategory;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
-import fr.univavignon.nerwip.processing.combiner.VoteWeights;
+import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer.SubeeMode;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;
-import fr.univavignon.nerwip.processing.internal.modelbased.illinois.IllinoisModelName;
 import fr.univavignon.nerwip.processing.internal.modelbased.lingpipe.LingPipe;
-import fr.univavignon.nerwip.processing.internal.modelbased.lingpipe.LingPipeModelName;
 import fr.univavignon.nerwip.processing.internal.modelbased.opennlp.OpenNlp;
-import fr.univavignon.nerwip.processing.internal.modelbased.opennlp.OpenNlpModelName;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
-import fr.univavignon.nerwip.processing.internal.modelbased.stanford.StanfordModelName;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
-import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalaisLanguage;
 import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
-import fr.univavignon.nerwip.tools.file.FileNames;
 
 /**
  * This combiner relies on a vote-based process SVM to perform its combination. 
@@ -87,7 +72,7 @@ import fr.univavignon.nerwip.tools.file.FileNames;
  * @author Samet Atdağ
  * @author Vincent Labatut
  */
-public class VoteCombiner extends AbstractCombiner
+public class VoteCombiner extends AbstractProcessor implements InterfaceRecognizer
 {	
 	/**
 	 * Builds a new vote-based combiner.
@@ -111,21 +96,7 @@ public class VoteCombiner extends AbstractCombiner
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
 	public VoteCombiner(boolean loadModelOnDemand, boolean specific, VoteMode voteMode, boolean useRecall, boolean existVote, SubeeMode subeeMode) throws ProcessorException
-	{	super();
-	
-		this.specific = specific;
-		this.voteMode = voteMode;
-		this.useRecall = useRecall;
-		this.existVote = existVote;
-		this.subeeMode = subeeMode;
-		
-		initRecognizers();
-		setSubCacheEnabled(cache);
-		
-		initConverter();
-		
-		if(!loadModelOnDemand)
-			loadModel();
+	{	delegateRecognizer = new VoteCombinerDelegateRecognizer(this,loadModelOnDemand,specific,voteMode,useRecall,existVote,subeeMode);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -137,552 +108,46 @@ public class VoteCombiner extends AbstractCombiner
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// FOLDER			/////////////////////////////////////////////
+	// FOLDER 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	@Override	
+	@Override
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "spec="+specific;
-		result = result + "_" + "mode="+voteMode.toString();
-		result = result + "_" + "rec="+useRecall;
-		result = result + "_" + "exvote="+existVote;
-		result = result + "_" + "subee="+subeeMode.toString();
-	
-//		result = result + "_" + "trim=" + trim;
-//		result = result + "_" + "ignPro=" + ignorePronouns;
-//		result = result + "_" + "exclude=" + exclusionOn;
-
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** List of entity types recognized by this combiner */
-	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
-//		EntityType.DATE,
-		EntityType.LOCATION,
-		EntityType.ORGANIZATION,
-		EntityType.PERSON
-	);
-	
-	@Override
-	public List<EntityType> getHandledEntityTypes()
-	{	return HANDLED_TYPES;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** List of languages recognized by this combiner */
-	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
-		ArticleLanguage.EN
-//		ArticleLanguage.FR
-	);
-	
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = HANDLED_LANGUAGES.contains(language);
+	{	String result = null;
+		//TODO
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// TOOLS			/////////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	@Override
-	protected void initRecognizers() throws ProcessorException
-	{	logger.increaseOffset();
-		boolean loadModelOnDemand = true;
-	
-		// Date Extractor
-//		{	logger.log("Init DateExtractor");
-//			DateExtractor dateExtractor = new DateExtractor();
-//			result.add(dateExtractor);
-//		}
-		
-		// Illinois
-		{	logger.log("Init Illinois NET");
-			IllinoisModelName model = IllinoisModelName.CONLL_MODEL;
-			if(specific)
-				model = IllinoisModelName.NERWIP_MODEL;
-			boolean trim = false;
-			boolean ignorePronouns = false;
-			boolean exclusionOn = true;
-			Illinois illinois = new Illinois(model, loadModelOnDemand, trim, ignorePronouns, exclusionOn);
-			recognizers.add(illinois);
-		}
-		
-		// LingPipe
-		{	logger.log("Init LingPipe");
-			LingPipeModelName model = LingPipeModelName.PREDEFINED_MODEL;
-			if(specific)
-				model = LingPipeModelName.NERWIP_MODEL;
-			boolean splitSentences = true;
-			boolean trim = true;
-			boolean ignorePronouns = true;
-			boolean exclusionOn = false;
-			LingPipe lingPipe = new LingPipe(model, loadModelOnDemand, splitSentences, trim, ignorePronouns, exclusionOn);
-			recognizers.add(lingPipe);
-		}
-		
-		// OpenCalais
-		{	logger.log("Init OpenCalais");
-			OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
-			boolean ignorePronouns = true;
-			boolean exclusionOn = false;
-			OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
-			recognizers.add(openCalais);
-		}
-		
-		// OpenNLP
-		{	logger.log("Init OpenNLP");
-			boolean exclusionOn = true;
-			boolean ignorePronouns = true;
-			OpenNlpModelName model = OpenNlpModelName.ORIGINAL_MODEL;
-			if(specific)
-				model = OpenNlpModelName.NERWIP_MODEL;
-			OpenNlp openNlp = new OpenNlp(model, loadModelOnDemand, exclusionOn, ignorePronouns);
-			recognizers.add(openNlp);
-		}
-		
-		// Stanford
-		{	logger.log("Init Stanford NER");
-			StanfordModelName model = StanfordModelName.CONLLMUC_MODEL;
-			if(specific)
-				model = StanfordModelName.NERWIP_MODEL;
-			boolean ignorePronouns = false;
-			boolean exclusionOn = false;
-			Stanford stanford = new Stanford(model, loadModelOnDemand, ignorePronouns, exclusionOn);
-			recognizers.add(stanford);
-		}
-		
-		// Subee
-		if(subeeMode!=SubeeMode.NONE)
-		{	logger.log("Init Subee");
-			boolean additionalOccurrences = subeeMode==SubeeMode.ALL;
-			boolean useTitle = true;
-			boolean notableType = true;
-			boolean useAcronyms = true;
-			boolean discardDemonyms = true;
-			Subee subee = new Subee(additionalOccurrences,useTitle,notableType,useAcronyms,discardDemonyms);
-			recognizers.add(subee);
-		}
-		
-		logger.decreaseOffset();		
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// GENERAL MODEL	 	/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	public String getModelPath()
-	{	return FileNames.FO_VOTECOMBINER;
-	}
-
-	/**
-	 * Loads the objects necessary to the combination process,
-	 * including the vote weights.
-	 * 
-	 * @throws ProcessorException
-	 * 		Problem while loading the model.
-	 */
-	private void loadModel() throws ProcessorException
-	{	if(voteMode.hasWeights())
-		{	loadVoteWeights();
-			if(voteMode==VoteMode.WEIGHTED_CATEGORY)
-				loadCategoryProportions();
-			else
-				categoryProportions = CategoryProportions.buildUniformProportions();
-		}
-		else
-		{	voteWeights = VoteWeights.buildUniformWeights(recognizers);
-			categoryProportions = CategoryProportions.buildUniformProportions();
-		}
-	}
-	
-    /**
-     * Checks whether the combiner weights has been
-     * already loaded.
-     * 
-     * @return
-     * 		{@code true} iff the combiner has already been loaded.
-    */
-	private boolean isLoaded()
-	{	boolean result = voteWeights!=null && categoryProportions!=null;
-		return result;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// VOTE MODE		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Indicates how the vote should take place */
-	private VoteMode voteMode;
-	/** Whether the recall measures should be used or not */
-	private boolean useRecall;
-	/** Whether a vote should happen for mention existence, or not */
-	private boolean existVote;
-
-	/**
-	 * Enumeration used to configure how
-	 * the vote is performed.
-	 * 
-	 * @author Vincent Labatut
-	 */
-	public enum VoteMode
-	{	/** Each recognizer accounts for one vote */
-		UNIFORM("Unif"),
-		/** Overall scores are used to determine vote weights */
-		WEIGHTED_OVERALL("WghtOvrl"),
-		/** Category-related scores are used to determine vote weights */
-		WEIGHTED_CATEGORY("WghtCat");
-
-		/** String representing the parameter value */
-		private String name;
-		
-		/**
-		 * Builds a new vote mode value
-		 * to be used as a parameter.
-		 * 
-		 * @param name
-		 * 		String representing the parameter value.
-		 */
-		VoteMode(String name)
-		{	this.name = name;
-		}
-		
-		/**
-		 * Indicates if this vote mode requires weights.
-		 * 
-		 * @return
-		 * 		{@code true} if vote weights are required.
-		 */
-		public boolean hasWeights()
-		{	boolean result = this==WEIGHTED_OVERALL
-				|| this==WEIGHTED_CATEGORY;
-			return result;
-		}
-		
-		@Override
-		public String toString()
-		{	return name;
-		}
-	}
+	/** Delegate in charge of recognizing entity mentions */
+	private VoteCombinerDelegateRecognizer delegateRecognizer;
 	
 	/**
-	 * Returns the mode used to combine mentions.
+	 * Access to the delegate recognizer is required when training.
 	 * 
 	 * @return
-	 * 		A symbol representing how mentions are combined.
+	 * 		The delegate recognizer of this processor.
 	 */
-	public VoteMode getVoteMode()
-	{	return voteMode;
+	public VoteCombinerDelegateRecognizer getDelegateRecognizer()
+	{	return delegateRecognizer;
+	}
+	
+	@Override
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
+		return result;
 	}
 
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Mentions combineMentions(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException
-	{	logger.increaseOffset();
-		String text = article.getRawText();
-		Mentions result = new Mentions(getName());
-		
-		// possibly load the necessary data
-		if(!isLoaded())
-			loadModel();
-		
-		// get overlapping mentions
-		logger.log("Get the list of overlapping mentions");
-		List<Map<AbstractProcessor, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
-		
-		// process the weights associated to article categories
-		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
-		
-		// compare/combine them
-		logger.log("Process each group of mentions");
-		logger.increaseOffset();
-		for(Map<AbstractProcessor, AbstractMention<?>> map: overlaps)
-		{	logger.log(map.values().toString());
-			logger.increaseOffset();
-			
-			// add overlap to raw output
-			rawOutput.append("Overlap:\n");
-			for(Entry<AbstractProcessor, AbstractMention<?>> entry: map.entrySet())
-			{	AbstractProcessor recognizer = entry.getKey();
-				AbstractMention<?> mention = entry.getValue();
-				rawOutput.append("\t"+recognizer+": "+mention+"\n");
-			}
-			
-			// determine mention existence
-			boolean existence = voteForExistence(article,categoryWeights, map);
-			rawOutput.append("Existence="+existence+"\n");
-			
-			if(existence)
-			{	// determine mention position
-				int pos[] = voteForPosition(article,categoryWeights, map);
-				rawOutput.append("Position=("+pos[0]+","+pos[1]+")\n");
-				
-				// determine entity type
-				EntityType type = voteForType(article,categoryWeights, map);
-				rawOutput.append("Type="+type+"\n");
-				
-				// build new, appropriate mention
-				int startPos = pos[0];
-				int endPos = pos[1];
-				String valueStr = text.substring(startPos,endPos);
-				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, getName(), valueStr);
-				result.addMention(mention);
-				rawOutput.append(">> Mention="+endPos+"\n\n");
-			}
-			logger.decreaseOffset();
-		}
-		logger.decreaseOffset();
-		
-	    logger.decreaseOffset();
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
 		return result;
 	}
 	
-	/**
-	 * Combine the recognizers results, in order to determine if
-	 * the group of estimated mentions corresponds to an actual
-	 * mention.
-	 * 
-	 * @param article
-	 * 		Concerned article. 
-	 * @param categoryWeights
-	 * 		Weights associated to the article categories. 
-	 * @param map 
-	 * 		Group of estimated mentions.
-	 * @return 
-	 * 		{@code true} iff the conclusion is that the mention is correct.
-	 */
-	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractProcessor, AbstractMention<?>> map)
-	{	logger.log("Start voting for existence:");
-		logger.increaseOffset();
-		boolean result = false;
-		
-		if(existVote)
-		{	float voteFor = 0;
-			float voteAgainst = 0;
-			
-			for(AbstractProcessor recognizer: recognizers)
-			{	AbstractMention<?> mention = map.get(recognizer);
-				// existence
-				if(mention==null)
-				{	float conWeight;
-					if(voteMode==VoteMode.UNIFORM)
-						conWeight = 1f;
-					else
-					{	if(useRecall)
-							conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TR, categoryWeights);
-						else
-							conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
-					}
-					voteAgainst = voteAgainst + conWeight;
-				}
-				else
-				{	float proWeight;
-					if(voteMode==VoteMode.UNIFORM)
-						proWeight = 1f;
-					else
-						proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
-					voteFor = voteFor + proWeight;
-				}
-			}
-			
-			float total = voteFor - voteAgainst;
-			result = total>=0;
-			logger.log("Votes: FOR="+voteFor+" - AGAINST="+voteAgainst+" = "+total+" >> "+result);
-		}
-		
-		else
-			result = true;
-		
-		logger.decreaseOffset();
-		logger.log("Result of the vote for existence: "+result);
-		return result;
-	}
-
-	/**
-	 * Combine the recognizers results, in order to determine the
-	 * position of the mention represented by the specified group.
-	 * 
-	 * @param article
-	 * 		Concerned article. 
-	 * @param categoryWeights
-	 * 		Weights associated to the article categories. 
-	 * @param map 
-	 * 		Group of estimated mentions.
-	 * @return 
-	 * 		An array of two integers corresponding to the mention position.
-	 */
-	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractProcessor, AbstractMention<?>> map)
-	{	logger.log("Start voting for position:");
-		logger.increaseOffset();
-		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
-		Map<Integer,Float> endScores = new HashMap<Integer, Float>();
-		
-		// pro votes
-		for(AbstractProcessor recognizer: recognizers)
-		{	AbstractMention<?> mention = map.get(recognizer);
-		
-			// check existence
-			if(mention!=null)
-			{	// retrieve weight
-				float proWeight;
-				if(voteMode==VoteMode.UNIFORM)
-					proWeight = 1f;
-				else
-					proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FP, categoryWeights);
-				
-				// start position
-				int startPos = mention.getStartPos();
-				Float startScore = startScores.get(startPos);
-				if(startScore==null)
-					startScore = 0f;
-				startScore = startScore + proWeight;
-				startScores.put(startPos,startScore);
-				
-				// end position
-				int endPos = mention.getEndPos();
-				Float endScore = endScores.get(endPos);
-				if(endScore==null)
-					endScore = 0f;
-				endScore = endScore + proWeight;
-				endScores.put(endPos,endScore);
-			}
-		}
-		
-		// con votes
-		if(useRecall)
-		{	for(AbstractProcessor recognizer: recognizers)
-			{	AbstractMention<?> mention = map.get(recognizer);
-			
-				// check existence
-				if(mention!=null)
-				{	// retrieve weight
-					float conWeight;
-					if(voteMode==VoteMode.UNIFORM)
-						conWeight = 1f;
-					else
-						conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FR, categoryWeights);
-					
-					// start position
-					{	int startPos = mention.getStartPos();
-						List<Entry<Integer,Float>> entries = new ArrayList<Entry<Integer,Float>>(startScores.entrySet());
-						for(Entry<Integer,Float> entry: entries)
-						{	int pos = entry.getKey();
-							float score = entry.getValue();
-							if(pos!=startPos)
-							{	score = score - conWeight;
-								startScores.put(pos,score);
-							}
-						}
-					}
-					
-					// end position
-					{	int endPos = mention.getEndPos();
-						List<Entry<Integer,Float>> entries = new ArrayList<Entry<Integer,Float>>(endScores.entrySet());
-						for(Entry<Integer,Float> entry: entries)
-						{	int pos = entry.getKey();
-							float score = entry.getValue();
-							if(pos!=endPos)
-							{	score = score - conWeight;
-								endScores.put(pos,score);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		int result[] = getPositionFromScores(startScores,endScores);
-		logger.decreaseOffset();
-		logger.log("Result of the vote for position: startPos="+result[0]+", endPos="+result[1]);
-		return result;
-	}
-
-	/**
-	 * Combine the recognizers results, in order to determine the
-	 * type of the mention represented by the specified group.
-	 * 
-	 * @param article
-	 * 		Concerned article. 
-	 * @param categoryWeights
-	 * 		Weights associated to the article categories. 
-	 * @param map 
-	 * 		Group of estimated mentions.
-	 * @return 
-	 * 		Type of the mention represnted by the group.
-	 */
-	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<AbstractProcessor, AbstractMention<?>> map)
-	{	logger.log("Start voting for type: ");
-		logger.increaseOffset();
-		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
-		
-		// pro votes
-		for(AbstractProcessor recognizer: recognizers)
-		{	AbstractMention<?> mention = map.get(recognizer);
-			
-			// retrieve weight
-			float proWeight;
-			if(voteMode==VoteMode.UNIFORM)
-				proWeight = 1f;
-			else
-				proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
-			
-			if(mention!=null)
-			{	EntityType type = mention.getType();
-				Float typeScore = typeScores.get(type);
-				if(typeScore==null)
-					typeScore = 0f;
-				typeScore = typeScore + proWeight;
-				typeScores.put(type,typeScore);
-			}
-		}
-		
-		// con votes
-		if(useRecall)
-		{	for(AbstractProcessor recognizer: recognizers)
-			{	AbstractMention<?> mention = map.get(recognizer);
-					
-				// retrieve weight
-				float conWeight;
-				if(voteMode==VoteMode.UNIFORM)
-					conWeight = 1f;
-				else
-					conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TR, categoryWeights);
-					
-				if(mention!=null)
-				{	EntityType type = mention.getType();
-					List<Entry<EntityType,Float>> entries = new ArrayList<Entry<EntityType,Float>>(typeScores.entrySet());
-					for(Entry<EntityType,Float> entry: entries)
-					{	EntityType t = entry.getKey();
-						float score = entry.getValue();
-						if(t!=type)
-						{	score = score - conWeight;
-							typeScores.put(t,score);
-						}
-					}
-				}
-			}
-		}
-		
-		//display votes
-		String line = "vote results: ";
-		List<EntityType> types = new ArrayList<EntityType>(typeScores.keySet());
-		Collections.sort(types);
-		for(EntityType type: types)
-		{	float vote = typeScores.get(type);
-			line = line + type.toString()+"("+vote+"); ";
-		}
-		logger.log(line);
-		
-		List<EntityType> keys = getSortedKeys(typeScores);
-		EntityType result = keys.get(keys.size()-1);
-		logger.decreaseOffset();
-		logger.log("Result of the vote for type: "+result);
+	@Override
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }

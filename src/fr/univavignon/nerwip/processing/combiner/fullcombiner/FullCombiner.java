@@ -21,23 +21,18 @@ package fr.univavignon.nerwip.processing.combiner.fullcombiner;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;
-import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner.CombineMode;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner;
-import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner.VoteMode;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
 
 /**
@@ -62,27 +57,20 @@ import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.Wikipe
  * 
  * @author Vincent Labatut
  */
-public class FullCombiner extends AbstractCombiner
+public class FullCombiner extends AbstractProcessor implements InterfaceRecognizer
 {	
 	/**
 	 * Builds a new full combiner.
 	 *
-	 * @param combiner
-	 * 		Combiner used to handle locations, organizations and persons
+	 * @param combinerName
+	 * 		CombinerName used to handle locations, organizations and persons
 	 * 		(either SVM- or vote-based).
 	 *  
 	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public FullCombiner(Combiner combiner) throws ProcessorException
-	{	super();
-		
-		this.combiner = combiner;
-		
-		initRecognizers();
-		setSubCacheEnabled(cache);
-
-		initConverter();
+	public FullCombiner(CombinerName combinerName) throws ProcessorException
+	{	delegateRecognizer = new FullCombinerDelegateRecognizer(this, combinerName);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -94,158 +82,36 @@ public class FullCombiner extends AbstractCombiner
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// FOLDER			/////////////////////////////////////////////
+	// FOLDER 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	@Override	
+	@Override
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "combi="+combiner.toString();
-		
-//		result = result + "_" + "trim=" + trim;
-//		result = result + "_" + "ignPro=" + ignorePronouns;
-//		result = result + "_" + "exclude=" + exclusionOn;
-		
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** List of entity types recognized by this combiner */
-	private static final List<EntityType> HANDLED_TYPES = Arrays.asList(
-		EntityType.DATE,
-		EntityType.LOCATION,
-		EntityType.ORGANIZATION,
-		EntityType.PERSON
-	);
-	
-	@Override
-	public List<EntityType> getHandledEntityTypes()
-	{	return HANDLED_TYPES;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** List of languages recognized by this combiner */
-	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList(
-		ArticleLanguage.EN
-//		ArticleLanguage.FR
-	);
-	
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = HANDLED_LANGUAGES.contains(language);
+	{	String result = null;
+		//TODO
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// TOOLS			/////////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Combiner used for locations, organizations and persons */
-	private Combiner combiner;
-	
-	/**
-	 * Represents the combiner used to process locations,
-	 * organizations and persons.
-	 * 
-	 * @author Vincent Labatut
-	 */
-	public enum Combiner
-	{	/** Use the best SVM-based combiner configuration */
-		SVM("svm"),
-		/** Use the best vote-based combiner configuration */
-		VOTE("vote");
-		
-		/** String representing the parameter value */
-		private String name;
-		
-		/**
-		 * Builds a new Combiner value
-		 * to be used as a parameter.
-		 * 
-		 * @param name
-		 * 		String representing the parameter value.
-		 */
-		Combiner(String name)
-		{	this.name = name;
-		}
-		
-		@Override
-		public String toString()
-		{	return name;
-		}
-	}
+	/** Delegate in charge of recognizing entity mentions */
+	private FullCombinerDelegateRecognizer delegateRecognizer;
 	
 	@Override
-	protected void initRecognizers() throws ProcessorException
-	{	logger.increaseOffset();
-		boolean loadModelOnDemand = true;
-	
-		// Wikipedia Dater
-		{	logger.log("Init Wikipedia Dater (Dates only)");
-			WikipediaDater wikipediaDater = new WikipediaDater();
-			recognizers.add(wikipediaDater);
-		}
-		
-		// other combiner
-		logger.log("Init the other combiner (Loc+Org+Per)");
-		if(combiner==Combiner.SVM)
-		{	logger.log("SVM-based combiner selected");
-			boolean specific = true;
-			boolean useCategories = true;
-			CombineMode combineMode = CombineMode.CHUNK_PREVIOUS;
-			SubeeMode subeeMode = SubeeMode.ALL;
-			SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCategories, combineMode, subeeMode);
-			recognizers.add(svmCombiner);
-		}
-		else
-		{	logger.log("Vote-based combiner selected");
-			boolean specific = true;
-			VoteMode voteMode = VoteMode.WEIGHTED_CATEGORY;
-			boolean useRecall = true;
-			boolean existVote = true;
-			SubeeMode subeeMode = SubeeMode.ALL;
-			VoteCombiner voteCombiner = new VoteCombiner(loadModelOnDemand, specific, voteMode, useRecall, existVote, subeeMode);
-			recognizers.add(voteCombiner);
-		}
-		
-		logger.decreaseOffset();		
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
+		return result;
 	}
 
-	/////////////////////////////////////////////////////////////////
-	// GENERAL MODEL	 	/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
 	@Override
-	public String getModelPath()
-	{	return null; // no model here
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
+		return result;
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Mentions combineMentions(Article article, Map<AbstractProcessor,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException
-	{	logger.increaseOffset();
-		Mentions result = new Mentions(getName());
-		Iterator<AbstractProcessor> it = recognizers.iterator();
-		
-		// first get the dates
-		AbstractProcessor wikipediaDater = it.next();
-		Mentions dates = mentions.get(wikipediaDater);
-		result.addMentions(dates);
-		
-		// then add the rest of the (non-overlapping) mentions
-		AbstractProcessor combiner = it.next();
-		Mentions ents = mentions.get(combiner);
-		List<AbstractMention<?>> mentList = ents.getMentions();
-		for(AbstractMention<?> mention: mentList)
-		{	if(!result.isMentionOverlapping(mention))
-				result.addMention(mention);
-		}
-		
-		logger.decreaseOffset();
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }

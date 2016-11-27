@@ -519,8 +519,8 @@ public class MentionEditor implements WindowListener, ChangeListener
 //			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE).getFolder(),
 //			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL).getFolder(),
 //				
-//			new FullCombiner(Combiner.SVM).getFolder(),
-//			new FullCombiner(Combiner.VOTE).getFolder()
+//			new FullCombiner(CombinerName.SVM).getFolder(),
+//			new FullCombiner(CombinerName.VOTE).getFolder()
 //		});
 //		viewer.setPrefixes(prefixes);
 		

@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.time.TimeFormatting;
@@ -550,16 +550,16 @@ public class Mentions
 	 * @return
 	 * 		List of maps of equivalent mentions.
 	 */
-	public static List<Map<AbstractProcessor,AbstractMention<?>>> identifyOverlaps(Map<AbstractProcessor,Mentions> mentions)
-	{	List<Map<AbstractProcessor,AbstractMention<?>>> result = new ArrayList<Map<AbstractProcessor,AbstractMention<?>>>();
+	public static List<Map<InterfaceRecognizer,AbstractMention<?>>> identifyOverlaps(Map<InterfaceRecognizer,Mentions> mentions)
+	{	List<Map<InterfaceRecognizer,AbstractMention<?>>> result = new ArrayList<Map<InterfaceRecognizer,AbstractMention<?>>>();
 		
 		// sort all mentions
 		for(Mentions e: mentions.values())
 			e.sortByPosition();
 		
 		// init iterators
-		Map<AbstractProcessor,Iterator<AbstractMention<?>>> iterators = new HashMap<AbstractProcessor, Iterator<AbstractMention<?>>>();
-		for(AbstractProcessor recognizer: mentions.keySet())
+		Map<InterfaceRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<InterfaceRecognizer, Iterator<AbstractMention<?>>>();
+		for(InterfaceRecognizer recognizer: mentions.keySet())
 		{	Mentions e = mentions.get(recognizer);
 			Iterator<AbstractMention<?>> it = e.getMentions().iterator();
 			if(it.hasNext())
@@ -567,8 +567,8 @@ public class Mentions
 		}
 		
 		// init current mentions
-		Map<AbstractMention<?>,AbstractProcessor> current = new HashMap<AbstractMention<?>, AbstractProcessor>();
-		for(AbstractProcessor recognizer: iterators.keySet())
+		Map<AbstractMention<?>,InterfaceRecognizer> current = new HashMap<AbstractMention<?>, InterfaceRecognizer>();
+		for(InterfaceRecognizer recognizer: iterators.keySet())
 		{	Iterator<AbstractMention<?>> it = iterators.get(recognizer);
 			AbstractMention<?> mention = it.next();
 			current.put(mention,recognizer);
@@ -577,7 +577,7 @@ public class Mentions
 		// detect overlapping mentions
 		while(iterators.size()>1)
 		{	// init map
-			Map<AbstractProcessor,AbstractMention<?>> map = new HashMap<AbstractProcessor, AbstractMention<?>>();
+			Map<InterfaceRecognizer,AbstractMention<?>> map = new HashMap<InterfaceRecognizer, AbstractMention<?>>();
 			
 			// identify the first mention
 			Iterator<AbstractMention<?>> it = current.keySet().iterator();
@@ -590,10 +590,10 @@ public class Mentions
 			
 			// compare other mentions to the the first one
 			it = current.keySet().iterator();
-			Map<AbstractMention<?>,AbstractProcessor> newCurrent = new HashMap<AbstractMention<?>, AbstractProcessor>();
+			Map<AbstractMention<?>,InterfaceRecognizer> newCurrent = new HashMap<AbstractMention<?>, InterfaceRecognizer>();
 			while(it.hasNext())
 			{	AbstractMention<?> mention = it.next();
-				AbstractProcessor recognizer = current.get(mention);
+				InterfaceRecognizer recognizer = current.get(mention);
 				
 				if(mention.overlapsWith(first))
 				{	// update map
@@ -620,11 +620,11 @@ public class Mentions
 		
 		// add the remaining mentions
 		if(!iterators.isEmpty())
-		{	Entry<AbstractProcessor,Iterator<AbstractMention<?>>> entry = iterators.entrySet().iterator().next();
-			AbstractProcessor recognizer = entry.getKey();
+		{	Entry<InterfaceRecognizer,Iterator<AbstractMention<?>>> entry = iterators.entrySet().iterator().next();
+		InterfaceRecognizer recognizer = entry.getKey();
 			Iterator<AbstractMention<?>> it = entry.getValue();
 			while(it.hasNext())
-			{	Map<AbstractProcessor,AbstractMention<?>> map = new HashMap<AbstractProcessor, AbstractMention<?>>();
+			{	Map<InterfaceRecognizer,AbstractMention<?>> map = new HashMap<InterfaceRecognizer, AbstractMention<?>>();
 				AbstractMention<?> mention = it.next();
 				map.put(recognizer,mention);
 				result.add(map);

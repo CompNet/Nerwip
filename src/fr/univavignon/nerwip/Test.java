@@ -1875,8 +1875,8 @@ File folder = folders.get(0);
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
 //			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
 			
-//			new FullCombiner(Combiner.SVM),
-//			new FullCombiner(Combiner.VOTE),
+//			new FullCombiner(CombinerName.SVM),
+//			new FullCombiner(CombinerName.VOTE),
 			
 //			new StraightCombiner()
 		};
@@ -2204,8 +2204,7 @@ File folder = folders.get(0);
  * - Merge all processes in the same class (recog, resolv, link)
  * - Rename recognizer to processor where appropriate
  * 
-	//TODO AbstractProcessor should be replaced by InterfaceProcessor in VoteWeights (combiner)
-	//TODO the evaluator should be parameterized depending on InterfaceXxxxx
+	//TODO edit getFolder() in all processors, once no compilation error
  */
 
 /*

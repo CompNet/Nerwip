@@ -33,11 +33,10 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
-import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner.VoteMode;
 import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
@@ -63,6 +62,7 @@ public class VoteTrainer
 	 */
 	public VoteTrainer(VoteCombiner combiner) throws ProcessorException
 	{	this.combiner = combiner;
+		delegateRecognizer = combiner.getDelegateRecognizer();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -70,6 +70,8 @@ public class VoteTrainer
 	/////////////////////////////////////////////////////////////////
 	/** An instance of the combiner object associated to this trainer */
 	protected VoteCombiner combiner = null;
+	/** An instance of the delegate recognizer object associated to the combiner*/
+	protected VoteCombinerDelegateRecognizer delegateRecognizer = null;
 	
 	/////////////////////////////////////////////////////////////////
 	// LOGGING			/////////////////////////////////////////////
@@ -129,16 +131,14 @@ public class VoteTrainer
 	 * 		Problem while retrieving an article.
 	 * @throws ProcessorException 
 	 * 		Problem applying the evaluator.
-	 * @throws ConverterException 
-	 * 		Problem applying the evaluator.
 	 */
-	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ConverterException, ProcessorException
-	{	VoteMode voteMode = combiner.getVoteMode();
+	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ProcessorException
+	{	VoteMode voteMode = delegateRecognizer.getVoteMode();
 		if(voteMode.hasWeights())
 		{	// vote weights
 			{	// process
-				List<EntityType> types = combiner.getHandledEntityTypes();
-				List<AbstractProcessor> recognizers = combiner.getRecognizers();
+				List<EntityType> types = delegateRecognizer.getHandledEntityTypes();
+				List<InterfaceRecognizer> recognizers = delegateRecognizer.getRecognizers();
 				AbstractRecognitionMeasure measure = new RecognitionLilleMeasure(null);
 				RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, measure);
 				recognitionEvaluator.process();
@@ -148,10 +148,10 @@ public class VoteTrainer
 					RecognitionLilleMeasure.SCORE_P, RecognitionLilleMeasure.SCORE_R
 				);
 				boolean byCategory = voteMode==VoteMode.WEIGHTED_CATEGORY;
-				VoteWeights voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names,byCategory);
+				VoteWeights<InterfaceRecognizer> voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names,byCategory);
 				
 				// record
-				String filePath = combiner.getVoteWeightsPath();
+				String filePath = delegateRecognizer.getVoteWeightsPath();
 				voteWeights.recordVoteWeights(filePath);
 			}
 			
@@ -161,7 +161,7 @@ public class VoteTrainer
 				CategoryProportions result = CategoryProportions.buildProportionsFromCorpus(folders);
 				
 				// record
-				String filePath = combiner.getCategoryProportionsPath();
+				String filePath = delegateRecognizer.getCategoryProportionsPath();
 				result.recordCategoryProportion(filePath);
 			}
 		}
@@ -189,10 +189,8 @@ public class VoteTrainer
 	 * 		Problem while accessing a file. 
 	 * @throws ProcessorException
 	 * 		Problem while applying a recognizer. 
-	 * @throws ConverterException 
-	 * 		Problem while processing a recognizer performance. 
 	 */
-	public void process(ArticleList folders) throws IOException, SAXException, ParseException, ReaderException, ProcessorException, ConverterException
+	public void process(ArticleList folders) throws IOException, SAXException, ParseException, ReaderException, ProcessorException
 	{	logger.increaseOffset();
 		
 		// process and record the voting weights
