@@ -21,25 +21,16 @@ package fr.univavignon.nerwip.processing.internal.modelbased.opennlp;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelBasedInternalProcessor;
-import opennlp.tools.namefind.NameFinderME;
-import opennlp.tools.sentdetect.SentenceDetectorME;
-import opennlp.tools.tokenize.Tokenizer;
-import opennlp.tools.util.InvalidFormatException;
-import opennlp.tools.util.Span;
 
 /**
  * This class acts as an interface with the Apache OpenNLP tool.
@@ -54,7 +45,7 @@ import opennlp.tools.util.Span;
  * 
  * @author Vincent Labatut
  */
-public class OpenNlp extends AbstractModelBasedInternalProcessor<Map<EntityType,List<Span>>, OpenNlpConverter, OpenNlpModelName>
+public class OpenNlp extends AbstractProcessor implements InterfaceRecognizer
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -74,10 +65,7 @@ public class OpenNlp extends AbstractModelBasedInternalProcessor<Map<EntityType,
 	 * 		Problem while loading the models or tokenizers.
 	 */
 	public OpenNlp(OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
-	{	super(modelName,loadModelOnDemand,false,ignorePronouns,exclusionOn);
-	
-		// init converter
-		converter = new OpenNlpConverter(getFolder());
+	{	delegateRecognizer = new OpenNlpDelegateRecognizer(this, modelName, loadModelOnDemand, ignorePronouns, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -93,148 +81,32 @@ public class OpenNlp extends AbstractModelBasedInternalProcessor<Map<EntityType,
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "model=" + modelName.toString();
-		result = result + "_" + "ignPro=" + ignorePronouns;
-		result = result + "_" + "exclude=" + exclusionOn;
-		
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	protected void updateHandledEntityTypes()
-	{	handledTypes = new ArrayList<EntityType>();
-		List<EntityType> temp = modelName.getHandledTypes();
-		handledTypes.addAll(temp);
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = modelName.canHandleLanguage(language);
+	{	String result = null;
+		//TODO
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// MODELS			/////////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Object used to split text into sentences */
-	private SentenceDetectorME sentenceDetector;
-	/** Object used to split sentences into words */
-	private Tokenizer tokenizer;
-	/** Models used by OpenNLP to detect mentions */
-	private Map<NameFinderME,EntityType> models;
-
-    @Override
-	protected boolean isLoadedModel()
-    {	boolean result = sentenceDetector!=null && tokenizer!=null && models!=null;
-    	return result;
-    }
-    
-    @Override
-	protected void resetModel()
-    {	sentenceDetector = null;
-    	tokenizer = null;
-    	models = null;
-    }
+	/** Delegate in charge of recognizing entity mentions */
+	private OpenNlpDelegateRecognizer delegateRecognizer;
 	
 	@Override
-	protected void loadModel() throws ProcessorException
-	{	logger.increaseOffset();
-		
-		try
-		{	// load secondary objects	
-			sentenceDetector = modelName.loadSentenceDetector();
-			tokenizer = modelName.loadTokenizer();
-			
-			// load main models
-			models = modelName.loadNerModels();
-		} 
-		catch (InvalidFormatException e)
-		{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-		catch (IOException e)
-		{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-		
-		logger.decreaseOffset();
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
+		return result;
+	}
+
+	@Override
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
+		return result;
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Order in which the mentions should be processed */
-	private static final List<EntityType> TYPE_PRIORITIES = Arrays.asList(EntityType.ORGANIZATION,EntityType.PERSON,EntityType.LOCATION,EntityType.DATE);
-
 	@Override
-	protected Map<EntityType,List<Span>> detectMentions(Article article) throws ProcessorException
-	{	logger.increaseOffset();
-		Map<EntityType,List<Span>> result = new HashMap<EntityType, List<Span>>();
-		
-		// split sentences
-		logger.log("Process each sentence");
-		String text = article.getRawText();
-		Span sentenceSpans[] = sentenceDetector.sentPosDetect(text);
-		for(Span sentenceSpan: sentenceSpans)
-		{	int startSentPos = sentenceSpan.getStart();
-			int endSentPos = sentenceSpan.getEnd();
-			String sentence = text.substring(startSentPos,endSentPos);
-			
-			// split tokens
-			String tokens[] = tokenizer.tokenize(sentence);
-			Span tokenSpans[] = tokenizer.tokenizePos(sentence);
-			
-			// apply each model according to the type priorities
-//			logger.log("Process the models for each entity type");
-			for(EntityType type: TYPE_PRIORITIES)
-			{	List<Span> list = result.get(type);
-				if(list==null)
-				{	list = new ArrayList<Span>();
-					result.put(type,list);
-				}
-				
-				for(Entry<NameFinderME,EntityType> entry: models.entrySet())
-				{	EntityType t = entry.getValue();
-					if(type==t)
-					{	// detect mentions
-						NameFinderME model = entry.getKey();
-						Span nameSpans[] = model.find(tokens);
-						
-						// add them to result list
-						for(Span span: nameSpans)
-						{	// get start position
-							int first = span.getStart();
-							Span firstSpan = tokenSpans[first];
-							int startPos = firstSpan.getStart() + startSentPos;
-							// get end position
-							int last = span.getEnd() - 1;
-							Span lastSpan = tokenSpans[last];
-							int endPos = lastSpan.getEnd() + startSentPos;
-							// build new span
-							String typeStr = span.getType(); 
-							Span temp = new Span(startPos, endPos, typeStr);
-//System.out.println(span.toString());
-//System.out.println(text.substring(temp.getStart(),temp.getEnd()));
-							// add to list
-							list.add(temp);
-						}
-						
-						// reset model for next document
-						model.clearAdaptiveData();
-					}
-				}
-			}
-		}
-		
-	    logger.decreaseOffset();
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }

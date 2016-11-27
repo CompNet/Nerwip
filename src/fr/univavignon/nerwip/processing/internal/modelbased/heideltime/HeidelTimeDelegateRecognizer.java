@@ -23,6 +23,7 @@ package fr.univavignon.nerwip.processing.internal.modelbased.heideltime;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -35,61 +36,174 @@ import org.jdom2.Text;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
+import de.unihd.dbs.heideltime.standalone.HeidelTimeStandalone;
+import de.unihd.dbs.heideltime.standalone.exceptions.DocumentCreationTimeMissingException;
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.MentionDate;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.ConverterException;
-import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.AbstractInternalConverter;
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.nerwip.processing.ProcessorException;
+import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedInternalDelegateRecognizer;
 import fr.univavignon.nerwip.tools.time.Date;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**
- * This class is the converter associated to HeidelTime.
- * It is able to convert the text outputed by this recognizer
- * into objects compatible with Nerwip.
+ * This class acts as an interface with the HeidelTime tool.
  * <br/>
- * It can also read/write these results using raw text
- * and our XML format.
- * <br/>
- * In Nerwip, we don't need all the data output by HeidelTime
- * as formalized in the TIMEX3 standard.
+ * Recommended parameter values:
  * <ul>
- *  <li>Attribute {@code type}:</li>
- * 	<ul>
- * 	  <li>{@code DATE}: calendar time, kept (<i>Friday, October 1, 1999</i>)</li>
- * 	  <li>{@code TIME}: time of the day, kept only if it refers to a specific date (<i>ten minutes to three</i>, but <i>the morning of January 31</i>)</li>
- * 	  <li>{@code DURATION}: time period, ignored (<i>three weeks</i>)</li>
- * 	  <li>{@code SET}: repetition, ignored (<i>twice a week</i>)</li>
- *  </ul>
- *  <li>Attribute {@code value}: only for {@code DATE} (when numerical) and {@code TIME} (when a date is specified numerically)</li>
+ * 		<li>{@code ignorePronouns}: {@code true}</li>
+ * 		<li>{@code exclusionOn}: {@code true}</li>
+ * 		TODO
  * </ul>
- * 
- * See the <a href="http://www.timeml.org/tempeval2/tempeval2-trial/guidelines/timex3guidelines-072009.pdf">
- * Guidelines for Temporal Expression Annotation for English for TempEval 2010</a> for more details, as well
- * as the <a href="http://timeml.org/site/publications/timeMLdocs/timeml_1.2.1.html#timex3">official 
- * TimeML specifications</a>
- * 
+ * <br/>
+ * Note we ignore some of the data output by HeidelTime when
+ * converting to Nerwip format.
+ * <br/>
+ * Official HeidelTime website: <a href="https://code.google.com/p/heideltime/">https://code.google.com/p/heideltime/</a>
  * 
  * @author Vincent Labatut
  */
-public class HeidelTimeConverter extends AbstractInternalConverter<String>
+public class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<String, HeidelTimeModelName>
 {	
 	/**
-	 * Builds a new converter using the specified info.
+	 * Builds and sets up an object representing
+	 * an HeidelTime recognizer.
 	 * 
-	 * @param nerFolder
-	 * 		Folder used to stored the results of the recognizer.
+	 * @param heidelTime
+	 * 		Recognizer in charge of this delegate.
+	 * @param modelName
+	 * 		Predefined mainModel used for mention detection.
+	 * @param loadModelOnDemand
+	 * 		Whether or not the mainModel should be loaded when initializing this
+	 * 		recognizer, or only when necessary. 
+	 * @param doIntervalTagging
+	 * 		Whether intervals should be detected or ignored (?). 
+	 * 
+	 * @throws ProcessorException 
+	 * 		Problem while loading the models or tokenizers.
 	 */
-	public HeidelTimeConverter(String nerFolder)
-	{	super(ProcessorName.HEIDELTIME, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	public HeidelTimeDelegateRecognizer(HeidelTime heidelTime, HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws ProcessorException
+	{	super(heidelTime,modelName,loadModelOnDemand,false,false,false);
+	
+		setIgnoreNumbers(false);
+
+		this.doIntervalTagging = doIntervalTagging; //TODO this is actually ignored when loadModelOnDemand is false
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// PROCESS			/////////////////////////////////////////////
+	// FOLDER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override	
+	public String getFolder()
+	{	String result = recognizer.getName().toString();
+		
+		result = result + "_" + "mainModel=" + modelName.toString();
+		result = result + "_" + "intervals=" + doIntervalTagging;
+//		result = result + "_" + "ignPro=" + ignorePronouns;
+//		result = result + "_" + "exclude=" + exclusionOn;
+		
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	protected void updateHandledEntityTypes()
+	{	handledTypes = new ArrayList<EntityType>();
+		List<EntityType> temp = modelName.getHandledTypes();
+		handledTypes.addAll(temp);
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = modelName.canHandleLanguage(language);
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// PARAMETERS		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Whether intervals should be detected or ignored */
+	private boolean doIntervalTagging = false;
+	
+	/////////////////////////////////////////////////////////////////
+	// MODELS			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Model used by HeidelTime to detect mentions */
+	private HeidelTimeStandalone mainModel;
+	/** Alternative model, in case we have to deal with news */
+	private HeidelTimeStandalone altModel;
+
+    @Override
+	protected boolean isLoadedModel()
+    {	boolean result = mainModel!=null;
+    	return result;
+    }
+    
+    @Override
+	protected void resetModel()
+    {	mainModel = null;
+    	altModel = null;
+    }
+	
+	@Override
+	protected void loadModel() throws ProcessorException
+	{	logger.increaseOffset();
+		
+		mainModel = modelName.buildMainTool(doIntervalTagging);
+		altModel = modelName.buildAltTool(doIntervalTagging);
+		
+		logger.decreaseOffset();
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// PROCESSING	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	protected String detectMentions(Article article) throws ProcessorException
+	{	logger.increaseOffset();
+		String result = null;
+		
+		logger.log("Applying HeidelTime to detect dates");
+		String text = article.getRawText();
+		
+		java.util.Date date = article.getPublishingDate();
+		try
+		{	// if HeidelTime needs a reference date
+			if(modelName.requiresDate())
+			{	if(date!=null)
+					result = mainModel.process(text, date);
+				else
+					result = altModel.process(text);
+			}
+			
+			// if it doesn't need a date
+			else
+			{	if(date!=null)
+					result = mainModel.process(text, date);
+				else
+					result = mainModel.process(text);
+			}
+		}
+		catch (DocumentCreationTimeMissingException e)
+		{	logger.log("ERROR: problem with the date given to HeidelTime ("+date+")");
+//			e.printStackTrace();
+			throw new ProcessorException(e.getMessage());
+		}
+		
+	    logger.decreaseOffset();
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Header we need to remove before parsing the output text */
 	private static final String ORIGINAL_DOCTYPE = "<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">";
@@ -119,9 +233,9 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	private static final String TIME_PREFIX = "XXXX-XX-XX";
 	
 	@Override
-	public Mentions convert(Article article, String data) throws ConverterException
+	public Mentions convert(Article article, String data) throws ProcessorException
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(processorName);
+		Mentions result = new Mentions(recognizer.getName());
 		
 		// parse the xml source
 		logger.log("Parsing the XML source previously produced by HeidelTime");
@@ -136,11 +250,11 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 		catch (JDOMException e)
 		{	//e.printStackTrace();
 			System.err.println(data);
-			throw new ConverterException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 		catch (IOException e)
 		{	//e.printStackTrace();
-			throw new ConverterException(e.getMessage());
+			throw new ProcessorException(e.getMessage());
 		}
 
 		// process the xml document
@@ -210,7 +324,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); //TODO WARNING: 
 				else
 				{	int length = text.length();
-					result = (MentionDate) AbstractMention.build(EntityType.DATE, index, index+length, processorName, text);
+					result = (MentionDate) AbstractMention.build(EntityType.DATE, index, index+length, recognizer.getName(), text);
 					result.setValue(date);
 				}
 			}
@@ -321,7 +435,7 @@ public class HeidelTimeConverter extends AbstractInternalConverter<String>
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// RAW				/////////////////////////////////////////////
+	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
 	protected void writeRawResults(Article article, String intRes) throws IOException

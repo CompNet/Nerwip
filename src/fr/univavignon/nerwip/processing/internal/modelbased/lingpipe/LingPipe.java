@@ -21,26 +21,15 @@ package fr.univavignon.nerwip.processing.internal.modelbased.lingpipe;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.aliasi.chunk.Chunk;
-import com.aliasi.chunk.ChunkFactory;
-import com.aliasi.chunk.Chunker;
-import com.aliasi.chunk.Chunking;
-import com.aliasi.chunk.ChunkingImpl;
-import com.aliasi.sentences.IndoEuropeanSentenceModel;
-import com.aliasi.sentences.SentenceChunker;
-import com.aliasi.sentences.SentenceModel;
-import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory;
-import com.aliasi.tokenizer.TokenizerFactory;
-
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelBasedInternalProcessor;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,7 +49,7 @@ import java.util.List;
  * @author Samet Atdağ
  * @author Vincent Labatut
  */
-public class LingPipe extends AbstractModelBasedInternalProcessor<Chunking, LingPipeConverter, LingPipeModelName>
+public class LingPipe extends AbstractProcessor implements InterfaceRecognizer
 {
 	/**
 	 * Builds and sets up an object representing
@@ -85,11 +74,7 @@ public class LingPipe extends AbstractModelBasedInternalProcessor<Chunking, Ling
 	 *		Problem while initializing the model.
 	 */
 	public LingPipe(LingPipeModelName chunkingMethod, boolean loadChunkerOnDemand, boolean splitSentences, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
-	{	super(chunkingMethod,loadChunkerOnDemand,trim,ignorePronouns,exclusionOn);
-		this.splitSentences = splitSentences;
-		
-		// init converter
-		converter = new LingPipeConverter(getFolder());
+	{	delegateRecognizer = new LingPipeDelegateRecognizer(this, chunkingMethod, loadChunkerOnDemand, splitSentences, trim, ignorePronouns, exclusionOn);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -105,129 +90,32 @@ public class LingPipe extends AbstractModelBasedInternalProcessor<Chunking, Ling
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "chunk=" + modelName;
-		result = result + "_" + "splitSent=" + splitSentences;
-		result = result + "_" + "trim=" + trim;
-		result = result + "_" + "ignPro=" + ignorePronouns;
-		result = result + "_" + "exclude=" + exclusionOn;
-		
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	protected void updateHandledEntityTypes()
-	{	handledTypes = new ArrayList<EntityType>();
-		List<EntityType> temp = modelName.getHandledTypes();
-		handledTypes.addAll(temp);
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = modelName.canHandleLanguage(language);
+	{	String result = null;
+		//TODO
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// CHUNKING METHOD 		/////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    /** Whether or not the text should be processed one sentence at once */
-    private boolean splitSentences;
-    /** Object used to detect sentences */
-	private Chunker sentenceChunker;
-	/** Object used to detect mentions */
-	private Chunker chunker;
-   
-    @Override
-	protected boolean isLoadedModel()
-    {	boolean result = chunker!=null;
-    	return result;
-    }
-    
-    @Override
-	protected void resetModel()
-    {	chunker = null;
-    }
-
-	@Override
-	protected void loadModel() throws ProcessorException
-    {	// sentence chunker
-		//if(splitSentences)
-    	{	logger.log("Build sentence splitter");
-			TokenizerFactory tokenizerFactory = new IndoEuropeanTokenizerFactory();
-			SentenceModel sentenceModel = new IndoEuropeanSentenceModel();
-			sentenceChunker = new SentenceChunker(tokenizerFactory,sentenceModel);
-    	}
-    	
-    	// word chunker
-    	try
-    	{	chunker = modelName.loadData();
-		}
-    	catch (ClassNotFoundException e)
-    	{	e.printStackTrace();
-    		throw new ProcessorException(e.getMessage());
-		}
-    	catch (IOException e)
-    	{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-    }
+	/** Delegate in charge of recognizing entity mentions */
+	private LingPipeDelegateRecognizer delegateRecognizer;
 	
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
 	@Override
-	protected Chunking detectMentions(Article article)
-	{	logger.increaseOffset();
-		String text = article.getRawText();
-		Chunking result = null;
-				
-		// split sentences (seems to improves performance)
-		if(splitSentences)
-		{	logger.log("Split text into sentences");
-			Chunking sentences = sentenceChunker.chunk(text);
-			ChunkingImpl res = new ChunkingImpl(text);
-			
-			// process each sentence separately
-			logger.log("Process each sentence separately");
-			logger.increaseOffset();
-			for(Chunk sentence: sentences.chunkSet())
-			{	// get sentence text
-				int startIndex = sentence.start();
-				int endIndex = sentence.end();
-				logger.log("Process sentence ["+startIndex+","+endIndex+"]");
-				String sentenceStr = text.substring(startIndex,endIndex);
-				
-				// look for mentions
-				Chunking words = chunker.chunk(sentenceStr);
-				logger.log("Found "+words.chunkSet().size()+" raw words");
-				// add them to final result
-				for(Chunk word: words.chunkSet())
-				{	int start = word.start() + startIndex;
-					int end = word.end() + startIndex;
-					String type = word.type();
-					double score = word.score();
-					Chunk temp = ChunkFactory.createChunk(start, end, type, score);
-					res.add(temp);
-				}
-			}
-			logger.decreaseOffset();
-			result = res;
-		}
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
+		return result;
+	}
 
-		// no sentence splitting
-		else
-		{	result = chunker.chunk(text);
-		}
-		
-		logger.decreaseOffset();
+	@Override
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
+		return result;
+	}
+	
+	@Override
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }

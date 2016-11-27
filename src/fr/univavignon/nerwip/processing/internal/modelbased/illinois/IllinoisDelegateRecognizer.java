@@ -22,48 +22,173 @@ package fr.univavignon.nerwip.processing.internal.modelbased.illinois;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import LBJ2.learn.SparseNetworkLearner;
 import LBJ2.parse.LinkedVector;
+import edu.illinois.cs.cogcomp.LbjNer.ExpressiveFeatures.ExpressiveFeaturesAnnotator;
+import edu.illinois.cs.cogcomp.LbjNer.InferenceMethods.Decoder;
+import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
+import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NETagPlain;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NEWord;
+import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.PlainTextReader;
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.ConverterException;
+import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.AbstractInternalConverter;
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedInternalDelegateRecognizer;
 
 /**
- * This class is the converter associated to the Illinois 
- * Named Entity Tagger. It is able to convert the text outputed 
- * by this recognizer into objects compatible with Nerwip.
+ * This class acts as an interface with Illinois Named Entity Tagger.
  * <br/>
- * It can also read/write these results using raw text
- * and our XML format.
+ * Recommended parameter values:
+ * <ul>
+ * 		<li>{@code model}: {@link IllinoisModelName#CONLL_MODEL CONLL_MODEL} </li>
+ * 		<li>{@code ignorePronouns}: {@code false}</li>
+ * 		<li>{@code exclusionOn}: {@code true}</li>
+ * </ul>
  * <br/>
- * <b>Note:</b> A part of the main method was adapted 
- * from {@link NETagPlain#tagData}.
+ * Official Illinois website: <a href="http://cogcomp.cs.illinois.edu/page/software_view/4">http://cogcomp.cs.illinois.edu/page/software_view/4</a>
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class IllinoisConverter extends AbstractInternalConverter<Data>
+public class IllinoisDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<Data, IllinoisModelName>
 {	
 	/**
-	 * Builds a new converter using the specified info.
+	 * Builds and sets up an object representing
+	 * a Illinois NET tool.
 	 * 
-	 * @param nerFolder
-	 * 		Folder used to store the results of the recognizer.
+	 * @param illinois
+	 * 		Recognizer in charge of this delegate.
+	 * @param modelName
+	 * 		Predefined model used for mention detection.
+	 * @param loadModelOnDemand
+	 * 		Whether or not the model should be loaded when initializing this
+	 * 		recognizer, or only when necessary. 
+	 * @param trim
+	 * 		Whether or not the beginings and ends of mentions should be 
+	 * 		cleaned from any non-letter/digit chars.
+	 * @param ignorePronouns
+	 * 		Whether or not pronouns should be excluded from the detection.
+	 * @param exclusionOn
+	 * 		Whether or not stop words should be excluded from the detection.
+	 * 
+	 * @throws ProcessorException
+     * 		Problem while loading the model data.
 	 */
-	public IllinoisConverter(String nerFolder)
-	{	super(ProcessorName.ILLINOIS, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	public IllinoisDelegateRecognizer(Illinois illinois, IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	super(illinois,modelName,loadModelOnDemand,trim,ignorePronouns,exclusionOn);
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// FOLDER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override	
+	public String getFolder()
+	{	String result = recognizer.getName().toString();
+		
+		result = result + "_" + "model=" + modelName.toString();
+		result = result + "_" + "trim=" + trim;
+		result = result + "_" + "ignPro=" + ignorePronouns;
+		result = result + "_" + "exclude=" + exclusionOn;
+		
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	protected void updateHandledEntityTypes()
+	{	handledTypes = new ArrayList<EntityType>();
+		List<EntityType> temp = modelName.getHandledTypes();
+		handledTypes.addAll(temp);
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = modelName.canHandleLanguage(language);
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// PREDEFINED MODEL 	/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** First level predefined model, used for NER */
+    private NETaggerLevel1 tagger1;
+	/** Second level predefined model, used for NER */
+    private NETaggerLevel2 tagger2;
+    
+    @Override
+	protected boolean isLoadedModel()
+    {	boolean result = tagger1!=null && tagger2!=null;
+    	return result;
+    }
+    
+    @Override
+	protected void resetModel()
+    {	tagger1 = null;
+    	tagger2 = null;
+    }
+
+	@Override
+	protected void loadModel() throws ProcessorException
+    {	logger.increaseOffset();
+		logger.log("Load model data");
+		
+    	SparseNetworkLearner[] models;
+		try
+		{	models = modelName.loadData();
+		}
+		catch (Exception e)
+		{	e.printStackTrace();
+			throw new ProcessorException(e.getMessage());
+		}
+    	tagger1 = (NETaggerLevel1) models[0];
+    	tagger2 = (NETaggerLevel2) models[1];
+    	
+    	logger.decreaseOffset();
+    }
+    
+	/////////////////////////////////////////////////////////////////
+	// PROCESSING	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	protected Data detectMentions(Article article) throws ProcessorException
+	{	logger.increaseOffset();
+		Data result = null;
+		String text = article.getRawText();
+
+//		ParametersForLbjCode.currentParameters.logging = false;
+		
+		Vector<LinkedVector> sentences = PlainTextReader.parseText(text);
+    	NERDocument doc = new NERDocument(sentences, "consoleInput");
+    	result = new Data(doc);
+		
+		try
+		{	ExpressiveFeaturesAnnotator.annotate(result);
+    		Decoder.annotateDataBIO(result,tagger1,tagger2);
+		}
+		catch(Exception e)
+		{	e.printStackTrace();
+			throw new ProcessorException(e.getMessage());
+		}
+		
+		logger.decreaseOffset();
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -81,11 +206,12 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// PROCESS			/////////////////////////////////////////////
+	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Mentions convert(Article article, Data data) throws ConverterException
-	{	Mentions result = new Mentions(processorName);
+	public Mentions convert(Article article, Data data) throws ProcessorException
+	{	ProcessorName recognizerName = recognizer.getName();
+		Mentions result = new Mentions(recognizerName);
 	
 		String text = article.getRawText();
 		int position = 0;
@@ -116,7 +242,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	            	int temp = position;
 	            	position = text.indexOf(words[j], temp);
     				if(position==-1)
-    					throw new ConverterException("Cannot find \""+words[j]+"\" in the text, from position "+temp);
+    					throw new ProcessorException("Cannot find \""+words[j]+"\" in the text, from position "+temp);
 	            	
     				// possibly start a new mention if we find a B- marker
 	            	if (predictions[j].startsWith("B-")
@@ -150,7 +276,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	            		if(close)
 	            		{	// consider all detected words to constitute the mention
 	            			String valueStr = text.substring(startPos,position);
-	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, processorName, valueStr);
+	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, recognizerName, valueStr);
 	            			result.addMention(mention);
 	            			// reset variables to (possibly) start a new mention
 	            			open = false;
@@ -166,7 +292,7 @@ public class IllinoisConverter extends AbstractInternalConverter<Data>
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// RAW				/////////////////////////////////////////////
+	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
 	protected void writeRawResults(Article article, Data data) throws IOException

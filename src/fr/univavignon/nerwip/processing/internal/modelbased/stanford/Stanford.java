@@ -21,18 +21,16 @@ package fr.univavignon.nerwip.processing.internal.modelbased.stanford;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import edu.stanford.nlp.ie.crf.CRFClassifier;
-import edu.stanford.nlp.ling.CoreLabel;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelBasedInternalProcessor;
 
 /**
  * This class acts as an interface with Stanford Named Entity Recognizer.
@@ -50,7 +48,7 @@ import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelBasedIn
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class Stanford extends AbstractModelBasedInternalProcessor<List<List<CoreLabel>>, StanfordConverter, StanfordModelName>
+public class Stanford extends AbstractProcessor implements InterfaceRecognizer
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -70,10 +68,7 @@ public class Stanford extends AbstractModelBasedInternalProcessor<List<List<Core
 	 * 		Problem while loading the model data.
 	 */
 	public Stanford(StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
-	{	super(modelName,loadModelOnDemand,false,ignorePronouns,exclusionOn);
-		
-		// init converter
-		converter = new StanfordConverter(getFolder());
+	{	delegateRecognizer = new StanfordDelegateRecognizer(this, modelName, loadModelOnDemand, ignorePronouns, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -89,89 +84,32 @@ public class Stanford extends AbstractModelBasedInternalProcessor<List<List<Core
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "classifier=" + modelName.toString();
-		result = result + "_" + "ignPro=" + ignorePronouns;
-		result = result + "_" + "exclude=" + exclusionOn;
-		
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	protected void updateHandledEntityTypes()
-	{	handledTypes = new ArrayList<EntityType>();
-		List<EntityType> temp = modelName.getHandledTypes();
-		handledTypes.addAll(temp);
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = modelName.canHandleLanguage(language);
+	{	String result = null;
+		//TODO
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// PREDEFINED MODEL 	/////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Cache the classifier, so that we don't have to load it several times */
-	private CRFClassifier<CoreLabel> classifier;
-
-    @Override
-	protected boolean isLoadedModel()
-    {	boolean result = classifier!=null;
-    	return result;
-    }
-    
-    @Override
-	protected void resetModel()
-    {	classifier = null;
-    }
+	/** Delegate in charge of recognizing entity mentions */
+	private StanfordDelegateRecognizer delegateRecognizer;
+	
+	@Override
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
+		return result;
+	}
 
 	@Override
-	protected void loadModel() throws ProcessorException
-    {	logger.increaseOffset();
-    	
-    	// load classifier
-		logger.log("Load model");
-    	try
-    	{	classifier = modelName.loadData();
-		}
-    	catch (ClassCastException e)
-    	{	e.printStackTrace();
-    		throw new ProcessorException(e.getMessage());
-		}
-    	catch (ClassNotFoundException e)
-    	{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-    	catch (IOException e)
-    	{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-    	    	
-    	logger.decreaseOffset();
-    }
-    
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
+		return result;
+	}
+	
 	@Override
-	protected List<List<CoreLabel>> detectMentions(Article article) throws ProcessorException
-	{	logger.increaseOffset();
-		List<List<CoreLabel>> result = null;
-		
-		// aply to raw text
-		String text = article.getRawText();
-		result = classifier.classify(text);
-		
-		logger.decreaseOffset();
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }

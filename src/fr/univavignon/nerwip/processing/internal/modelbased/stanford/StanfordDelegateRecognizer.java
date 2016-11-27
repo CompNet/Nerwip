@@ -22,46 +22,157 @@ package fr.univavignon.nerwip.processing.internal.modelbased.stanford;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.CoreAnnotations.BeforeAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.OriginalTextAnnotation;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.CoreAnnotations.BeforeAnnotation;
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.ConverterException;
+import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.AbstractInternalConverter;
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedInternalDelegateRecognizer;
 
 /**
- * This class is the converter associated to Stanford.
- * It is able to convert the text outputed by this recognizer
- * into objects compatible with Nerwip.
+ * This class acts as an interface with Stanford Named Entity Recognizer.
  * <br/>
- * It can also read/write these results using raw text
- * and our XML format.
+ * Recommended parameter values:
+ * <ul>
+ * 		<li>{@code model}: {@link StanfordModelName#CONLLMUC_MODEL CONLLMUC_MODEL} if dates are not needed,
+ * 			{@link StanfordModelName#MUC_MODEL MUC_MODEL} if dates are needed.</li>
+ * 		<li>{@code ignorePronouns}: {@code false}</li>
+ * 		<li>{@code exclusionOn}: {@code false}</li>
+ * </ul>
+ * <br/>
+ * Official Stanford website: <a href="http://nlp.stanford.edu/software/CRF-NER.shtml">http://nlp.stanford.edu/software/CRF-NER.shtml</a>
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class StanfordConverter extends AbstractInternalConverter<List<List<CoreLabel>>>
+public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<List<List<CoreLabel>>, StanfordModelName>
 {	
 	/**
-	 * Builds a new converter using the specified info.
+	 * Builds and sets up an object representing
+	 * a Stanford recognizer.
 	 * 
-	 * @param nerFolder
-	 * 		Folder used to stored the results of the recognizer.
+	 * @param stanford
+	 * 		Recognizer in charge of this delegate.
+	 * @param modelName
+	 * 		Predefined classifier used for mention detection.
+	 * @param loadModelOnDemand
+	 * 		Whether or not the model should be loaded when initializing this
+	 * 		recognizer, or only when necessary. 
+	 * @param ignorePronouns
+	 * 		Whether or not pronouns should be excluded from the detection.
+	 * @param exclusionOn
+	 * 		Whether or not stop words should be excluded from the detection.
+	 * 
+	 * @throws ProcessorException 
+	 * 		Problem while loading the model data.
 	 */
-	public StanfordConverter(String nerFolder)
-	{	super(ProcessorName.STANFORD, nerFolder, FileNames.FI_OUTPUT_TEXT);
+	public StanfordDelegateRecognizer(Stanford stanford, StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	super(stanford,modelName,loadModelOnDemand,false,ignorePronouns,exclusionOn);
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// FOLDER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override	
+	public String getFolder()
+	{	String result = recognizer.getName().toString();
+		
+		result = result + "_" + "classifier=" + modelName.toString();
+		result = result + "_" + "ignPro=" + ignorePronouns;
+		result = result + "_" + "exclude=" + exclusionOn;
+		
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	protected void updateHandledEntityTypes()
+	{	handledTypes = new ArrayList<EntityType>();
+		List<EntityType> temp = modelName.getHandledTypes();
+		handledTypes.addAll(temp);
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean canHandleLanguage(ArticleLanguage language)
+	{	boolean result = modelName.canHandleLanguage(language);
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// PREDEFINED MODEL 	/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Cache the classifier, so that we don't have to load it several times */
+	private CRFClassifier<CoreLabel> classifier;
+
+    @Override
+	protected boolean isLoadedModel()
+    {	boolean result = classifier!=null;
+    	return result;
+    }
+    
+    @Override
+	protected void resetModel()
+    {	classifier = null;
+    }
+
+	@Override
+	protected void loadModel() throws ProcessorException
+    {	logger.increaseOffset();
+    	
+    	// load classifier
+		logger.log("Load model");
+    	try
+    	{	classifier = modelName.loadData();
+		}
+    	catch (ClassCastException e)
+    	{	e.printStackTrace();
+    		throw new ProcessorException(e.getMessage());
+		}
+    	catch (ClassNotFoundException e)
+    	{	e.printStackTrace();
+			throw new ProcessorException(e.getMessage());
+		}
+    	catch (IOException e)
+    	{	e.printStackTrace();
+			throw new ProcessorException(e.getMessage());
+		}
+    	    	
+    	logger.decreaseOffset();
+    }
+    
+	/////////////////////////////////////////////////////////////////
+	// PROCESSING	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	protected List<List<CoreLabel>> detectMentions(Article article) throws ProcessorException
+	{	logger.increaseOffset();
+		List<List<CoreLabel>> result = null;
+		
+		// aply to raw text
+		String text = article.getRawText();
+		result = classifier.classify(text);
+		
+		logger.decreaseOffset();
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -81,7 +192,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// PROCESS			/////////////////////////////////////////////
+	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 //	/** Pattern used to find mentions in the NER output */
 //	private final static Pattern SEARCH_PATTERN = Pattern.compile("<(.+?)>(.+?)</.+?>",Pattern.DOTALL);
@@ -112,8 +223,9 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 //	}
 
 	@Override
-	public Mentions convert(Article article, List<List<CoreLabel>> data) throws ConverterException
-	{	Mentions result = new Mentions(processorName);
+	public Mentions convert(Article article, List<List<CoreLabel>> data) throws ProcessorException
+	{	ProcessorName recognizerName = recognizer.getName();
+		Mentions result = new Mentions(recognizerName);
 		
 		// consecutive words with the same type are not considered as a single mention by Stanford
 		// (at least in the default models)
@@ -144,7 +256,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 					// check for continuity with the previous mention
 					if(type!=prevType)
 					{	// case where we start a new mention
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 						result.addMention(mention);
 						lastMention = mention;
 					}
@@ -153,7 +265,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 					{	// case where we update (recreate, actually) the previous mention
 						startPos = lastMention.getStartPos();
 						valueStr = lastMention.getStringValue() + before + valueStr;
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 						result.addMention(mention);
 						result.removeMention(lastMention);
 						lastMention = mention;
@@ -200,7 +312,7 @@ public class StanfordConverter extends AbstractInternalConverter<List<List<CoreL
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// RAW				/////////////////////////////////////////////
+	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
 	protected void writeRawResults(Article article, List<List<CoreLabel>> data) throws IOException

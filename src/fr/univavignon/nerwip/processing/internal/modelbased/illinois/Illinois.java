@@ -21,26 +21,16 @@ package fr.univavignon.nerwip.processing.internal.modelbased.illinois;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
-import LBJ2.learn.SparseNetworkLearner;
-import LBJ2.parse.LinkedVector;
-import edu.illinois.cs.cogcomp.LbjNer.ExpressiveFeatures.ExpressiveFeaturesAnnotator;
-import edu.illinois.cs.cogcomp.LbjNer.InferenceMethods.Decoder;
-import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel1;
-import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Data;
-import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.NERDocument;
-import edu.illinois.cs.cogcomp.LbjNer.ParsingProcessingData.PlainTextReader;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelBasedInternalProcessor;
-import fr.univavignon.nerwip.processing.internal.modelbased.illinois.IllinoisConverter;
 
 /**
  * This class acts as an interface with Illinois Named Entity Tagger.
@@ -57,7 +47,7 @@ import fr.univavignon.nerwip.processing.internal.modelbased.illinois.IllinoisCon
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class Illinois extends AbstractModelBasedInternalProcessor<Data,IllinoisConverter,IllinoisModelName>
+public class Illinois extends AbstractProcessor implements InterfaceRecognizer
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -80,10 +70,7 @@ public class Illinois extends AbstractModelBasedInternalProcessor<Data,IllinoisC
      * 		Problem while loading the model data.
 	 */
 	public Illinois(IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
-	{	super(modelName,loadModelOnDemand,trim,ignorePronouns,exclusionOn);
-		
-		// init converter
-		converter = new IllinoisConverter(getFolder());
+	{	delegateRecognizer = new IllinoisDelegateRecognizer(this, modelName, loadModelOnDemand, trim, ignorePronouns, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -99,99 +86,32 @@ public class Illinois extends AbstractModelBasedInternalProcessor<Data,IllinoisC
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "model=" + modelName.toString();
-		result = result + "_" + "trim=" + trim;
-		result = result + "_" + "ignPro=" + ignorePronouns;
-		result = result + "_" + "exclude=" + exclusionOn;
-		
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	protected void updateHandledEntityTypes()
-	{	handledTypes = new ArrayList<EntityType>();
-		List<EntityType> temp = modelName.getHandledTypes();
-		handledTypes.addAll(temp);
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = modelName.canHandleLanguage(language);
+	{	String result = null;
+		//TODO
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// PREDEFINED MODEL 	/////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** First level predefined model, used for NER */
-    private NETaggerLevel1 tagger1;
-	/** Second level predefined model, used for NER */
-    private NETaggerLevel2 tagger2;
-    
-    @Override
-	protected boolean isLoadedModel()
-    {	boolean result = tagger1!=null && tagger2!=null;
-    	return result;
-    }
-    
-    @Override
-	protected void resetModel()
-    {	tagger1 = null;
-    	tagger2 = null;
-    }
+	/** Delegate in charge of recognizing entity mentions */
+	private IllinoisDelegateRecognizer delegateRecognizer;
+	
+	@Override
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
+		return result;
+	}
 
 	@Override
-	protected void loadModel() throws ProcessorException
-    {	logger.increaseOffset();
-		logger.log("Load model data");
-		
-    	SparseNetworkLearner[] models;
-		try
-		{	models = modelName.loadData();
-		}
-		catch (Exception e)
-		{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-    	tagger1 = (NETaggerLevel1) models[0];
-    	tagger2 = (NETaggerLevel2) models[1];
-    	
-    	logger.decreaseOffset();
-    }
-    
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
+		return result;
+	}
+	
 	@Override
-	protected Data detectMentions(Article article) throws ProcessorException
-	{	logger.increaseOffset();
-		Data result = null;
-		String text = article.getRawText();
-
-//		ParametersForLbjCode.currentParameters.logging = false;
-		
-		Vector<LinkedVector> sentences = PlainTextReader.parseText(text);
-    	NERDocument doc = new NERDocument(sentences, "consoleInput");
-    	result = new Data(doc);
-		
-		try
-		{	ExpressiveFeaturesAnnotator.annotate(result);
-    		Decoder.annotateDataBIO(result,tagger1,tagger2);
-		}
-		catch(Exception e)
-		{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-		
-		logger.decreaseOffset();
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }

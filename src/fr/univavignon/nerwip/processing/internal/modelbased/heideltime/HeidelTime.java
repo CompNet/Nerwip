@@ -21,18 +21,16 @@ package fr.univavignon.nerwip.processing.internal.modelbased.heideltime;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import de.unihd.dbs.heideltime.standalone.HeidelTimeStandalone;
-import de.unihd.dbs.heideltime.standalone.exceptions.DocumentCreationTimeMissingException;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelBasedInternalProcessor;
 
 /**
  * This class acts as an interface with the HeidelTime tool.
@@ -45,14 +43,14 @@ import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelBasedIn
  * </ul>
  * <br/>
  * Note we ignore some of the data output by HeidelTime when
- * converting to Nerwip format. Cf. {@link HeidelTimeConverter}
+ * converting to Nerwip format. Cf. {@link HeidelTimeDelegateRecognizer}
  * for more details. 
  * <br/>
  * Official HeidelTime website: <a href="https://code.google.com/p/heideltime/">https://code.google.com/p/heideltime/</a>
  * 
  * @author Vincent Labatut
  */
-public class HeidelTime extends AbstractModelBasedInternalProcessor<String, HeidelTimeConverter, HeidelTimeModelName>
+public class HeidelTime extends AbstractProcessor implements InterfaceRecognizer
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -70,14 +68,7 @@ public class HeidelTime extends AbstractModelBasedInternalProcessor<String, Heid
 	 * 		Problem while loading the models or tokenizers.
 	 */
 	public HeidelTime(HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws ProcessorException
-	{	super(modelName,loadModelOnDemand,false,false,false);
-	
-		setIgnoreNumbers(false);
-
-		this.doIntervalTagging = doIntervalTagging; //TODO this is actually ignored when loadModelOnDemand is false
-		
-		// init converter
-		converter = new HeidelTimeConverter(getFolder());
+	{	delegateRecognizer = new HeidelTimeDelegateRecognizer(this, modelName, loadModelOnDemand, doIntervalTagging);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -93,107 +84,32 @@ public class HeidelTime extends AbstractModelBasedInternalProcessor<String, Heid
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = getName().toString();
-		
-		result = result + "_" + "mainModel=" + modelName.toString();
-		result = result + "_" + "intervals=" + doIntervalTagging;
-//		result = result + "_" + "ignPro=" + ignorePronouns;
-//		result = result + "_" + "exclude=" + exclusionOn;
-		
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// ENTITY TYPES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	protected void updateHandledEntityTypes()
-	{	handledTypes = new ArrayList<EntityType>();
-		List<EntityType> temp = modelName.getHandledTypes();
-		handledTypes.addAll(temp);
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// LANGUAGES	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	@Override
-	public boolean canHandleLanguage(ArticleLanguage language)
-	{	boolean result = modelName.canHandleLanguage(language);
+	{	String result = null;
+		//TODO
 		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// PARAMETERS		/////////////////////////////////////////////
+	// RECOGNIZER 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Whether intervals should be detected or ignored */
-	private boolean doIntervalTagging = false;
-	
-	/////////////////////////////////////////////////////////////////
-	// MODELS			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Model used by HeidelTime to detect mentions */
-	private HeidelTimeStandalone mainModel;
-	/** Alternative mainModel, in case we have to deal with news */
-	private HeidelTimeStandalone altModel;
-
-    @Override
-	protected boolean isLoadedModel()
-    {	boolean result = mainModel!=null;
-    	return result;
-    }
-    
-    @Override
-	protected void resetModel()
-    {	mainModel = null;
-    	altModel = null;
-    }
+	/** Delegate in charge of recognizing entity mentions */
+	private HeidelTimeDelegateRecognizer delegateRecognizer;
 	
 	@Override
-	protected void loadModel() throws ProcessorException
-	{	logger.increaseOffset();
-		
-		mainModel = modelName.buildMainTool(doIntervalTagging);
-		altModel = modelName.buildAltTool(doIntervalTagging);
-		
-		logger.decreaseOffset();
+	public List<EntityType> getRecognizedEntityTypes()
+	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
+		return result;
+	}
+
+	@Override
+	public boolean canRecognizeLanguage(ArticleLanguage language) 
+	{	boolean result = delegateRecognizer.canHandleLanguage(language);
+		return result;
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// PROCESSING	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
 	@Override
-	protected String detectMentions(Article article) throws ProcessorException
-	{	logger.increaseOffset();
-		String result = null;
-		
-		logger.log("Applying HeidelTime to detect dates");
-		String text = article.getRawText();
-		
-		Date date = article.getPublishingDate();
-		try
-		{	// if HeidelTime needs a reference date
-			if(modelName.requiresDate())
-			{	if(date!=null)
-					result = mainModel.process(text, date);
-				else
-					result = altModel.process(text);
-			}
-			
-			// if it doesn't need a date
-			else
-			{	if(date!=null)
-					result = mainModel.process(text, date);
-				else
-					result = mainModel.process(text);
-			}
-		}
-		catch (DocumentCreationTimeMissingException e)
-		{	logger.log("ERROR: problem with the date given to HeidelTime ("+date+")");
-//			e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-		
-	    logger.decreaseOffset();
+	public Mentions recognize(Article article) throws ProcessorException
+	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
 }
