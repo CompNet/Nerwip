@@ -43,7 +43,7 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.MentionDate;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
@@ -74,7 +74,7 @@ public class NetworkExtraction
 	 * 		Problem while extracting.
 	 */
 	public static void main(String[] args) throws Exception
-	{	AbstractProcessor recognizer = new StraightCombiner();
+	{	InterfaceRecognizer recognizer = new StraightCombiner();
 		extractNetwork(recognizer);
 	}
 		
@@ -105,7 +105,7 @@ public class NetworkExtraction
 	 * @throws ReaderException
 	 * 		Problem while accessing a file.
 	 */
-	private static void extractNetwork(AbstractProcessor recognizer) throws ProcessorException, ParseException, SAXException, IOException, ReaderException
+	private static void extractNetwork(InterfaceRecognizer recognizer) throws ProcessorException, ParseException, SAXException, IOException, ReaderException
 	{	logger.log("Extract entity network");
 		
 		// init graph

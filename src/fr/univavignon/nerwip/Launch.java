@@ -34,14 +34,14 @@ import fr.univavignon.nerwip.edition.MentionEditor;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombiner.SubeeMode;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
+import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer.SubeeMode;
+import fr.univavignon.nerwip.processing.combiner.svmbased.CombineMode;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmTrainer;
-import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner.CombineMode;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner;
+import fr.univavignon.nerwip.processing.combiner.votebased.VoteMode;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteTrainer;
-import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner.VoteMode;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.IllinoisModelName;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.IllinoisTrainer;
@@ -622,7 +622,7 @@ public class Launch
 		// note that by default, the mentions detected by a NER are cached.
 		// this means if the result file already exists, it will be loaded.
 		// here, we use the same parameters than for the single-article tests.
-		AbstractProcessor temp[] =
+		InterfaceRecognizer temp[] =
 		{	new DateExtractor(),
 			new WikipediaDater(),
 			new Illinois(IllinoisModelName.CONLL_MODEL, true, true, false, false),
@@ -632,10 +632,10 @@ public class Launch
 			new Stanford(StanfordModelName.CONLLMUC_MODEL, true, false, false),
 			new Subee(true, true, true, true, true)
 		};
-		List<AbstractProcessor> recognizers = Arrays.asList(temp);
+		List<InterfaceRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
-		for(AbstractProcessor recognizer: recognizers)
+		for(InterfaceRecognizer recognizer: recognizers)
 			logger.log(recognizer.getFolder());
 		logger.decreaseOffset();
 
@@ -813,14 +813,14 @@ public class Launch
 		logger.decreaseOffset();
 		
 		// set the recognizers we want to evaluate (like before in evaluateStandaloneTools)
-		AbstractProcessor temp[] =
+		InterfaceRecognizer temp[] =
 		{	new VoteCombiner(true, true, VoteMode.UNIFORM, true, true, SubeeMode.NONE),
 			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE)
 		};
-		List<AbstractProcessor> recognizers = Arrays.asList(temp);
+		List<InterfaceRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
-		for(AbstractProcessor recognizer: recognizers)
+		for(InterfaceRecognizer recognizer: recognizers)
 			logger.log(recognizer.getFolder());
 		logger.decreaseOffset();
 

@@ -72,21 +72,19 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionIstanbul
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionMucMeasure;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombiner;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombiner.SubeeMode;
+import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer.SubeeMode;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
-import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner.Combiner;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
+import fr.univavignon.nerwip.processing.combiner.svmbased.CombineMode;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmTrainer;
-import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner.CombineMode;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner;
+import fr.univavignon.nerwip.processing.combiner.votebased.VoteMode;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteTrainer;
-import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner.VoteMode;
-import fr.univavignon.nerwip.processing.external.AbstractExternalConverter;
 import fr.univavignon.nerwip.processing.external.nero.Nero;
-import fr.univavignon.nerwip.processing.external.nero.Nero.NeroTagger;
+import fr.univavignon.nerwip.processing.external.nero.NeroTagger;
 import fr.univavignon.nerwip.processing.external.tagen.TagEn;
 import fr.univavignon.nerwip.processing.external.tagen.TagEnModelName;
 import fr.univavignon.nerwip.processing.internal.modelbased.heideltime.HeidelTime;
@@ -107,7 +105,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.dateextractor.DateExt
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalaisLanguage;
 import fr.univavignon.nerwip.processing.internal.modelless.opener.OpeNer;
-import fr.univavignon.nerwip.processing.internal.modelless.spotlight.DbpSpotlight;
+import fr.univavignon.nerwip.processing.internal.modelless.spotlight.Spotlight;
 import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
@@ -315,7 +313,7 @@ public class Test
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractProcessor recognizer = new StraightCombiner();
+		    InterfaceRecognizer recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
@@ -354,7 +352,7 @@ public class Test
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractProcessor recognizer = new StraightCombiner();
+		    InterfaceRecognizer recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
@@ -400,7 +398,7 @@ public class Test
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractProcessor recognizer = new StraightCombiner();
+		    InterfaceRecognizer recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
@@ -474,7 +472,7 @@ File folder = folders.get(0);
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-		    AbstractProcessor recognizer = new StraightCombiner();
+		    InterfaceRecognizer recognizer = new StraightCombiner();
 		    ArticleRetriever retriever = new ArticleRetriever();
 		    article = retriever.process(name);
 		    String rawText = article.getRawText();
@@ -561,7 +559,7 @@ File folder = folders.get(0);
 		    // get the article texts
 		    logger.log("Retrieve the article");
 		    String name = folder.getName();
-	        AbstractProcessor recognizer = new StraightCombiner();
+	        InterfaceRecognizer recognizer = new StraightCombiner();
 	        ArticleRetriever retriever = new ArticleRetriever();
 	        article = retriever.process(name);
 	        String rawText = article.getRawText();
@@ -1203,7 +1201,7 @@ File folder = folders.get(0);
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
-		DbpSpotlight spotlight = new DbpSpotlight(0.3f);
+		Spotlight spotlight = new Spotlight(0.3f);
 		spotlight.setOutputRawResults(true);
 		spotlight.setCacheEnabled(false);
 		
@@ -1497,7 +1495,7 @@ File folder = folders.get(0);
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testAllCorpus(AbstractProcessor recognizer, int start) throws Exception
+	private static void testAllCorpus(InterfaceRecognizer recognizer, int start) throws Exception
 	{	logger.log("Process each article individually");
 		logger.increaseOffset();
 		
@@ -1558,7 +1556,7 @@ File folder = folders.get(0);
 		
 		// set recognizers
 		boolean loadOnDemand = true;
-		AbstractProcessor temp[] =
+		InterfaceRecognizer temp[] =
 		{	
 //			new DateExtractor(),
 //			new WikipediaDater(),
@@ -1666,9 +1664,9 @@ File folder = folders.get(0);
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, false),
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, true),	// LOC, ORG, PERS
 
-//			new DbpSpotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
-//			new DbpSpotlight(0.2f),	// LOC, MEET, ORG, PERS, PROD
-			new DbpSpotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
+//			new Spotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
+//			new Spotlight(0.2f),	// LOC, MEET, ORG, PERS, PROD
+			new Spotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
 				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
@@ -1880,15 +1878,15 @@ File folder = folders.get(0);
 			
 //			new StraightCombiner()
 		};
-		List<AbstractProcessor> recognizers = Arrays.asList(temp);
+		List<InterfaceRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
-		for(AbstractProcessor recognizer: recognizers)
+		for(InterfaceRecognizer recognizer: recognizers)
 			logger.log(recognizer.getFolder());
 		logger.decreaseOffset();
 		
 		// cache/no cache at the recognizer level
-		for(AbstractProcessor recognizer: recognizers)
+		for(InterfaceRecognizer recognizer: recognizers)
 		{	recognizer.setCacheEnabled(true);	//TODO
 //			((AbstractCombiner)recognizer).setSubCacheEnabled(true);	//just to check combiner subcache
 		}

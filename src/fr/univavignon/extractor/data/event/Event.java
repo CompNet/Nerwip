@@ -24,19 +24,19 @@ public class Event
     // PERSONS			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
 	/** Person type entity */
-	private Set<MentionPerson> persons = new TreeSet<MentionPerson>();
+	private MentionPerson person;
 	/** Location type entity */
-	private Set<MentionLocation> location;
+	private MentionLocation location;
 	/** Organization type entity */
-	private Set<MentionOrganization> organization;
+	private MentionOrganization organization;
 	/** Function type entity */
-	private Set<MentionFunction> function;
+	private MentionFunction function;
 	/** Production type entity */
-	private Set<MentionProduction> production;
+	private MentionProduction production;
 	/** Meeting type entity */
-	private Set<MentionMeeting> meeting;
+	private MentionMeeting meeting;
 	/** Date type entity */
-	private Set<MentionDate> date;
+	private MentionDate date;
 	
 	//TODO question : how to compare the entities >> need to distinguish mentions and entities
 	

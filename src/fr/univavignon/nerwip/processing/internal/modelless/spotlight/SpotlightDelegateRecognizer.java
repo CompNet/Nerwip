@@ -82,7 +82,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class DbpSpotlightDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
+public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -93,7 +93,7 @@ public class DbpSpotlightDelegateRecognizer extends AbstractModellessInternalDel
 	 * @param minConf 
 	 * 		Minimal confidence for the returned entities.
 	 */
-	public DbpSpotlightDelegateRecognizer(DbpSpotlight spotlight, float minConf)
+	public SpotlightDelegateRecognizer(Spotlight spotlight, float minConf)
 	{	super(spotlight,true,false,false);
 		
 		this.minConf = minConf;

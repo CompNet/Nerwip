@@ -54,6 +54,7 @@ import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
@@ -302,7 +303,7 @@ public class SpotlightTools
 			// get the article texts
 			logger.log("Retrieve the article");
 			String name = folder.getName();
-			AbstractProcessor recognizer = new StraightCombiner();
+			InterfaceRecognizer recognizer = new StraightCombiner();
 			ArticleRetriever retriever = new ArticleRetriever();
 			article = retriever.process(name);
 			String rawText = article.getRawText();

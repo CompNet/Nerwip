@@ -41,6 +41,7 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
@@ -66,7 +67,7 @@ public class GraphExtraction
 	 * 		Problem while extracting.
 	 */
 	public static void main(String[] args) throws Exception
-	{	AbstractProcessor recognizer = new StraightCombiner();
+	{	InterfaceRecognizer recognizer = new StraightCombiner();
 		extractNetwork(recognizer);
 	}
 	
@@ -88,7 +89,7 @@ public class GraphExtraction
 	 * 		The recognizer to apply (or previously applied).
 	 * @throws Exception 
 	 */
-   private static void extractNetwork(AbstractProcessor recognizer)  throws Exception
+   private static void extractNetwork(InterfaceRecognizer recognizer)  throws Exception
    {	logger.log("Extract event network");
 		
 		//init graph

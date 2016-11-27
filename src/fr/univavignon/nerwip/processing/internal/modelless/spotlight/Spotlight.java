@@ -52,7 +52,7 @@ import fr.univavignon.nerwip.processing.ProcessorName;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class DbpSpotlight extends AbstractProcessor implements InterfaceRecognizer
+public class Spotlight extends AbstractProcessor implements InterfaceRecognizer
 {
 	/**
 	 * Builds and sets up an object representing
@@ -61,8 +61,8 @@ public class DbpSpotlight extends AbstractProcessor implements InterfaceRecogniz
 	 * @param minConf 
 	 * 		Minimal confidence for the returned entities.
 	 */
-	public DbpSpotlight(float minConf)
-	{	delegateRecognizer = new DbpSpotlightDelegateRecognizer(this, minConf);
+	public Spotlight(float minConf)
+	{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ public class DbpSpotlight extends AbstractProcessor implements InterfaceRecogniz
 	// RECOGNIZER	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Delegate in charge of recognizing entity mentions */
-	private DbpSpotlightDelegateRecognizer delegateRecognizer;
+	private SpotlightDelegateRecognizer delegateRecognizer;
 	
 	@Override
 	public List<EntityType> getRecognizedEntityTypes()
