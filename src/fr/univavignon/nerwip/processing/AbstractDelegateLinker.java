@@ -131,9 +131,13 @@ public abstract class AbstractDelegateLinker
 	 * 		List of the previously recognized mentions.
 	 * @param entities
 	 * 		List of the entities associated to the mentions.
+	 * @param recognizer
+	 * 		Processor used to recognize the entity mentions.
+	 * @param resolver
+	 * 		Processor used to resolve the coreferences.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public abstract void delegatelink(Article article, Mentions mentions, Entities entities) throws ProcessorException;
+	public abstract void delegatelink(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException;
 }
