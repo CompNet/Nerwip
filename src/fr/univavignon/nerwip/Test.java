@@ -1557,7 +1557,7 @@ File folder = folders.get(0);
 		boolean loadOnDemand = true;
 		InterfaceRecognizer temp[] =
 		{	
-			new DateExtractor(),
+//			new DateExtractor(),
 //			new WikipediaDater(),
 			
 //			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, false),	
@@ -1640,10 +1640,10 @@ File folder = folders.get(0);
 //			new OpenCalais(OpenCalaisLanguage.EN, false, true),
 //			new OpenCalais(OpenCalaisLanguage.EN, true,  false),	// (DATE), LOC, ORG, PERS	
 //			new OpenCalais(OpenCalaisLanguage.EN, true,  true),
-//			new OpenCalais(OpenCalaisLanguage.FR, false, false),
-//			new OpenCalais(OpenCalaisLanguage.FR, false, true),
-//			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
-//			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
+			new OpenCalais(OpenCalaisLanguage.FR, false, false),
+			new OpenCalais(OpenCalaisLanguage.FR, false, true),
+			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
+			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
 //			new OpeNer(false, false, false),
 //			new OpeNer(false, false, true),
@@ -2198,10 +2198,6 @@ File folder = folders.get(0);
  * - Spotlight: See the generalisation to linking only and both. Resolving also, can be deduced from the linked entities.
  *   
  * - See if OpenNer can be adapted to process links? And the other tools, too.
- * - Merge all processes in the same class (recog, resolv, link)
- * - Rename recognizer to processor where appropriate
- * 
-	//TODO edit getFolder() in all processors, once no compilation error
  */
 
 /*

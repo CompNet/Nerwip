@@ -22,13 +22,19 @@ package fr.univavignon.nerwip.processing.external.nero;
  */
 
 /**
- * Represents the neroTagger used by Nero.
+ * Represents the tagger used by Nero.
  * 
  * @author Vincent Labatut
  */
 public enum NeroTagger
-{	/** Use the Conditional Random Fields Tagger */
+{	/** 
+     * Use the Conditional Random Fields Tagger
+     * developped for the French language. 
+     */
 	CRF,
-	/** Use the Finite State Transducer Tagger */
+	/** 
+	 * Use the Finite State Transducer Tagger
+	 * developped for the French language. 
+	 */
 	FST;
 }

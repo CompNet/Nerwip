@@ -50,11 +50,11 @@ import fr.univavignon.nerwip.processing.ProcessorName;
  * robust when handling punctuation. It is also very sensitive to 
  * specific characters like {@code û} or {@code ë}, or combinations 
  * of characters such as newline {@code '\n'} followed by 
- * {@code '"'}. Those should be avoided at all cost in the
- * parsed text, otherwise the delegate will not be able to process 
- * Nero's output.
+ * {@code '"'}. Nerwip converter tries to handle this, but it is likely  
+ * to break in these situations (see class {@link NeroDelegateRecognizer}.
  * <br/>
- * Nero was tested only on Linux system.
+ * <b>Warning (2):</b> Nero was tested only on Linux system. It requires to
+ * install various libraries, cf. the project {@code README} file.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut

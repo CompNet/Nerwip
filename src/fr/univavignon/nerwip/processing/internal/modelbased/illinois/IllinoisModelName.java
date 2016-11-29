@@ -51,6 +51,7 @@ public enum IllinoisModelName
 	 * 	<li>Organization</li>
 	 * 	<li>Misc.</li>
 	 * </ul> 
+	 * Only for the English language.
 	 */ 
 	CONLL_MODEL(
 		"Conll",
@@ -86,6 +87,7 @@ public enum IllinoisModelName
 	 * 	<li>Time</li>
 	 * 	<li>WorkOfArt</li>
 	 * </ul> 
+	 * Only for the English language.
 	 */
 	ONTONOTES_MODEL(
 		"Ontonotes",
@@ -108,6 +110,7 @@ public enum IllinoisModelName
 	 * 	<li>Person</li>
 	 * 	<li>Organization</li>
 	 * </ul> 
+	 * Only for the English language.
 	 */ 
 	NERWIP_MODEL(
 		"Nerwip",

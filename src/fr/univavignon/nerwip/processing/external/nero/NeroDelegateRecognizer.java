@@ -78,7 +78,7 @@ public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * @param nero
 	 * 		Recognizer in charge of this delegate.
 	 * @param neroTagger
-	 * 		NeroTagger used by Nero (CRF or FST).
+	 * 		Tagger used by Nero (CRF or FST).
 	 * @param flat
 	 * 		Whether mentions can contain other mentions ({@code false}) or
 	 * 		are mutually exclusive ({@code true}).
@@ -284,6 +284,7 @@ public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 			}
 			catch (IOException e)
 			{	//e.printStackTrace();
+				logger.log("ERROR: could not execute Nero. Check you have installed the required libraries, as explained in the README file.");
 				throw new ProcessorException(e.getMessage());
 			}
 		}

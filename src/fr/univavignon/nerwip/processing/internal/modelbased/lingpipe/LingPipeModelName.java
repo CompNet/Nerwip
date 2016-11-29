@@ -53,7 +53,10 @@ import java.util.Scanner;
  * @author Vincent Labatut
  */
 public enum LingPipeModelName
-{	/** Uses an already trained model */
+{	/**
+	 * Uses an already trained model.
+	 * Only the for the English language.
+	 */
 	PREDEFINED_MODEL(
 		"PredefinedModel",
 		"ne-en-news-muc6.AbstractCharLmRescoringChunker",
@@ -65,7 +68,10 @@ public enum LingPipeModelName
 		Arrays.asList(ArticleLanguage.EN)
 	),
 	
-	/** Our own model, trained on our own corpus */
+	/** 
+	 * Our own model, trained on our own corpus. 
+	 * Only the for the English language.
+	 */
 	NERWIP_MODEL(
 		"NerwipModel",
 		"ne-en-wp-nerwip.AbstractCharLmRescoringChunker",
@@ -77,7 +83,10 @@ public enum LingPipeModelName
 		Arrays.asList(ArticleLanguage.EN)
 	),
 	
-	/** Uses dictionaries with exact match */
+	/** 
+	 * Uses dictionaries with exact match.
+	 * Only the for the English language.
+	 */
 	EXACT_DICTIONARY(
 		"ExactDictionary",
 		null,
@@ -89,7 +98,10 @@ public enum LingPipeModelName
 		Arrays.asList(ArticleLanguage.EN) //TODO could be extended to French by translating the dictionaries
 	),
 
-	/** Uses dictionaries with approximate match */
+	/** 
+	 * Uses dictionaries with approximate match.
+	 * Only the for the English language.
+	 */
 	APPROX_DICTIONARY(
 		"ApproxDictionary",
 		null,
