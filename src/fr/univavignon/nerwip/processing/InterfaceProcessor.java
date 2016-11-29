@@ -41,26 +41,6 @@ public interface InterfaceProcessor
 	 * 		Name of this tool.
 	 */
 	public ProcessorName getName();
-
-	/////////////////////////////////////////////////////////////////
-	// FOLDER			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Returns the name of the folder containing the results of this
-	 * tool.
-	 * <br/>
-	 * This name takes into account the name of the tool, but also 
-	 * the parameters it uses. It can also be used just whenever a 
-	 * string representation of the tool and its parameters is needed.
-	 * 
-	 * @return 
-	 * 		Name of the appropriate folder.
-	 */
-	public String getFolder();
-	//TODO probably necessary to distinguish recognizer, resolver and linker here
-	// consequently: need to add resolver and linker fields (?)
-	// must pay attention to the case where we just want the "qualified" name of the tool
-	//TODO is this method really necessary here? or only used in the delegate?
 	
 	/////////////////////////////////////////////////////////////////
 	// CACHING			/////////////////////////////////////////////

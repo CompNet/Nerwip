@@ -22,21 +22,21 @@ package fr.univavignon.nerwip.data.entity;
  */
 
 /**
- * Class representing a person entity, which is a kind of named entity.
+ * Class representing a function entity, which is a kind of named entity.
  * 
  * @author Vincent Labatut
  */
-public abstract class PersonEntity extends AbstractNamedEntity
+public abstract class EntityFunction extends AbstractNamedEntity
 {	
 	/**
-	 * Constructs a person entity.
+	 * Constructs a function entity.
 	 * 
 	 * @param mainName
 	 * 		Main string representation of the entity to create.
 	 * @param internalId
 	 * 		Internal id of the entity to create.
 	 */
-	public PersonEntity(String mainName, long internalId)
+	public EntityFunction(String mainName, long internalId)
 	{	super(mainName,internalId);
 	}
 	
@@ -45,7 +45,7 @@ public abstract class PersonEntity extends AbstractNamedEntity
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
-	{	String result = "PERSON(";
+	{	String result = "FUNCTION(";
 		result = result + "NAME=\"" + mainName+"\"";
 		result = result + ")";
 		return result;

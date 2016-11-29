@@ -298,12 +298,22 @@ public abstract class AbstractEvaluator<T extends InterfaceProcessor, U extends 
 			T recognizer = recognizers.get(i);
 			String newName = FileNames.FO_OUTPUT + File.separator 
 				+ TimeFormatting.formatCurrentFileTime()
-				+ "." + recognizer.getFolder()
+				+ "." + getFolder(recognizer)
 				+ "." + measure.getFileName(); 
 			File newFile = new File(newName);
 			oldFile.renameTo(newFile);
 		}
 	}
+	
+	/**
+	 * Returns the data folder associated to the specified processor.
+	 * 
+	 * @param processor
+	 * 		Processed whose data folder is desired. 
+	 * @return
+	 * 		A {@code String} representing the folder path.
+	 */
+	protected abstract String getFolder(T processor);
 	
 	/////////////////////////////////////////////////////////////////
 	// STRING			/////////////////////////////////////////////

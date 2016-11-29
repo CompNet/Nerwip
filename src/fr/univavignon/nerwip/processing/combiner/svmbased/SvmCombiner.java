@@ -109,9 +109,8 @@ public class SvmCombiner extends AbstractProcessor implements InterfaceRecognize
 	// FOLDER 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String getFolder()
-	{	String result = null;
-		//TODO
+	public String getRecognizerFolder()
+	{	String result = delegateRecognizer.getFolder();
 		return result;
 	}
 	

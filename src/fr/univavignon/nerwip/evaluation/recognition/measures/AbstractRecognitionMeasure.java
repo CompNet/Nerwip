@@ -679,14 +679,14 @@ return temp;
 	private static final String COUNTS_STRING = "Counts";
 	/** String used when reading/writing results in files */
 	private static final String SCORES_STRING = "Scores";
-
+	
 	@Override
 	public void writeNumbers(File folder, String dataName) throws FileNotFoundException, UnsupportedEncodingException
 	{	String filePath = folder.getPath() + File.separator + getFileName();
 		PrintWriter pw = FileTools.openTextFileWrite(filePath,"UTF-8");
 		
 		// write header
-		pw.println("# tool evaluated: "+recognizer.getFolder());
+		pw.println("# tool evaluated: "+recognizer.getRecognizerFolder());
 		pw.println("# evaluation data: "+dataName);
 		pw.println("# date of evaluation: "+TimeFormatting.formatCurrentFileTime());
 		pw.println("# evaluation measure: "+getName());

@@ -956,9 +956,9 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 //			logger.log("Comparing the word to each NER output");
 			logger.increaseOffset();
 			Map<InterfaceRecognizer,WordMention> wordMentions = new HashMap<InterfaceRecognizer,WordMention>();
-//			Map<AbstractProcessor,EntityType> ovTypes = new HashMap<AbstractProcessor,EntityType>();
-//			Map<AbstractProcessor,AbstractEntity<?>> ovMentions = new HashMap<AbstractProcessor,AbstractEntity<?>>();
-//			Map<AbstractProcessor,Boolean> ovBeginnings = new HashMap<AbstractProcessor,Boolean>();
+//			Map<InterfaceRecognizer,EntityType> ovTypes = new HashMap<InterfaceRecognizer,EntityType>();
+//			Map<InterfaceRecognizer,AbstractEntity<?>> ovMentions = new HashMap<InterfaceRecognizer,AbstractEntity<?>>();
+//			Map<InterfaceRecognizer,Boolean> ovBeginnings = new HashMap<InterfaceRecognizer,Boolean>();
 			Iterator<InterfaceRecognizer> itRec = recognizers.iterator();
 			while(itRec.hasNext())
 			{	InterfaceRecognizer recognizer = itRec.next();

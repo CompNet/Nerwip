@@ -74,9 +74,8 @@ public class TagEn extends AbstractProcessor implements InterfaceRecognizer
 	// FOLDER 			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String getFolder()
-	{	String result = null;
-		//TODO
+	public String getRecognizerFolder()
+	{	String result = delegateRecognizer.getFolder();
 		return result;
 	}
 	

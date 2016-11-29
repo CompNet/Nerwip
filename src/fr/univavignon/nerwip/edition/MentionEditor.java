@@ -105,7 +105,6 @@ import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.edition.language.Language;
 import fr.univavignon.nerwip.edition.language.LanguageLoader;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;

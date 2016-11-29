@@ -71,7 +71,6 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognition
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionIstanbulMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionMucMeasure;
-import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer.SubeeMode;
@@ -179,7 +178,7 @@ public class Test
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
-		testSpotlightRecognizer(name);
+//		testSpotlightRecognizer(name);
 //		testSpotlight();
 //     	testNLDistance(S, T);
 //		testEventsExtraction();
@@ -1558,7 +1557,7 @@ File folder = folders.get(0);
 		boolean loadOnDemand = true;
 		InterfaceRecognizer temp[] =
 		{	
-//			new DateExtractor(),
+			new DateExtractor(),
 //			new WikipediaDater(),
 			
 //			new HeidelTime(HeidelTimeModelName.FRENCH_NARRATIVES, loadOnDemand, false),	
@@ -1666,7 +1665,7 @@ File folder = folders.get(0);
 
 //			new Spotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
 //			new Spotlight(0.2f),	// LOC, MEET, ORG, PERS, PROD
-			new Spotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
+//			new Spotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
 				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
@@ -1882,12 +1881,12 @@ File folder = folders.get(0);
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
 		for(InterfaceRecognizer recognizer: recognizers)
-			logger.log(recognizer.getFolder());
+			logger.log(recognizer.getRecognizerFolder());
 		logger.decreaseOffset();
 		
 		// cache/no cache at the recognizer level
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	recognizer.setCacheEnabled(true);	//TODO
+		{	recognizer.setCacheEnabled(false);	//TODO
 //			((AbstractCombiner)recognizer).setSubCacheEnabled(true);	//just to check combiner subcache
 		}
 		

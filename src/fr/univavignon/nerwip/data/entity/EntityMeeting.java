@@ -26,7 +26,7 @@ package fr.univavignon.nerwip.data.entity;
  * 
  * @author Vincent Labatut
  */
-public abstract class MeetingEntity extends AbstractNamedEntity
+public abstract class EntityMeeting extends AbstractNamedEntity
 {	
 	/**
 	 * Constructs a meeting entity.
@@ -36,7 +36,7 @@ public abstract class MeetingEntity extends AbstractNamedEntity
 	 * @param internalId
 	 * 		Internal id of the entity to create.
 	 */
-	public MeetingEntity(String mainName, long internalId)
+	public EntityMeeting(String mainName, long internalId)
 	{	super(mainName,internalId);
 	}
 	

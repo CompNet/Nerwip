@@ -22,21 +22,21 @@ package fr.univavignon.nerwip.data.entity;
  */
 
 /**
- * Class representing a location entity, which is a kind of named entity.
+ * Class representing an organization entity, which is a kind of named entity.
  * 
  * @author Vincent Labatut
  */
-public abstract class LocationEntity extends AbstractNamedEntity
+public abstract class EntityOrganization extends AbstractNamedEntity
 {	
 	/**
-	 * Constructs a location entity.
+	 * Constructs an organization entity.
 	 * 
 	 * @param mainName
 	 * 		Main string representation of the entity to create.
 	 * @param internalId
 	 * 		Internal id of the entity to create.
 	 */
-	public LocationEntity(String mainName, long internalId)
+	public EntityOrganization(String mainName, long internalId)
 	{	super(mainName,internalId);
 	}
 	
@@ -45,7 +45,7 @@ public abstract class LocationEntity extends AbstractNamedEntity
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
-	{	String result = "LOCATION(";
+	{	String result = "ORGANIZATION(";
 		result = result + "NAME=\"" + mainName+"\"";
 		result = result + ")";
 		return result;

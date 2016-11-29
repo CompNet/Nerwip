@@ -161,7 +161,7 @@ public class SvmTrainer
 	 * 		The path of the data file.
 	 */
 	private String getDataPath()
-	{	String base = combiner.getFolder();
+	{	String base = combiner.getRecognizerFolder();
 		String result = FileNames.FO_OUTPUT + File.separator + "svm.data." + base + FileNames.EX_TEXT;
 		return result;
 	}

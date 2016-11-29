@@ -68,9 +68,8 @@ public class DateExtractor extends AbstractProcessor implements InterfaceRecogni
 	// FOLDER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override	
-	public String getFolder()
-	{	String result = null;
-		//TODO
+	public String getRecognizerFolder()
+	{	String result = delegateRecognizer.getFolder();
 		return result;
 	}
 

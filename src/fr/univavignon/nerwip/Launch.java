@@ -636,7 +636,7 @@ public class Launch
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
 		for(InterfaceRecognizer recognizer: recognizers)
-			logger.log(recognizer.getFolder());
+			logger.log(recognizer.getRecognizerFolder());
 		logger.decreaseOffset();
 
 		// get the testing set
@@ -821,7 +821,7 @@ public class Launch
 		logger.log("Processed recognizers: ");
 		logger.increaseOffset();
 		for(InterfaceRecognizer recognizer: recognizers)
-			logger.log(recognizer.getFolder());
+			logger.log(recognizer.getRecognizerFolder());
 		logger.decreaseOffset();
 
 		// get the testing set

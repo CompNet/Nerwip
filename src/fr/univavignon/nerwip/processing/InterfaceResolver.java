@@ -46,7 +46,7 @@ public interface InterfaceResolver extends InterfaceProcessor
 	 * @return 
 	 * 		Name of the appropriate folder.
 	 */
-//	public String getResolverFolder();
+	public String getResolverFolder();
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////

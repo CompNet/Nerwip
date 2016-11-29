@@ -21,23 +21,25 @@ package fr.univavignon.nerwip.data.entity;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import fr.univavignon.nerwip.tools.time.Date;
+
 /**
- * Class representing a production entity, which is a kind of named entity.
+ * Class representing a date entity, which is a kind of valued entity.
  * 
  * @author Vincent Labatut
  */
-public abstract class ProductionEntity extends AbstractNamedEntity
+public abstract class EntityDate extends AbstractValuedEntity<Date>
 {	
 	/**
-	 * Constructs a production entity.
+	 * Constructs a date entity.
 	 * 
-	 * @param mainName
-	 * 		Main string representation of the entity to create.
+	 * @param value
+	 * 		Date of the entity to create.
 	 * @param internalId
 	 * 		Internal id of the entity to create.
 	 */
-	public ProductionEntity(String mainName, long internalId)
-	{	super(mainName,internalId);
+	public EntityDate(Date value, long internalId)
+	{	super(value,internalId);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -45,8 +47,8 @@ public abstract class ProductionEntity extends AbstractNamedEntity
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
-	{	String result = "PRODUCTION(";
-		result = result + "NAME=\"" + mainName+"\"";
+	{	String result = "DATE(";
+		result = result + "VALUE=\"" + value+"\"";
 		result = result + ")";
 		return result;
 	}

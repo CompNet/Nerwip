@@ -372,7 +372,7 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 	 * 		A String representing the path of the category proportions file.
 	 */
 	public String getCategoryProportionsPath()
-	{	String result = getModelPath() + File.separator + recognizer.getFolder() + ".catprop" + FileNames.EX_TEXT;
+	{	String result = getModelPath() + File.separator + recognizer.getRecognizerFolder() + ".catprop" + FileNames.EX_TEXT;
 		return result;
 	}
 	
@@ -428,7 +428,7 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 	 * 		Path of the weights file.
 	 */
 	public String getVoteWeightsPath()
-	{	String result = getModelPath() + File.separator + recognizer.getFolder() + ".weights" + FileNames.EX_TEXT;
+	{	String result = getModelPath() + File.separator + recognizer.getRecognizerFolder() + ".weights" + FileNames.EX_TEXT;
 		return result;
 	}
 

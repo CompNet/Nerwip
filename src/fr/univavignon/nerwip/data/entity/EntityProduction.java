@@ -22,21 +22,21 @@ package fr.univavignon.nerwip.data.entity;
  */
 
 /**
- * Class representing an organization entity, which is a kind of named entity.
+ * Class representing a production entity, which is a kind of named entity.
  * 
  * @author Vincent Labatut
  */
-public abstract class OrganizationEntity extends AbstractNamedEntity
+public abstract class EntityProduction extends AbstractNamedEntity
 {	
 	/**
-	 * Constructs an organization entity.
+	 * Constructs a production entity.
 	 * 
 	 * @param mainName
 	 * 		Main string representation of the entity to create.
 	 * @param internalId
 	 * 		Internal id of the entity to create.
 	 */
-	public OrganizationEntity(String mainName, long internalId)
+	public EntityProduction(String mainName, long internalId)
 	{	super(mainName,internalId);
 	}
 	
@@ -45,7 +45,7 @@ public abstract class OrganizationEntity extends AbstractNamedEntity
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
-	{	String result = "ORGANIZATION(";
+	{	String result = "PRODUCTION(";
 		result = result + "NAME=\"" + mainName+"\"";
 		result = result + ")";
 		return result;

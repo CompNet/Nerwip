@@ -652,7 +652,7 @@ public abstract class AbstractDelegateRecognizer
 	 */
 	public File getXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
-		String recognizerFolder = recognizer.getFolder();
+		String recognizerFolder = getFolder();
 		if(recognizerFolder!=null)
 			resultsFolder = resultsFolder + File.separator + recognizerFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
@@ -727,7 +727,7 @@ public abstract class AbstractDelegateRecognizer
 	 */
 	public File getRawFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
-		String recognizerFolder = recognizer.getFolder();
+		String recognizerFolder = getFolder();
 		if(recognizerFolder!=null)
 			resultsFolder = resultsFolder + File.separator + recognizerFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;

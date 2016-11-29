@@ -106,9 +106,8 @@ public class WikipediaDater extends AbstractProcessor implements InterfaceRecogn
 	// FOLDER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override	
-	public String getFolder()
-	{	String result = null;
-		//TODO
+	public String getRecognizerFolder()
+	{	String result = delegateRecognizer.getFolder();
 		return result;
 	}
 	

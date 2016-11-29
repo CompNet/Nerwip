@@ -85,3 +85,4 @@ public interface InterfaceLinker extends InterfaceProcessor
 	 */
 	public void link(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException;
 }
+ 

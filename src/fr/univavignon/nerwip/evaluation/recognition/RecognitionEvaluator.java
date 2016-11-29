@@ -106,7 +106,7 @@ public class RecognitionEvaluator extends AbstractEvaluator<InterfaceRecognizer,
 		{	logger.log("Dealing with recognizer "+recognizer.getName());
 			
 			// check if evaluation results already exist
-			String folderPath = folder.getPath() + File.separator + recognizer.getFolder();
+			String folderPath = folder.getPath() + File.separator + recognizer.getRecognizerFolder();
 			File resultsFolder = new File(folderPath);
 			String resultsPath = folderPath + File.separator + template.getFileName();
 			File resultsFile = new File(resultsPath);
@@ -143,5 +143,14 @@ public class RecognitionEvaluator extends AbstractEvaluator<InterfaceRecognizer,
 			AbstractRecognitionMeasure measure = measures.get(i);
 			measure.updateCounts(result);
 		}
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// RECORD			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	protected String getFolder(InterfaceRecognizer recognizer)
+	{	String result = recognizer.getRecognizerFolder();
+		return result;
 	}
 }

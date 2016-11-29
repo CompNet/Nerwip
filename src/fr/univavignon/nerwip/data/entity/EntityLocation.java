@@ -21,25 +21,23 @@ package fr.univavignon.nerwip.data.entity;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fr.univavignon.nerwip.tools.time.Date;
-
 /**
- * Class representing a date entity, which is a kind of valued entity.
+ * Class representing a location entity, which is a kind of named entity.
  * 
  * @author Vincent Labatut
  */
-public abstract class DateEntity extends AbstractValuedEntity<Date>
+public abstract class EntityLocation extends AbstractNamedEntity
 {	
 	/**
-	 * Constructs a date entity.
+	 * Constructs a location entity.
 	 * 
-	 * @param value
-	 * 		Date of the entity to create.
+	 * @param mainName
+	 * 		Main string representation of the entity to create.
 	 * @param internalId
 	 * 		Internal id of the entity to create.
 	 */
-	public DateEntity(Date value, long internalId)
-	{	super(value,internalId);
+	public EntityLocation(String mainName, long internalId)
+	{	super(mainName,internalId);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -47,8 +45,8 @@ public abstract class DateEntity extends AbstractValuedEntity<Date>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
-	{	String result = "DATE(";
-		result = result + "VALUE=\"" + value+"\"";
+	{	String result = "LOCATION(";
+		result = result + "NAME=\"" + mainName+"\"";
 		result = result + ")";
 		return result;
 	}

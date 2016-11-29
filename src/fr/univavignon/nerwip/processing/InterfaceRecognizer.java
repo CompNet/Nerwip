@@ -49,7 +49,7 @@ public interface InterfaceRecognizer extends InterfaceProcessor
 	 * @return 
 	 * 		Name of the appropriate folder.
 	 */
-//	public String getRecognizerFolder();
+	public String getRecognizerFolder();
 	
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
