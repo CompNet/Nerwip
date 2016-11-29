@@ -63,6 +63,7 @@ public enum OpenNlpModelName
 	 * 	<li>Person</li>
 	 * 	<li>Organization</li>
 	 * </ul> 
+	 * Only handles the English language. 
 	 */ 
 	ORIGINAL_MODEL(
 		"Original",
@@ -96,6 +97,7 @@ public enum OpenNlpModelName
 	 * 	<li>Person</li>
 	 * 	<li>Organization</li>
 	 * </ul> 
+	 * Only handles the English language. 
 	 */ 
 	NERWIP_MODEL(
 		"Nerwip",

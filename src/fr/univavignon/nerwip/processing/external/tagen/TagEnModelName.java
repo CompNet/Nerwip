@@ -37,7 +37,7 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 public enum TagEnModelName
 {	
 	/** 
-	 * French version of MUC. 
+	 * Model built on the MUC dataset. 
 	 * <ul>
 	 * 		<li>Date</li> TODO to confirm
 	 * 		<li>Location</li>
@@ -46,7 +46,8 @@ public enum TagEnModelName
 	 * 		<li>Percent</li>
 	 * 		<li>Person</li>
 	 * 		<li>Time</li>
-	 * </ul> 
+	 * </ul>
+	 * Only handles the French language.
 	 */ 
 	MUC_MODEL(
 		"MucFr",
@@ -61,10 +62,11 @@ public enum TagEnModelName
 	),
 	
 	/** 
-	 * Medical model for French: 
+	 * Model built on medical articles. 
 	 * <ul>
 	 * 	<li>?</li> TODO
 	 * </ul> 
+	 * Only handles the French language.
 	 */ 
 	MEDICFR_MODEL(
 		"MedicFr",
@@ -78,10 +80,11 @@ public enum TagEnModelName
 	),
 	
 	/** 
-	 * ?: 
+	 * Model built from Wikipedia articles. 
 	 * <ul>
 	 * 	<li>?</li> TODO
 	 * </ul> 
+	 * Only handles the English language.
 	 */
 	WIKI_MODEL(
 		"WikiEn",
@@ -96,10 +99,11 @@ public enum TagEnModelName
 	),
 	
 	/** 
-	 * Medical model for English: 
+	 * Model built on Medical articles. 
 	 * <ul>
 	 * 	<li>?</li> TODO
 	 * </ul> 
+	 * Only handles the English language.
 	 */ 
 	MEDICEN_MODEL(
 		"MedicEn",

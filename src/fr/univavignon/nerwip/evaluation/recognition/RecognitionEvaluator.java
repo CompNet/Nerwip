@@ -102,8 +102,10 @@ public class RecognitionEvaluator extends AbstractEvaluator<InterfaceRecognizer,
 		// process each recognizer separately
 		logger.log("Process each recognizer separately");
 		logger.increaseOffset();
+		int r = 1;
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	logger.log("Dealing with recognizer "+recognizer.getName());
+		{	logger.log("Dealing with recognizer "+recognizer.getName()+" ("+r+"/"+recognizers.size()+")");
+			r++;
 			
 			// check if evaluation results already exist
 			String folderPath = folder.getPath() + File.separator + recognizer.getRecognizerFolder();

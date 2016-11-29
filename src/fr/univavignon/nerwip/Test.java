@@ -1640,10 +1640,10 @@ File folder = folders.get(0);
 //			new OpenCalais(OpenCalaisLanguage.EN, false, true),
 //			new OpenCalais(OpenCalaisLanguage.EN, true,  false),	// (DATE), LOC, ORG, PERS	
 //			new OpenCalais(OpenCalaisLanguage.EN, true,  true),
-			new OpenCalais(OpenCalaisLanguage.FR, false, false),
-			new OpenCalais(OpenCalaisLanguage.FR, false, true),
-			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
-			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
+//			new OpenCalais(OpenCalaisLanguage.FR, false, false),
+//			new OpenCalais(OpenCalaisLanguage.FR, false, true),
+//			new OpenCalais(OpenCalaisLanguage.FR, true,  false),	
+//			new OpenCalais(OpenCalaisLanguage.FR, true,  true),
 			
 //			new OpeNer(false, false, false),
 //			new OpeNer(false, false, true),
@@ -1663,9 +1663,9 @@ File folder = folders.get(0);
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, false),
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, true),	// LOC, ORG, PERS
 
-//			new Spotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
-//			new Spotlight(0.2f),	// LOC, MEET, ORG, PERS, PROD
-//			new Spotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
+			new Spotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
+			new Spotlight(0.2f),	// LOC, MEET, ORG, PERS, PROD
+			new Spotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
 				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
@@ -1717,14 +1717,14 @@ File folder = folders.get(0);
 //			new Subee(true,true,true,true,false),
 //			new Subee(true,true,true,true,true),
 			
-//			new TagEn(TagEnModelName.MUC_MODEL, false, false),
-//			new TagEn(TagEnModelName.MUC_MODEL, false, true),
-//			new TagEn(TagEnModelName.MUC_MODEL, true, false),
-//			new TagEn(TagEnModelName.MUC_MODEL, true, true),
-//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
-//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
-//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),
-//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, true),
+			new TagEn(TagEnModelName.MUC_MODEL, false, false),
+			new TagEn(TagEnModelName.MUC_MODEL, false, true),
+			new TagEn(TagEnModelName.MUC_MODEL, true, false),
+			new TagEn(TagEnModelName.MUC_MODEL, true, true),
+			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
+			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
+			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),
+			new TagEn(TagEnModelName.MEDICFR_MODEL, true, true),
 //			new TagEn(TagEnModelName.WIKI_MODEL, false, false),
 //			new TagEn(TagEnModelName.WIKI_MODEL, false, true),
 //			new TagEn(TagEnModelName.WIKI_MODEL, true, false),
@@ -2197,7 +2197,8 @@ File folder = folders.get(0);
  *   
  * - Spotlight: See the generalisation to linking only and both. Resolving also, can be deduced from the linked entities.
  *   
- * - See if OpenNer can be adapted to process links? And the other tools, too.
+ * - See if OpenNer can be adapted to process links? 
+ *   And all the other tools, too (OpenCalais is a candidate).
  */
 
 /*

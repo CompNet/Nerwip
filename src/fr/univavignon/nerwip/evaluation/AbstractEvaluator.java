@@ -256,9 +256,11 @@ public abstract class AbstractEvaluator<T extends InterfaceProcessor, U extends 
 		// process each article
 		logger.log("Process each article individually");
 		logger.increaseOffset();
+		int f = 1;
 		for(File folder: folders)
 		{	// get the results
-			logger.log("Process article "+folder.getName());
+			logger.log("Process article "+folder.getName()+ "("+f+"/"+folders.size()+")");
+			f++;
 			List<U> results = processArticle(folder);
 			
 			// update counts

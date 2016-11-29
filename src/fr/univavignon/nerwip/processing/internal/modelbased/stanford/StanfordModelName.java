@@ -49,7 +49,8 @@ public enum StanfordModelName
 	 * 		<li>Person</li>
 	 * 		<li>Organization</li>
 	 * 		<li>Misc.</li>
-	 * </ul> 
+	 * </ul>
+	 * Only handles the English language.
 	 */
 	CONLL_MODEL(
 		"Conll",
@@ -73,6 +74,7 @@ public enum StanfordModelName
 	 * 		<li>Person</li>
 	 * 		<li>Time</li>
 	 * </ul> 
+	 * Only handles the English language.
 	 */
 	MUC_MODEL(
 		"Muc",
@@ -93,6 +95,7 @@ public enum StanfordModelName
 	 * 		<li>Person</li>
 	 * 		<li>Organization</li>
 	 * </ul> 
+	 * Only handles the English language.
 	 */
 	CONLLMUC_MODEL(
 		"ConllMuc",
@@ -112,6 +115,7 @@ public enum StanfordModelName
 	 * 		<li>Person</li>
 	 * 		<li>Organization</li>
 	 * </ul> 
+	 * Only handles the English language.
 	 */
 	NERWIP_MODEL(
 		"Nerwip",
