@@ -13,7 +13,10 @@ Nerwip is free software: you can redistribute it and/or modify it under the term
 -----------------------------------------------------------------------
 
 ## Description
-This platform was initially designed to apply and compare Named Entity Recognition (NER) tools on collections of texts. It was later specialized to process biographical articles extracted from the English version of Wikipedia. It allows using several standard standalone tools listed below, as well as some custom tools. It also implements several ways of combining the outputs of standalone NER tools to improve the global output.
+This platform was initially designed to apply and compare Named Entity Recognition (NER) tools on collections of texts. 
+It was later specialized to process biographical articles extracted from the English version of Wikipedia. 
+It allows using several standard standalone tools listed below, as well as some custom tools. 
+It also implements several ways of combining the outputs of standalone NER tools to improve the global output.
 
 The first results obtained on Wikipedia biographical texts were published in [AL'13]. 
 
@@ -21,7 +24,7 @@ The first results obtained on Wikipedia biographical texts were published in [AL
 The source code takes the form of an Eclipse project. It is organized as follows: 
 * Package `data` contains all the classes used to represent data: articles, mentions, entities, etc.
 * Package `edition` contains a secondary tool, allowing the annotation of articles and the visualization of annotated articles.
-* Pacakge  `evaluation` contains classes used to measure the performances of NER tools. Additional measures can be implemented (see the Extension section)
+* Pacakge `evaluation` contains classes used to measure the performances of NER tools. Additional measures can be implemented (see the Extension section)
 * Package `recognition` contains the NER-related source code. We distinguish different types of NER tools: 
   * Combiners: tools combining the output of standalone tools
   * External: tools executed out of Nerwip, in this case the classes are basically just wrappers.

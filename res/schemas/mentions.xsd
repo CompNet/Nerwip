@@ -34,7 +34,7 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:complexType name="tEntity">
+	<xsd:complexType name="tMention">
 		<xsd:sequence>
 			<xsd:element name="string" type="xsd:string" />
 			<xsd:element name="value" type="xsd:string" minOccurs="0"/>
@@ -44,9 +44,9 @@
 		<xsd:attribute name="end" type="xsd:integer" use="required" />
 	</xsd:complexType>
 
-	<xsd:complexType name="tEntities">
+	<xsd:complexType name="tMentions">
 		<xsd:sequence>
-			<xsd:element name="entity" type="tEntity" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="mention" type="tMention" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="creation" type="xsd:dateTime" />
 		<xsd:attribute name="modification" type="xsd:dateTime" />
@@ -55,6 +55,6 @@
 		<xsd:attribute name="editor" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
-	<xsd:element name="entities" type="tEntities" />
+	<xsd:element name="mentions" type="tMentions" />
 
 </xsd:schema>

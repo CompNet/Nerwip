@@ -88,9 +88,9 @@ public class XmlNames
 	/** Text expressions which must be ignored because of how they end, when retreiving categories */
 	public static final String ELT_ENDS_WITH = "endsWith";
 	/** A list of mentions */
-	public static final String ELT_MENTIONS = "entities";	//TODO this should be corrected
+	public static final String ELT_MENTIONS = "mentions";
 	/** A mention in a list of mentions */
-	public static final String ELT_MENTION = "entity";		//TODO this too
+	public static final String ELT_MENTION = "mention";
 	/** A group of GUI texts */
 	public static final String ELT_GROUP = "group";
 	/** Some text key */

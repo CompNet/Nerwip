@@ -140,8 +140,8 @@ public class FileNames
 	public final static String FI_LINKED_TEXT = "linked" + FileNames.EX_TEXT;
 	/** File containing the reference mentions */
 	public final static String FI_REFERENCE_TEXT = "reference" + FileNames.EX_TEXT;
-	/** File containing the mentions estimated by a recognizer, in a normalized format */
-	public final static String FI_MENTION_LIST = "entities" + FileNames.EX_XML;
+	/** XML file containing the mentions estimated by a recognizer, in a normalized format */
+	public final static String FI_MENTION_LIST = "mentions" + FileNames.EX_XML;
 	/** XML schema file used to store GUI texts */
 	public final static String FI_LANGUAGE = "language" + FileNames.EX_SCHEMA;
 	/** XML file used to store keys */
