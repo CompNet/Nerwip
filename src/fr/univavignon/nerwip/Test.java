@@ -208,7 +208,7 @@ public class Test
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -1717,14 +1717,14 @@ File folder = folders.get(0);
 //			new Subee(true,true,true,true,false),
 //			new Subee(true,true,true,true,true),
 			
-			new TagEn(TagEnModelName.MUC_MODEL, false, false),
-			new TagEn(TagEnModelName.MUC_MODEL, false, true),
-			new TagEn(TagEnModelName.MUC_MODEL, true, false),
-			new TagEn(TagEnModelName.MUC_MODEL, true, true),
-			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
-			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
-			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),
-			new TagEn(TagEnModelName.MEDICFR_MODEL, true, true),
+//			new TagEn(TagEnModelName.MUC_MODEL, false, false),
+//			new TagEn(TagEnModelName.MUC_MODEL, false, true),
+//			new TagEn(TagEnModelName.MUC_MODEL, true, false),
+//			new TagEn(TagEnModelName.MUC_MODEL, true, true),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, false),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, false, true),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, false),
+//			new TagEn(TagEnModelName.MEDICFR_MODEL, true, true),
 //			new TagEn(TagEnModelName.WIKI_MODEL, false, false),
 //			new TagEn(TagEnModelName.WIKI_MODEL, false, true),
 //			new TagEn(TagEnModelName.WIKI_MODEL, true, false),
