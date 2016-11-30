@@ -1,7 +1,8 @@
 package fr.univavignon.nerwip.data.entity;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.jdom2.Element;
+
+import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -45,6 +46,17 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 	}
 	
 	/////////////////////////////////////////////////////////////////
+	// TYPE				/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the type of this entity.
+	 * 
+	 * @return 
+	 * 		The type of this entity.
+	 */
+	public abstract EntityType getType();
+	
+	/////////////////////////////////////////////////////////////////
 	// INTERNAL ID		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Internal id of this entity */
@@ -71,91 +83,47 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// EXTERNAL IDS		/////////////////////////////////////////////
+	// XML				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Internal ids of this entity */
-	protected Map<KnowledgeBase,String> externalIds = new HashMap<KnowledgeBase,String>();
-	
 	/**
-	 * Returns the requested external id of this entity, or {@code null}
-	 * if none was defined.
+	 * Returns a representation of this entity
+	 * as an XML element.
 	 * 
-	 * @param knowledgeBase 
-	 * 		Name of the concerned knowledge base.
 	 * @return
-	 * 		External id of this entity in the knowledge base. 
+	 * 		An XML element representing this entity.
 	 */
-	public String getInternalId(KnowledgeBase knowledgeBase)
-	{	return externalIds.get(knowledgeBase);
-	}
+	public abstract Element exportAsElement();
 	
 	/**
-	 * Changes the internal id of this entity, for
-	 * the specified knowledge base.
+	 * Builds an entity from the specified
+	 * XML element.
 	 * 
-	 * @param knowledgeBase 
-	 * 		Name of the knowledge base.
-	 * @param externalId
-	 * 		External id of this entity in the knowledge base.
+	 * @param element
+	 * 		XML element representing the entity.
+	 * @return
+	 * 		The entity corresponding to the specified element.
 	 */
-	public void setExternalId(KnowledgeBase knowledgeBase, String externalId)
-	{	externalIds.put(knowledgeBase,externalId);
+	public static AbstractEntity importFromElement(Element element)
+	{	AbstractEntity result = null;
+		
+		String typeStr = element.getAttributeValue(XmlNames.ATT_TYPE);
+		EntityType type = EntityType.valueOf(typeStr);
+		switch(type)
+		{	case DATE:
+				result = EntityDate.importFromElement(element);
+				break;
+			case FUNCTION:
+			case LOCATION:
+			case MEETING:
+			case ORGANIZATION:
+			case PERSON:
+			case PRODUCTION:
+				result = AbstractNamedEntity.importFromElement(element,type);
+				break;
+		}
+		
+		return result;
 	}
-	
-//	/////////////////////////////////////////////////////////////////
-//	// XML				/////////////////////////////////////////////
-//	/////////////////////////////////////////////////////////////////
-//	/**
-//	 * Returns a representation of this entity
-//	 * as an XML element.
-//	 * 
-//	 * @return
-//	 * 		An XML element representing this entity.
-//	 */
-//	public abstract Element exportAsElement();
-//	
-//	/**
-//	 * Builds an entity from the specified
-//	 * XML element.
-//	 * 
-//	 * @param element
-//	 * 		XML element representing the entity.
-//	 * @param source
-//	 * 		Name of the recognizer which detected the entity.
-//	 * @return
-//	 * 		The entity corresponding to the specified element.
-//	 */
-//	public static AbstractEntity<?> importFromElement(Element element, ProcessorName source)
-//	{	AbstractEntity<?> result = null;
-//		
-//		String typeStr = element.getAttributeValue(XmlNames.ATT_TYPE);
-//		EntityType type = EntityType.valueOf(typeStr);
-//		switch(type)
-//		{	case DATE:
-//				result = EntityDate.importFromElement(element,source);
-//				break;
-//			case FUNCTION:
-//				result = EntityFunction.importFromElement(element,source);
-//				break;
-//			case LOCATION:
-//				result = EntityLocation.importFromElement(element,source);
-//				break;
-//			case MEETING:
-//				result = EntityMeeting.importFromElement(element,source);
-//				break;
-//			case ORGANIZATION:
-//				result = EntityOrganization.importFromElement(element,source);
-//				break;
-//			case PERSON:
-//				result = EntityPerson.importFromElement(element,source);
-//				break;
-//			case PRODUCTION:
-//				result = EntityProduction.importFromElement(element,source);
-//				break;
-//		}
-//		
-//		return result;
-//	}
 
 	/////////////////////////////////////////////////////////////////
 	// COMPARABLE		/////////////////////////////////////////////
@@ -190,7 +158,3 @@ public abstract class AbstractEntity implements Comparable<AbstractEntity>
 		return result;
 	}
 }
-
-// TODO represent the hierarchical relationships between entities?
-// or just rely on the interrogation of online databases instead?
-// TODO the same question araises for the entity multiple names...

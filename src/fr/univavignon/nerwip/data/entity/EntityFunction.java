@@ -26,7 +26,7 @@ package fr.univavignon.nerwip.data.entity;
  * 
  * @author Vincent Labatut
  */
-public abstract class EntityFunction extends AbstractNamedEntity
+public class EntityFunction extends AbstractNamedEntity
 {	
 	/**
 	 * Constructs a function entity.
@@ -41,13 +41,10 @@ public abstract class EntityFunction extends AbstractNamedEntity
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// OBJECT			/////////////////////////////////////////////
+	// TYPE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String toString()
-	{	String result = "FUNCTION(";
-		result = result + "NAME=\"" + mainName+"\"";
-		result = result + ")";
-		return result;
+	public EntityType getType()
+	{	return EntityType.FUNCTION;
 	}
 }

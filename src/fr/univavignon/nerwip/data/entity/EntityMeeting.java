@@ -26,7 +26,7 @@ package fr.univavignon.nerwip.data.entity;
  * 
  * @author Vincent Labatut
  */
-public abstract class EntityMeeting extends AbstractNamedEntity
+public class EntityMeeting extends AbstractNamedEntity
 {	
 	/**
 	 * Constructs a meeting entity.
@@ -41,13 +41,10 @@ public abstract class EntityMeeting extends AbstractNamedEntity
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// OBJECT			/////////////////////////////////////////////
+	// TYPE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String toString()
-	{	String result = "MEETING(";
-		result = result + "NAME=\"" + mainName+"\"";
-		result = result + ")";
-		return result;
+	public EntityType getType()
+	{	return EntityType.MEETING;
 	}
 }

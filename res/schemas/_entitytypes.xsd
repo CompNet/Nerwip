@@ -22,28 +22,15 @@
 	If not, see <http://www.gnu.org/licenses/>.
  -->
  
-	<xsd:include schemaLocation="_entitytypes.xsd"/>
-
-	<xsd:complexType name="tMention">
-		<xsd:sequence>
-			<xsd:element name="string" type="xsd:string" />
-			<xsd:element name="value" type="xsd:string" minOccurs="0"/>
-		</xsd:sequence>
-		<xsd:attribute name="type" type="tEntityType" use="required" />
-		<xsd:attribute name="start" type="xsd:integer" use="required" />
-		<xsd:attribute name="end" type="xsd:integer" use="required" />
-	</xsd:complexType>
-
-	<xsd:complexType name="tMentions">
-		<xsd:sequence>
-			<xsd:element name="mention" type="tMention" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-		<xsd:attribute name="creation" type="xsd:dateTime" />
-		<xsd:attribute name="modification" type="xsd:dateTime" />
-		<xsd:attribute name="source" type="xsd:string" />
-		<xsd:attribute name="editor" type="xsd:string" use="optional" />
-	</xsd:complexType>
-
-	<xsd:element name="mentions" type="tMentions" />
-
+	<xsd:simpleType name="tEntityType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DATE" />
+			<xsd:enumeration value="FUNCTION" />
+			<xsd:enumeration value="LOCATION" />
+			<xsd:enumeration value="MEETING" />
+			<xsd:enumeration value="ORGANIZATION" />
+			<xsd:enumeration value="PERSON" />
+			<xsd:enumeration value="PRODUCTION" />
+		</xsd:restriction>
+	</xsd:simpleType>
 </xsd:schema>

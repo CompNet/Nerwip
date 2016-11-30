@@ -71,4 +71,16 @@ public abstract class AbstractValuedEntity<T extends Comparable<T>> extends Abst
 	public void setValue(T value)
 	{	this.value = value;
 	}
+
+	/////////////////////////////////////////////////////////////////
+	// OBJECT			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public String toString()
+	{	String result = getType().toString()+"(";
+		result = result + "ID=" + internalId + "";
+		result = result + ", VALUE=\"" + value + "\"";
+		result = result + ")";
+		return result;
+	}
 }

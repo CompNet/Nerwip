@@ -26,7 +26,7 @@ package fr.univavignon.nerwip.data.entity;
  * 
  * @author Vincent Labatut
  */
-public abstract class EntityOrganization extends AbstractNamedEntity
+public class EntityOrganization extends AbstractNamedEntity
 {	
 	/**
 	 * Constructs an organization entity.
@@ -41,13 +41,10 @@ public abstract class EntityOrganization extends AbstractNamedEntity
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// OBJECT			/////////////////////////////////////////////
+	// TYPE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String toString()
-	{	String result = "ORGANIZATION(";
-		result = result + "NAME=\"" + mainName+"\"";
-		result = result + ")";
-		return result;
+	public EntityType getType()
+	{	return EntityType.ORGANIZATION;
 	}
 }

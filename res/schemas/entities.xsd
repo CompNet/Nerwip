@@ -23,27 +23,47 @@
  -->
  
 	<xsd:include schemaLocation="_entitytypes.xsd"/>
-
-	<xsd:complexType name="tMention">
+	
+	<xsd:complexType name="tSurfaceForms">
 		<xsd:sequence>
-			<xsd:element name="string" type="xsd:string" />
-			<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="surfaceForm" type="xsd:string" maxOccurs="unbounded"/>
 		</xsd:sequence>
-		<xsd:attribute name="type" type="tEntityType" use="required" />
-		<xsd:attribute name="start" type="xsd:integer" use="required" />
-		<xsd:attribute name="end" type="xsd:integer" use="required" />
 	</xsd:complexType>
-
-	<xsd:complexType name="tMentions">
+	
+	<xsd:complexType name="tExternalIds">
 		<xsd:sequence>
-			<xsd:element name="mention" type="tMention" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="externalId" type="xsd:string" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="source" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	<xsd:group name="gNamedEntity">
+		<xsd:sequence>
+			<xsd:element name="surfaceForms" type="tSurfaceForms" />
+			<xsd:element name="externalIds" type="tExternalIds" />
+		</xsd:sequence>
+	</xsd:group>
+	
+	<xsd:complexType name="tEntity">
+		<xsd:choice>
+			<xsd:group ref="gNamedEntity"/>
+			<xsd:element name="value" type="xsd:string" />
+		</xsd:choice>
+		<xsd:attribute name="type" type="tEntityType" use="required" />
+		<xsd:attribute name="id" type="xsd:integer" use="required" />
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="tEntities">
+		<xsd:sequence>
+			<xsd:element name="entity" type="tEntity" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="creation" type="xsd:dateTime" />
 		<xsd:attribute name="modification" type="xsd:dateTime" />
 		<xsd:attribute name="source" type="xsd:string" />
 		<xsd:attribute name="editor" type="xsd:string" use="optional" />
 	</xsd:complexType>
-
-	<xsd:element name="mentions" type="tMentions" />
-
+	
+	<xsd:element name="entities" type="tEntities" />
+	
 </xsd:schema>

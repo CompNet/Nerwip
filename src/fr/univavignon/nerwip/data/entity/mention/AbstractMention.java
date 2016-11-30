@@ -559,10 +559,10 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	@Override
 	public String toString()
 	{	String result = "MENTION(";
-		result = result + "STRING=\"" + valueStr+"\"";
+		result = result + "STRING=\"" + valueStr + "\"";
 		result = result + ", TYPE=" + getType(); 
-		result = result + ", POS=("+startPos+","+endPos+")"; 
-		result = result + ", SOURCE="+source.toString();
+		result = result + ", POS=(" + startPos + "," + endPos + ")"; 
+		result = result + ", SOURCE=" + source.toString();
 		if(value!=null)
 			result = result + ", VALUE=(" + value.toString() + ")"; 
 		result = result + ")";

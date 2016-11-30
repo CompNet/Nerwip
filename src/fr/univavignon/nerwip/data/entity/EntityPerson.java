@@ -26,7 +26,7 @@ package fr.univavignon.nerwip.data.entity;
  * 
  * @author Vincent Labatut
  */
-public abstract class EntityPerson extends AbstractNamedEntity
+public class EntityPerson extends AbstractNamedEntity
 {	
 	/**
 	 * Constructs a person entity.
@@ -41,13 +41,10 @@ public abstract class EntityPerson extends AbstractNamedEntity
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// OBJECT			/////////////////////////////////////////////
+	// TYPE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String toString()
-	{	String result = "PERSON(";
-		result = result + "NAME=\"" + mainName+"\"";
-		result = result + ")";
-		return result;
+	public EntityType getType()
+	{	return EntityType.PERSON;
 	}
 }

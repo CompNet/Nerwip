@@ -26,7 +26,7 @@ package fr.univavignon.nerwip.data.entity;
  * 
  * @author Vincent Labatut
  */
-public abstract class EntityProduction extends AbstractNamedEntity
+public class EntityProduction extends AbstractNamedEntity
 {	
 	/**
 	 * Constructs a production entity.
@@ -41,13 +41,10 @@ public abstract class EntityProduction extends AbstractNamedEntity
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// OBJECT			/////////////////////////////////////////////
+	// TYPE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public String toString()
-	{	String result = "PRODUCTION(";
-		result = result + "NAME=\"" + mainName+"\"";
-		result = result + ")";
-		return result;
+	public EntityType getType()
+	{	return EntityType.PRODUCTION;
 	}
 }

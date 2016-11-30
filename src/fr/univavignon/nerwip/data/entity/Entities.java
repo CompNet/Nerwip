@@ -24,15 +24,11 @@ package fr.univavignon.nerwip.data.entity;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -40,8 +36,6 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.time.TimeFormatting;
@@ -63,7 +57,7 @@ public class Entities
 	 */
 	public Entities()
 	{	initDates();
-		linker = ProcessorName.REFERENCE;
+		source = ProcessorName.REFERENCE;
 	}
 	
 	/**
@@ -75,7 +69,7 @@ public class Entities
 	 */
 	public Entities(ProcessorName linker)
 	{	initDates();
-		this.linker = linker;
+		this.source = linker;
 	}
 	
 	/**
@@ -92,7 +86,7 @@ public class Entities
 	public Entities(ProcessorName linker, Date creationDate, Date modificationDate)
 	{	this.creationDate = creationDate;
 		this.modificationDate = modificationDate;
-		this.linker = linker;
+		this.source = linker;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -161,7 +155,7 @@ public class Entities
 	// LINKER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Linker used to link these entities (or {@link ProcessorName#REFERENCE} for manual annotations) */
-	private ProcessorName linker = null;
+	private ProcessorName source = null;
 	
 	/**
 	 * Returns the linker which detected
@@ -171,7 +165,7 @@ public class Entities
 	 * 		Name of the linker used to process these entities.
 	 */
 	public ProcessorName getSource()
-	{	return linker;
+	{	return source;
 	}
 	
 	/**
@@ -181,10 +175,8 @@ public class Entities
 	 * 		New name of the linker used to process these entities.
 	 */
 	public void setLinker(ProcessorName linker)
-	{	this.linker = linker;
+	{	this.source = linker;
 	}
-	
-	//TODO same thing for the solver?
 	
 	/////////////////////////////////////////////////////////////////
 	// EDITOR			/////////////////////////////////////////////
@@ -274,106 +266,101 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	// FILE ACCESS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-//	/**
-//	 * Reads the specified XML file, and 
-//	 * builds the corresponding Mentions object,
-//	 * which contains both mentions and meta-data.
-//	 * 
-//	 * @param dataFile
-//	 * 		The XML file to be read.
-//	 * @return
-//	 * 		The list of mentions and meta-data stored in the file.
-//	 * 
-//	 * @throws SAXException
-//	 * 		Problem while reading the file.
-//	 * @throws IOException
-//	 * 		Problem while reading the file.
-//	 * @throws ParseException 
-//	 * 		Problem while parsing the date.
-//	 */
-//	public static Entities readFromXml(File dataFile) throws SAXException, IOException, ParseException
-//	{	// schema file
-//		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
-//		File schemaFile = new File(schemaPath);
-//
-//		// load file
-//		Element element = XmlTools.getRootFromFile(dataFile,schemaFile);
-//		
-//		// get source
-//		String sourceStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
-//		ProcessorName source = ProcessorName.valueOf(sourceStr);
-//		
-//		// get dates
-////String creationDateStr = element.getAttributeValue(XmlNames.ATT_DATE);
-////SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
-////Date date = df.parse(creationDateStr);
-//		String creationDateStr = element.getAttributeValue(XmlNames.ATT_CREATION);
-//		Date creationDate = TimeFormatting.parseXmlTime(creationDateStr);
-//		String modificationDateStr = element.getAttributeValue(XmlNames.ATT_MODIFICATION);
-//		Date modificationDate = TimeFormatting.parseXmlTime(modificationDateStr);
-//		
-//		// get editor
-//		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
-//		
-//		// get mentions
-////Mentions result = new Mentions(source, date);
-//		Entities result = new Entities(source, creationDate, modificationDate);
-//		result.setEditor(editor);
-//		List<Element> elements = element.getChildren(XmlNames.ELT_MENTION);
-//		for(Element e: elements)
-//		{	AbstractMention<?> mention = AbstractMention.importFromElement(e, source);
-//			result.addMention(mention);
-//		}
-//		Collections.sort(result.mentions);
-//
-////result.writeToXml(dataFile);
-//		return result;
-//	}
-//
-//	/**
-//	 * Write this Mentions object under the form of
-//	 * a XML file using our own format.
-//	 * 
-//	 * @param dataFile
-//	 * 		File to contain the mentions.
-//	 * 
-//	 * @throws IOException
-//	 * 		Problem while writing the file.
-//	 */
-//	public void writeToXml(File dataFile) throws IOException
-//	{	// schema file
-//		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
-//		File schemaFile = new File(schemaPath);
-//		
-//		// build xml document
-//		Element element = new Element(XmlNames.ELT_MENTIONS);
-//		
-//		// insert source attribute
-//		Attribute sourceAttr = new Attribute(XmlNames.ATT_SOURCE, source.toString());
-//		element.setAttribute(sourceAttr);
-//		
-//		// insert date attributes
-//		String creationDateStr = TimeFormatting.formatXmlTime(creationDate);
-//		Attribute creationDateAttr = new Attribute(XmlNames.ATT_CREATION, creationDateStr);
-//		element.setAttribute(creationDateAttr);
-//		String modificationDateStr = TimeFormatting.formatXmlTime(modificationDate);
-//		Attribute modificationDateAttr = new Attribute(XmlNames.ATT_MODIFICATION, modificationDateStr);
-//		element.setAttribute(modificationDateAttr);
-//		
-//		// insert editor attribute
-//		if(editor!=null)
-//		{	Attribute editorAttr = new Attribute(XmlNames.ATT_EDITOR, editor);
-//			element.setAttribute(editorAttr);
-//		}
-//		
-//		// insert mention elements
-//		Collections.sort(mentions);
-//		for(AbstractMention<?> mention: mentions)
-//		{	Element mentionElt = mention.exportAsElement();
-//			element.addContent(mentionElt);
-//		}
-//		
-//		// record file
-//		XmlTools.makeFileFromRoot(dataFile,schemaFile,element);
-//	}
+	/**
+	 * Reads the specified XML file, and 
+	 * builds the corresponding Mentions object,
+	 * which contains both mentions and meta-data.
+	 * 
+	 * @param dataFile
+	 * 		The XML file to be read.
+	 * @return
+	 * 		The list of mentions and meta-data stored in the file.
+	 * 
+	 * @throws SAXException
+	 * 		Problem while reading the file.
+	 * @throws IOException
+	 * 		Problem while reading the file.
+	 * @throws ParseException 
+	 * 		Problem while parsing the date.
+	 */
+	public static Entities readFromXml(File dataFile) throws SAXException, IOException, ParseException
+	{	// schema file
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_ENTITY_SCHEMA;
+		File schemaFile = new File(schemaPath);
+
+		// load file
+		Element element = XmlTools.getRootFromFile(dataFile,schemaFile);
+		
+		// get source
+		String sourceStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
+		ProcessorName source = ProcessorName.valueOf(sourceStr);
+		
+		// get dates
+		String creationDateStr = element.getAttributeValue(XmlNames.ATT_CREATION);
+		Date creationDate = TimeFormatting.parseXmlTime(creationDateStr);
+		String modificationDateStr = element.getAttributeValue(XmlNames.ATT_MODIFICATION);
+		Date modificationDate = TimeFormatting.parseXmlTime(modificationDateStr);
+		
+		// get editor
+		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
+		
+		// get entities
+		Entities result = new Entities(source, creationDate, modificationDate);
+		result.setEditor(editor);
+		List<Element> elements = element.getChildren(XmlNames.ELT_ENTITY);
+		for(Element e: elements)
+		{	AbstractEntity entity = AbstractEntity.importFromElement(e);
+			result.addEntity(entity);
+		}
+//		Collections.sort(result.entities);
+
+		return result;
+	}
+
+	/**
+	 * Write this Mentions object under the form of
+	 * a XML file using our own format.
+	 * 
+	 * @param dataFile
+	 * 		File to contain the mentions.
+	 * 
+	 * @throws IOException
+	 * 		Problem while writing the file.
+	 */
+	public void writeToXml(File dataFile) throws IOException
+	{	// schema file
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_ENTITY_SCHEMA;
+		File schemaFile = new File(schemaPath);
+		
+		// build xml document
+		Element element = new Element(XmlNames.ELT_MENTIONS);
+		
+		// insert source attribute
+		Attribute sourceAttr = new Attribute(XmlNames.ATT_SOURCE, source.toString());
+		element.setAttribute(sourceAttr);
+		
+		// insert date attributes
+		String creationDateStr = TimeFormatting.formatXmlTime(creationDate);
+		Attribute creationDateAttr = new Attribute(XmlNames.ATT_CREATION, creationDateStr);
+		element.setAttribute(creationDateAttr);
+		String modificationDateStr = TimeFormatting.formatXmlTime(modificationDate);
+		Attribute modificationDateAttr = new Attribute(XmlNames.ATT_MODIFICATION, modificationDateStr);
+		element.setAttribute(modificationDateAttr);
+		
+		// insert editor attribute
+		if(editor!=null)
+		{	Attribute editorAttr = new Attribute(XmlNames.ATT_EDITOR, editor);
+			element.setAttribute(editorAttr);
+		}
+		
+		// insert mention elements
+//		Collections.sort(entities);
+		for(AbstractEntity entity: entities)
+		{	Element entityElt = entity.exportAsElement();
+			element.addContent(entityElt);
+		}
+		
+		// record file
+		XmlTools.makeFileFromRoot(dataFile,schemaFile,element);
+	}
 }
