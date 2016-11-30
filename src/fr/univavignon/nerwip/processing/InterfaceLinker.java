@@ -21,8 +21,12 @@ package fr.univavignon.nerwip.processing;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.List;
+
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
+import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 
 /**
@@ -47,6 +51,33 @@ public interface InterfaceLinker extends InterfaceProcessor
 	 * 		Name of the appropriate folder.
 	 */
 	public String getLinkerFolder();
+	
+	/////////////////////////////////////////////////////////////////
+	// ENTITY TYPES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the types of entities this linker
+	 * can handle with its current model/parameters.
+	 * 
+	 * @return 
+	 * 		A list of entity types.
+	 */
+	public List<EntityType> getLinkedEntityTypes();
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Checks whether the specified language is supported by this
+	 * linker, given its current settings (parameters, model...).
+	 * 
+	 * @param language
+	 * 		The language to be checked.
+	 * @return 
+	 * 		{@code true} iff this linker supports the specified
+	 * 		language, with its current parameters (model, etc.).
+	 */
+	public boolean canLinkLanguage(ArticleLanguage language);
 	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////

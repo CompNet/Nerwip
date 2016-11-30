@@ -124,11 +124,13 @@ public abstract class AbstractDelegateResolver
 	 * 		Article to be processed.
 	 * @param mentions
 	 * 		List of the previously recognized mentions.
+	 * @param recognizer
+	 * 		Processor used to recognize the entity mentions.
 	 * @return
 	 * 		List of the entities associated to the mentions.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public abstract Entities delegateResolve(Article article, Mentions mentions) throws ProcessorException;
+	public abstract Entities delegateResolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException;
 }

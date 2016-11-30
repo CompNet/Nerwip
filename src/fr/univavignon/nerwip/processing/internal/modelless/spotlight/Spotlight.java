@@ -25,10 +25,13 @@ import java.util.List;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
+import fr.univavignon.nerwip.processing.InterfaceLinker;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
+import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 
@@ -52,7 +55,7 @@ import fr.univavignon.nerwip.processing.ProcessorName;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class Spotlight extends AbstractProcessor implements InterfaceRecognizer
+public class Spotlight extends AbstractProcessor implements InterfaceRecognizer, InterfaceResolver, InterfaceLinker
 {
 	/**
 	 * Builds and sets up an object representing
@@ -81,6 +84,18 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer
 	{	String result = delegateRecognizer.getFolder();
 		return result;
 	}
+
+	@Override
+	public String getResolverFolder() 
+	{	String result = delegateResolver.getFolder();
+		return result;
+	}
+
+	@Override
+	public String getLinkerFolder()
+	{	String result = delegateLinker.getFolder();
+		return result;
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// RECOGNIZER	 		/////////////////////////////////////////
@@ -104,5 +119,52 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Delegate in charge of recognizing entity mentions */
+	private SpotlightDelegateRecognizer delegateResolver;
+	
+	@Override
+	public List<EntityType> getResolvedEntityTypes()
+	{	List<EntityType> result = delegateResolver.getHandledEntityTypes();
+		return result;
+	}
+
+	@Override
+	public boolean canResolveLanguage(ArticleLanguage language) 
+	{	boolean result = delegateResolver.canHandleLanguage(language);
+		return result;
+	}
+	
+	@Override
+	public Entities resolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException
+	{	Entities result = delegateResolver.delegateResolve(article,mentions,recognizer);
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// LINKER		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Delegate in charge of recognizing entity mentions */
+	private SpotlightDelegateLinker delegateLinker;
+	
+	@Override
+	public List<EntityType> getLinkedEntityTypes()
+	{	List<EntityType> result = delegateLinker.getHandledEntityTypes();
+		return result;
+	}
+
+	@Override
+	public boolean canLinkLanguage(ArticleLanguage language) 
+	{	boolean result = delegateLinker.canHandleLanguage(language);
+		return result;
+	}
+	
+	@Override
+	public void link(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException
+	{	delegateLinker.delegateLink(article,mentions,entities,recognizer,resolver);
 	}
 }
