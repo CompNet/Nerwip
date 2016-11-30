@@ -205,8 +205,8 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 	@Override
 	public void processCounts(Mentions referenceOrig, Mentions estimationOrig, List<ArticleCategory> categories)
 	{	// copy mention lists (those are going to be modified)
-		List<AbstractMention<?>> reference = new ArrayList<AbstractMention<?>>(referenceOrig.getMentions());
-		List<AbstractMention<?>> estimation = new ArrayList<AbstractMention<?>>(estimationOrig.getMentions());
+		List<AbstractMention<?,?>> reference = new ArrayList<AbstractMention<?,?>>(referenceOrig.getMentions());
+		List<AbstractMention<?,?>> estimation = new ArrayList<AbstractMention<?,?>>(estimationOrig.getMentions());
 		
 		// remove the mentions whose type is not in the type list
 		cleanMentions(reference);
@@ -215,8 +215,8 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 		// category mention lists
 		for(ArticleCategory category: categories)
 		{	for(String count: COUNTS)
-			{	Map<ArticleCategory,List<AbstractMention<?>>> map = mentionsByCategory.get(count);
-				List<AbstractMention<?>> list = new ArrayList<AbstractMention<?>>();
+			{	Map<ArticleCategory,List<AbstractMention<?,?>>> map = mentionsByCategory.get(count);
+				List<AbstractMention<?,?>> list = new ArrayList<AbstractMention<?,?>>();
 				map.put(category,list);
 			}
 		}
@@ -241,15 +241,15 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processFullMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
-	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
+	private void processFullMatches(List<AbstractMention<?,?>> reference, List<AbstractMention<?,?>> estimation, List<ArticleCategory> categories)
+	{	Iterator<AbstractMention<?,?>> itRef = reference.iterator();
 		while(itRef.hasNext())
-		{	AbstractMention<?> ref = itRef.next();
+		{	AbstractMention<?,?> ref = itRef.next();
 			EntityType refType = ref.getType();
 			boolean found = false;
-			Iterator<AbstractMention<?>> itEst = estimation.iterator();
+			Iterator<AbstractMention<?,?>> itEst = estimation.iterator();
 			while(itEst.hasNext() && !found)
-			{	AbstractMention<?> est = itEst.next();
+			{	AbstractMention<?,?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(ref.hasSamePosition(est))
 				{	found = true;
@@ -258,11 +258,11 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 					
 					// update spatial evaluation
 						// all
-						List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FM);
+						List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_FM);
 						listAll.add(est);
 						// by type
-						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FM);
-						List<AbstractMention<?>> listByType; 
+						Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_FM);
+						List<AbstractMention<?,?>> listByType; 
 						listByType = mapByType.get(refType);
 						listByType.add(ref);
 						if(refType!=estType)
@@ -270,9 +270,9 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 							listByType.add(est);
 						}
 						// by category
-						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FM);
+						Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_FM);
 						for(ArticleCategory category: categories)
-						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+						{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 							listByCat.add(est);
 						}
 					
@@ -293,15 +293,15 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processPartialMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
-	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
+	private void processPartialMatches(List<AbstractMention<?,?>> reference, List<AbstractMention<?,?>> estimation, List<ArticleCategory> categories)
+	{	Iterator<AbstractMention<?,?>> itRef = reference.iterator();
 		while(itRef.hasNext())
-		{	AbstractMention<?> ref = itRef.next();
+		{	AbstractMention<?,?> ref = itRef.next();
 			EntityType refType = ref.getType();
 			boolean found = false;
-			Iterator<AbstractMention<?>> itEst = estimation.iterator();
+			Iterator<AbstractMention<?,?>> itEst = estimation.iterator();
 			while(itEst.hasNext() && !found)
-			{	AbstractMention<?> est = itEst.next();
+			{	AbstractMention<?,?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(ref.overlapsWith(est))
 				{	found = true;
@@ -310,11 +310,11 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 					
 					// update spatial evaluation
 						// all
-						List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_PM);
+						List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_PM);
 						listAll.add(est);
 						// by type
-						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_PM);
-						List<AbstractMention<?>> listByType; 
+						Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_PM);
+						List<AbstractMention<?,?>> listByType; 
 						listByType = mapByType.get(refType);
 						listByType.add(ref);
 						if(refType!=estType)
@@ -322,9 +322,9 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 							listByType.add(est);
 						}
 						// by category
-						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_PM);
+						Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_PM);
 						for(ArticleCategory category: categories)
-						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+						{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 							listByCat.add(est);
 						}	
 					
@@ -343,38 +343,38 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processWrongHits(List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
-	{	for(AbstractMention<?> est: estimation)
+	private void processWrongHits(List<AbstractMention<?,?>> estimation, List<ArticleCategory> categories)
+	{	for(AbstractMention<?,?> est: estimation)
 		{	EntityType estType = est.getType();
 	
 			// update spatial evaluation
 			{	// all
-				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_WH);
+				List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_WH);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_WH);
-				List<AbstractMention<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_WH);
+				List<AbstractMention<?,?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_WH);
+				Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_WH);
 				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}
 				
 			// update typical evaluation
 			{	// all
-				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FP);
+				List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_FP);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FP);
-				List<AbstractMention<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_FP);
+				List<AbstractMention<?,?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
+				Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
 				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}
@@ -389,38 +389,38 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 	 * @param categories
 	 * 		Categories of the considered article.
 	 */
-	private void processCompleteMisses(List<AbstractMention<?>> reference, List<ArticleCategory> categories)
-	{	for(AbstractMention<?> ref: reference)
+	private void processCompleteMisses(List<AbstractMention<?,?>> reference, List<ArticleCategory> categories)
+	{	for(AbstractMention<?,?> ref: reference)
 		{	EntityType refType = ref.getType();
 	
 			// update spatial evaluation
 			{	// all
-				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_CM);
+				List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_CM);
 				listAll.add(ref);
 				// by type
-				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_CM);
-				List<AbstractMention<?>> listByType = mapByType.get(refType);
+				Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_CM);
+				List<AbstractMention<?,?>> listByType = mapByType.get(refType);
 				listByType.add(ref);
 				// by category
-				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_CM);
+				Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_CM);
 				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 					listByCat.add(ref);
 				}
 			}
 				
 			// update typical evaluation
 			{	// all
-				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FN);
+				List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_FN);
 				listAll.add(ref);
 				// by type
-				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FN);
-				List<AbstractMention<?>> listByType = mapByType.get(refType);
+				Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_FN);
+				List<AbstractMention<?,?>> listByType = mapByType.get(refType);
 				listByType.add(ref);
 				// by category
-				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
+				Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
 				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 					listByCat.add(ref);
 				}
 			}
@@ -444,23 +444,23 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 	 * @return
 	 * 		{@code true} iff both types are similar.
 	 */
-	private boolean updateTypicalEvaluation(AbstractMention<?> ref, EntityType refType, AbstractMention<?> est, EntityType estType, List<ArticleCategory> categories)
+	private boolean updateTypicalEvaluation(AbstractMention<?,?> ref, EntityType refType, AbstractMention<?,?> est, EntityType estType, List<ArticleCategory> categories)
 	{	boolean result = refType==estType;
 		
 	// types match
 		if(result)
 		{	// true positives
 			{	// all
-				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_TP);
+				List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_TP);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_TP);
-				List<AbstractMention<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_TP);
+				List<AbstractMention<?,?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_TP);
+				Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_TP);
 				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}
@@ -470,31 +470,31 @@ public class RecognitionLilleMeasure extends AbstractRecognitionMeasure
 		else
 		{	// false negatives
 			{	// all
-				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FN);
+				List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_FN);
 				listAll.add(ref);
 				// by type
-				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FN);
-				List<AbstractMention<?>> listByType = mapByType.get(refType);
+				Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_FN);
+				List<AbstractMention<?,?>> listByType = mapByType.get(refType);
 				listByType.add(ref);
 				// by category
-				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
+				Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
 				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 					listByCat.add(ref);
 				}
 			}
 			// false positives
 			{	// all
-				List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FP);
+				List<AbstractMention<?,?>> listAll = mentionsAll.get(COUNT_FP);
 				listAll.add(est);
 				// by type
-				Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FP);
-				List<AbstractMention<?>> listByType = mapByType.get(estType);
+				Map<EntityType,List<AbstractMention<?,?>>> mapByType = mentionsByType.get(COUNT_FP);
+				List<AbstractMention<?,?>> listByType = mapByType.get(estType);
 				listByType.add(est);
 				// by category
-				Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
+				Map<ArticleCategory,List<AbstractMention<?,?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
 				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
+				{	List<AbstractMention<?,?>> listByCat = mapByCat.get(category);
 					listByCat.add(est);
 				}
 			}

@@ -118,7 +118,7 @@ public class SpotlightTools
 		String textt = article.getRawText();
  
 		//entities
-		List<AbstractMention<?>> entityList = mentions.getMentions();
+		List<AbstractMention<?,?>> entityList = mentions.getMentions();
 
 		//creating xml objects 
 		Element racine = new Element("annotation");
@@ -129,10 +129,10 @@ public class SpotlightTools
 		logger.log("entitylist size= " + entityList.size() );
 
 		for (int i=1; i<=entityList.size(); i++)
-		{	ListIterator<AbstractMention<?>> itr = entityList.listIterator(i);
+		{	ListIterator<AbstractMention<?,?>> itr = entityList.listIterator(i);
 
 			// get the entity	    	
-			AbstractMention<?> mention = itr.previous(); 
+			AbstractMention<?,?> mention = itr.previous(); 
 
 			int startPos = mention.getStartPos(); //offset
 			String startPosition = String.valueOf(startPos);
