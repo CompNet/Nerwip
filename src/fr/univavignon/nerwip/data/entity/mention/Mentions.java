@@ -38,6 +38,7 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
@@ -236,7 +237,7 @@ public class Mentions
 	// MENTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** List of mentions */
-	private final List<AbstractMention<?>> mentions = new ArrayList<AbstractMention<?>>();
+	private final List<AbstractMention<?,?>> mentions = new ArrayList<AbstractMention<?,?>>();
 	
 	/**
 	 * Returns the whole list
@@ -245,7 +246,7 @@ public class Mentions
 	 * @return
 	 * 		List of Mention objects.
 	 */
-	public List<AbstractMention<?>> getMentions()
+	public List<AbstractMention<?,?>> getMentions()
 	{	return mentions;
 	}
 	
@@ -258,8 +259,8 @@ public class Mentions
 	 * @return
 	 * 		Mention at the specified position.
 	 */
-	public AbstractMention<?> getMentionAt(int index)
-	{	AbstractMention<?> result = mentions.get(index);
+	public AbstractMention<?,?> getMentionAt(int index)
+	{	AbstractMention<?,?> result = mentions.get(index);
 		return result;
 	}
 
@@ -275,10 +276,10 @@ public class Mentions
 	 * @return
 	 * 		List of the concerned mentions.
 	 */
-	public List<AbstractMention<?>> getMentionsIn(int startPos, int endPos)
-	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
+	public List<AbstractMention<?,?>> getMentionsIn(int startPos, int endPos)
+	{	List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
 		
-		for(AbstractMention<?> mention: mentions)
+		for(AbstractMention<?,?> mention: mentions)
 		{	if(mention.containsPosition(startPos) || mention.containsPosition(endPos-1)
 				|| (mention.startPos>=startPos && mention.startPos<endPos)
 				|| (mention.endPos>=startPos && mention.endPos<endPos))
@@ -296,7 +297,7 @@ public class Mentions
 	 * @param mention
 	 * 		Mention to add to the list.
 	 */
-	public void addMention(AbstractMention<?> mention)
+	public void addMention(AbstractMention<?,?> mention)
 	{	mentions.add(mention);
 	}
 	
@@ -310,7 +311,7 @@ public class Mentions
 	 * 		Mentions to add to the list.
 	 */
 	public void addMentions(Mentions mentions)
-	{	List<AbstractMention<?>> list = mentions.getMentions();
+	{	List<AbstractMention<?,?>> list = mentions.getMentions();
 		this.mentions.addAll(list);
 	}
 
@@ -323,7 +324,7 @@ public class Mentions
 	 * @param mentions
 	 * 		List of mentions to add to the list.
 	 */
-	public void addMentions(List<AbstractMention<?>> mentions)
+	public void addMentions(List<AbstractMention<?,?>> mentions)
 	{	this.mentions.addAll(mentions);
 	}
 
@@ -334,7 +335,7 @@ public class Mentions
 	 * @param mention
 	 * 		Mention object to be removed from the list.
 	 */
-	public void removeMention(AbstractMention<?> mention)
+	public void removeMention(AbstractMention<?,?> mention)
 	{	mentions.remove(mention);
 	}
 
@@ -347,9 +348,9 @@ public class Mentions
 	 * @return
 	 * 		List of mentions of this type.
 	 */
-	public List<AbstractMention<?>> getMentionsByType(EntityType type)
-	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
-		for(AbstractMention<?> mention: mentions)
+	public List<AbstractMention<?,?>> getMentionsByType(EntityType type)
+	{	List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+		for(AbstractMention<?,?> mention: mentions)
 		{	EntityType t = mention.getType();
 			if(t==type)
 				result.add(mention);
@@ -377,10 +378,10 @@ public class Mentions
 	 * @return
 	 * 		A sublist of the original mention list.
 	 */
-	public static List<AbstractMention<?>> filterByType(List<AbstractMention<?>> list, EntityType type)
-	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
+	public static List<AbstractMention<?,?>> filterByType(List<AbstractMention<?,?>> list, EntityType type)
+	{	List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
 		
-		for(AbstractMention<?> mention: list)
+		for(AbstractMention<?,?> mention: list)
 		{	EntityType t = mention.getType();
 			if(t==type)
 				result.add(mention);
@@ -405,9 +406,9 @@ public class Mentions
 	 * 		to update the mention string values.
 	 */
 	public void rightShiftMentionPositions(int start, int length, String text)
-	{	Iterator<AbstractMention<?>> it = mentions.iterator();
+	{	Iterator<AbstractMention<?,?>> it = mentions.iterator();
 		while(it.hasNext())
-		{	AbstractMention<?> mention = it.next();
+		{	AbstractMention<?,?> mention = it.next();
 			boolean keep = rightShiftMentionPosition(mention, start, length, text);
 			if(!keep)
 				it.remove();
@@ -431,7 +432,7 @@ public class Mentions
 	 * @return
 	 * 		Whether the mention is still valid ({@code true}) or is now empty ({@code false}).
 	 */
-	public boolean rightShiftMentionPosition(AbstractMention<?> mention, int start, int length, String text)
+	public boolean rightShiftMentionPosition(AbstractMention<?,?> mention, int start, int length, String text)
 	{	boolean result = false;
 	
 		// start position
@@ -469,9 +470,9 @@ public class Mentions
 	 * 		to update the mentions string values.
 	 */
 	public void leftShiftMentionPositions(int start, int length, String text)
-	{	Iterator<AbstractMention<?>> it = mentions.iterator();
+	{	Iterator<AbstractMention<?,?>> it = mentions.iterator();
 		while(it.hasNext())
-		{	AbstractMention<?> mention = it.next();
+		{	AbstractMention<?,?> mention = it.next();
 			boolean keep = leftShiftMentionPosition(mention, start, length, text);
 			if(!keep)
 				it.remove();
@@ -495,7 +496,7 @@ public class Mentions
 	 * @return
 	 * 		Whether the mention is still valid ({@code true}) or is now empty ({@code false}).
 	 */
-	public boolean leftShiftMentionPosition(AbstractMention<?> mention, int start, int length, String text)
+	public boolean leftShiftMentionPosition(AbstractMention<?,?> mention, int start, int length, String text)
 	{	boolean result = false;
 		
 		// start position
@@ -532,7 +533,7 @@ public class Mentions
 	 * @return
 	 * 		{@code true} iff it intersects an existing mention.
 	 */
-	public boolean isMentionOverlapping(AbstractMention<?> mention)
+	public boolean isMentionOverlapping(AbstractMention<?,?> mention)
 	{	boolean result = mention.overlapsWithOne(mentions);
 		return result;
 	}
@@ -550,49 +551,49 @@ public class Mentions
 	 * @return
 	 * 		List of maps of equivalent mentions.
 	 */
-	public static List<Map<InterfaceRecognizer,AbstractMention<?>>> identifyOverlaps(Map<InterfaceRecognizer,Mentions> mentions)
-	{	List<Map<InterfaceRecognizer,AbstractMention<?>>> result = new ArrayList<Map<InterfaceRecognizer,AbstractMention<?>>>();
+	public static List<Map<InterfaceRecognizer,AbstractMention<?,?>>> identifyOverlaps(Map<InterfaceRecognizer,Mentions> mentions)
+	{	List<Map<InterfaceRecognizer,AbstractMention<?,?>>> result = new ArrayList<Map<InterfaceRecognizer,AbstractMention<?,?>>>();
 		
 		// sort all mentions
 		for(Mentions e: mentions.values())
 			e.sortByPosition();
 		
 		// init iterators
-		Map<InterfaceRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<InterfaceRecognizer, Iterator<AbstractMention<?>>>();
+		Map<InterfaceRecognizer,Iterator<AbstractMention<?,?>>> iterators = new HashMap<InterfaceRecognizer, Iterator<AbstractMention<?,?>>>();
 		for(InterfaceRecognizer recognizer: mentions.keySet())
 		{	Mentions e = mentions.get(recognizer);
-			Iterator<AbstractMention<?>> it = e.getMentions().iterator();
+			Iterator<AbstractMention<?,?>> it = e.getMentions().iterator();
 			if(it.hasNext())
 				iterators.put(recognizer,it);
 		}
 		
 		// init current mentions
-		Map<AbstractMention<?>,InterfaceRecognizer> current = new HashMap<AbstractMention<?>, InterfaceRecognizer>();
+		Map<AbstractMention<?,?>,InterfaceRecognizer> current = new HashMap<AbstractMention<?,?>, InterfaceRecognizer>();
 		for(InterfaceRecognizer recognizer: iterators.keySet())
-		{	Iterator<AbstractMention<?>> it = iterators.get(recognizer);
-			AbstractMention<?> mention = it.next();
+		{	Iterator<AbstractMention<?,?>> it = iterators.get(recognizer);
+			AbstractMention<?,?> mention = it.next();
 			current.put(mention,recognizer);
 		}
 		
 		// detect overlapping mentions
 		while(iterators.size()>1)
 		{	// init map
-			Map<InterfaceRecognizer,AbstractMention<?>> map = new HashMap<InterfaceRecognizer, AbstractMention<?>>();
+			Map<InterfaceRecognizer,AbstractMention<?,?>> map = new HashMap<InterfaceRecognizer, AbstractMention<?,?>>();
 			
 			// identify the first mention
-			Iterator<AbstractMention<?>> it = current.keySet().iterator();
-			AbstractMention<?> first = it.next();
+			Iterator<AbstractMention<?,?>> it = current.keySet().iterator();
+			AbstractMention<?,?> first = it.next();
 			while(it.hasNext())
-			{	AbstractMention<?> mention = it.next();
+			{	AbstractMention<?,?> mention = it.next();
 				if(mention.precedes(first))
 					first = mention;
 			}
 			
 			// compare other mentions to the the first one
 			it = current.keySet().iterator();
-			Map<AbstractMention<?>,InterfaceRecognizer> newCurrent = new HashMap<AbstractMention<?>, InterfaceRecognizer>();
+			Map<AbstractMention<?,?>,InterfaceRecognizer> newCurrent = new HashMap<AbstractMention<?,?>, InterfaceRecognizer>();
 			while(it.hasNext())
-			{	AbstractMention<?> mention = it.next();
+			{	AbstractMention<?,?> mention = it.next();
 				InterfaceRecognizer recognizer = current.get(mention);
 				
 				if(mention.overlapsWith(first))
@@ -600,9 +601,9 @@ public class Mentions
 					map.put(recognizer,mention);
 					
 					// update iterator and mention list
-					Iterator<AbstractMention<?>> i = iterators.get(recognizer);
+					Iterator<AbstractMention<?,?>> i = iterators.get(recognizer);
 					if(i.hasNext())
-					{	AbstractMention<?> newMention = i.next();
+					{	AbstractMention<?,?> newMention = i.next();
 						newCurrent.put(newMention,recognizer);
 					}
 					else
@@ -620,12 +621,12 @@ public class Mentions
 		
 		// add the remaining mentions
 		if(!iterators.isEmpty())
-		{	Entry<InterfaceRecognizer,Iterator<AbstractMention<?>>> entry = iterators.entrySet().iterator().next();
+		{	Entry<InterfaceRecognizer,Iterator<AbstractMention<?,?>>> entry = iterators.entrySet().iterator().next();
 		InterfaceRecognizer recognizer = entry.getKey();
-			Iterator<AbstractMention<?>> it = entry.getValue();
+			Iterator<AbstractMention<?,?>> it = entry.getValue();
 			while(it.hasNext())
-			{	Map<InterfaceRecognizer,AbstractMention<?>> map = new HashMap<InterfaceRecognizer, AbstractMention<?>>();
-				AbstractMention<?> mention = it.next();
+			{	Map<InterfaceRecognizer,AbstractMention<?,?>> map = new HashMap<InterfaceRecognizer, AbstractMention<?,?>>();
+				AbstractMention<?,?> mention = it.next();
 				map.put(recognizer,mention);
 				result.add(map);
 			}
@@ -655,6 +656,35 @@ public class Mentions
 	 * 		Problem while parsing the date.
 	 */
 	public static Mentions readFromXml(File dataFile) throws SAXException, IOException, ParseException
+	{	Mentions result = readFromXml(dataFile, null);
+		return result;
+	}
+	
+	/**
+	 * Reads the specified XML file, and 
+	 * builds the corresponding Mentions object,
+	 * which contains both mentions and meta-data.
+	 * <br/>
+	 * The specified Entities are used to initialize
+	 * the mentions. Unless it is {@code null}, in
+	 * which case the method behaves like
+	 * {@link #readFromXml(File)}.
+	 * 
+	 * @param dataFile
+	 * 		The XML file to be read.
+	 * @param entities
+	 * 		Previously loaded entities (can be {@code null}).
+	 * @return
+	 * 		The list of mentions and meta-data stored in the file.
+	 * 
+	 * @throws SAXException
+	 * 		Problem while reading the file.
+	 * @throws IOException
+	 * 		Problem while reading the file.
+	 * @throws ParseException 
+	 * 		Problem while parsing the date.
+	 */
+	public static Mentions readFromXml(File dataFile, Entities entities) throws SAXException, IOException, ParseException
 	{	// schema file
 		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
 		File schemaFile = new File(schemaPath);
@@ -667,9 +697,6 @@ public class Mentions
 		ProcessorName recognizer = ProcessorName.valueOf(recognizerStr);
 		
 		// get dates
-//String creationDateStr = element.getAttributeValue(XmlNames.ATT_DATE);
-//SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
-//Date date = df.parse(creationDateStr);
 		String creationDateStr = element.getAttributeValue(XmlNames.ATT_CREATION);
 		Date creationDate = TimeFormatting.parseXmlTime(creationDateStr);
 		String modificationDateStr = element.getAttributeValue(XmlNames.ATT_MODIFICATION);
@@ -679,17 +706,15 @@ public class Mentions
 		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
 		
 		// get mentions
-//Mentions result = new Mentions(recognizer, date);
 		Mentions result = new Mentions(recognizer, creationDate, modificationDate);
 		result.setEditor(editor);
 		List<Element> elements = element.getChildren(XmlNames.ELT_MENTION);
 		for(Element e: elements)
-		{	AbstractMention<?> mention = AbstractMention.importFromElement(e, recognizer);
+		{	AbstractMention<?,?> mention = AbstractMention.importFromElement(e, recognizer, entities);
 			result.addMention(mention);
 		}
 		Collections.sort(result.mentions);
 
-//result.writeToXml(dataFile);
 		return result;
 	}
 
@@ -704,6 +729,26 @@ public class Mentions
 	 * 		Problem while writing the file.
 	 */
 	public void writeToXml(File dataFile) throws IOException
+	{	writeToXml(dataFile,null);
+	}
+	
+	/**
+	 * Write this Mentions object under the form of
+	 * a XML file using our own format. The entity
+	 * ids are also written in the XML file. Unless
+	 * the {@code entities} parameter is {@code null},
+	 * in which case the method behaves like
+	 * {@link #writeToXml(File)}.
+	 * 
+	 * @param dataFile
+	 * 		File to contain the mentions.
+	 * @param entities
+	 * 		Existing entities.
+	 * 
+	 * @throws IOException
+	 * 		Problem while writing the file.
+	 */
+	public void writeToXml(File dataFile, Entities entities) throws IOException
 	{	// schema file
 		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
 		File schemaFile = new File(schemaPath);
@@ -731,8 +776,8 @@ public class Mentions
 		
 		// insert mention elements
 		Collections.sort(mentions);
-		for(AbstractMention<?> mention: mentions)
-		{	Element mentionElt = mention.exportAsElement();
+		for(AbstractMention<?,?> mention: mentions)
+		{	Element mentionElt = mention.exportAsElement(entities);
 			element.addContent(mentionElt);
 		}
 		

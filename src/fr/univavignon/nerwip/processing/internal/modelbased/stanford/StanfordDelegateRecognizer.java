@@ -236,7 +236,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 		for(List<CoreLabel> sentence: data)
 		{	// reset previously detected mention info
 			EntityType prevType = null;
-			AbstractMention<?> lastMention = null;
+			AbstractMention<?,?> lastMention = null;
 			
 			// process each word separately, trying to merge them
 			for(CoreLabel word: sentence)
@@ -256,7 +256,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 					// check for continuity with the previous mention
 					if(type!=prevType)
 					{	// case where we start a new mention
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						AbstractMention<?,?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 						result.addMention(mention);
 						lastMention = mention;
 					}
@@ -265,7 +265,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 					{	// case where we update (recreate, actually) the previous mention
 						startPos = lastMention.getStartPos();
 						valueStr = lastMention.getStringValue() + before + valueStr;
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						AbstractMention<?,?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 						result.addMention(mention);
 						result.removeMention(lastMention);
 						lastMention = mention;
@@ -294,10 +294,10 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 	 * 		by Stanford, and not a single String any more.
 	 */
 	@SuppressWarnings("unused")
-	private void fixPositions(List<AbstractMention<?>> mentions)
+	private void fixPositions(List<AbstractMention<?,?>> mentions)
 	{	int rollingCount = 0;
 		
-		for(AbstractMention<?> mention: mentions)
+		for(AbstractMention<?,?> mention: mentions)
 		{	int startPos = mention.getStartPos() - rollingCount;
 			int endPos = mention.getEndPos() - rollingCount;
 			

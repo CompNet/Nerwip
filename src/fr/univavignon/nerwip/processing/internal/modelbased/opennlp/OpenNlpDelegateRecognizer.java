@@ -248,7 +248,7 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 				int startPos = span.getStart();
 				int endPos = span.getEnd();
 				String valueStr = rawText.substring(startPos,endPos);
-				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?,?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 				
 				// ignore overlapping mentions
 //				if(!result.hasMention(mention))	//TODO don't remember if i'm supposed to change that, or what?

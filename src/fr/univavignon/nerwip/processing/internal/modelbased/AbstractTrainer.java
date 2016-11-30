@@ -275,10 +275,10 @@ public abstract class AbstractTrainer<T>
 	 */
 	protected void filterReferenceMentions(Mentions mentions)
 	{	List<EntityType> typeList = getHandledEntityTypes();
-		List<AbstractMention<?>> entList = mentions.getMentions();
-		Iterator<AbstractMention<?>> it = entList.iterator();
+		List<AbstractMention<?,?>> entList = mentions.getMentions();
+		Iterator<AbstractMention<?,?>> it = entList.iterator();
 		while(it.hasNext())
-		{	AbstractMention<?> mention = it.next();
+		{	AbstractMention<?,?> mention = it.next();
 			EntityType type = mention.getType();
 			if(!typeList.contains(type))
 				it.remove();

@@ -2199,6 +2199,14 @@ File folder = folders.get(0);
  *   
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
+ *   
+ *  TODO when dealing with folder names in resolver and recognizer: do we store the recognizer/resolver somwhere?
+ *  otherwise, we need it at every call...
+ *    
+ * - entities:
+ *   - TODO represent the hierarchical relationships between entities?
+ *     or just rely on the interrogation of online databases instead?
+ *   - TODO the same question araises for the entity multiple names...
  */
 
 /*

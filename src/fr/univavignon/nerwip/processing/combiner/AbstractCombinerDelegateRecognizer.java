@@ -86,10 +86,10 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 		logger.log("Handled types: "+handledTypes.toString()+".)");
 		logger.increaseOffset();
 		
-		List<AbstractMention<?>> mentionList = mentions.getMentions();
-		Iterator<AbstractMention<?>> it = mentionList.iterator();
+		List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+		Iterator<AbstractMention<?,?>> it = mentionList.iterator();
 		while(it.hasNext())
-		{	AbstractMention<?> mention = it.next();
+		{	AbstractMention<?,?> mention = it.next();
 			EntityType type = mention.getType();
 			
 			if(!handledTypes.contains(type))

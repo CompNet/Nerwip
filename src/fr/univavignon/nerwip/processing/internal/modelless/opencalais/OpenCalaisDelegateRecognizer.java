@@ -353,7 +353,7 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 				// create mentions
 				logger.log("Create mention objects");
 				for(Element element: data)
-				{	AbstractMention<?> mention = convertElement(element, metaData, prevSize);
+				{	AbstractMention<?,?> mention = convertElement(element, metaData, prevSize);
 					if(mention!=null)
 						result.addMention(mention);
 				}
@@ -391,8 +391,8 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 	 * @return
 	 * 		The resulting mention.
 	 */
-	private AbstractMention<?> convertElement(Element element, Map<String,Element> metaData, int prevSize)
-	{	AbstractMention<?> result = null;
+	private AbstractMention<?,?> convertElement(Element element, Map<String,Element> metaData, int prevSize)
+	{	AbstractMention<?,?> result = null;
 		
 		// get subject of the instance
 		Element subjElt = element.getChild(ELT_SUBJECT,nsC);

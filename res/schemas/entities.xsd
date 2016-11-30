@@ -50,7 +50,7 @@
 			<xsd:element name="value" type="xsd:string" />
 		</xsd:choice>
 		<xsd:attribute name="type" type="tEntityType" use="required" />
-		<xsd:attribute name="id" type="xsd:integer" use="required" />
+		<xsd:attribute name="id" type="xsd:long" use="required" />
 		<xsd:attribute name="name" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	

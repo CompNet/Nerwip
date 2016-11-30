@@ -24,6 +24,9 @@ package fr.univavignon.nerwip.data.entity.mention;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
+import fr.univavignon.nerwip.data.entity.Entities;
+import fr.univavignon.nerwip.data.entity.EntityPerson;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
@@ -33,7 +36,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-public class MentionPerson extends AbstractMention<String>
+public class MentionPerson extends AbstractMention<String,EntityPerson>
 {	
 	/**
 	 * Builds a new person mention.
@@ -81,7 +84,7 @@ public class MentionPerson extends AbstractMention<String>
 	// XML				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Element exportAsElement()
+	public Element exportAsElement(Entities entities)
 	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
@@ -92,6 +95,12 @@ public class MentionPerson extends AbstractMention<String>
 
 		Attribute typeAttr = new Attribute(XmlNames.ATT_TYPE, getType().toString());
 		result.setAttribute(typeAttr);
+		
+		if(entities!=null)
+		{	long entityId = entity.getInternalId();
+			Attribute entityIdAttr = new Attribute(XmlNames.ATT_ENTITY_ID, Long.toString(entityId));
+			result.setAttribute(entityIdAttr);
+		}
 		
 		Element stringElt = new Element(XmlNames.ELT_STRING);
 		stringElt.setText(valueStr);
@@ -108,16 +117,22 @@ public class MentionPerson extends AbstractMention<String>
 
 	/**
 	 * Builds a person mention from the specified
-	 * XML element.
+	 * XML element, using the specified set of entities
+	 * or completing it if necessary (i.e. missing entity).
+	 * If {@code entities} is {@code null}, we suppose this
+	 * entity does not have any associated entity, and this 
+	 * method does not try to retrieve it.
 	 * 
 	 * @param element
 	 * 		XML element representing the mention.
 	 * @param source
 	 * 		Name of the recognizer which detected the mention.
+	 * @param entities
+	 * 		Known entities as of know (can be {@code null}).
 	 * @return
 	 * 		The person mention corresponding to the specified element.
 	 */
-	public static MentionPerson importFromElement(Element element, ProcessorName source)
+	public static MentionPerson importFromElement(Element element, ProcessorName source, Entities entities)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -133,6 +148,21 @@ public class MentionPerson extends AbstractMention<String>
 			value = valueElt.getText();
 		
 		MentionPerson result =  new MentionPerson(startPos, endPos, source, valueStr, value);
+
+		if(entities!=null)
+		{	String entityIdStr = element.getAttributeValue(XmlNames.ATT_ENTITY_ID);
+			long entityId = Long.parseLong(entityIdStr);
+			AbstractEntity entity = entities.getEntityById(entityId);
+			if(entity==null)
+				entity = new EntityPerson(value,entityId);
+			if(entity instanceof EntityPerson)
+			{	EntityPerson entityPers = (EntityPerson)entity;
+				result.setEntityId(entityPers);
+			}
+			else
+				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());
+		}
+		
 		return result;
 	}
 }

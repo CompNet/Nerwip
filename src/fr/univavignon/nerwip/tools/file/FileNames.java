@@ -127,6 +127,8 @@ public class FileNames
 	public final static String FI_GRAPHML_SCHEMA = "graphml" + FileNames.EX_SCHEMA;
 	/** XML schema file used to record mentions  */
 	public final static String FI_MENTION_SCHEMA = "mentions" + FileNames.EX_SCHEMA;
+	/** XML schema file used to record entities  */
+	public final static String FI_ENTITY_SCHEMA = "entities" + FileNames.EX_SCHEMA;
 	/** XML schema file used to store keys */
 	public final static String FI_KEY_SCHEMA = "keys" + FileNames.EX_SCHEMA;
 	/** XML schema file used to record article properties  */
@@ -141,8 +143,10 @@ public class FileNames
 	public final static String FI_LINKED_TEXT = "linked" + FileNames.EX_TEXT;
 	/** File containing the reference mentions */
 	public final static String FI_REFERENCE_TEXT = "reference" + FileNames.EX_TEXT;
-	/** XML file containing the mentions estimated by a recognizer, in a normalized format */
+	/** XML file containing the mentions estimated by a recognizer or completed by a resolver, in a normalized format */
 	public final static String FI_MENTION_LIST = "mentions" + FileNames.EX_XML;
+	/** XML file containing the entities detected by a resolver or linked by a linker, in a normalized format */
+	public final static String FI_ENTITY_LIST = "entities" + FileNames.EX_XML;
 	/** XML schema file used to store GUI texts */
 	public final static String FI_LANGUAGE = "language" + FileNames.EX_SCHEMA;
 	/** XML file used to store keys */

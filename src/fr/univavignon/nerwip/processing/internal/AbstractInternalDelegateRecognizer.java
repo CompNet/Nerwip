@@ -140,7 +140,7 @@ public abstract class AbstractInternalDelegateRecognizer<T> extends AbstractDele
 	
 				// check if the mentions are consistent
 				String text = article.getRawText();
-				for(AbstractMention<?> mention: result.getMentions())
+				for(AbstractMention<?,?> mention: result.getMentions())
 				{	if(!mention.checkText(article))
 						logger.log("ERROR: mention text not consistant with text/position, '"+mention.getStringValue()+" vs. '"+text.substring(mention.getStartPos(),mention.getEndPos())+"'");
 				}

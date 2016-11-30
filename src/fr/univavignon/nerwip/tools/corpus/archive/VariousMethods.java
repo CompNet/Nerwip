@@ -275,7 +275,7 @@ public class VariousMethods
 			Mentions mentions = Mentions.readFromXml(file);
 			
 			logger.log("Remove their value (keep the string representation, though)");
-			for(AbstractMention<?> mention: mentions.getMentions())
+			for(AbstractMention<?,?> mention: mentions.getMentions())
 				mention.setValue(null);
 			
 			logger.log("Record the modified mentions");

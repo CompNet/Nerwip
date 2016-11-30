@@ -21,13 +21,19 @@ package fr.univavignon.nerwip.processing;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
+
+import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 
@@ -140,4 +146,144 @@ public abstract class AbstractDelegateLinker
 	 * 		Problem while resolving co-occurrences. 
 	 */
 	public abstract void delegatelink(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException;
+
+	/////////////////////////////////////////////////////////////////
+	// XML FILE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the XML file associated to the specified
+	 * article to contain the entities.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		A {@code File} object representing the associated XML result file.
+	 */
+	public File getEntitiesXmlFile(Article article)
+	{	String resultsFolder = article.getFolderPath();
+		String linkerFolder = getFolder();
+		if(linkerFolder!=null)
+			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
+		
+		File result = new File(filePath);
+		return result;
+	}
+	
+	/**
+	 * Returns the XML file associated to the specified
+	 * article to contain the mentions.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		A {@code File} object representing the associated XML result file.
+	 */
+	public File getMentionsXmlFile(Article article)
+	{	String resultsFolder = article.getFolderPath();
+		String linkerFolder = getFolder();
+		if(linkerFolder!=null)
+			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
+		
+		File result = new File(filePath);
+		return result;
+	}
+	
+	/**
+	 * Write the XML results obtained for the specified article.
+	 * This method is meant for both internal and external tools.
+	 * 
+	 * @param article
+	 * 		Concerned article.
+	 * @param mentions
+	 * 		List of the detected mentions.
+	 * @param entities
+	 * 		List of the detected entities.
+	 * @throws IOException
+	 * 		Problem while writing the file.
+	 */
+	public void writeXmlResults(Article article, Mentions mentions, Entities entities) throws IOException
+	{	// data file
+		File mentionsFile = getMentionsXmlFile(article);
+		File entitiesFile = getEntitiesXmlFile(article);
+		
+		// check folder
+		File folder = mentionsFile.getParentFile();
+		if(!folder.exists())
+			folder.mkdirs();
+		
+		mentions.writeToXml(mentionsFile, entities);
+		entities.writeToXml(entitiesFile);
+	}
+	
+	/**
+	 * Read the XML representation of the results
+	 * previously processed by the linker, for the 
+	 * specified article.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		The list of mentions stored in the file.
+	 * 
+	 * @throws SAXException
+	 * 		Problem while reading the file.
+	 * @throws IOException
+	 * 		Problem while reading the file.
+	 * @throws ParseException 
+	 * 		Problem while parsing a date. 
+	 */
+	public Entities readXmlResults(Article article) throws SAXException, IOException, ParseException
+	{	File dataFile = getXmlFile(article);//TODO
+		
+		Entities result = Entities.readFromXml(dataFile);
+		
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// RAW FILE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the raw result file associated to the specified
+	 * article, i.e. the file possibly generated externally
+	 * by the linker.
+	 * <br/>
+	 * Nothing to do with the raw <i>text</i> of the article,
+	 * i.e. its plain textual content.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		A {@code File} object representing the associated raw result file.
+	 */
+	public File getRawFile(Article article)
+	{	String resultsFolder = article.getFolderPath();
+		String linkerFolder = getFolder();
+		if(linkerFolder!=null)
+			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;
+	
+		File result = new File(filePath);
+		return result;
+	}
+	
+	/**
+	 * Tries to delete the file containing the raw results.
+	 * Returns a boolean indicating success ({@code true})
+	 * or failure ({@code false}).
+	 * 
+	 * @param article
+	 * 		Concerned article.
+	 * @return
+	 * 		{@code true} iff the file could be deleted.
+	 */
+	public boolean deleteRawFile(Article article)
+	{	boolean result = false;
+		File rawFile = getRawFile(article);
+		if(rawFile!=null && rawFile.exists() && rawFile.isFile())
+			result = rawFile.delete();
+		return result;
+	}
 }

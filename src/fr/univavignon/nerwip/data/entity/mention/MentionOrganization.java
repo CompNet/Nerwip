@@ -24,6 +24,9 @@ package fr.univavignon.nerwip.data.entity.mention;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
+import fr.univavignon.nerwip.data.entity.Entities;
+import fr.univavignon.nerwip.data.entity.EntityOrganization;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
@@ -33,7 +36,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-public class MentionOrganization extends AbstractMention<String>
+public class MentionOrganization extends AbstractMention<String,EntityOrganization>
 {	
 	/**
 	 * Builds a new organization mention.
@@ -81,7 +84,7 @@ public class MentionOrganization extends AbstractMention<String>
 	// XML				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Element exportAsElement()
+	public Element exportAsElement(Entities entities)
 	{	Element result = new Element(XmlNames.ELT_MENTION);
 		
 		Attribute startAttr = new Attribute(XmlNames.ATT_START, Integer.toString(startPos));
@@ -92,6 +95,12 @@ public class MentionOrganization extends AbstractMention<String>
 
 		Attribute typeAttr = new Attribute(XmlNames.ATT_TYPE, getType().toString());
 		result.setAttribute(typeAttr);
+		
+		if(entities!=null)
+		{	long entityId = entity.getInternalId();
+			Attribute entityIdAttr = new Attribute(XmlNames.ATT_ENTITY_ID, Long.toString(entityId));
+			result.setAttribute(entityIdAttr);
+		}
 		
 		Element stringElt = new Element(XmlNames.ELT_STRING);
 		stringElt.setText(valueStr);
@@ -108,16 +117,22 @@ public class MentionOrganization extends AbstractMention<String>
 	
 	/**
 	 * Builds an organization mention from the specified
-	 * XML element.
+	 * XML element, using the specified set of entities
+	 * or completing it if necessary (i.e. missing entity).
+	 * If {@code entities} is {@code null}, we suppose this
+	 * entity does not have any associated entity, and this 
+	 * method does not try to retrieve it.
 	 * 
 	 * @param element
 	 * 		XML element representing the mention.
 	 * @param source
 	 * 		Name of the recognizer which detected the mention.
+	 * @param entities
+	 * 		Known entities as of know (can be {@code null}).
 	 * @return
 	 * 		The organization mention corresponding to the specified element.
 	 */
-	public static MentionOrganization importFromElement(Element element, ProcessorName source)
+	public static MentionOrganization importFromElement(Element element, ProcessorName source, Entities entities)
 	{	String startStr = element.getAttributeValue(XmlNames.ATT_START);
 		int startPos = Integer.parseInt(startStr);
 		
@@ -133,6 +148,21 @@ public class MentionOrganization extends AbstractMention<String>
 			value = valueElt.getText();
 		
 		MentionOrganization result =  new MentionOrganization(startPos, endPos, source, valueStr, value);
+
+		if(entities!=null)
+		{	String entityIdStr = element.getAttributeValue(XmlNames.ATT_ENTITY_ID);
+			long entityId = Long.parseLong(entityIdStr);
+			AbstractEntity entity = entities.getEntityById(entityId);
+			if(entity==null)
+				entity = new EntityOrganization(value,entityId);
+			if(entity instanceof EntityOrganization)
+			{	EntityOrganization entityOrg = (EntityOrganization)entity;
+				result.setEntityId(entityOrg);
+			}
+			else
+				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());
+		}
+		
 		return result;
 	}
 }

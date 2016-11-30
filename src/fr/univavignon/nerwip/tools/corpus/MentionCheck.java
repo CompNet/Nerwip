@@ -104,9 +104,9 @@ public class MentionCheck
 			String text = article.getRawText();
 			
 			Mentions mentions = article.getReferenceMentions();
-			List<AbstractMention<?>> list = mentions.getMentions();
+			List<AbstractMention<?,?>> list = mentions.getMentions();
 			
-			for(AbstractMention<?> mention: list)
+			for(AbstractMention<?,?> mention: list)
 			{	int start = mention.getStartPos();
 				int end = mention.getEndPos();
 				String textStr = text.substring(start, end);
@@ -162,11 +162,11 @@ public class MentionCheck
 			
 			Mentions mentions = article.getReferenceMentions();
 			mentions.sortByPosition();
-			List<AbstractMention<?>> list = mentions.getMentions();
+			List<AbstractMention<?,?>> list = mentions.getMentions();
 			
-			Iterator<AbstractMention<?>> it = list.iterator();
-			AbstractMention<?> current = null;
-			AbstractMention<?> prev = null;
+			Iterator<AbstractMention<?,?>> it = list.iterator();
+			AbstractMention<?,?> current = null;
+			AbstractMention<?,?> prev = null;
 			while(it.hasNext())
 			{	prev = current;
 				current = it.next();
@@ -227,9 +227,9 @@ public class MentionCheck
 			
 			Mentions mentions = article.getReferenceMentions();
 			mentions.sortByPosition();
-			List<AbstractMention<?>> list = mentions.getMentions();
+			List<AbstractMention<?,?>> list = mentions.getMentions();
 			
-			for(AbstractMention<?> mention: list)
+			for(AbstractMention<?,?> mention: list)
 			{	int start = mention.getStartPos();
 				int end = mention.getEndPos();
 				if(start==end)

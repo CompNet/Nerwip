@@ -32,6 +32,7 @@
 		<xsd:attribute name="type" type="tEntityType" use="required" />
 		<xsd:attribute name="start" type="xsd:integer" use="required" />
 		<xsd:attribute name="end" type="xsd:integer" use="required" />
+		<xsd:attribute name="entityId" type="xsd:long" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="tMentions">

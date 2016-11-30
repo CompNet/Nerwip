@@ -45,8 +45,12 @@ public class XmlNames
 	public static final String ATT_EDITOR = "editor";
 	/** Mention end position */
 	public static final String ATT_END = "end";
+	/** Id of the entity associated to a mention */
+	public static final String ATT_ENTITY_ID = "entityId";
 	/** Font size */
 	public static final String ATT_FONT_SIZE = "fontSize";
+	/** Some identification code */
+	public static final String ATT_ID = "id";
 	/** Id associated to some key */
 	public static final String ATT_KEYID = "id";
 	/** Represents a modification date */
@@ -85,8 +89,16 @@ public class XmlNames
 	public static final String ELT_DATES = "dates";
 	/** Editor name */
 	public static final String ELT_EDITOR = "editor";
-	/** Text expressions which must be ignored because of how they end, when retreiving categories */
+	/** A list of named entities */
+	public static final String ELT_ENTITIES = "entities";
+	/** An entity in a list of named entities */
+	public static final String ELT_ENTITY = "entity";
+	/** Text expressions which must be ignored because of how they end, when retrieving categories */
 	public static final String ELT_ENDS_WITH = "endsWith";
+	/** One of the external ids (DBpedia, Freebase, etc.) of an entity */
+	public static final String ELT_EXTERNAL_ID = "externalId";
+	/** List of the external ids (DBpedia, Freebase, etc.) of an entity */
+	public static final String ELT_EXTERNAL_IDS = "externalIds";
 	/** A list of mentions */
 	public static final String ELT_MENTIONS = "mentions";
 	/** A mention in a list of mentions */
@@ -113,6 +125,10 @@ public class XmlNames
 	public static final String ELT_STARTS_WITH = "startsWith";
 	/** String describing a mention */
 	public static final String ELT_STRING = "string";
+	/** One of the surface forms of an entity */
+	public static final String ELT_SURFACE_FORM = "surfaceForm";
+	/** List of the surface forms of an entity */
+	public static final String ELT_SURFACE_FORMS = "surfaceForms";
 	/** Text properties in the editor */
 	public static final String ELT_TEXT = "text";
 	/** Title of an article */

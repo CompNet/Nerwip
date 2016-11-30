@@ -38,6 +38,7 @@ import fr.univavignon.nerwip.processing.AbstractDelegateLinker;
 import fr.univavignon.nerwip.processing.AbstractDelegateRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
+import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileTools;
@@ -60,13 +61,6 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * 
 	 * @param linker
 	 * 		Linker associated to this delegate.
-	 * @param trim
-	 * 		Whether or not the beginings and ends of mentions should be 
-	 * 		cleaned from any non-letter/digit chars.
-	 * @param ignorePronouns
-	 * 		Whether or not pronouns should be ignored.
-	 * @param exclusionOn
-	 * 		Whether or not stop words should be ignored.
 	 */
 	public AbstractInternalDelegateLinker(InterfaceLinker linker)
 	{	super(linker);
@@ -89,22 +83,30 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
     /**
      * Takes an object representation of the article, 
      * and returns the internal representation of
-     * the detected mentions. Those must then
+     * the linked entities. Those must then
      * be converted to objects compatible
      * with the rest of Nerwip.
      * 
      * @param article
      * 		Article to process.
-     * @return
-     * 		Object representing the detected mentions.
+	 * @param mentions
+	 * 		List of the previously recognized mentions.
+	 * @param entities
+	 * 		List of the entities associated to the mentions.
+ 	 * @param recognizer
+	 * 		Processor used to recognize the entity mentions.
+	 * @param resolver
+	 * 		Processor used to resolve the coreferences.
+    * @return
+     * 		Object representing the linked entities.
      * 
      * @throws ProcessorException
-     * 		Problem while applying the recognizer.
+     * 		Problem while applying the linker.
      */
-	protected abstract T linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException;
+	protected abstract T linkEntities(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException;
 
 	@Override
-	public void delegatelink(Article article, Mentions mentions, Entities entities) throws ProcessorException
+	public void delegatelink(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();
 		logger.log("Start applying "+recognizerName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
@@ -143,7 +145,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	
 				// check if the mentions are consistent
 				String text = article.getRawText();
-				for(AbstractMention<?> mention: result.getMentions())
+				for(AbstractMention<?,?> mention: result.getMentions())
 				{	if(!mention.checkText(article))
 						logger.log("ERROR: mention text not consistant with text/position, '"+mention.getStringValue()+" vs. '"+text.substring(mention.getStartPos(),mention.getEndPos())+"'");
 				}
@@ -196,19 +198,21 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Convert the specified objects, used internally by the associated
-	 * recognizer, into the mention list used internally by Nerwip.  
+	 * linker, into objects used internally by Nerwip.  
 	 * 
 	 * @param article
 	 * 		Original article (might be usefull, in order to get the full text).
 	 * @param data
 	 * 		Data objects to process.
-	 * @return
-	 * 		List of mentions detected by the associated recognizer.
+	 * @param mentions
+	 * 		List of the previously recognized mentions.
+	 * @param entities
+	 * 		List of the entities associated to the mentions.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while performing the conversion.
 	 */
-//	public abstract Mentions convert(Article article, T data) throws ProcessorException;
+	public abstract void convert(Article article, Mentions mentions, Entities entities, T data) throws ProcessorException;
 
 	/////////////////////////////////////////////////////////////////
 	// RAW FILE			/////////////////////////////////////////////
@@ -227,12 +231,12 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * @throws UnsupportedEncodingException
 	 * 		Could not handle the encoding.
 	 */
-//	protected String readRawResults(Article article) throws FileNotFoundException, UnsupportedEncodingException
-//	{	File file = getRawFile(article);
-//	
-//		String result = FileTools.readTextFile(file, "UTF-8");
-//		return result;
-//	}
+	protected String readRawResults(Article article) throws FileNotFoundException, UnsupportedEncodingException
+	{	File file = getRawFile(article);
+	
+		String result = FileTools.readTextFile(file, "UTF-8");
+		return result;
+	}
 
 	/**
 	 * Write the raw results obtained for the specified article.
@@ -247,14 +251,14 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * @throws IOException 
 	 * 		Problem while recording the file.
 	 */
-//	protected void writeRawResultsStr(Article article, String results) throws IOException
-//	{	File file = getRawFile(article);
-//		File folder = file.getParentFile();
-//		if(!folder.exists())
-//			folder.mkdirs();
-//		
-//		FileTools.writeTextFile(file, results, "UTF-8");
-//	}
+	protected void writeRawResultsStr(Article article, String results) throws IOException
+	{	File file = getRawFile(article);
+		File folder = file.getParentFile();
+		if(!folder.exists())
+			folder.mkdirs();
+		
+		FileTools.writeTextFile(file, results, "UTF-8");
+	}
 
 	/**
 	 * Records the results of the recognition task
@@ -268,5 +272,5 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * @throws IOException
 	 * 		Problem while writing the file.
 	 */
-//	protected abstract void writeRawResults(Article article, T intRes) throws IOException;
+	protected abstract void writeRawResults(Article article, T intRes) throws IOException;
 }

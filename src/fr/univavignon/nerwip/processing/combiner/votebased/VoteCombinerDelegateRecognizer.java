@@ -342,7 +342,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 		
 		// get overlapping mentions
 		logger.log("Get the list of overlapping mentions");
-		List<Map<InterfaceRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<InterfaceRecognizer, AbstractMention<?,?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// process the weights associated to article categories
 		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
@@ -350,15 +350,15 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 		// compare/combine them
 		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<InterfaceRecognizer, AbstractMention<?>> map: overlaps)
+		for(Map<InterfaceRecognizer, AbstractMention<?,?>> map: overlaps)
 		{	logger.log(map.values().toString());
 			logger.increaseOffset();
 			
 			// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<InterfaceRecognizer, AbstractMention<?>> entry: map.entrySet())
+			for(Entry<InterfaceRecognizer, AbstractMention<?,?>> entry: map.entrySet())
 			{	InterfaceRecognizer recognizer = entry.getKey();
-				AbstractMention<?> mention = entry.getValue();
+				AbstractMention<?,?> mention = entry.getValue();
 				rawOutput.append("\t"+recognizer+": "+mention+"\n");
 			}
 			
@@ -379,7 +379,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 				int startPos = pos[0];
 				int endPos = pos[1];
 				String valueStr = text.substring(startPos,endPos);
-				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?,?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 				result.addMention(mention);
 				rawOutput.append(">> Mention="+endPos+"\n\n");
 			}
@@ -405,7 +405,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 	 * @return 
 	 * 		{@code true} iff the conclusion is that the mention is correct.
 	 */
-	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?>> map)
+	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?,?>> map)
 	{	logger.log("Start voting for existence:");
 		logger.increaseOffset();
 		boolean result = false;
@@ -415,7 +415,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 			float voteAgainst = 0;
 			
 			for(InterfaceRecognizer recognizer: recognizers)
-			{	AbstractMention<?> mention = map.get(recognizer);
+			{	AbstractMention<?,?> mention = map.get(recognizer);
 				// existence
 				if(mention==null)
 				{	float conWeight;
@@ -465,7 +465,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 	 * @return 
 	 * 		An array of two integers corresponding to the mention position.
 	 */
-	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?>> map)
+	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?,?>> map)
 	{	logger.log("Start voting for position:");
 		logger.increaseOffset();
 		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
@@ -473,7 +473,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 		
 		// pro votes
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	AbstractMention<?> mention = map.get(recognizer);
+		{	AbstractMention<?,?> mention = map.get(recognizer);
 		
 			// check existence
 			if(mention!=null)
@@ -505,7 +505,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 		// con votes
 		if(useRecall)
 		{	for(InterfaceRecognizer recognizer: recognizers)
-			{	AbstractMention<?> mention = map.get(recognizer);
+			{	AbstractMention<?,?> mention = map.get(recognizer);
 			
 				// check existence
 				if(mention!=null)
@@ -564,14 +564,14 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 	 * @return 
 	 * 		Type of the mention represnted by the group.
 	 */
-	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?>> map)
+	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?,?>> map)
 	{	logger.log("Start voting for type: ");
 		logger.increaseOffset();
 		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
 		
 		// pro votes
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	AbstractMention<?> mention = map.get(recognizer);
+		{	AbstractMention<?,?> mention = map.get(recognizer);
 			
 			// retrieve weight
 			float proWeight;
@@ -593,7 +593,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 		// con votes
 		if(useRecall)
 		{	for(InterfaceRecognizer recognizer: recognizers)
-			{	AbstractMention<?> mention = map.get(recognizer);
+			{	AbstractMention<?,?> mention = map.get(recognizer);
 					
 				// retrieve weight
 				float conWeight;

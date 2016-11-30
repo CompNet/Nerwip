@@ -21,13 +21,19 @@ package fr.univavignon.nerwip.processing;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
+
+import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 
@@ -133,4 +139,123 @@ public abstract class AbstractDelegateResolver
 	 * 		Problem while resolving co-occurrences. 
 	 */
 	public abstract Entities delegateResolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException;
+
+	/////////////////////////////////////////////////////////////////
+	// XML FILE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the XML file associated to the specified
+	 * article.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		A {@code File} object representing the associated XML result file.
+	 */
+	public File getXmlFile(Article article)
+	{	String resultsFolder = article.getFolderPath();
+		String resolverFolder = getFolder();
+		if(resolverFolder!=null)
+			resultsFolder = resultsFolder + File.separator + resolverFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
+		
+		File result = new File(filePath);
+		return result;
+	}
+	
+	/**
+	 * Write the XML results obtained for the specified article.
+	 * This method is meant for both internal and external tools.
+	 * 
+	 * @param article
+	 * 		Concerned article.
+	 * @param mentions
+	 * 		List of the detected mentions.
+	 * @param entities
+	 * 		List of the detected entities.
+	 * @throws IOException
+	 * 		Problem while writing the file.
+	 */
+	public void writeXmlResults(Article article, Mentions mentions, Entities entities) throws IOException
+	{	// data file
+		File file = getXmlFile(article);
+		
+		// check folder
+		File folder = file.getParentFile();
+		if(!folder.exists())
+			folder.mkdirs();
+		
+		mentions.writeToXml(file,entities);
+	}
+	
+	/**
+	 * Read the XML representation of the results
+	 * previously processed by the resolver, for the 
+	 * specified article.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		The list of mentions stored in the file.
+	 * 
+	 * @throws SAXException
+	 * 		Problem while reading the file.
+	 * @throws IOException
+	 * 		Problem while reading the file.
+	 * @throws ParseException 
+	 * 		Problem while parsing a date. 
+	 */
+	public Mentions readXmlResults(Article article) throws SAXException, IOException, ParseException
+	{	File dataFile = getXmlFile(article);
+		
+		Entities entities = new Entities();
+		Mentions result = Mentions.readFromXml(dataFile,entities);
+		
+		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// RAW FILE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the raw result file associated to the specified
+	 * article, i.e. the file possibly generated externally
+	 * by the resolver.
+	 * <br/>
+	 * Nothing to do with the raw <i>text</i> of the article,
+	 * i.e. its plain textual content.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		A {@code File} object representing the associated raw result file.
+	 */
+	public File getRawFile(Article article)
+	{	String resultsFolder = article.getFolderPath();
+		String resolverFolder = getFolder();
+		if(resolverFolder!=null)
+			resultsFolder = resultsFolder + File.separator + resolverFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;
+	
+		File result = new File(filePath);
+		return result;
+	}
+	
+	/**
+	 * Tries to delete the file containing the raw results.
+	 * Returns a boolean indicating success ({@code true})
+	 * or failure ({@code false}).
+	 * 
+	 * @param article
+	 * 		Concerned article.
+	 * @return
+	 * 		{@code true} iff the file could be deleted.
+	 */
+	public boolean deleteRawFile(Article article)
+	{	boolean result = false;
+		File rawFile = getRawFile(article);
+		if(rawFile!=null && rawFile.exists() && rawFile.isFile())
+			result = rawFile.delete();
+		return result;
+	}
 }

@@ -171,7 +171,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	 * @return
 	 * 		External id of this entity in the knowledge base. 
 	 */
-	public String getInternalId(KnowledgeBase knowledgeBase)
+	public String getExternalId(KnowledgeBase knowledgeBase)
 	{	return externalIds.get(knowledgeBase);
 	}
 	

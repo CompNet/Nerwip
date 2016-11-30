@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 import org.jdom2.Element;
 
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
@@ -38,11 +40,13 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @param <T> 
  * 		Class of the mention value.
+ * @param <U>
+ * 		Class of the associated entity.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public abstract class AbstractMention<T extends Comparable<T>> implements Comparable<AbstractMention<T>>
+public abstract class AbstractMention<T extends Comparable<T>,U extends AbstractEntity> implements Comparable<AbstractMention<T,U>>
 {	
 	/**
 	 * General constructor for a mention.
@@ -84,13 +88,9 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		An object representing the mention.
 	 */
-	public static <T> AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr)
-	{	AbstractMention<?> result = null;
-
-// debug
-//if(valueStr.equals("1934"))
-//	System.out.println();
-	
+	public static <T> AbstractMention<?,?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr)
+	{	AbstractMention<?,?> result = null;
+		
 		switch(type)
 		{	case DATE:
 				result = new MentionDate(startPos, endPos, source, valueStr, null);
@@ -143,7 +143,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 		};
 		for(String valueStr: valuesStr)
 		{	int endPos = startPos + valueStr.length();
-			AbstractMention<?> mention = build(EntityType.PERSON, startPos, endPos, ProcessorName.STANFORD, valueStr); 
+			AbstractMention<?,?> mention = build(EntityType.PERSON, startPos, endPos, ProcessorName.STANFORD, valueStr); 
 			mention.correctMentionSpan();
 			System.out.println("\""+valueStr + "\"\t\t>>\t\t" + mention);
 		}
@@ -383,6 +383,34 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	public void setSource(ProcessorName source)
 	{	this.source = source;
 	}
+
+	/////////////////////////////////////////////////////////////////
+	// ENTITY ID		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Entity associated to this mention, or {@code null} if none has been associated yet */
+	protected U entity = null;
+	
+	/**
+	 * Changes the entity currently associated
+	 * to this mention.
+	 * 
+	 * @param entity
+	 * 		Entity to associate to this mention.  
+	 */
+	public void setEntityId(U entity)
+	{	this.entity = entity;
+	}
+	
+	/**
+	 * Returns the entity assocatied to this mention,
+	 * or {@code null} if none has been associated yet.
+	 * 
+	 * @return
+	 * 		The entity associated to this mention, or {@code null} if none.
+	 */
+	public U getEntity()
+	{	return entity;
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// COMPARISON		/////////////////////////////////////////////
@@ -418,7 +446,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		{@code true} only if they partially overlap.
 	 */
-	public boolean overlapsWith(AbstractMention<?> mention)
+	public boolean overlapsWith(AbstractMention<?,?> mention)
 	{	int startPos2 = mention.getStartPos();
 		int endPos2 = mention.getEndPos();
 		
@@ -439,12 +467,12 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * 		{@code true} only if this mention partially overlaps
 	 * 		with at least one of the listed mentions.
 	 */
-	public boolean overlapsWithOne(List<AbstractMention<?>> mentions)
+	public boolean overlapsWithOne(List<AbstractMention<?,?>> mentions)
 	{	boolean result = false;
-		Iterator<AbstractMention<?>> it = mentions.iterator();
+		Iterator<AbstractMention<?,?>> it = mentions.iterator();
 		
 		while(!result && it.hasNext())
-		{	AbstractMention<?> mention = it.next();
+		{	AbstractMention<?,?> mention = it.next();
 			result = overlapsWith(mention);
 		}
 		
@@ -479,7 +507,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		{@code true} only if this mention contained the specified one.
 	 */
-	public boolean contains(AbstractMention<?> mention)
+	public boolean contains(AbstractMention<?,?> mention)
 	{	int startPos2 = mention.getStartPos();
 		int endPos2 = mention.getEndPos();
 		
@@ -497,7 +525,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		{@code true} only if this mention matches the specified one.
 	 */
-	public boolean hasSamePosition(AbstractMention<?> mention)
+	public boolean hasSamePosition(AbstractMention<?,?> mention)
 	{	int startPos2 = mention.getStartPos();
 		int endPos2 = mention.getEndPos();
 	
@@ -530,7 +558,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * 		{@code true} iff this entity is located 
 	 * 		before the specified one.
 	 */
-	public boolean precedes(AbstractMention<?> mention)
+	public boolean precedes(AbstractMention<?,?> mention)
 	{	int startPos = mention.getStartPos();
 		boolean result = this.startPos < startPos;
 		return result;
@@ -574,12 +602,15 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Returns a representation of this mention
-	 * as an XML element.
+	 * as an XML element. The entity id is included
+	 * only if {@code entities} is not {@code null}.
 	 * 
+	 * @param entities
+	 * 		All the known entities (can be {@code null}).
 	 * @return
 	 * 		An XML element representing this mention.
 	 */
-	public abstract Element exportAsElement();
+	public abstract Element exportAsElement(Entities entities);
 	
 	/**
 	 * Builds a mention from the specified
@@ -592,43 +623,64 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		The mention corresponding to the specified element.
 	 */
-	public static AbstractMention<?> importFromElement(Element element, ProcessorName source)
-	{	AbstractMention<?> result = null;
-		
+//	public static AbstractMention<?,?> importFromElement(Element element, ProcessorName source)
+//	{	AbstractMention<?,?> result = importFromElement(element, source, null);
+//		return result;
+//	}
+	
+	/**
+	 * Builds a mention from the specified
+	 * XML element, using the specified set of entities
+	 * or completing it if necessary (i.e. missing entity).
+	 * If {@code entities} is {@code null}, this method
+	 * behaves like {@link #importFromElement(Element, ProcessorName)}.
+	 * 
+	 * @param element
+	 * 		XML element representing the mention.
+	 * @param source
+	 * 		Name of the recognizer which detected the mention.
+	 * @param entities
+	 * 		Known entities as of know (can be {@code null}).
+	 * @return
+	 * 		The mention corresponding to the specified element.
+	 */
+	public static AbstractMention<?,?> importFromElement(Element element, ProcessorName source, Entities entities)
+	{	AbstractMention<?,?> result = null;
+	
 		String typeStr = element.getAttributeValue(XmlNames.ATT_TYPE);
 		EntityType type = EntityType.valueOf(typeStr);
 		switch(type)
 		{	case DATE:
-				result = MentionDate.importFromElement(element,source);
+				result = MentionDate.importFromElement(element,source,entities);
 				break;
 			case FUNCTION:
-				result = MentionFunction.importFromElement(element,source);
+				result = MentionFunction.importFromElement(element,source,entities);
 				break;
 			case LOCATION:
-				result = MentionLocation.importFromElement(element,source);
+				result = MentionLocation.importFromElement(element,source,entities);
 				break;
 			case MEETING:
-				result = MentionMeeting.importFromElement(element,source);
+				result = MentionMeeting.importFromElement(element,source,entities);
 				break;
 			case ORGANIZATION:
-				result = MentionOrganization.importFromElement(element,source);
+				result = MentionOrganization.importFromElement(element,source,entities);
 				break;
 			case PERSON:
-				result = MentionPerson.importFromElement(element,source);
+				result = MentionPerson.importFromElement(element,source,entities);
 				break;
 			case PRODUCTION:
-				result = MentionProduction.importFromElement(element,source);
+				result = MentionProduction.importFromElement(element,source,entities);
 				break;
 		}
 		
 		return result;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// COMPARABLE		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public int compareTo(AbstractMention<T> o)
+	public int compareTo(AbstractMention<T,U> o)
 	{	
 //if(o==null)
 //	System.out.print("");
@@ -658,7 +710,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		An integer classically representing the result of the comparison.
 	 */
-	public int compareValueTo(AbstractMention<T> mention)
+	public int compareValueTo(AbstractMention<T,U> mention)
 	{	T value = mention.getValue();
 		int result = this.value.compareTo(value);
 		return result;
@@ -676,8 +728,8 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	{	boolean result = false;
 		
 		if(obj!=null)
-		{	if(obj instanceof AbstractMention<?>)
-			{	AbstractMention<?> mention = (AbstractMention<?>)obj;
+		{	if(obj instanceof AbstractMention<?,?>)
+			{	AbstractMention<?,?> mention = (AbstractMention<?,?>)obj;
 				int start = mention.getStartPos();
 				if(this.startPos==start)
 				{	int endPos = mention.getEndPos();
