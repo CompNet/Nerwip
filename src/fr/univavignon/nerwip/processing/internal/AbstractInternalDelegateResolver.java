@@ -99,11 +99,11 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	protected abstract T resolveCoreferences(Article article, Mentions mentions) throws ProcessorException;
 
 	@Override
-	public Entities delegateResolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException
-	{	ProcessorName recognizerName = recognizer.getName();
-		logger.log("Start applying "+recognizerName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
+	public Entities delegateResolve(Article article, Mentions mentions, InterfaceRecognizer resolver) throws ProcessorException
+	{	ProcessorName resolverName = resolver.getName();
+		logger.log("Start applying "+resolverName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
-		Mentions result = null;
+		Entities result = null;
 		
 		try
 		{	// checks if the result file already exists
@@ -111,53 +111,34 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 			boolean processNeedeed = !dataFile.exists();
 			
 			// if needed, we process the text
-			if(!recognizer.doesCache() || processNeedeed)
+			if(!resolver.doesCache() || processNeedeed)
 			{	// check language
 				ArticleLanguage language = article.getLanguage();
 				if(language==null)
-					logger.log("WARNING: The article language is unknown >> it is possible this recognizer does not handle this language");
+					logger.log("WARNING: The article language is unknown >> it is possible this resolver does not handle this language");
 				else if(!canHandleLanguage(language))
-					logger.log("WARNING: This recognizer does not handle the language of this article ("+language+")");
+					logger.log("WARNING: This resolver does not handle the language of this article ("+language+")");
 				
 				// apply the recognizer
-				logger.log("Detect the mentions");
-				prepareRecognizer();
-				T intRes = detectMentions(article);
+				logger.log("Resolve the coreferences");
+				prepareResolver();
+				T intRes = resolveCoreferences(article, mentions);
 				
-				// possibly record mentions as they are outputted (useful for debug)
-				if(recognizer.doesOutputRawResults())
-				{	logger.log("Record raw "+recognizerName+" results");
+				// possibly record results as they are outputted (useful for debug)
+				if(resolver.doesOutputRawResults())
+				{	logger.log("Record raw "+resolverName+" results");
 					writeRawResults(article, intRes);
 				}
 				else
 					logger.log("Raw results not recorded (option disabled)");
 				
-				// convert mentions to our internal representation
-				logger.log("Convert mentions to internal representation");
-				result = convert(article,intRes);
-	
-				// check if the mentions are consistent
-				String text = article.getRawText();
-				for(AbstractMention<?,?> mention: result.getMentions())
-				{	if(!mention.checkText(article))
-						logger.log("ERROR: mention text not consistant with text/position, '"+mention.getStringValue()+" vs. '"+text.substring(mention.getStartPos(),mention.getEndPos())+"'");
-				}
-				
-				// possibly trim mentions (remove non-digit/letter chars at beginning/end)
-				logger.log("Possibly clean mentions.");
-				cleanMentions(result);
-				
-				// possibly filter stop-words and pronouns
-				logger.log("Filter mentions (pronouns, stop-words, etc.)");
-				filterNoise(result,language);
-				
-				// filter overlapping mentions
-				logger.log("Filter overlapping mentions");
-				filterRedundancy(result);
+				// convert results to our internal representation
+				logger.log("Convert results to internal representation and complete existing mentions");
+				result = convert(article,intRes,mentions);
 				
 				// record mentions using our xml format
-				logger.log("Convert mentions to our XML format");
-				writeXmlResults(article,result);
+				logger.log("Convert mentions to our XML format, including entity references");
+				writeXmlResults(article,mentions,result);
 			}
 			
 			// if the results already exist, we fetch them
@@ -180,7 +161,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 		}
 	
 		int nbrEnt = result.getMentions().size();
-		logger.log(recognizerName+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
+		logger.log(resolverName+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
 		logger.decreaseOffset();
 
 		return result;
@@ -191,19 +172,22 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Convert the specified objects, used internally by the associated
-	 * recognizer, into the mention list used internally by Nerwip.  
+	 * resolver, into the mention list used internally by Nerwip, and
+	 * use the resulting data to complete the existing mentions.  
 	 * 
 	 * @param article
 	 * 		Original article (might be usefull, in order to get the full text).
 	 * @param data
 	 * 		Data objects to process.
+	 * @param mentions
+	 * 		List of previously detected mentions.
 	 * @return
-	 * 		List of mentions detected by the associated recognizer.
+	 * 		Entities associated to the mentions.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while performing the conversion.
 	 */
-	public abstract Mentions convert(Article article, T data) throws ProcessorException;
+	public abstract Entities convert(Article article, T data, Mentions mentions) throws ProcessorException;
 
 	/////////////////////////////////////////////////////////////////
 	// RAW FILE			/////////////////////////////////////////////

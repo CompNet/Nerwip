@@ -225,7 +225,7 @@ public abstract class AbstractDelegateLinker
 	 * @param article
 	 * 		Article to process.
 	 * @return
-	 * 		The list of mentions stored in the file.
+	 * 		The list of entities stored in the file.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while reading the file.
@@ -235,9 +235,36 @@ public abstract class AbstractDelegateLinker
 	 * 		Problem while parsing a date. 
 	 */
 	public Entities readXmlResults(Article article) throws SAXException, IOException, ParseException
-	{	File dataFile = getXmlFile(article);//TODO
+	{	File dataFile = getEntitiesXmlFile(article);
 		
 		Entities result = Entities.readFromXml(dataFile);
+		
+		return result;
+	}
+
+	/**
+	 * Read the XML representation of the results
+	 * previously processed by the linker, for the 
+	 * specified article.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @param entities
+	 * 		The list of previously loaded entities.
+	 * @return
+	 * 		The list of mentions stored in the file.
+	 * 
+	 * @throws SAXException
+	 * 		Problem while reading the file.
+	 * @throws IOException
+	 * 		Problem while reading the file.
+	 * @throws ParseException 
+	 * 		Problem while parsing a date. 
+	 */
+	public Mentions readXmlResults(Article article, Entities entities) throws SAXException, IOException, ParseException
+	{	File dataFile = getEntitiesXmlFile(article);
+		
+		Mentions result = Mentions.readFromXml(dataFile,entities);
 		
 		return result;
 	}
