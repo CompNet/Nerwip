@@ -161,7 +161,7 @@ public class MentionDate extends AbstractMention<Date,EntityDate>
 				entity = new EntityDate(value,entityId);
 			if(entity instanceof EntityDate)
 			{	EntityDate entityDate = (EntityDate)entity;
-				result.setEntityId(entityDate);
+				result.setEntity(entityDate);
 			}
 			else
 				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());

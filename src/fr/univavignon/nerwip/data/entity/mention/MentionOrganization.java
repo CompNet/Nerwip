@@ -157,7 +157,8 @@ public class MentionOrganization extends AbstractMention<String,EntityOrganizati
 				entity = new EntityOrganization(value,entityId);
 			if(entity instanceof EntityOrganization)
 			{	EntityOrganization entityOrg = (EntityOrganization)entity;
-				result.setEntityId(entityOrg);
+				entityOrg.addSurfaceForm(valueStr);
+				result.setEntity(entityOrg);
 			}
 			else
 				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());

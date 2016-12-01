@@ -157,7 +157,8 @@ public class MentionLocation extends AbstractMention<String,EntityLocation>
 				entity = new EntityLocation(value,entityId);
 			if(entity instanceof EntityLocation)
 			{	EntityLocation entityLoc = (EntityLocation)entity;
-				result.setEntityId(entityLoc);
+				entityLoc.addSurfaceForm(valueStr);
+				result.setEntity(entityLoc);
 			}
 			else
 				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());

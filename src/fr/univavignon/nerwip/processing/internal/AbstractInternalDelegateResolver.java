@@ -144,7 +144,8 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 			// if the results already exist, we fetch them
 			else
 			{	logger.log("Loading mentions from cached file");
-				result = readXmlResults(article);
+				result = new Entities();
+				readXmlResults(article,result,mentions);
 			}
 		}
 		catch (IOException e)
@@ -160,8 +161,8 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 			throw new ProcessorException(e.getMessage());
 		}
 	
-		int nbrEnt = result.getMentions().size();
-		logger.log(resolverName+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
+		int nbrEnt = result.getEntities().size();
+		logger.log(resolverName+" over ["+article.getName()+"], found "+nbrEnt+" distinct entities");
 		logger.decreaseOffset();
 
 		return result;

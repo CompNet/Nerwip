@@ -158,7 +158,8 @@ public class MentionProduction extends AbstractMention<String,EntityProduction>
 				entity = new EntityProduction(value,entityId);
 			if(entity instanceof EntityProduction)
 			{	EntityProduction entityProd = (EntityProduction)entity;
-				result.setEntityId(entityProd);
+				entityProd.addSurfaceForm(valueStr);
+				result.setEntity(entityProd);
 			}
 			else
 				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());

@@ -24,14 +24,17 @@ package fr.univavignon.nerwip.processing;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
@@ -195,8 +198,10 @@ public abstract class AbstractDelegateResolver
 	 * 
 	 * @param article
 	 * 		Article to process.
-	 * @return
-	 * 		The list of mentions stored in the file.
+	 * @param mentions
+	 * 		Set of existing mentions, to be completed by this method.
+	 * @param entities
+	 * 		Empty set of entities, to be completed by this method.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while reading the file.
@@ -205,13 +210,25 @@ public abstract class AbstractDelegateResolver
 	 * @throws ParseException 
 	 * 		Problem while parsing a date. 
 	 */
-	public Mentions readXmlResults(Article article) throws SAXException, IOException, ParseException
+	public <T extends AbstractEntity> void readXmlResults(Article article, Mentions mentions, Entities entities) throws SAXException, IOException, ParseException
 	{	File dataFile = getXmlFile(article);
 		
-		Entities entities = new Entities();
-		Mentions result = Mentions.readFromXml(dataFile,entities);
+		Mentions temp = Mentions.readFromXml(dataFile,entities);
 		
-		return result;
+		Iterator<AbstractMention<?,?>> it1 = mentions.getMentions().iterator();
+		Iterator<AbstractMention<?,?>> it2 = temp.getMentions().iterator();
+		while(it1.hasNext() && it2.hasNext())
+		{	AbstractMention<?,?> m1 = it1.next();
+			AbstractMention<?,?> m2 = it2.next();
+			if(m1.equals(m2))
+			{	T entity = //TODO might need to go back to unchecked entity in mentions
+				m1.setEntity(entity);
+				
+			}
+		}
+		
+		if(it1.hasNext() || it2.hasNext())
+			throw new IllegalArgumentException("problem in readXmlResults: different numbers of mentions");
 	}
 
 	/////////////////////////////////////////////////////////////////

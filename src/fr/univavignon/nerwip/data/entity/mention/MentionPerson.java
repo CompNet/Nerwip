@@ -157,7 +157,8 @@ public class MentionPerson extends AbstractMention<String,EntityPerson>
 				entity = new EntityPerson(value,entityId);
 			if(entity instanceof EntityPerson)
 			{	EntityPerson entityPers = (EntityPerson)entity;
-				result.setEntityId(entityPers);
+				entityPers.addSurfaceForm(valueStr);
+				result.setEntity(entityPers);
 			}
 			else
 				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());

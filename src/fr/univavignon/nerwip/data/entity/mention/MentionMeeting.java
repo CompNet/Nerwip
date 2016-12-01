@@ -157,7 +157,8 @@ public class MentionMeeting extends AbstractMention<String,EntityMeeting>
 				entity = new EntityMeeting(value,entityId);
 			if(entity instanceof EntityMeeting)
 			{	EntityMeeting entityMeeting = (EntityMeeting)entity;
-				result.setEntityId(entityMeeting);
+				entityMeeting.addSurfaceForm(valueStr);
+				result.setEntity(entityMeeting);
 			}
 			else
 				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());

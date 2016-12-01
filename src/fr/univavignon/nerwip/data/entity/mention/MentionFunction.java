@@ -158,7 +158,8 @@ public class MentionFunction extends AbstractMention<String,EntityFunction>
 				entity = new EntityFunction(value,entityId);
 			if(entity instanceof EntityFunction)
 			{	EntityFunction entityFunction = (EntityFunction)entity;
-				result.setEntityId(entityFunction);
+				entityFunction.addSurfaceForm(valueStr);
+				result.setEntity(entityFunction);
 			}
 			else
 				throw new IllegalArgumentException("Trying to associate an entity of type "+entity.getType()+" to a mention of type "+result.getType());

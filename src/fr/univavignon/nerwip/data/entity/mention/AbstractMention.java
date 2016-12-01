@@ -397,7 +397,7 @@ public abstract class AbstractMention<T extends Comparable<T>,U extends Abstract
 	 * @param entity
 	 * 		Entity to associate to this mention.  
 	 */
-	public void setEntityId(U entity)
+	public void setEntity(U entity)
 	{	this.entity = entity;
 	}
 	
