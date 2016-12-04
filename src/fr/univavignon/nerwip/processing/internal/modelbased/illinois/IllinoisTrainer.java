@@ -146,7 +146,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
     	
     	// if there're no mention at all in the reference (shouldn't be the case, though)
     	mentions.sortByPosition();
-    	List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+    	List<AbstractMention<?>> mentionList = mentions.getMentions();
     	if(mentionList.isEmpty())
     	{	while(itSent.hasNext())
 	    	{	LinkedVector sentence = itSent.next();
@@ -160,8 +160,8 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
     	// otherwise
     	else
     	{	// mention stuff
-    		Iterator<AbstractMention<?,?>> itEnt = mentionList.iterator();
-	    	AbstractMention<?,?> currentMention = itEnt.next();
+    		Iterator<AbstractMention<?>> itEnt = mentionList.iterator();
+	    	AbstractMention<?> currentMention = itEnt.next();
 			EntityType currentType = currentMention.getType();
 			String currentLabel = "B-"+CONVERSION_MAP.get(currentType);
 			

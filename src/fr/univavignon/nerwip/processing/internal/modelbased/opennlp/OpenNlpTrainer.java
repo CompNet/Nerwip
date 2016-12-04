@@ -140,8 +140,8 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 			
 			// reset text stuff
 			text = article.getRawText();
-			Iterator<AbstractMention<?,?>> it = mentions.getMentions().iterator();
-			AbstractMention<?,?> currentMention = null;
+			Iterator<AbstractMention<?>> it = mentions.getMentions().iterator();
+			AbstractMention<?> currentMention = null;
 			if(it.hasNext())
 				currentMention = it.next();
 			

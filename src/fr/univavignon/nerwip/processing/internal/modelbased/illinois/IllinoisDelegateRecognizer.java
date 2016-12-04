@@ -276,7 +276,7 @@ public class IllinoisDelegateRecognizer extends AbstractModelbasedInternalDelega
 	            		if(close)
 	            		{	// consider all detected words to constitute the mention
 	            			String valueStr = text.substring(startPos,position);
-	            			AbstractMention<?,?> mention = AbstractMention.build(type, startPos, position, recognizerName, valueStr);
+	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, recognizerName, valueStr);
 	            			result.addMention(mention);
 	            			// reset variables to (possibly) start a new mention
 	            			open = false;

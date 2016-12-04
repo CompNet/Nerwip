@@ -210,25 +210,24 @@ public abstract class AbstractDelegateResolver
 	 * @throws ParseException 
 	 * 		Problem while parsing a date. 
 	 */
-	public <T extends AbstractEntity> void readXmlResults(Article article, Mentions mentions, Entities entities) throws SAXException, IOException, ParseException
+	public void readXmlResults(Article article, Mentions mentions, Entities entities) throws SAXException, IOException, ParseException
 	{	File dataFile = getXmlFile(article);
 		
 		Mentions temp = Mentions.readFromXml(dataFile,entities);
 		
-		Iterator<AbstractMention<?,?>> it1 = mentions.getMentions().iterator();
-		Iterator<AbstractMention<?,?>> it2 = temp.getMentions().iterator();
+		Iterator<AbstractMention<?>> it1 = mentions.getMentions().iterator();
+		Iterator<AbstractMention<?>> it2 = temp.getMentions().iterator();
 		while(it1.hasNext() && it2.hasNext())
-		{	AbstractMention<?,?> m1 = it1.next();
-			AbstractMention<?,?> m2 = it2.next();
+		{	AbstractMention<?> m1 = it1.next();
+			AbstractMention<?> m2 = it2.next();
 			if(m1.equals(m2))
-			{	T entity = //TODO might need to go back to unchecked entity in mentions
+			{	AbstractEntity entity = m2.getEntity();
 				m1.setEntity(entity);
-				
 			}
 		}
 		
 		if(it1.hasNext() || it2.hasNext())
-			throw new IllegalArgumentException("problem in readXmlResults: different numbers of mentions");
+			throw new IllegalArgumentException("ERROR: different numbers of mentions in the existing and loaded mention sets");
 	}
 
 	/////////////////////////////////////////////////////////////////

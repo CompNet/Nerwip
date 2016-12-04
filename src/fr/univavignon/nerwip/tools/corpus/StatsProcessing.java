@@ -142,8 +142,8 @@ public class StatsProcessing
 			Map<EntityType,Integer> counts = new HashMap<EntityType, Integer>();
 			if(mentionsFile.exists())
 			{	Mentions mentions = Mentions.readFromXml(mentionsFile);
-				List<AbstractMention<?,?>> mentionList = mentions.getMentions();
-				for(AbstractMention<?,?> mention: mentionList)
+				List<AbstractMention<?>> mentionList = mentions.getMentions();
+				for(AbstractMention<?> mention: mentionList)
 				{	EntityType type = mention.getType();
 					Integer count = counts.get(type);
 					if(count==null)

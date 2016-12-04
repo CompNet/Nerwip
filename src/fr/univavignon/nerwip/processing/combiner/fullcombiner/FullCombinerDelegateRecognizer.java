@@ -199,8 +199,8 @@ public class FullCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 		// then add the rest of the (non-overlapping) mentions
 		InterfaceRecognizer combiner = it.next();
 		Mentions ents = mentions.get(combiner);
-		List<AbstractMention<?,?>> mentList = ents.getMentions();
-		for(AbstractMention<?,?> mention: mentList)
+		List<AbstractMention<?>> mentList = ents.getMentions();
+		for(AbstractMention<?> mention: mentList)
 		{	if(!result.isMentionOverlapping(mention))
 				result.addMention(mention);
 		}

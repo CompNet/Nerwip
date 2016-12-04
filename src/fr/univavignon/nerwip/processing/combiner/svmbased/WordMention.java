@@ -54,7 +54,7 @@ public class WordMention
 	 * @param beginning 
 	 * 		Whether or not the considered word is at the beginning of the associated mention.
 	 */
-	public WordMention(int startPos, int endPos, AbstractMention<?,?> mention, boolean beginning)
+	public WordMention(int startPos, int endPos, AbstractMention<?> mention, boolean beginning)
 	{	this.startPos = startPos;
 		this.endPos = endPos;
 		this.mention = mention;
@@ -113,7 +113,7 @@ public class WordMention
 	// MENTION			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Entity associated to the considered word */
-	private AbstractMention<?,?> mention;
+	private AbstractMention<?> mention;
 
 	/**
 	 * Returns the mention associated to the considered word.
@@ -121,7 +121,7 @@ public class WordMention
 	 * @return
 	 * 		Entity associated to the considered word.
 	 */
-	public AbstractMention<?,?> getMention()
+	public AbstractMention<?> getMention()
 	{	return mention;
 	}
 
@@ -131,7 +131,7 @@ public class WordMention
 	 * @param mention
 	 * 		New mention associated to the considered word.
 	 */
-	public void setEntity(AbstractMention<?,?> mention)
+	public void setEntity(AbstractMention<?> mention)
 	{	this.mention = mention;
 	}
 	

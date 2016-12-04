@@ -36,7 +36,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-public class MentionPerson extends AbstractMention<String,EntityPerson>
+public class MentionPerson extends AbstractMention<String>
 {	
 	/**
 	 * Builds a new person mention.

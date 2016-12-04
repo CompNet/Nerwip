@@ -159,7 +159,7 @@ public abstract class AbstractDelegateLinker
 	 * @return
 	 * 		A {@code File} object representing the associated XML result file.
 	 */
-	public File getEntitiesXmlFile(Article article)
+	public File getEntitiesXmlFile(Article article)//TODO pas impossible qu'il faille préciser le recognizer et le resolver ici. pareil pr delegate resolver
 	{	String resultsFolder = article.getFolderPath();
 		String linkerFolder = getFolder();
 		if(linkerFolder!=null)

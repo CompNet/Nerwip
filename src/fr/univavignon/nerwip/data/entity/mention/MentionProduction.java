@@ -37,7 +37,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * @author Vincent Labatut
  * @author Sabrine Ayachi
  */
-public class MentionProduction extends AbstractMention<String,EntityProduction>
+public class MentionProduction extends AbstractMention<String>
 {	
 	/**
 	 * Builds a new production mention.

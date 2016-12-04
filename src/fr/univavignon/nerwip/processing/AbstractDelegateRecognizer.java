@@ -367,10 +367,10 @@ public abstract class AbstractDelegateRecognizer
 	protected void filterNoise(Mentions mentions, ArticleLanguage language)
 	{	logger.increaseOffset();
 	
-		List<AbstractMention<?,?>> mentionList = mentions.getMentions();
-		Iterator<AbstractMention<?,?>> it = mentionList.iterator();
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
+		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())
-		{	AbstractMention<?,?> mention = it.next();
+		{	AbstractMention<?> mention = it.next();
 			String mentionStr = mention.getStringValue();
 			
 			// is it a stop-word?
@@ -416,7 +416,7 @@ public abstract class AbstractDelegateRecognizer
 	 * @return
 	 * 		{@code true} iff the mention is not empty after the trimming.
 	 */
-	public boolean cleanMentionEnds(AbstractMention<?,?> mention)
+	public boolean cleanMentionEnds(AbstractMention<?> mention)
 	{	String valueStr = mention.getStringValue();
 		char c;
 		
@@ -469,10 +469,10 @@ public abstract class AbstractDelegateRecognizer
 		{	logger.log("Start trimming");
 			
 			logger.increaseOffset();
-			List<AbstractMention<?,?>> mentionList = mentions.getMentions();
-			Iterator<AbstractMention<?,?>> it = mentionList.iterator();
+			List<AbstractMention<?>> mentionList = mentions.getMentions();
+			Iterator<AbstractMention<?>> it = mentionList.iterator();
 			while(it.hasNext())
-			{	AbstractMention<?,?> mention = it.next();
+			{	AbstractMention<?> mention = it.next();
 				String str = mention.getStringValue();
 				if(str.isEmpty())
 				{	it.remove();
@@ -512,12 +512,12 @@ public abstract class AbstractDelegateRecognizer
 	 * @return
 	 * 		{@code true} iff the position is already included in a mention.
 	 */
-	protected boolean positionAlreadyUsed(int pos, List<AbstractMention<?,?>> mentions)
+	protected boolean positionAlreadyUsed(int pos, List<AbstractMention<?>> mentions)
 	{	boolean result = false;
 		
-		Iterator<AbstractMention<?,?>> it = mentions.iterator();
+		Iterator<AbstractMention<?>> it = mentions.iterator();
 		while(it.hasNext() && !result)
-		{	AbstractMention<?,?> mention = it.next();
+		{	AbstractMention<?> mention = it.next();
 			int startPos = mention.getStartPos();
 			int endPos = mention.getEndPos();
 			result = pos>=startPos && pos<=endPos;
@@ -566,12 +566,12 @@ public abstract class AbstractDelegateRecognizer
 	 * 		Mention intersecting the specified one,
 	 * 		or {@code null} if none does.
 	 */
-	public AbstractMention<?,?> positionAlreadyUsed(AbstractMention<?,?> mention, List<AbstractMention<?,?>> mentions)
-	{	AbstractMention<?,?> result = null;
+	public AbstractMention<?> positionAlreadyUsed(AbstractMention<?> mention, List<AbstractMention<?>> mentions)
+	{	AbstractMention<?> result = null;
 		
-		Iterator<AbstractMention<?,?>> it = mentions.iterator();
+		Iterator<AbstractMention<?>> it = mentions.iterator();
 		while(result==null && it.hasNext())
-		{	AbstractMention<?,?> temp = it.next();
+		{	AbstractMention<?> temp = it.next();
 			if(temp.overlapsWith(mention))
 				result = temp;
 		}
@@ -589,7 +589,7 @@ public abstract class AbstractDelegateRecognizer
 	 * 		List to be filtered.
 	 */
 	protected void filterRedundancy(Mentions mentions)
-	{	List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+	{	List<AbstractMention<?>> mentionList = mentions.getMentions();
 		filterRedundancy(mentionList);
 	}
 	
@@ -601,17 +601,17 @@ public abstract class AbstractDelegateRecognizer
 	 * @param mentions
 	 * 		List to be filtered.
 	 */
-	protected void filterRedundancy(List<AbstractMention<?,?>> mentions)
+	protected void filterRedundancy(List<AbstractMention<?>> mentions)
 	{	logger.increaseOffset();
 	
 		if(!noOverlap)
 			logger.log("Overlapping mentions are allowed.)");
 		else
-		{	List<AbstractMention<?,?>> temp = new ArrayList<AbstractMention<?,?>>(mentions);
+		{	List<AbstractMention<?>> temp = new ArrayList<AbstractMention<?>>(mentions);
 			mentions.clear();
 			
-			for(AbstractMention<?,?> mention1: temp)
-			{	AbstractMention<?,?> mention2 = positionAlreadyUsed(mention1, mentions);
+			for(AbstractMention<?> mention1: temp)
+			{	AbstractMention<?> mention2 = positionAlreadyUsed(mention1, mentions);
 				boolean pass = false;
 				while(!pass && mention2!=null)
 				{	// process both mention lengths

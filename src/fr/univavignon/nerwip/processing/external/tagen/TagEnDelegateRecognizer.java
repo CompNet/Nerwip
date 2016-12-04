@@ -331,12 +331,12 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 			// elements are processed individually
 			else if(child instanceof Element)
 			{	Element e = (Element)child;
-				List<AbstractMention<?,?>> entList = convertElement(e, index);
+				List<AbstractMention<?>> entList = convertElement(e, index);
 				String str = XmlTools.getRecText(e);
 				int length = str.length();
 				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
 				result.addMentions(entList);
-				for(AbstractMention<?,?> mention: entList)
+				for(AbstractMention<?> mention: entList)
 					logger.log(mention.toString());
 				index = index + length;
 			}
@@ -359,8 +359,8 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private List<AbstractMention<?,?>> convertElement(Element element, int index)
-	{	List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+	private List<AbstractMention<?>> convertElement(Element element, int index)
+	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
 		// retrieving the child(ren)
 		String name = element.getName();
@@ -372,7 +372,7 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 			
 			// enumerated mention
 			if(name.equalsIgnoreCase(ELT_ENAMEX))
-			{	AbstractMention<?,?> mention = convertEnumElement(innerElt,index);
+			{	AbstractMention<?> mention = convertEnumElement(innerElt,index);
 				result.add(mention);
 			}
 			
@@ -400,9 +400,9 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private AbstractMention<?,?> convertEnumElement(Element element, int index)
+	private AbstractMention<?> convertEnumElement(Element element, int index)
 	{	logger.increaseOffset();
-		AbstractMention<?,?> result = null;
+		AbstractMention<?> result = null;
 		XMLOutputter xo = new XMLOutputter();
 				
 		// check if the element does not contain any lower element
@@ -439,9 +439,9 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private List<AbstractMention<?,?>> convertTemporalElement(Element element, int index)
+	private List<AbstractMention<?>> convertTemporalElement(Element element, int index)
 	{	logger.increaseOffset();
-		List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		XMLOutputter xo = new XMLOutputter();
 				
 		String name = element.getName();
@@ -529,7 +529,7 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 //					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); 
 //				else
 				{	int length = valueStr.length();
-					AbstractMention<?,?> mention = AbstractMention.build
+					AbstractMention<?> mention = AbstractMention.build
 					(	EntityType.DATE, 
 						index+offset, index+offset+length, 
 						recognizer.getName(), valueStr

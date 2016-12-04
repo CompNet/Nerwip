@@ -36,7 +36,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-public class MentionLocation extends AbstractMention<String,EntityLocation>
+public class MentionLocation extends AbstractMention<String>
 {	
 	/**
 	 * Builds a new location mention.

@@ -221,20 +221,20 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 		
 		// get overlapping mentions
 		logger.log("Get the list of overlapping mentions");
-		List<Map<InterfaceRecognizer, AbstractMention<?,?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<InterfaceRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// compare/combine them
 		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<InterfaceRecognizer, AbstractMention<?,?>> map: overlaps)
+		for(Map<InterfaceRecognizer, AbstractMention<?>> map: overlaps)
 		{	logger.log(map.values().toString());
 			logger.increaseOffset();
 			
 			// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<InterfaceRecognizer, AbstractMention<?,?>> entry: map.entrySet())
+			for(Entry<InterfaceRecognizer, AbstractMention<?>> entry: map.entrySet())
 			{	InterfaceRecognizer recognizer = entry.getKey();
-				AbstractMention<?,?> mention = entry.getValue();
+				AbstractMention<?> mention = entry.getValue();
 				rawOutput.append("\t"+recognizer+": "+mention+"\n");
 			}
 			
@@ -255,7 +255,7 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 				int startPos = pos[0];
 				int endPos = pos[1];
 				String valueStr = text.substring(startPos,endPos);
-				AbstractMention<?,?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 				result.addMention(mention);
 				rawOutput.append(">> Mention="+endPos+"\n\n");
 			}
@@ -276,14 +276,14 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 	 * @return 
 	 * 		Type of the mention represnted by the group.
 	 */
-	protected EntityType voteForType(Map<InterfaceRecognizer, AbstractMention<?,?>> map)
+	protected EntityType voteForType(Map<InterfaceRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for type: ");
 		logger.increaseOffset();
 		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
 		
 		// process votes
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	AbstractMention<?,?> mention = map.get(recognizer);
+		{	AbstractMention<?> mention = map.get(recognizer);
 			if(mention!=null)
 			{	EntityType type = mention.getType();
 				Float typeScore = typeScores.get(type);
@@ -323,7 +323,7 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 	 * @return 
 	 * 		{@code true} iff the conclusion is that the mention is correct.
 	 */
-	protected boolean voteForExistence(Map<InterfaceRecognizer, AbstractMention<?,?>> map, EntityType type)
+	protected boolean voteForExistence(Map<InterfaceRecognizer, AbstractMention<?>> map, EntityType type)
 	{	logger.log("Start voting for existence:");
 		logger.increaseOffset();
 		
@@ -333,7 +333,7 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 		for(InterfaceRecognizer recognizer: recognizers)
 		{	List<EntityType> handledTypes = recognizer.getRecognizedEntityTypes();
 			if(handledTypes.contains(type))
-			{	AbstractMention<?,?> mention = map.get(recognizer);
+			{	AbstractMention<?> mention = map.get(recognizer);
 				if(mention==null)
 					voteAgainst = voteAgainst + 1;
 				else
@@ -359,7 +359,7 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 	 * @return 
 	 * 		An array of two integers corresponding to the mention position.
 	 */
-	protected int[] voteForPosition(Map<InterfaceRecognizer, AbstractMention<?,?>> map)
+	protected int[] voteForPosition(Map<InterfaceRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for position:");
 		logger.increaseOffset();
 		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
@@ -367,7 +367,7 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 		
 		// pro votes
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	AbstractMention<?,?> mention = map.get(recognizer);
+		{	AbstractMention<?> mention = map.get(recognizer);
 		
 			// check existence
 			if(mention!=null)

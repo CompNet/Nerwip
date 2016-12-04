@@ -287,7 +287,7 @@ public class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalD
 	protected List<MentionDate> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
 		List<MentionDate> result = new ArrayList<MentionDate>();
-		List<AbstractMention<?,?>> temp = new ArrayList<AbstractMention<?,?>>();
+		List<AbstractMention<?>> temp = new ArrayList<AbstractMention<?>>();
 		String text = article.getRawText();
 		
 		logger.log("Process each registered pattern");

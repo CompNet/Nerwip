@@ -2202,7 +2202,12 @@ File folder = folders.get(0);
  *   
  *  TODO when dealing with folder names in resolver and recognizer: do we store the recognizer/resolver somwhere?
  *  otherwise, we need it at every call...
- *    
+ *  
+ *  TODO where do the entities/mentions object come from? if they're unique, they shouldn't be modified in the delegate, but cloned first.
+ *  if they're not unique, then where are the created? this must be checked before testing.
+ *  
+ *  TODO carefuly trace the processing of both new AbstractInternalDelegates
+ *  
  * - entities:
  *   - TODO represent the hierarchical relationships between entities?
  *     or just rely on the interrogation of online databases instead?

@@ -83,27 +83,27 @@ public class EventExtraction
 	    // for each sentence, we get the detected mentions
 	    for(int ep: sentencePos)
 	    {	if(sp>=0)
-	    	{   List<AbstractMention<?,?>> le = mentions.getMentionsIn(sp, ep);
-		    	List<AbstractMention<?,?>> persons = Mentions.filterByType(le,EntityType.PERSON);
-		 		List<AbstractMention<?,?>> locations = Mentions.filterByType(le,EntityType.LOCATION);
-		 		List<AbstractMention<?,?>> orgs = Mentions.filterByType(le,EntityType.ORGANIZATION);
-		 		List<AbstractMention<?,?>> functs = Mentions.filterByType(le,EntityType.FUNCTION);
-		 		List<AbstractMention<?,?>> products = Mentions.filterByType(le,EntityType.PRODUCTION);
-		 		List<AbstractMention<?,?>> meetings = Mentions.filterByType(le,EntityType.MEETING);
-		 		List<AbstractMention<?,?>> dates = Mentions.filterByType(le,EntityType.DATE);
+	    	{   List<AbstractMention<?>> le = mentions.getMentionsIn(sp, ep);
+		    	List<AbstractMention<?>> persons = Mentions.filterByType(le,EntityType.PERSON);
+		 		List<AbstractMention<?>> locations = Mentions.filterByType(le,EntityType.LOCATION);
+		 		List<AbstractMention<?>> orgs = Mentions.filterByType(le,EntityType.ORGANIZATION);
+		 		List<AbstractMention<?>> functs = Mentions.filterByType(le,EntityType.FUNCTION);
+		 		List<AbstractMention<?>> products = Mentions.filterByType(le,EntityType.PRODUCTION);
+		 		List<AbstractMention<?>> meetings = Mentions.filterByType(le,EntityType.MEETING);
+		 		List<AbstractMention<?>> dates = Mentions.filterByType(le,EntityType.DATE);
 		 		// only go on if there is at least one person
 				if(!persons.isEmpty())
 				{ 	if(locations.size()>=1 || orgs.size()>=1 || functs.size()>=1 || products.size()>=1 || meetings.size()>=1)
 					{   Event event = new Event();
 					    events.add(event);
 					    eventNbr++;
-					    for(AbstractMention<?,?> mention: persons)
+					    for(AbstractMention<?> mention: persons)
 					    {	MentionPerson person = (MentionPerson)mention;
 					    	event.addPerson(person);
 					    }
 				    
 					    if(locations.size()==1)
-				    	{	for(AbstractMention<?,?> mention: locations)
+				    	{	for(AbstractMention<?> mention: locations)
 				    		{	MentionLocation location = (MentionLocation)mention;
 				    			event.addLocation(location);
 			    			}
@@ -113,7 +113,7 @@ public class EventExtraction
 				    		{	Event event1 = new Event();
 				    			events.add(event1);
 			    				eventNbr++;
-		    					for(AbstractMention<?,?> mention: persons)
+		    					for(AbstractMention<?> mention: persons)
 		    					{	MentionPerson person = (MentionPerson)mention;
 		    						event1.addPerson(person);
 	    						}
@@ -126,7 +126,7 @@ public class EventExtraction
 				        }
 					    
 					    if(orgs.size()==1)
-					    {	for(AbstractMention<?,?> mention: orgs)
+					    {	for(AbstractMention<?> mention: orgs)
 				    		{	MentionOrganization org = (MentionOrganization)mention;
 				    			event.addOrganization(org);
 			    			}
@@ -136,7 +136,7 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 				    			eventNbr++;
-			    				for(AbstractMention<?,?> mention: persons)
+			    				for(AbstractMention<?> mention: persons)
 			    				{	MentionPerson person = (MentionPerson)mention;
 			    					event1.addPerson(person);
 			    				}
@@ -148,7 +148,7 @@ public class EventExtraction
 					    }
 				
 					    if(functs.size()==1)
-					    {	for(AbstractMention<?,?> mention: functs)
+					    {	for(AbstractMention<?> mention: functs)
 					    	{	MentionFunction funct = (MentionFunction)mention;
 					    		event.addFunction(funct);
 					    	}
@@ -158,7 +158,7 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 				    			eventNbr++;
-				    			for(AbstractMention<?,?> mention: persons)
+				    			for(AbstractMention<?> mention: persons)
 				    			{	MentionPerson person = (MentionPerson)mention;
 				    				event1.addPerson(person);
 				    			}
@@ -170,7 +170,7 @@ public class EventExtraction
 					    }
 				
 					    if(products.size()==1)
-					    {	for(AbstractMention<?,?> mention: products)
+					    {	for(AbstractMention<?> mention: products)
 					    	{	MentionProduction product = (MentionProduction)mention;
 					    		event.addProduction(product);
 				    		}
@@ -180,7 +180,7 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 					    		eventNbr++;
-					    		for(AbstractMention<?,?> mention: persons)
+					    		for(AbstractMention<?> mention: persons)
 					    		{	MentionPerson person = (MentionPerson)mention;
 					    			event1.addPerson(person);
 					    		}
@@ -192,7 +192,7 @@ public class EventExtraction
 					    }
 
 					    if(meetings.size()==1)
-					    {	for(AbstractMention<?,?> mention: products)
+					    {	for(AbstractMention<?> mention: products)
 					    	{	MentionMeeting meeting = (MentionMeeting)mention;
 					    		event.addMeeting(meeting);
 					    	}
@@ -202,7 +202,7 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 					    		eventNbr++;
-					    		for(AbstractMention<?,?> mention: persons)
+					    		for(AbstractMention<?> mention: persons)
 					    		{	MentionPerson person = (MentionPerson)mention;
 					    			event1.addPerson(person);
 					    		}
@@ -214,7 +214,7 @@ public class EventExtraction
 					    }
 				  
 					    if(dates.size()==1 | dates.size()==2)
-					    {	for(AbstractMention<?,?> mention: dates)
+					    {	for(AbstractMention<?> mention: dates)
 					    	{	MentionDate date = (MentionDate)mention;
 					    		event.addDate(date);
 					    	}
@@ -224,7 +224,7 @@ public class EventExtraction
 					    	{	Event event1 = new Event();
 					    		events.add(event1);
 				    			eventNbr++;
-				    			for(AbstractMention<?,?> mention: persons)
+				    			for(AbstractMention<?> mention: persons)
 				    			{	MentionPerson person = (MentionPerson)mention;
 				    				event1.addPerson(person);
 				    			}

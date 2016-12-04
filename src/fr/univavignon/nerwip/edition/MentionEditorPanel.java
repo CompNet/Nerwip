@@ -406,8 +406,8 @@ public class MentionEditorPanel extends JPanel implements AdjustmentListener, Do
 		
 		// types highlighting
 		if(mode)
-		{	List<AbstractMention<?,?>> mentionList = mentions.getMentions();
-			for (AbstractMention<?,?> mention : mentionList)
+		{	List<AbstractMention<?>> mentionList = mentions.getMentions();
+			for (AbstractMention<?> mention : mentionList)
 			{	EntityType type = mention.getType();
 				boolean flag = mentionSwitches.get(type);
 //if(mention.getEndPos()>document.getLength())
@@ -430,15 +430,15 @@ if(endPos>document.getLength())
 			missingParts = new ArrayList<int[]>();
 			excessParts = new ArrayList<int[]>();
 //			if(!references.isEmpty())
-			List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+			List<AbstractMention<?>> mentionList = mentions.getMentions();
 			Collections.sort(mentionList);
-			List<AbstractMention<?,?>> referenceList = references.getMentions();
+			List<AbstractMention<?>> referenceList = references.getMentions();
 			Collections.sort(referenceList);
-			Iterator<AbstractMention<?,?>> itEst = mentionList.iterator();
-			Iterator<AbstractMention<?,?>> itRef = referenceList.iterator();
+			Iterator<AbstractMention<?>> itEst = mentionList.iterator();
+			Iterator<AbstractMention<?>> itRef = referenceList.iterator();
 			if(itRef.hasNext() && itEst.hasNext())
-			{	AbstractMention<?,?> est = null;
-				AbstractMention<?,?> ref = null;
+			{	AbstractMention<?> est = null;
+				AbstractMention<?> ref = null;
 				int indexEst = 0;
 				int indexRef = 0;
 				do
@@ -521,7 +521,7 @@ if(endPos>document.getLength())
 					&& (ref!=null || itRef.hasNext()));
 			}
 			while(itEst.hasNext())
-			{	AbstractMention<?,?> est = itEst.next();
+			{	AbstractMention<?> est = itEst.next();
 				EntityType estType = est.getType();
 				if(mentionSwitches.get(estType))
 				{	int startEst = est.getStartPos();
@@ -530,7 +530,7 @@ if(endPos>document.getLength())
 				}
 			}
 			while(itRef.hasNext())
-			{	AbstractMention<?,?> ref = itRef.next();
+			{	AbstractMention<?> ref = itRef.next();
 				EntityType refType = ref.getType();
 				if(mentionSwitches.get(refType))
 				{	int startRef = ref.getStartPos();
@@ -626,8 +626,8 @@ if(endPos>document.getLength())
 	 * 		In case of type change, the mention is returned only if
 	 * 		its type was changed.
 	 */
-	public AbstractMention<?,?> insertMention(EntityType type)
-	{	AbstractMention<?,?> result = null;
+	public AbstractMention<?> insertMention(EntityType type)
+	{	AbstractMention<?> result = null;
 		int start = textPane.getSelectionStart();
 		int end = textPane.getSelectionEnd();
 		int position = textPane.getCaretPosition();
@@ -657,16 +657,16 @@ if(endPos>document.getLength())
 	 * @return
 	 * 		The mention whose type was changed, or {@code null} otherwise.
 	 */
-	private AbstractMention<?,?> changeEntityType(EntityType type, int position)
-	{	AbstractMention<?,?> result = null;
-		List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+	private AbstractMention<?> changeEntityType(EntityType type, int position)
+	{	AbstractMention<?> result = null;
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		int index = 0;
 		
 		// retrieve the last mention at this position 
-		ListIterator<AbstractMention<?,?>> it = mentionList.listIterator(mentionList.size());
+		ListIterator<AbstractMention<?>> it = mentionList.listIterator(mentionList.size());
 		while(result==null && it.hasPrevious())
 		{	// get the mention
-			AbstractMention<?,?> mention = it.previous();
+			AbstractMention<?> mention = it.previous();
 			int startPos = mention.getStartPos();
 			int endPos = mention.getEndPos();
 			// check its position
@@ -712,8 +712,8 @@ if(endPos>document.getLength())
 	 * @return
 	 * 		The created mention.
 	 */
-	private AbstractMention<?,?> insertMention(EntityType type, int start, int end)
-	{	AbstractMention<?,?> result = null;
+	private AbstractMention<?> insertMention(EntityType type, int start, int end)
+	{	AbstractMention<?> result = null;
 		
 		// update mentions
 		String valueStr = textPane.getSelectedText();
@@ -742,8 +742,8 @@ if(endPos>document.getLength())
 	 * @return
 	 * 		The removed mentions, under the form of a list.
 	 */
-	public List<AbstractMention<?,?>> removeMentions()
-	{	List<AbstractMention<?,?>> result = null; 
+	public List<AbstractMention<?>> removeMentions()
+	{	List<AbstractMention<?>> result = null; 
 		
 		// get the current selection / cursor position
 		int start = textPane.getSelectionStart();
@@ -752,8 +752,8 @@ if(endPos>document.getLength())
 		if(start!=end)
 			result = removeMentions(start,end);
 		else
-		{	result = new ArrayList<AbstractMention<?,?>>();
-			AbstractMention<?,?> mention = removeMention(position);
+		{	result = new ArrayList<AbstractMention<?>>();
+			AbstractMention<?> mention = removeMention(position);
 			if(mention!=null)
 				result.add(mention);
 		}
@@ -769,15 +769,15 @@ if(endPos>document.getLength())
 	 * @return
 	 * 		Removed mention (can be {@code null}).
 	 */
-	private AbstractMention<?,?> removeMention(int position)
-	{	AbstractMention<?,?> result = null;
-		List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+	private AbstractMention<?> removeMention(int position)
+	{	AbstractMention<?> result = null;
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		
 		// retrieve the last mention at this position 
-		ListIterator<AbstractMention<?,?>> it = mentionList.listIterator(mentionList.size());
+		ListIterator<AbstractMention<?>> it = mentionList.listIterator(mentionList.size());
 		while(result==null && it.hasPrevious())
 		{	// get the mention
-			AbstractMention<?,?> mention = it.previous();
+			AbstractMention<?> mention = it.previous();
 			int startPos = mention.getStartPos();
 			int endPos = mention.getEndPos();
 			// check its position
@@ -815,14 +815,14 @@ if(endPos>document.getLength())
 	 * @return
 	 * 		The removed mentions, under the form of a list.
 	 */
-	private List<AbstractMention<?,?>> removeMentions(int start, int end)
-	{	List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
-		List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+	private List<AbstractMention<?>> removeMentions(int start, int end)
+	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		 
-		Iterator<AbstractMention<?,?>> it = mentionList.iterator();
+		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())
 		{	// get the mention
-			AbstractMention<?,?> mention = it.next();
+			AbstractMention<?> mention = it.next();
 			int startPos = mention.getStartPos();
 			int endPos = mention.getEndPos();
 			// check its position
@@ -885,7 +885,7 @@ if(endPos>document.getLength())
 	 * @return
 	 * 		The shifted mentions, under the form of a list.
 	 */
-	public List<AbstractMention<?,?>> shiftMentions(int offset)
+	public List<AbstractMention<?>> shiftMentions(int offset)
 	{	// get the current cursor position
 		int position = textPane.getCaretPosition();
 		String rawText = null;
@@ -897,13 +897,13 @@ if(endPos>document.getLength())
 		{	e.printStackTrace();
 		}
 		
-		List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
-		List<AbstractMention<?,?>> mentionList = mentions.getMentions();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
+		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		
-		Iterator<AbstractMention<?,?>> it = mentionList.iterator();
+		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())
 		{	// get the mention
-			AbstractMention<?,?> mention = it.next();
+			AbstractMention<?> mention = it.next();
 			int startPos = mention.getStartPos();
 			int endPos = mention.getEndPos();
 			// check its type: only move visible mentions
@@ -1007,9 +1007,9 @@ if(endPos>document.getLength())
 	protected boolean isMentionAdjacent(int startPos)
 	{	boolean result = false;
 		
-		Iterator<AbstractMention<?,?>> it = references.getMentions().iterator();
+		Iterator<AbstractMention<?>> it = references.getMentions().iterator();
 		while(it.hasNext() && !result)
-		{	AbstractMention<?,?> mention = it.next();
+		{	AbstractMention<?> mention = it.next();
 			int startPos0 = mention.getStartPos();
 			int endPos0 = mention.getEndPos();
 			result = startPos==startPos0 || startPos==endPos0;

@@ -1732,7 +1732,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 */
 	private void insertMention(EntityType type)
 	{	MentionEditorPanel tab = (MentionEditorPanel)tabbedPane.getSelectedComponent();
-		AbstractMention<?,?> mention = tab.insertMention(type);
+		AbstractMention<?> mention = tab.insertMention(type);
 		if(mention!=null)
 		{	// update title
 			updateSaved(1);
@@ -1762,7 +1762,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 */
 	private void removeMention()
 	{	MentionEditorPanel tab = (MentionEditorPanel)tabbedPane.getSelectedComponent();
-		List<AbstractMention<?,?>> mentionList = tab.removeMentions();
+		List<AbstractMention<?>> mentionList = tab.removeMentions();
 		if(!mentionList.isEmpty())
 		{	// update title
 			updateSaved(1);
@@ -1790,7 +1790,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 */
 	private void shiftMentions(int offset)
 	{	MentionEditorPanel tab = (MentionEditorPanel)tabbedPane.getSelectedComponent();
-		List<AbstractMention<?,?>> mentionList = tab.shiftMentions(offset);
+		List<AbstractMention<?>> mentionList = tab.shiftMentions(offset);
 		if(!mentionList.isEmpty())
 		{	// update title
 			updateSaved(1);

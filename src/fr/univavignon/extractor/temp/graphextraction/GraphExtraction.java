@@ -125,9 +125,9 @@ public class GraphExtraction
 			
 		}
 		int nb = allEntities.getMentions().size();
-		List<AbstractMention<?,?>> personEntities = new ArrayList<AbstractMention<?,?>>();
-		List<AbstractMention<?,?>> ent = allEntities.getMentions();
-	    for(AbstractMention<?,?> e: ent)
+		List<AbstractMention<?>> personEntities = new ArrayList<AbstractMention<?>>();
+		List<AbstractMention<?>> ent = allEntities.getMentions();
+	    for(AbstractMention<?> e: ent)
 	    {	EntityType entityType = e.getType();
 	    	String type = entityType.toString();
     		if (type == "PERSON")
@@ -138,7 +138,7 @@ public class GraphExtraction
 		
     	for(int j=0;j<p;j++)
     	{	// name
-    		AbstractMention<?,?> personEntity = personEntities.get(j);
+    		AbstractMention<?> personEntity = personEntities.get(j);
     		String entName = personEntity.getStringValue();
     		Node node = graph.retrieveNode(entName);
     		node.setProperty("Name", entName);

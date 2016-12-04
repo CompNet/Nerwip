@@ -142,8 +142,8 @@ public class NetworkExtraction
 			for(int ep: sentencePos)
 			{	if(sp>=0)
 				{	Set<String> conMentions = new TreeSet<String>();
-					List<AbstractMention<?,?>> list = mentions.getMentionsIn(sp, ep);
-					for(AbstractMention<?,?> entity: list)
+					List<AbstractMention<?>> list = mentions.getMentionsIn(sp, ep);
+					for(AbstractMention<?> entity: list)
 					{	if(!(entity instanceof MentionDate)) // we don't need the dates
 						{	// entity name
 							String str = entity.getStringValue(); // TODO ideally, this would rather be a unique id (after DBpedia is integrated, maybe?)

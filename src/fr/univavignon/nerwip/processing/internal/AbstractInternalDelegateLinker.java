@@ -32,10 +32,8 @@ import org.xml.sax.SAXException;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractDelegateLinker;
-import fr.univavignon.nerwip.processing.AbstractDelegateRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
@@ -107,70 +105,51 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 
 	@Override
 	public void delegatelink(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException
-	{	ProcessorName recognizerName = recognizer.getName();
-		logger.log("Start applying "+recognizerName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
+	{	ProcessorName linkerName = linker.getName();
+		logger.log("Start applying "+linkerName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
-		Mentions result = null;
 		
 		try
 		{	// checks if the result file already exists
-			File dataFile = getXmlFile(article);
-			boolean processNeedeed = !dataFile.exists();
+			File mentionsFile = getMentionsXmlFile(article);
+			File entitiesFile = getEntitiesXmlFile(article);
+			boolean processNeedeed = !(mentionsFile.exists() && entitiesFile.exists());
 			
 			// if needed, we process the text
-			if(!recognizer.doesCache() || processNeedeed)
+			if(!linker.doesCache() || processNeedeed)
 			{	// check language
 				ArticleLanguage language = article.getLanguage();
 				if(language==null)
-					logger.log("WARNING: The article language is unknown >> it is possible this recognizer does not handle this language");
+					logger.log("WARNING: The article language is unknown >> it is possible this linker does not handle this language");
 				else if(!canHandleLanguage(language))
-					logger.log("WARNING: This recognizer does not handle the language of this article ("+language+")");
+					logger.log("WARNING: This linker does not handle the language of this article ("+language+")");
 				
-				// apply the recognizer
+				// apply the linker
 				logger.log("Detect the mentions");
-				prepareRecognizer();
-				T intRes = detectMentions(article);
+				prepareLinker();
+				T intRes = linkEntities(article, mentions, entities, recognizer, resolver);
 				
-				// possibly record mentions as they are outputted (useful for debug)
-				if(recognizer.doesOutputRawResults())
-				{	logger.log("Record raw "+recognizerName+" results");
+				// possibly record entities as they are outputted (useful for debug)
+				if(linker.doesOutputRawResults())
+				{	logger.log("Record raw "+linkerName+" results");
 					writeRawResults(article, intRes);
 				}
 				else
 					logger.log("Raw results not recorded (option disabled)");
 				
-				// convert mentions to our internal representation
-				logger.log("Convert mentions to internal representation");
-				result = convert(article,intRes);
+				// convert entities to our internal representation
+				logger.log("Convert entities to internal representation");
+				convert(article,mentions,entities,intRes);
 	
-				// check if the mentions are consistent
-				String text = article.getRawText();
-				for(AbstractMention<?,?> mention: result.getMentions())
-				{	if(!mention.checkText(article))
-						logger.log("ERROR: mention text not consistant with text/position, '"+mention.getStringValue()+" vs. '"+text.substring(mention.getStartPos(),mention.getEndPos())+"'");
-				}
-				
-				// possibly trim mentions (remove non-digit/letter chars at beginning/end)
-				logger.log("Possibly clean mentions.");
-				cleanMentions(result);
-				
-				// possibly filter stop-words and pronouns
-				logger.log("Filter mentions (pronouns, stop-words, etc.)");
-				filterNoise(result,language);
-				
-				// filter overlapping mentions
-				logger.log("Filter overlapping mentions");
-				filterRedundancy(result);
-				
-				// record mentions using our xml format
-				logger.log("Convert mentions to our XML format");
-				writeXmlResults(article,result);
+				// record results using our xml format
+				logger.log("Record mentions and entities using our XML format");
+				writeXmlResults(article,mentions,entities);
 			}
 			
 			// if the results already exist, we fetch them
 			else
 			{	logger.log("Loading mentions from cached file");
-				result = readXmlResults(article);
+				readXmlResults(article,entities);
 			}
 		}
 		catch (IOException e)
@@ -186,11 +165,9 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 			throw new ProcessorException(e.getMessage());
 		}
 	
-		int nbrEnt = result.getMentions().size();
-		logger.log(recognizerName+" over ["+article.getName()+"], found "+nbrEnt+" mentions");
+		int nbrEnt = entities.getEntities().size();
+		logger.log(linkerName+" over ["+article.getName()+"], processed "+nbrEnt+" entities");
 		logger.decreaseOffset();
-
-		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////

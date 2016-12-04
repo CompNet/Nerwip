@@ -191,7 +191,7 @@ public class DateExtractorDelegateRecognizer extends AbstractModellessInternalDe
 	 */
 	public void extractDatePattern(String text, List<MentionDate> mentions, List<SimpleDateFormat> patterns, boolean dayFlag, boolean monthFlag, boolean yearFlag)
 	{	ParsePosition pos = new ParsePosition(0);
-		List<AbstractMention<?,?>> temp = new ArrayList<AbstractMention<?,?>>();
+		List<AbstractMention<?>> temp = new ArrayList<AbstractMention<?>>();
 		
 		while(pos.getIndex()<text.length())
 		{	int startPos = pos.getIndex();

@@ -139,8 +139,8 @@ public class LingPipeTrainer extends AbstractTrainer<Chunking>
 				
     	// add each mention under the form of a Chunk object
     	mentions.sortByPosition();
-    	List<AbstractMention<?,?>> entList = mentions.getMentions();
-    	for(AbstractMention<?,?> mention: entList)
+    	List<AbstractMention<?>> entList = mentions.getMentions();
+    	for(AbstractMention<?> mention: entList)
     	{	int start = mention.getStartPos();
     		int end = mention.getEndPos();
     		EntityType type = mention.getType();

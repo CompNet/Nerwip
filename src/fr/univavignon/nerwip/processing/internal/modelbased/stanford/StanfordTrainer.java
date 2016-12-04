@@ -122,8 +122,8 @@ public class StanfordTrainer extends AbstractTrainer<List<List<CoreLabel>>>
    		
    		// add each mention under the form of a Stanford object
     	mentions.sortByPosition();
-    	List<AbstractMention<?,?>> entList = mentions.getMentions();
-    	for(AbstractMention<?,?> mention: entList)
+    	List<AbstractMention<?>> entList = mentions.getMentions();
+    	for(AbstractMention<?> mention: entList)
     	{	// process the text located before the mention (and after the previous mention)
     		int start = mention.getStartPos();
     		if(start>pos)

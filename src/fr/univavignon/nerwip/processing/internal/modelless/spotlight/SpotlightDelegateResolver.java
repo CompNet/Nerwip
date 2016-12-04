@@ -371,7 +371,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 				Element eltResources = root.getChild(ELT_RESOURCES);
 				List<Element> eltResourceList = eltResources.getChildren(ELT_RESOURCE);
 				for(Element eltResource: eltResourceList)
-				{	AbstractMention<?,?> mention = convertElement(eltResource,prevSize,originalText);
+				{	AbstractMention<?> mention = convertElement(eltResource,prevSize,originalText);
 					if(mention!=null)
 						result.addMention(mention);
 					//TODO maybe a type could simply be retrieved from the DBpedia URI...
@@ -408,8 +408,8 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	 * 		The resulting mention, or {@code null} if its
 	 * 		type is not supported.
 	 */
-	private AbstractMention<?,?> convertElement(Element element, int prevSize, String part)
-	{	AbstractMention<?,?> result = null;
+	private AbstractMention<?> convertElement(Element element, int prevSize, String part)
+	{	AbstractMention<?> result = null;
 		logger.increaseOffset();
 		
 		// parse the element

@@ -403,7 +403,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 	 * @return
 	 * 		The SVM representation of the same data.
 	 */
-	protected svm_node[] convertMentionGroupToSvm(Map<InterfaceRecognizer, AbstractMention<?,?>> group, Article article)
+	protected svm_node[] convertMentionGroupToSvm(Map<InterfaceRecognizer, AbstractMention<?>> group, Article article)
 	{	ArticleCategory categoryValues[] = ArticleCategory.values();
 		int inSize;													// total number of SVM inputs
 		int nerSize = recognizers.size() * HANDLED_TYPES.size();	// NER-related inputs
@@ -423,7 +423,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 
 		// convert NER outputs
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	AbstractMention<?,?> mention = group.get(recognizer);
+		{	AbstractMention<?> mention = group.get(recognizer);
 			EntityType type = null;
 			if(mention!=null)
 				type = mention.getType();
@@ -578,12 +578,12 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 	 * @return
 	 * 		A mention, or {@code null} if none was detected.
 	 */
-	private AbstractMention<?,?> convertSvmToMention(Map<InterfaceRecognizer, AbstractMention<?,?>> group, double y, Article article)
+	private AbstractMention<?> convertSvmToMention(Map<InterfaceRecognizer, AbstractMention<?>> group, double y, Article article)
 	{	logger.log("Vote-based conversion of a mention group");
 		logger.increaseOffset();
 		logger.log(group.values().toString());
 		
-		AbstractMention<?,?> result = null;
+		AbstractMention<?> result = null;
 		String rawText = article.getRawText();
 		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
 	
@@ -607,7 +607,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			
 			// first: pro votes
 			for(InterfaceRecognizer recognizer: recognizers)
-			{	AbstractMention<?,?> mention = group.get(recognizer);
+			{	AbstractMention<?> mention = group.get(recognizer);
 				
 				// check existence
 				if(mention!=null)
@@ -642,7 +642,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			// second: against votes
 			if(useRecall)
 			{	for(InterfaceRecognizer recognizer: recognizers)
-				{	AbstractMention<?,?> mention = group.get(recognizer);
+				{	AbstractMention<?> mention = group.get(recognizer);
 					
 					// check existence
 					if(mention!=null)
@@ -719,10 +719,10 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 	 * @return
 	 * 		Created mention.
 	 */
-	private AbstractMention<?,?> convertSvmToMention(int startPos, int endPos, EntityType type, Article article)
+	private AbstractMention<?> convertSvmToMention(int startPos, int endPos, EntityType type, Article article)
 	{	String rawText = article.getRawText();
 		String valueStr = rawText.substring(startPos, endPos);
-		AbstractMention<?,?> result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr);
+		AbstractMention<?> result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr);
 		return result;
 	}
 
@@ -854,17 +854,17 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 	private void combineMentionsByMention(Article article, Map<InterfaceRecognizer,Mentions> mentions, StringBuffer rawOutput, Mentions result) throws ProcessorException
 	{	// get overlapping mentions
 		logger.log("Get list of overlapping mentions");
-		List<Map<InterfaceRecognizer, AbstractMention<?,?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<InterfaceRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// process each group of mentions
 		logger.log("Process each group of mentions");
 		logger.increaseOffset();
-		for(Map<InterfaceRecognizer, AbstractMention<?,?>> overlap: overlaps)
+		for(Map<InterfaceRecognizer, AbstractMention<?>> overlap: overlaps)
 		{	// add overlap to raw output
 			rawOutput.append("Overlap:\n");
-			for(Entry<InterfaceRecognizer, AbstractMention<?,?>> entry: overlap.entrySet())
+			for(Entry<InterfaceRecognizer, AbstractMention<?>> entry: overlap.entrySet())
 			{	InterfaceRecognizer recognizer = entry.getKey();
-				AbstractMention<?,?> mention = entry.getValue();
+				AbstractMention<?> mention = entry.getValue();
 				rawOutput.append("\t"+recognizer.getName()+": "+mention+"\n");
 			}
 			
@@ -882,7 +882,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			logger.log("Process SVM prediction: "+y);
 			
 			// convert to actual mention
-			AbstractMention<?,?> mention = convertSvmToMention(overlap,y,article);
+			AbstractMention<?> mention = convertSvmToMention(overlap,y,article);
 			rawOutput.append(">> mention="+mention+"\n");
 			logger.log("Convert to mention object: "+mention);
 			
@@ -921,16 +921,16 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 		// build an iterator for each recognizer
 		logger.log("Build all needed structures");
 		List<InterfaceRecognizer> recognizers = new ArrayList<InterfaceRecognizer>(mentions.keySet());
-		Map<InterfaceRecognizer,Iterator<AbstractMention<?,?>>> iterators = new HashMap<InterfaceRecognizer,Iterator<AbstractMention<?,?>>>();
-		Map<InterfaceRecognizer,AbstractMention<?,?>> currentMentions = new HashMap<InterfaceRecognizer,AbstractMention<?,?>>();
+		Map<InterfaceRecognizer,Iterator<AbstractMention<?>>> iterators = new HashMap<InterfaceRecognizer,Iterator<AbstractMention<?>>>();
+		Map<InterfaceRecognizer,AbstractMention<?>> currentMentions = new HashMap<InterfaceRecognizer,AbstractMention<?>>();
 		Map<InterfaceRecognizer,Integer> currentIndices = new HashMap<InterfaceRecognizer,Integer>();
 		Iterator<InterfaceRecognizer> itR = recognizers.iterator();
 		while(itR.hasNext())
 		{	InterfaceRecognizer recognizer = itR.next();
 			Mentions e = mentions.get(recognizer);
-			Iterator<AbstractMention<?,?>> it = e.getMentions().iterator();
+			Iterator<AbstractMention<?>> it = e.getMentions().iterator();
 			if(it.hasNext())
-			{	AbstractMention<?,?> mention = it.next();
+			{	AbstractMention<?> mention = it.next();
 				currentMentions.put(recognizer, mention);
 				currentIndices.put(recognizer, 0);
 				iterators.put(recognizer,it);
@@ -964,8 +964,8 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			{	InterfaceRecognizer recognizer = itRec.next();
 //				logger.log("Managing NER "+recognizer);
 				logger.increaseOffset();
-				AbstractMention<?,?> currentMention = currentMentions.get(recognizer);
-				Iterator<AbstractMention<?,?>> it = iterators.get(recognizer);
+				AbstractMention<?> currentMention = currentMentions.get(recognizer);
+				Iterator<AbstractMention<?>> it = iterators.get(recognizer);
 				PositionRelation posRel;
 				
 				// go to the appropriate mention for the current recognizer
@@ -1080,7 +1080,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 				}
 				else
 				{	// finalize the current mention
-					AbstractMention<?,?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
+					AbstractMention<?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
 					result.addMention(mention);
 //					logger.log("Finalizing the current mention: "+mention);
 					// mark the fact there is now no current mention 
@@ -1111,7 +1111,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 				for(Entry<InterfaceRecognizer, WordMention> entry: weMap.entrySet())
 				{	InterfaceRecognizer recognizer = entry.getKey();
 					WordMention wordMention = entry.getValue();
-					AbstractMention<?,?> mention = wordMention.getMention();
+					AbstractMention<?> mention = wordMention.getMention();
 					Boolean beginning = wordMention.isBeginning();
 					String bio;
 					if(beginning)
@@ -1149,7 +1149,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 					}
 					else
 					{	// finalize the current mention
-						AbstractMention<?,?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
+						AbstractMention<?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
 						result.addMention(mention);
 //						logger.log("Finalizing the current mention: "+mention);
 						// mark the fact there is now no current mention 
@@ -1179,7 +1179,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 //					logger.log("SVM decision: beginning word or inside word with type change");
 					logger.increaseOffset();
 					// finalize the current mention
-					AbstractMention<?,?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
+					AbstractMention<?> mention = convertSvmToMention(currentStartPos, currentEndPos, currentType, article);
 					result.addMention(mention);
 //					logger.log("Finalizing the current mention: "+mention);
 					rawOutput.append(">> mention="+mention+"\n");

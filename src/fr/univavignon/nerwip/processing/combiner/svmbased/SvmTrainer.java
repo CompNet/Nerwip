@@ -444,7 +444,7 @@ public class SvmTrainer
 		logger.log("Processing article "+article.getName());
 		
 		// retrieve overlapping mentions
-		List<Map<InterfaceRecognizer,AbstractMention<?,?>>> overlaps = Mentions.identifyOverlaps(mentions);
+		List<Map<InterfaceRecognizer,AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
 		// init data object
 		svm_problem result = new svm_problem();
@@ -454,15 +454,15 @@ public class SvmTrainer
 		int index = 0;
 		
 		// convert to SVM format
-		for(Map<InterfaceRecognizer, AbstractMention<?,?>> overlap: overlaps)
-		{	Map<InterfaceRecognizer, AbstractMention<?,?>> estimations = overlap;
-			AbstractMention<?,?> refMention = overlap.get(null);
+		for(Map<InterfaceRecognizer, AbstractMention<?>> overlap: overlaps)
+		{	Map<InterfaceRecognizer, AbstractMention<?>> estimations = overlap;
+			AbstractMention<?> refMention = overlap.get(null);
 			EntityType refType = null;
 			
 			// get reference entity type
 			if(refMention!=null)
 			{	refType = refMention.getType();
-				estimations = new HashMap<InterfaceRecognizer, AbstractMention<?,?>>(overlap);
+				estimations = new HashMap<InterfaceRecognizer, AbstractMention<?>>(overlap);
 				estimations.remove(null);
 			}
 			
@@ -577,7 +577,7 @@ public class SvmTrainer
 	 * @param estMentions
 	 * 		Corresponding estimated mentions.
 	 */
-	private void convertMentionGroupToSvm(svm_problem data, int index, Article article, EntityType refType, Map<InterfaceRecognizer,AbstractMention<?,?>> estMentions)
+	private void convertMentionGroupToSvm(svm_problem data, int index, Article article, EntityType refType, Map<InterfaceRecognizer,AbstractMention<?>> estMentions)
 	{	logger.increaseOffset();
 		
 		// use combiner to process output
@@ -677,7 +677,7 @@ if(data.x[index]==null || index==131)
 			result = 1;
 		// a mention was detected >> just get its position
 		else
-		{	AbstractMention<?,?> mention = wordMention.getMention();
+		{	AbstractMention<?> mention = wordMention.getMention();
 			int wordStart = wordMention.getStartPosition();
 			List<EntityType> handledTypes = combiner.getRecognizedEntityTypes();
 			EntityType type = mention.getType();

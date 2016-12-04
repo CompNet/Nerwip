@@ -545,14 +545,14 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 				if(entitiesElt!=null)
 				{	List<Element> entityElts = entitiesElt.getChildren(ELT_ENTITY);
 					for(Element entityElt: entityElts)
-					{	AbstractMention<?,?> mention = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
+					{	AbstractMention<?> mention = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
 						if(mention!=null)
 						{	// possibly split in two distinct, smaller mentions when containing parentheses
-							AbstractMention<?,?>[] temp = processParentheses(mention);
+							AbstractMention<?>[] temp = processParentheses(mention);
 							if(temp==null)
 								result.addMention(mention);
 							else
-							{	for(AbstractMention<?,?> t: temp)
+							{	for(AbstractMention<?> t: temp)
 									result.addMention(t);
 							}
 						}
@@ -594,8 +594,8 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 	 * 		The resulting mention, or {@code null} if its
 	 * 		type is not supported.
 	 */
-	private AbstractMention<?,?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
-	{	AbstractMention<?,?> result = null;
+	private AbstractMention<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
+	{	AbstractMention<?> result = null;
 		
 		String typeCode = element.getAttributeValue(ATT_TYPE);
 		EntityType type = CONVERSION_MAP.get(typeCode);
@@ -689,8 +689,8 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 	 * 		An array containing the two smaller mentions, or {@code null} if
 	 * 		the specified mention was not of the desired form.
 	 */
-	private AbstractMention<?,?>[] processParentheses(AbstractMention<?,?> mention)
-	{	AbstractMention<?,?>[] result = null;
+	private AbstractMention<?>[] processParentheses(AbstractMention<?> mention)
+	{	AbstractMention<?>[] result = null;
 		
 		if(parenSplit && !(mention instanceof MentionDate))
 		{	// get mention info
@@ -708,7 +708,7 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 				String valueStr1 = original.substring(0,startPar);
 				int startPos1 = startPos;
 				int endPos1 = startPos + startPar;
-				AbstractMention<?,?> mention1 = AbstractMention.build(type, startPos1, endPos1, source, valueStr1);
+				AbstractMention<?> mention1 = AbstractMention.build(type, startPos1, endPos1, source, valueStr1);
 //if(valueStr1.isEmpty())
 //	System.out.print("");
 
@@ -716,11 +716,11 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 				String valueStr2 = original.substring(startPar+1,endPar);
 				int startPos2 = startPos + startPar + 1;
 				int endPos2 = startPos + endPar;
-				AbstractMention<?,?> mention2 = AbstractMention.build(type, startPos2, endPos2, source, valueStr2);
+				AbstractMention<?> mention2 = AbstractMention.build(type, startPos2, endPos2, source, valueStr2);
 //if(valueStr2.isEmpty())
 //	System.out.print("");
 				
-				result = new AbstractMention<?,?>[]{mention1,mention2};
+				result = new AbstractMention<?>[]{mention1,mention2};
 			}
 		}
 		

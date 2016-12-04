@@ -38,7 +38,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * @author Burcu Küpelioğlu
  * @author Vincent Labatut
  */
-public class MentionDate extends AbstractMention<Date,EntityDate>
+public class MentionDate extends AbstractMention<Date>
 {	
 	/**
 	 * Builds a new date mention from a date value.

@@ -238,7 +238,7 @@ public class LingPipeDelegateRecognizer extends AbstractModelbasedInternalDelega
 			int startPos = chunk.start();
 			int endPos = chunk.end();
 			String valueStr = text.substring(startPos,endPos);
-			AbstractMention<?,?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
 			result.addMention(mention);
 		}
 		

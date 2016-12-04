@@ -37,7 +37,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * @author Vincent Labatut
  * @author Sabrine Ayachi
  */
-public class MentionFunction extends AbstractMention<String,EntityFunction>
+public class MentionFunction extends AbstractMention<String>
 {	
 	/**
 	 * Builds a new function mention.

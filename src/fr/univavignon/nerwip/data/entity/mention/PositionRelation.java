@@ -161,7 +161,7 @@ public enum PositionRelation
 	 * @return
 	 * 		Relative position.
 	 */
-	public static PositionRelation getRelation(AbstractMention<?,?> mention1, int start2, int end2)
+	public static PositionRelation getRelation(AbstractMention<?> mention1, int start2, int end2)
 	{	int start1 = mention1.getStartPos();
 		int end1 = mention1.getEndPos();
 		PositionRelation result = getRelation(start1, end1, start2, end2);
@@ -178,7 +178,7 @@ public enum PositionRelation
 	 * @return
 	 * 		Relative position of the mentions.
 	 */
-	public static PositionRelation getRelation(AbstractMention<?,?> mention1, AbstractMention<?,?> mention2)
+	public static PositionRelation getRelation(AbstractMention<?> mention1, AbstractMention<?> mention2)
 	{	int start1 = mention1.getStartPos();
 		int end1 = mention1.getEndPos();
 		int start2 = mention2.getStartPos();

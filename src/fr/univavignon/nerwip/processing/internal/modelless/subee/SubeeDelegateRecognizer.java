@@ -83,7 +83,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<AbstractMention<?,?>>>
+public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<AbstractMention<?>>>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -169,17 +169,17 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<AbstractMention<?,?>> detectMentions(Article article) throws ProcessorException
+	protected List<AbstractMention<?>> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
-		List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
 		try
 		{	// detect and process hyperlinks
 			logger.log("Detect and process hyperlinks");
-			List<AbstractMention<?,?>> sureMentions = processHyperlinks(article);
+			List<AbstractMention<?>> sureMentions = processHyperlinks(article);
 			
 			// look for additional occurrences of these mentions
-			List<AbstractMention<?,?>> possibleMentions = new ArrayList<AbstractMention<?,?>>();
+			List<AbstractMention<?>> possibleMentions = new ArrayList<AbstractMention<?>>();
 			if(additionalOccurrences)
 			{	logger.log("Look for additional occurrences");
 				possibleMentions = processOccurrences(article,sureMentions);
@@ -190,7 +190,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 			// process the name of the person described in the processed article
 			if(useTitle)
 			{	logger.log("Process the name of this article main person");
-				List<AbstractMention<?,?>> temp = processMainName(article);
+				List<AbstractMention<?>> temp = processMainName(article);
 				possibleMentions.addAll(temp);
 			}
 			else
@@ -249,9 +249,9 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	 * @throws org.json.simple.parser.ParseException
 	 * 		Problem while accessing Freebase.
 	 */
-	private List<AbstractMention<?,?>> processMainName(Article article) throws ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
+	private List<AbstractMention<?>> processMainName(Article article) throws ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
 	{	logger.increaseOffset();
-		List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		String rawText = article.getRawText();
 
 		// init candidate strings with article name and title 
@@ -366,7 +366,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 			{	int startPos = m.start();
 				int endPos = m.end();
 				String valueStr = m.group();
-				AbstractMention<?,?> ent = AbstractMention.build(EntityType.PERSON, startPos, endPos, ProcessorName.SUBEE, valueStr);
+				AbstractMention<?> ent = AbstractMention.build(EntityType.PERSON, startPos, endPos, ProcessorName.SUBEE, valueStr);
 				result.add(ent);
 			}
 		}
@@ -414,9 +414,9 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	 * @throws org.json.simple.parser.ParseException
 	 * 		Problem while accessing Freebase.
 	 */
-	private List<AbstractMention<?,?>> processHyperlinks(Article article) throws ParserException, ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
+	private List<AbstractMention<?>> processHyperlinks(Article article) throws ParserException, ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
 	{	logger.increaseOffset();
-		List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 	
 		// parse linked text to automatically get hyperlink list
 		logger.log("Get hyperlink list");
@@ -522,7 +522,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
 //	System.out.println("ERROR: mention acronym and article do not match (position problem)");
-									AbstractMention<?,?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
+									AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
 									result.add(mention);
 									logger.log("Creation of an extra mention (acronym) "+mention);
 								}
@@ -548,7 +548,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
 //	System.out.println("ERROR: mention acronym and article do not match (position problem)");
-										AbstractMention<?,?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
+										AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
 										result.add(mention);
 										logger.log("Creation of an extra mention (acronym) "+mention);
 									}
@@ -558,7 +558,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 					}
 					
 					// create the mention
-					AbstractMention<?,?> mention = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
+					AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
 					result.add(mention);
 					logger.log("Creation of the mention "+mention);
 				}
@@ -803,10 +803,10 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	 * @return
 	 * 		A new list of possible mentions, to be merged later with the sure mentions.
 	 */
-	private List<AbstractMention<?,?>> processOccurrences(Article article, List<AbstractMention<?,?>> sureMentions)
+	private List<AbstractMention<?>> processOccurrences(Article article, List<AbstractMention<?>> sureMentions)
 	{	logger.increaseOffset();
 		String rawText = article.getRawText();
-		List<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 	
 //		// sort mentions by type (we want to prioritize them)
 //		logger.log("Sort mention by type");
@@ -831,7 +831,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 		
 		// look for additional occurrences
 		logger.log("Look for additional occurrences");
-		for(AbstractMention<?,?> mention: sureMentions)
+		for(AbstractMention<?> mention: sureMentions)
 		{	String valueStr = mention.getStringValue();
 			
 			// look for the mention in the text
@@ -844,7 +844,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 //				if(!positionAlreadyUsed(startPos, result))	// this test is now done later 
 				{	int endPos = m.end();
 					EntityType type = mention.getType();
-					AbstractMention<?,?> ent = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
+					AbstractMention<?> ent = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
 					result.add(ent);
 				}
 			}
@@ -867,10 +867,10 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	 * @return
 	 * 		Result of the merging of both lists.
 	 */
-	private List<AbstractMention<?,?>> mergeMentionLists(List<AbstractMention<?,?>> sureMentions, List<AbstractMention<?,?>> possibleMentions)
+	private List<AbstractMention<?>> mergeMentionLists(List<AbstractMention<?>> sureMentions, List<AbstractMention<?>> possibleMentions)
 	{	logger.log("Start merging sure and possible mention lists");
 		logger.increaseOffset();
-		ArrayList<AbstractMention<?,?>> result = new ArrayList<AbstractMention<?,?>>();
+		ArrayList<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
 		// add all sure mentions
 		logger.log("Add all sure mentions ("+sureMentions.size()+" mentions)");
@@ -883,8 +883,8 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 		
 		// add to the result only the possible mentions with no overlap with sure ones
 		logger.log("Adding remaining mentions to the sure ones, avoiding overlaps)");
-		for(AbstractMention<?,?> mention: possibleMentions)
-		{	AbstractMention<?,?> e = positionAlreadyUsed(mention, sureMentions);
+		for(AbstractMention<?> mention: possibleMentions)
+		{	AbstractMention<?> e = positionAlreadyUsed(mention, sureMentions);
 			if(e==null)
 				result.add(mention);
 		}
@@ -942,10 +942,10 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Mentions convert(Article article, List<AbstractMention<?,?>> mentions) throws ProcessorException
+	public Mentions convert(Article article, List<AbstractMention<?>> mentions) throws ProcessorException
 	{	Mentions result = new Mentions(recognizer.getName());
 		
-		for(AbstractMention<?,?> mention: mentions)
+		for(AbstractMention<?> mention: mentions)
 			result.addMention(mention);
 		
 		return result;
@@ -955,10 +955,10 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void writeRawResults(Article article, List<AbstractMention<?,?>> mentions) throws IOException
+	protected void writeRawResults(Article article, List<AbstractMention<?>> mentions) throws IOException
 	{	StringBuffer string = new StringBuffer();
 		
-		for(AbstractMention<?,?> mention: mentions)
+		for(AbstractMention<?> mention: mentions)
 			string.append(mention.toString() + "\n");
 			
 		writeRawResultsStr(article, string.toString());

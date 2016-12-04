@@ -32,9 +32,7 @@ import org.xml.sax.SAXException;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.AbstractDelegateRecognizer;
 import fr.univavignon.nerwip.processing.AbstractDelegateResolver;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
@@ -97,9 +95,10 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
      * 		Problem while applying the recognizer.
      */
 	protected abstract T resolveCoreferences(Article article, Mentions mentions) throws ProcessorException;
+	//TODO why no recognizer above?
 
 	@Override
-	public Entities delegateResolve(Article article, Mentions mentions, InterfaceRecognizer resolver) throws ProcessorException
+	public Entities delegateResolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException
 	{	ProcessorName resolverName = resolver.getName();
 		logger.log("Start applying "+resolverName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
@@ -137,7 +136,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 				result = convert(article,intRes,mentions);
 				
 				// record mentions using our xml format
-				logger.log("Convert mentions to our XML format, including entity references");
+				logger.log("Record mentions using our XML format, including entity references");
 				writeXmlResults(article,mentions,result);
 			}
 			
@@ -145,7 +144,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 			else
 			{	logger.log("Loading mentions from cached file");
 				result = new Entities();
-				readXmlResults(article,result,mentions);
+				readXmlResults(article,mentions,result);
 			}
 		}
 		catch (IOException e)

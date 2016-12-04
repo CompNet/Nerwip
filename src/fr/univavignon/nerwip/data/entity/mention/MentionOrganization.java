@@ -36,7 +36,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-public class MentionOrganization extends AbstractMention<String,EntityOrganization>
+public class MentionOrganization extends AbstractMention<String>
 {	
 	/**
 	 * Builds a new organization mention.
