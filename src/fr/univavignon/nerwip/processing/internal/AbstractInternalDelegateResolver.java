@@ -34,7 +34,6 @@ import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractDelegateResolver;
-import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
@@ -95,10 +94,9 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
      * 		Problem while applying the recognizer.
      */
 	protected abstract T resolveCoreferences(Article article, Mentions mentions) throws ProcessorException;
-	//TODO why no recognizer above?
-
+	
 	@Override
-	public Entities delegateResolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException
+	public Entities delegateResolve(Article article, Mentions mentions) throws ProcessorException
 	{	ProcessorName resolverName = resolver.getName();
 		logger.log("Start applying "+resolverName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();

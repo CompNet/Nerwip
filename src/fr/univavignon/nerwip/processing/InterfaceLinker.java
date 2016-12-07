@@ -80,6 +80,28 @@ public interface InterfaceLinker extends InterfaceProcessor
 	public boolean canLinkLanguage(ArticleLanguage language);
 	
 	/////////////////////////////////////////////////////////////////
+	// RECOGNIZER		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the recognizer applied before this linker.
+	 * 
+	 * @return
+	 * 		Recognizer used before this linker.
+	 */
+	public InterfaceRecognizer getRecognizer();
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the resolver applied before this linker.
+	 * 
+	 * @return
+	 * 		Resolver used before this linker.
+	 */
+	public InterfaceResolver getResolver();
+	
+	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
@@ -106,14 +128,10 @@ public interface InterfaceLinker extends InterfaceProcessor
 	 * 		List of the previously recognized mentions.
 	 * @param entities
 	 * 		List of the entities associated to the mentions.
-	 * @param recognizer
-	 * 		Processor used to recognize the entity mentions.
-	 * @param resolver
-	 * 		Processor used to resolve the coreferences.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public void link(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException;
+	public void link(Article article, Mentions mentions, Entities entities) throws ProcessorException;
 }
  

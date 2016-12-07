@@ -56,8 +56,8 @@ public interface InterfaceProcessor
 	
 	/**
 	 * Changes the cache flag. If {@code true}, the {@link InterfaceRecognizer#recognize(Article) process},
-	 * {@link InterfaceResolver#resolve(Article, Mentions, InterfaceRecognizer)} and 
-	 * {@code InterfaceLinker#link(Article, Mentions, Entities, InterfaceRecognizer, InterfaceResolver)}
+	 * {@link InterfaceResolver#resolve(Article, Mentions)} and 
+	 * {@code InterfaceLinker#link(Article, Mentions, Entities)}
 	 * methods will first check if the results already
 	 * exist as a file. In this case, they will be loaded
 	 * from this file. Otherwise, the process will be

@@ -65,7 +65,78 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	 * 		Minimal confidence for the returned entities.
 	 */
 	public Spotlight(float minConf)
-	{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
+	{	// recognize
+		delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
+		this.recognizer = null;
+		// resolve
+		delegateResolver = null;
+		this.resolver = null;
+		// link
+		delegateLinker = null;
+	}
+	
+	/**
+	 * Builds and sets up an object representing
+	 * the Spotlight resolver. If {@code recognizer}
+	 * is {@code null}, then this object is also a recognizer.
+	 * 
+	 * @param recognizer
+	 * 		Processor used to recognize the entity mentions, or {@code null}.
+	 * @param minConf 
+	 * 		Minimal confidence for the returned entities.
+	 */
+	public Spotlight(InterfaceRecognizer recognizer, float minConf)
+	{	// recognize
+		if(recognizer==null)
+		{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
+			this.recognizer = null;
+		}
+		else
+		{	delegateRecognizer = null;
+			this.recognizer = recognizer;
+		}
+		// resolve
+		delegateResolver = new SpotlightDelegateResolver(this, minConf);
+		this.resolver = null;
+		// link
+		delegateLinker = null;
+	}
+	
+	/**
+	 * Builds and sets up an object representing
+	 * the Spotlight recognizer. If {@code recognizer}
+	 * is {@code null}, then this object is also a recognizer.
+	 * If {@code resolver} is {@code null}, then this object 
+	 * is also a resolver.
+	 * 
+	 * @param recognizer
+	 * 		Processor used to recognize the entity mentions, or {@code null}.
+	 * @param resolver
+	 * 		Processor used to resolve the coreferences, or {@code null}.
+	 * @param minConf 
+	 * 		Minimal confidence for the returned entities.
+	 */
+	public Spotlight(InterfaceRecognizer recognizer, InterfaceResolver resolver, float minConf)
+	{	// recognize
+		if(recognizer==null)
+		{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
+			this.recognizer = null;
+		}
+		else
+		{	delegateRecognizer = null;
+			this.recognizer = recognizer;
+		}
+		// resolve
+		if(resolver==null)
+		{	delegateResolver = new SpotlightDelegateResolver(this, minConf);
+			this.resolver = null;
+		}
+		else
+		{	delegateResolver = null;
+			this.resolver = resolver;
+		}
+		// link
+		delegateLinker = new SpotlightDelegateLinker(this, minConf);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -100,8 +171,15 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	/////////////////////////////////////////////////////////////////
 	// RECOGNIZER	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Recognizer applied before this resolver or linker (can be different from the delegate) */
+	private InterfaceRecognizer recognizer = null;
 	/** Delegate in charge of recognizing entity mentions */
 	private SpotlightDelegateRecognizer delegateRecognizer;
+	
+	@Override
+	public InterfaceRecognizer getRecognizer()
+	{	return recognizer;
+	}
 	
 	@Override
 	public List<EntityType> getRecognizedEntityTypes()
@@ -124,8 +202,15 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	/////////////////////////////////////////////////////////////////
 	// RESOLVER		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Resolver applied before this linker (can be different from the delegate) */
+	private InterfaceResolver resolver = null;
 	/** Delegate in charge of recognizing entity mentions */
-	private SpotlightDelegateRecognizer delegateResolver;
+	private SpotlightDelegateResolver delegateResolver;
+
+	@Override
+	public InterfaceResolver getResolver()
+	{	return resolver;
+	}
 	
 	@Override
 	public List<EntityType> getResolvedEntityTypes()
@@ -140,8 +225,8 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	}
 	
 	@Override
-	public Entities resolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException
-	{	Entities result = delegateResolver.delegateResolve(article,mentions,recognizer);
+	public Entities resolve(Article article, Mentions mentions) throws ProcessorException
+	{	Entities result = delegateResolver.delegateResolve(article,mentions);
 		return result;
 	}
 
@@ -164,7 +249,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	}
 	
 	@Override
-	public void link(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException
-	{	delegateLinker.delegateLink(article,mentions,entities,recognizer,resolver);
+	public void link(Article article, Mentions mentions, Entities entities) throws ProcessorException
+	{	delegateLinker.delegateLink(article,mentions,entities);
 	}
 }

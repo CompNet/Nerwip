@@ -59,6 +59,7 @@ import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateRecognizer;
+import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateResolver;
 import fr.univavignon.nerwip.tools.dbpedia.DbpCommonTools;
 import fr.univavignon.nerwip.tools.string.StringTools;
 
@@ -82,7 +83,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class SpotlightDelegateResolver extends AbstractModellessInternalDelegateRecognizer<List<String>>
+public class SpotlightDelegateResolver extends AbstractModellessInternalDelegateResolver<List<String>>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -94,11 +95,9 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	 * 		Minimal confidence for the returned entities.
 	 */
 	public SpotlightDelegateResolver(Spotlight spotlight, float minConf)
-	{	super(spotlight,true,false,false);
+	{	super(spotlight);
 		
 		this.minConf = minConf;
-		
-		setIgnoreNumbers(false);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -106,7 +105,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = recognizer.getName().toString();
+	{	String result = resolver.getName().toString();
 		
 		result = result + "_" + "minConf=" + minConf;
 		
@@ -159,7 +158,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	private static final long SLEEP_PERIOD = 100;
 	
 	@Override
-	protected List<String> detectMentions(Article article) throws ProcessorException
+	protected List<String> resolveCoreferences(Article article, Mentions mentions) throws ProcessorException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();

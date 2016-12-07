@@ -35,8 +35,6 @@ import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractDelegateLinker;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
-import fr.univavignon.nerwip.processing.InterfaceRecognizer;
-import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileTools;
@@ -91,20 +89,16 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * 		List of the previously recognized mentions.
 	 * @param entities
 	 * 		List of the entities associated to the mentions.
- 	 * @param recognizer
-	 * 		Processor used to recognize the entity mentions.
-	 * @param resolver
-	 * 		Processor used to resolve the coreferences.
     * @return
      * 		Object representing the linked entities.
      * 
      * @throws ProcessorException
      * 		Problem while applying the linker.
      */
-	protected abstract T linkEntities(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException;
+	protected abstract T linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException;
 
 	@Override
-	public void delegatelink(Article article, Mentions mentions, Entities entities, InterfaceRecognizer recognizer, InterfaceResolver resolver) throws ProcessorException
+	public void delegatelink(Article article, Mentions mentions, Entities entities) throws ProcessorException
 	{	ProcessorName linkerName = linker.getName();
 		logger.log("Start applying "+linkerName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
@@ -127,7 +121,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				// apply the linker
 				logger.log("Detect the mentions");
 				prepareLinker();
-				T intRes = linkEntities(article, mentions, entities, recognizer, resolver);
+				T intRes = linkEntities(article, mentions, entities);
 				
 				// possibly record entities as they are outputted (useful for debug)
 				if(linker.doesOutputRawResults())

@@ -54,10 +54,12 @@ import org.jdom2.output.XMLOutputter;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
+import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateLinker;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateRecognizer;
 import fr.univavignon.nerwip.tools.dbpedia.DbpCommonTools;
 import fr.univavignon.nerwip.tools.string.StringTools;
@@ -82,7 +84,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateRecognizer<List<String>>
+public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<List<String>>
 {
 	/**
 	 * Builds and sets up an object representing
@@ -94,11 +96,9 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateRe
 	 * 		Minimal confidence for the returned entities.
 	 */
 	public SpotlightDelegateLinker(Spotlight spotlight, float minConf)
-	{	super(spotlight,true,false,false);
+	{	super(spotlight);
 		
 		this.minConf = minConf;
-		
-		setIgnoreNumbers(false);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateRe
 	/////////////////////////////////////////////////////////////////
 	@Override	
 	public String getFolder()
-	{	String result = recognizer.getName().toString();
+	{	String result = linker.getName().toString();
 		
 		result = result + "_" + "minConf=" + minConf;
 		
@@ -159,7 +159,7 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateRe
 	private static final long SLEEP_PERIOD = 100;
 	
 	@Override
-	protected List<String> detectMentions(Article article) throws ProcessorException
+	protected List<String> linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();

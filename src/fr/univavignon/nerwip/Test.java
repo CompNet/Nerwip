@@ -2200,10 +2200,9 @@ File folder = folders.get(0);
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
- *  TODO when dealing with folder names in resolver and recognizer: do we store the recognizer/resolver somwhere?
- *  otherwise, we need it at every call...
+ *  TODO when dealing with folder names in resolver and linker: verify we actually add the recognizer and resolver folders, too. 
  *  
- *  TODO where do the entities/mentions object come from? if they're unique, they shouldn't be modified in the delegate, but cloned first.
+ *  TODO where do the entities/mentions objects come from? if they're unique, they shouldn't be modified in the delegate, but cloned first.
  *  if they're not unique, then where are the created? this must be checked before testing.
  *  
  *  TODO carefuly trace the processing of both new AbstractInternalDelegates

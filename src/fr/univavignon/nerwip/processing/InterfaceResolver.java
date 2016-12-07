@@ -80,6 +80,17 @@ public interface InterfaceResolver extends InterfaceProcessor
 	public boolean canResolveLanguage(ArticleLanguage language);
 	
 	/////////////////////////////////////////////////////////////////
+	// RECOGNIZER		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the recognizer applied before this linker.
+	 * 
+	 * @return
+	 * 		Recognizer used before this linker.
+	 */
+	public InterfaceRecognizer getRecognizer();
+	
+	/////////////////////////////////////////////////////////////////
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
@@ -99,13 +110,11 @@ public interface InterfaceResolver extends InterfaceProcessor
 	 * 		Article to be processed.
 	 * @param mentions
 	 * 		List of the previously recognized mentions.
-	 * @param recognizer
-	 * 		Processor used to recognize the entity mentions.
 	 * @return
 	 * 		List of the entities associated to the mentions.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public Entities resolve(Article article, Mentions mentions, InterfaceRecognizer recognizer) throws ProcessorException;
+	public Entities resolve(Article article, Mentions mentions) throws ProcessorException;
 }
