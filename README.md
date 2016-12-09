@@ -18,7 +18,7 @@ It was later specialized to process biographical articles extracted from the Eng
 It allows using several standard standalone tools listed below, as well as some custom tools. 
 It also implements several ways of combining the outputs of standalone NER tools to improve the global output.
 
-The first results obtained on Wikipedia biographical texts were published in [AL'13]. 
+The first results obtained on Wikipedia biographical texts were published in [AL'13], [L'13]. 
 
 ## Organization
 The source code takes the form of an Eclipse project. It is organized as follows: 
@@ -86,6 +86,8 @@ Here are the dependencies for Nerwip. All of them are included in the Eclipse pr
 * NER tools:
   * [alias-i LingPipe](http://alias-i.com/lingpipe/)
   * [Apache OpenNLP](https://opennlp.apache.org/)
+    * English models retrieved from the [official page](http://opennlp.sourceforge.net/models-1.5/).
+    * French NER models by [Olivier Grisel](https://www.nuxeo.com/blog/mining-wikipedia-with-hadoop-and-pig-for-natural-language-processing//), French pre-processing models by [Nicolas Hernandez](https://sites.google.com/site/nicolashernandez/resources/opennlp)
   * [HeidelTime](https://code.google.com/p/heideltime/)
   * [Illinois Named Entity Tagger](http://cogcomp.cs.illinois.edu/page/software_view/NETagger)
   * [LIA-NE](http://pageperso.lif.univ-mrs.fr/~frederic.bechet/download.html)

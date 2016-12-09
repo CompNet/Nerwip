@@ -2211,6 +2211,8 @@ File folder = folders.get(0);
  *   - TODO represent the hierarchical relationships between entities?
  *     or just rely on the interrogation of online databases instead?
  *   - TODO the same question araises for the entity multiple names...
+ *   
+ *   TODO check the new OpenNer French models
  */
 
 /*
