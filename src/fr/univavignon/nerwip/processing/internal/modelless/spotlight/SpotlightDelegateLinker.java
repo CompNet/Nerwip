@@ -153,11 +153,6 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Maximal request size for Spotlight (official recommendation is 400000 for a POST request, cf. https://github.com/dbpedia-spotlight/dbpedia-spotlight/issues/72) */
-	private static final int MAX_SIZE = 10000;
-	/** Sleep periods (in ms) */ // is this actually necessary for Spotlight?
-	private static final long SLEEP_PERIOD = 100;
-	
 	@Override
 	protected List<String> linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException
 	{	logger.increaseOffset();
@@ -168,16 +163,16 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 		String serviceUrl = null;
 		switch(article.getLanguage())
 		{	case EN:
-				serviceUrl = DbpCommonTools.SERVICE_EN_URL;
+				serviceUrl = SpotlightTools.SERVICE_EN_URL;
 				break;
 			case FR:
-				serviceUrl = DbpCommonTools.SERVICE_FR_URL;
+				serviceUrl = SpotlightTools.SERVICE_FR_URL;
 				break;
 		}
-		serviceUrl = serviceUrl + DbpCommonTools.BOTH_SERVICES;
+		serviceUrl = serviceUrl + SpotlightTools.BOTH_SERVICES;
 		
 		// we need to break down the text
-		List<String> parts = StringTools.splitText(text, MAX_SIZE);
+		List<String> parts = StringTools.splitText(text, SpotlightTools.MAX_SIZE);
 
 		// then we process each part separately
 		for(int i=0;i<parts.size();i++)
@@ -270,7 +265,7 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 				result.add(part);
 				result.add(answer);
 
-				Thread.sleep(SLEEP_PERIOD); // might not be needed not needed by Spotlight
+				Thread.sleep(SpotlightTools.SLEEP_PERIOD); // might not be needed not needed by Spotlight
 			}
 
 			catch (UnsupportedEncodingException e) 
@@ -344,9 +339,8 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Mentions convert(Article article, List<String> data) throws ProcessorException
+	public void convert(Article article, Mentions mentions, Entities entities, List<String> data) throws ProcessorException 
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(recognizer.getName());
 		
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = data.iterator();
@@ -390,7 +384,6 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 		logger.decreaseOffset();
 		
 		logger.decreaseOffset();
-		return result;
 	}
 	
 	/**

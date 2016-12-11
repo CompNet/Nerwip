@@ -77,11 +77,13 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	protected abstract void prepareResolver() throws ProcessorException;
 
     /**
-     * Takes an object representation of the article, 
-     * and returns the internal representation of
-     * the detected mentions. Those must then
-     * be converted to objects compatible
-     * with the rest of Nerwip.
+     * Takes an object representation of the article,  and returns the internal representation of
+     * the detected mentions. Those must then be converted to objects compatible with the rest of 
+     * Nerwip.
+     * <br/>
+     * If the processor was initialized to perform as both a recognizer and a resolver, then the
+     * {@code mentions} parameter is empty and would be initialized at the same time as the
+     * entities will be resolved.
      * 
      * @param article
      * 		Article to process.

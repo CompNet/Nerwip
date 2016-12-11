@@ -141,7 +141,7 @@ public abstract class AbstractDelegateLinker
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public abstract void delegatelink(Article article, Mentions mentions, Entities entities) throws ProcessorException;
+	public abstract void delegateLink(Article article, Mentions mentions, Entities entities) throws ProcessorException;
 
 	/////////////////////////////////////////////////////////////////
 	// XML FILE			/////////////////////////////////////////////

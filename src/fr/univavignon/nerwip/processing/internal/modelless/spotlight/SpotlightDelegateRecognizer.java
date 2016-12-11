@@ -59,7 +59,6 @@ import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateRecognizer;
-import fr.univavignon.nerwip.tools.dbpedia.DbpCommonTools;
 import fr.univavignon.nerwip.tools.string.StringTools;
 
 /**
@@ -153,11 +152,6 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Maximal request size for Spotlight (official recommendation is 400000 for a POST request, cf. https://github.com/dbpedia-spotlight/dbpedia-spotlight/issues/72) */
-	private static final int MAX_SIZE = 10000;
-	/** Sleep periods (in ms) */ // is this actually necessary for Spotlight?
-	private static final long SLEEP_PERIOD = 100;
-	
 	@Override
 	protected List<String> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
@@ -168,16 +162,16 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 		String serviceUrl = null;
 		switch(article.getLanguage())
 		{	case EN:
-				serviceUrl = DbpCommonTools.SERVICE_EN_URL;
+				serviceUrl = SpotlightTools.SERVICE_EN_URL;
 				break;
 			case FR:
-				serviceUrl = DbpCommonTools.SERVICE_FR_URL;
+				serviceUrl = SpotlightTools.SERVICE_FR_URL;
 				break;
 		}
-		serviceUrl = serviceUrl + DbpCommonTools.BOTH_SERVICES;
+		serviceUrl = serviceUrl + SpotlightTools.BOTH_SERVICES;
 		
 		// we need to break down the text
-		List<String> parts = StringTools.splitText(text, MAX_SIZE);
+		List<String> parts = StringTools.splitText(text, SpotlightTools.MAX_SIZE);
 
 		// then we process each part separately
 		for(int i=0;i<parts.size();i++)
@@ -270,7 +264,7 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 				result.add(part);
 				result.add(answer);
 
-				Thread.sleep(SLEEP_PERIOD); // might not be needed not needed by Spotlight
+				Thread.sleep(SpotlightTools.SLEEP_PERIOD); // might not be needed not needed by Spotlight
 			}
 
 			catch (UnsupportedEncodingException e) 
@@ -316,6 +310,7 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 		CONVERSION_MAP.put(TYPE_PREFIX+"Organization", EntityType.ORGANIZATION);
 		CONVERSION_MAP.put(TYPE_PREFIX+"CreativeWork", EntityType.PRODUCTION);
 	}
+	//TODO move that in the tools ?
 	
 	/////////////////////////////////////////////////////////////////
 	// XML NAMES		/////////////////////////////////////////////
@@ -339,6 +334,7 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 	private final static String ATT_SECOND_RANK = "percentageOfSecondRank";
 	/** Don't know what this is */
 	private final static String ATT_SIMILARITY_SCORE = "similarityScore";
+	//TODO move that in the tools ?
 	
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION		/////////////////////////////////////////////

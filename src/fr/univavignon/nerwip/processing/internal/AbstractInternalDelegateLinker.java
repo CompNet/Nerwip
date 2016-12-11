@@ -77,11 +77,13 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	protected abstract void prepareLinker() throws ProcessorException;
 
     /**
-     * Takes an object representation of the article, 
-     * and returns the internal representation of
-     * the linked entities. Those must then
-     * be converted to objects compatible
-     * with the rest of Nerwip.
+     * Takes an object representation of the article,  and returns the internal representation of
+     * the linked entities. Those must then  be converted to objects compatible with the rest of 
+     * Nerwip.
+     * <br/>
+     * If the processor was initialied as a recognizer and resolver in addition to a linker, then
+     * the {@code mentions} and {@code entities} should be empty. They will be initialized at the
+     * same time as the entities will be linked.
      * 
      * @param article
      * 		Article to process.
@@ -98,7 +100,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	protected abstract T linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException;
 
 	@Override
-	public void delegatelink(Article article, Mentions mentions, Entities entities) throws ProcessorException
+	public void delegateLink(Article article, Mentions mentions, Entities entities) throws ProcessorException
 	{	ProcessorName linkerName = linker.getName();
 		logger.log("Start applying "+linkerName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();

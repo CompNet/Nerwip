@@ -89,6 +89,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	{	// recognize
 		if(recognizer==null)
 		{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
+			//delegateRecognizer = null;
 			this.recognizer = null;
 		}
 		else
@@ -120,6 +121,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	{	// recognize
 		if(recognizer==null)
 		{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
+			//delegateRecognizer = null;
 			this.recognizer = null;
 		}
 		else
@@ -129,6 +131,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 		// resolve
 		if(resolver==null)
 		{	delegateResolver = new SpotlightDelegateResolver(this, minConf);
+			//delegateResolver = null;
 			this.resolver = null;
 		}
 		else
@@ -172,9 +175,9 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	// RECOGNIZER	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Recognizer applied before this resolver or linker (can be different from the delegate) */
-	private InterfaceRecognizer recognizer = null;
+	protected InterfaceRecognizer recognizer = null;
 	/** Delegate in charge of recognizing entity mentions */
-	private SpotlightDelegateRecognizer delegateRecognizer;
+	protected SpotlightDelegateRecognizer delegateRecognizer;
 	
 	@Override
 	public InterfaceRecognizer getRecognizer()
@@ -203,9 +206,9 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	// RESOLVER		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Resolver applied before this linker (can be different from the delegate) */
-	private InterfaceResolver resolver = null;
+	protected InterfaceResolver resolver = null;
 	/** Delegate in charge of recognizing entity mentions */
-	private SpotlightDelegateResolver delegateResolver;
+	protected SpotlightDelegateResolver delegateResolver;
 
 	@Override
 	public InterfaceResolver getResolver()
@@ -234,7 +237,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	// LINKER		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Delegate in charge of recognizing entity mentions */
-	private SpotlightDelegateLinker delegateLinker;
+	protected SpotlightDelegateLinker delegateLinker;
 	
 	@Override
 	public List<EntityType> getLinkedEntityTypes()

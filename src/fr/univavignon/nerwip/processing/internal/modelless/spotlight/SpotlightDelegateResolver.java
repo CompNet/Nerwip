@@ -54,6 +54,7 @@ import org.jdom2.output.XMLOutputter;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
@@ -115,7 +116,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entity types recognized by Spotlight */
+	/** List of entity types resolved by Spotlight */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
 	(	EntityType.DATE,
 		EntityType.LOCATION,
@@ -131,7 +132,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of languages this recognizer can treat */
+	/** List of languages this resolver can treat */
 	private static final List<ArticleLanguage> HANDLED_LANGUAGES = Arrays.asList
 	(	ArticleLanguage.EN,
 		ArticleLanguage.FR
@@ -152,31 +153,33 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Maximal request size for Spotlight (official recommendation is 400000 for a POST request, cf. https://github.com/dbpedia-spotlight/dbpedia-spotlight/issues/72) */
-	private static final int MAX_SIZE = 10000;
-	/** Sleep periods (in ms) */ // is this actually necessary for Spotlight?
-	private static final long SLEEP_PERIOD = 100;
-	
 	@Override
 	protected List<String> resolveCoreferences(Article article, Mentions mentions) throws ProcessorException
 	{	logger.increaseOffset();
 		List<String> result = new ArrayList<String>();
 		String text = article.getRawText();
 		
+		/*
+		 * TODO
+		 * - check if integrated process rec+res, in which case : almost similar to recognizer
+		 * - otherwise : must send to specific service, different from recognizer.
+		 */
+		
+		
 		// setup Web Service URL
 		String serviceUrl = null;
 		switch(article.getLanguage())
 		{	case EN:
-				serviceUrl = DbpCommonTools.SERVICE_EN_URL;
+				serviceUrl = SpotlightTools.SERVICE_EN_URL;
 				break;
 			case FR:
-				serviceUrl = DbpCommonTools.SERVICE_FR_URL;
+				serviceUrl = SpotlightTools.SERVICE_FR_URL;
 				break;
 		}
-		serviceUrl = serviceUrl + DbpCommonTools.BOTH_SERVICES;
+		serviceUrl = serviceUrl + SpotlightTools.BOTH_SERVICES;
 		
 		// we need to break down the text
-		List<String> parts = StringTools.splitText(text, MAX_SIZE);
+		List<String> parts = StringTools.splitText(text, SpotlightTools.MAX_SIZE);
 
 		// then we process each part separately
 		for(int i=0;i<parts.size();i++)
@@ -269,7 +272,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 				result.add(part);
 				result.add(answer);
 
-				Thread.sleep(SLEEP_PERIOD); // might not be needed not needed by Spotlight
+				Thread.sleep(SpotlightTools.SLEEP_PERIOD); // might not be needed not needed by Spotlight
 			}
 
 			catch (UnsupportedEncodingException e) 
@@ -343,9 +346,9 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public Mentions convert(Article article, List<String> data) throws ProcessorException
+	public Entities convert(Article article, List<String> data, Mentions mentions) throws ProcessorException 
 	{	logger.increaseOffset();
-		Mentions result = new Mentions(recognizer.getName());
+		Entities result = new Entities(resolver.getName());
 		
 		logger.log("Processing each part of data and its associated answer");
 		Iterator<String> it = data.iterator();
