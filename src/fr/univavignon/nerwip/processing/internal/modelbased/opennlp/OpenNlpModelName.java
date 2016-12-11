@@ -67,17 +67,17 @@ public enum OpenNlpModelName
 	 */ 
 	ORIGINAL_MODEL(
 		"Original",
-		"en-sent.bin",
-		"en-token.bin",
+		"en"+File.separator+"en-sent.bin",
+		"en"+File.separator+"en-token.bin",
 		new HashMap<String, EntityType>()
 		{	/** */
 			private static final long serialVersionUID = 1L;
 			// data
-			{	put("en-ner-date.bin", EntityType.DATE);
-				put("en-ner-location.bin", EntityType.LOCATION);
-				put("en-ner-organization.bin", EntityType.ORGANIZATION);
-				put("en-ner-person.bin", EntityType.PERSON);
-				put("en-ner-time.bin", EntityType.DATE); //TODO hour? 
+			{	put("en"+File.separator+"en-ner-date.bin", EntityType.DATE);
+				put("en"+File.separator+"en-ner-location.bin", EntityType.LOCATION);
+				put("en"+File.separator+"en-ner-organization.bin", EntityType.ORGANIZATION);
+				put("en"+File.separator+"en-ner-person.bin", EntityType.PERSON);
+				put("en"+File.separator+"en-ner-time.bin", EntityType.DATE); //TODO hour? 
 			}
 		},
 		Arrays.asList(
@@ -101,15 +101,15 @@ public enum OpenNlpModelName
 	 */ 
 	NERWIP_MODEL(
 		"Nerwip",
-		"en-sent.bin",
-		"en-token.bin",
+		"en"+File.separator+"en-sent.bin",
+		"en"+File.separator+"en-token.bin",
 		new HashMap<String, EntityType>()
 		{	/** */
 			private static final long serialVersionUID = 1L;
 			// data
-			{	put("en-wp-ner-location.bin", EntityType.LOCATION);
-				put("en-wp-ner-organization.bin", EntityType.ORGANIZATION);
-				put("en-wp-ner-person.bin", EntityType.PERSON);
+			{	put("en"+File.separator+"en-wp-ner-location.bin", EntityType.LOCATION);
+				put("en"+File.separator+"en-wp-ner-organization.bin", EntityType.ORGANIZATION);
+				put("en"+File.separator+"en-wp-ner-person.bin", EntityType.PERSON);
 			}
 		},
 		Arrays.asList(
@@ -118,6 +118,47 @@ public enum OpenNlpModelName
 			EntityType.PERSON
 		),
 		Arrays.asList(ArticleLanguage.EN)
+	),
+	
+	/** 
+	 * French model trained by Olivier Grisel.
+	 * TODO not tested yet
+	 * It can handle: 
+	 * <ul>
+	 * 	<li>Location</li>
+	 * 	<li>Person</li>
+	 * 	<li>Organization</li>
+	 * </ul> 
+	 * Only handles the French language. 
+	 */ 
+	GRISEL_MODEL(
+		"Grisel",
+		"fr"+File.separator+"fr-sent.bin",
+		"fr"+File.separator+"fr-token.bin", 
+		/*
+		 * TODO might need the other files
+		 * pos   = part of speech tagging
+		 * mph   = morphological inflection analysis
+		 * chunk = chunking
+		 * 
+		 * TODO we should also check this FR model:
+		 * https://github.com/opener-project/nerc-fr
+		 */
+		new HashMap<String, EntityType>()
+		{	/** */
+			private static final long serialVersionUID = 1L;
+			// data
+			{	put("fr"+File.separator+"fr-ner-location.bin", EntityType.LOCATION);
+				put("fr"+File.separator+"fr-ner-organization.bin", EntityType.ORGANIZATION);
+				put("fr"+File.separator+"fr-ner-person.bin", EntityType.PERSON);
+			}
+		},
+		Arrays.asList(
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		Arrays.asList(ArticleLanguage.FR)
 	);
 	
 	/**
