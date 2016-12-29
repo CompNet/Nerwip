@@ -61,7 +61,8 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	 * name and id.
 	 * 
 	 * @param internalId
-	 * 		Id of the entity to build.
+	 * 		Id of the entity to build ({@code -1} to automatically define it 
+	 * 		when inserting in an {@link Entities} object).
 	 * @param name
 	 * 		Name of the entity to build.
 	 * @param type
@@ -173,6 +174,16 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	 */
 	public String getExternalId(KnowledgeBase knowledgeBase)
 	{	return externalIds.get(knowledgeBase);
+	}
+	
+	/**
+	 * Returns the maps of external ids of this entity.
+	 * 
+	 * @return
+	 * 		External ids of this entity in the knowledge bases. 
+	 */
+	public Map<KnowledgeBase,String> getExternalIds()
+	{	return externalIds;
 	}
 	
 	/**

@@ -171,7 +171,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Convert the specified objects, used internally by the associated
+	 * Converts the specified objects, used internally by the associated
 	 * resolver, into the mention list used internally by Nerwip, and
 	 * use the resulting data to complete the existing mentions.  
 	 * 

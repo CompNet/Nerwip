@@ -2202,10 +2202,15 @@ File folder = folders.get(0);
  *   
  *  TODO when dealing with folder names in resolver and linker: verify we actually add the recognizer and resolver folders, too. 
  *  
- *  TODO where do the entities/mentions objects come from? if they're unique, they shouldn't be modified in the delegate, but cloned first.
- *  if they're not unique, then where are the created? this must be checked before testing.
+ *  TODO Where do the entities/mentions objects come from? if they're unique, they shouldn't be modified in the delegate, but cloned first.
+ *  if they're not unique, then where are they created? This must be checked before testing.
  *  
  *  TODO carefuly trace the processing of both new AbstractInternalDelegates
+ *  
+ *  TODO entities should not be a return type, because they're likley to be completed from one article to the other
+ *  so, it's possible to receive an already full object, to complete with the present article.
+ *  Not the case for mentions though: Mentions is specific to an article. 
+ *  But when doing recognizer+..., it is supposed to be received as an empty object, then filled. 
  *  
  * - entities:
  *   - TODO represent the hierarchical relationships between entities?

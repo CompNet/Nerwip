@@ -4,9 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,9 +24,21 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
+import fr.univavignon.nerwip.data.entity.AbstractValuedEntity;
+import fr.univavignon.nerwip.data.entity.Entities;
+import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.KnowledgeBase;
+import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
+import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.string.StringTools;
@@ -58,7 +77,7 @@ public class SpotlightTools
 	// LOGGING			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Common object used for logging */
-	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
 	/////////////////////////////////////////////////////////////////
 	// URL			 		/////////////////////////////////////////
@@ -66,16 +85,48 @@ public class SpotlightTools
 	// Old URL of the Web service 
 //	private static final String SERVICE_URL = "http://spotlight.dbpedia.org/rest/";
 	/** URL of the English version of the Web service */
-	public static final String SERVICE_EN_URL = "http://spotlight.sztaki.hu:2222/rest/";
+	private static final String SERVICE_EN_URL = "http://spotlight.sztaki.hu:2222/rest/";
 	/** URL of the French version of the Web service */
-	public static final String SERVICE_FR_URL = "http://spotlight.sztaki.hu:2225/rest/";
+	private static final String SERVICE_FR_URL = "http://spotlight.sztaki.hu:2225/rest/";
 	/** Recognizer URL (but no entity type) */
-	public static final String RECOGNIZER_SERVICE = "spot"; //or is it annotate ?
-	/** Resolver + Linker URL */
-	public static final String LINKER_SERVICE = "disambiguate";
+//	private static final String RECOGNIZER_SERVICE = "spot"; //or is it annotate ?
+	/** Resolver + Linker URL (applied to already detected entities) */
+	private static final String LINKER_SERVICE = "disambiguate";
 	/** Recognizer+Resolver+Linker (at once) URL */
-	public static final String BOTH_SERVICES = "annotate";
+	private static final String BOTH_SERVICES = "annotate";
 	
+	/////////////////////////////////////////////////////////////////
+	// XML			 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Element containing the list of all entities resources */
+	public final static String ELT_RESOURCES = "Resources";
+	/** Element containing the list of informations of every entity resource */
+	public final static String ELT_RESOURCE = "Resource";
+	/** Element containing entities detected by another recognizer */
+	public final static String ELT_ANNOTATION = "annotation";
+	/** Element containing the name of an entity */
+	public final static String ELT_SURFACE_FORM = "surfaceForm";
+
+	/** Attribute representing the name of an entity */
+	public final static String ATT_NAME = "name";
+	/** Attribute representing the position of a mention in the text */
+	public final static String ATT_OFFSET = "offset";
+	/** Relevance score (how good the second entity choice is compared to the returned one) */
+	private final static String ATT_SECOND_RANK = "percentageOfSecondRank";
+	/** Don't know what this is */
+	private final static String ATT_SIMILARITY_SCORE = "similarityScore";
+	/** Number of occurrences of the entity in Wikipedia */
+	private final static String ATT_SUPPORT = "support";
+	/** Attribute representing the name of an entity */
+	public final static String ATT_SURFACE_FORM = "surfaceForm";
+	/** Attribute representing the types of an entity */
+	public final static String ATT_TYPES = "types";
+	/** Attribute containing the original text */
+	public final static String ATT_TEXT = "text";
+	/** Attribute representing the DBpedia URI of an entity */
+	public final static String ATT_URI = "URI";
+	
+
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -170,13 +221,29 @@ public class SpotlightTools
 //		origParams.add(new BasicNameValuePair("charset", "utf-8"));
 		
 		// invoke the service
-		List<String> result = invokeService(article, serviceUrl, origParams);
+		String text = article.getRawText();
+		List<String> parts = StringTools.splitText(text, SpotlightTools.MAX_SIZE);
+		List<String> result = invokeService(parts, serviceUrl, origParams);
 		
 		logger.decreaseOffset();
 		return result;
 	}
 	
-	protected static List<String> invokeDisambiguate(Article article, float minConf) throws ProcessorException
+	/**
+	 * Invokes the Spotlight service for coreference resolution, on previously
+	 * detected mentions.
+	 *  
+	 * @param article
+	 * 		The article to process.
+	 * @param mentions
+	 * 		Previously detected mentions for the specified article.
+	 * @return
+	 * 		The String representation of the service answer.
+	 * 
+	 * @throws ProcessorException
+	 * 		Problem while accessing the service.
+	 */
+	protected static List<String> invokeDisambiguate(Article article, Mentions mentions) throws ProcessorException
 	{	logger.increaseOffset();
 	
 		// setup Web Service URL
@@ -190,9 +257,25 @@ public class SpotlightTools
 				break;
 		}
 		serviceUrl = serviceUrl + SpotlightTools.LINKER_SERVICE;
+
+		// setup HTTP parameters
+		List<NameValuePair> origParams = new ArrayList<NameValuePair>();
+
+		// convert mentions to SpotLight format
+		String text = article.getRawText();
+		List<String> parts = StringTools.splitText(text, SpotlightTools.MAX_SIZE);
+		List<String> convertedParts = new ArrayList<String>();
+		int pos = 0;
+		for(String part: parts)
+		{	String convertedPart = convertMentionsToSpotlight(part,mentions,pos);	
+			convertedParts.add(convertedPart);
+			pos = pos + part.length();
+		}
 		
 		// invoke the service
-		List<String> result = invokeService(article, serviceUrl, origParams);
+		List<String> result = invokeService(convertedParts, serviceUrl, origParams);
+		
+		// add the raw text to the result?
 		
 		logger.decreaseOffset();
 		return result;
@@ -202,8 +285,8 @@ public class SpotlightTools
 	 * Generic method processing all types of invocation of the Spotlight service:
 	 * Spot, disambiguate and annotate.
 	 * 
-	 * @param article
-	 * 		Article to process.
+	 * @param parts
+	 * 		Broken-down text we want to fetch SpotLight.
 	 * @param url
 	 * 		URL of the service, as a String.
 	 * @param origParams
@@ -214,13 +297,9 @@ public class SpotlightTools
 	 * @throws ProcessorException
 	 * 		Problem while accessing the online service.
 	 */
-	protected static List<String> invokeService(Article article, String url, List<NameValuePair> origParams) throws ProcessorException
+	protected static List<String> invokeService(List<String> parts, String url, List<NameValuePair> origParams) throws ProcessorException
 	{	List<String> result = new ArrayList<String>();
-		String text = article.getRawText();
-
-		// we need to break down the text
-		List<String> parts = StringTools.splitText(text, SpotlightTools.MAX_SIZE);
-
+		
 		// then we process each part separately
 		for(int i=0;i<parts.size();i++)
 		{	logger.log("Processing Spotlight part #"+(i+1)+"/"+parts.size());
@@ -284,19 +363,243 @@ public class SpotlightTools
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// XML			 		/////////////////////////////////////////
+	// TYPE CONVERSION MAP	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Element containing the list of all entities resources */
-	public final static String ELT_RESOURCES = "Resources";
-	/** Element containing the list of informations of every entity resource */
-	public final static String ELT_RESOURCE = "Resource";
+	/** Prefix used to distinguish types from DBpedia classes or concepts */
+	private final static String TYPE_PREFIX = "Schema:";
+	/** List of strings to ignore during the type conversion */
+	private final static List<String> IGNORE_LIST = Arrays.asList(
+		TYPE_PREFIX+"Language",
+		TYPE_PREFIX+"Product"
+	);
+	/** Map of string to entity type conversion */
+	private final static Map<String, EntityType> CONVERSION_MAP = new HashMap<String, EntityType>();
+	
+	/** Initialization of the conversion map */
+	static
+	{	CONVERSION_MAP.put(TYPE_PREFIX+"Event", EntityType.MEETING);
+		CONVERSION_MAP.put(TYPE_PREFIX+"Person", EntityType.PERSON);
+		CONVERSION_MAP.put(TYPE_PREFIX+"Place", EntityType.LOCATION);
+		CONVERSION_MAP.put(TYPE_PREFIX+"Organization", EntityType.ORGANIZATION);
+		CONVERSION_MAP.put(TYPE_PREFIX+"CreativeWork", EntityType.PRODUCTION);
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// CONVERSION	 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Converts a list of previously identified mentions so that they
+	 * can be processed by SpotLight.
+	 * 
+	 * @param text
+	 * 		Original text.
+	 * @param mentions
+	 * 		Detected mentions.
+	 * @param startPos
+	 * 		Position of the text in the original article (for when splitting articles).
+	 * @return
+	 * 		A textual representation compatible with SpotLight. 
+	 */
+	private static String convertMentionsToSpotlight(String text, Mentions mentions, int startPos)
+	{	StringBuffer result = new StringBuffer();
+		
+		// init with the original text
+		result.append("<"+ELT_ANNOTATION+" "+ATT_TEXT+"=\""+text+"\">");
+		
+		for(AbstractMention<?> mention: mentions.getMentions())
+		{	String valueStr = mention.getStringValue();
+			int offset = mention.getStartPos() - startPos;
+			result.append("<"+ELT_SURFACE_FORM+" "+ATT_NAME+"=\""+valueStr+"\" "+ATT_OFFSET+"=\""+offset+"\"/>");
+		}
 
-	/** Attribute representing the name of an entity */
-	public final static String ATT_SURFACE_FORM = "surfaceForm";
-	/** Attribute representing the types of an entity */
-	public final static String ATT_TYPES = "types";
-	/** Attribute representing the DBpedia URI of an entity */
-	public final static String ATT_URI = "URI";
+		// close the main tag
+		result.append("</"+ELT_ANNOTATION+">");
+		
+		return result.toString();
+	}
+
+	/**
+	 * Converts the specified objects, used internally by the associated
+	 * recognizer, into the mention list used internally by Nerwip.  
+	 * 
+	 * @param data
+	 * 		List of SpotLight answers.
+	 * @param processorName
+	 * 		Name of the recognizer (here: should be SpotLight).
+	 * @param mentions
+	 * 		Empty object, to be filled by this method.
+	 * @param entities
+	 * 		Empty object, to be filled by this method. Can be {@code null}
+	 * 		if only recognition is performed.
+	 * 
+	 * @throws ProcessorException
+	 * 		Problem while performing the conversion.
+	 */
+	protected static void convertAnnotate(List<String> data, ProcessorName processorName, Mentions mentions, Entities entities) throws ProcessorException
+	{	logger.increaseOffset();
+		
+		logger.log("Processing each part of data and its associated answer");
+		Iterator<String> it = data.iterator();
+		logger.increaseOffset();
+		int i = 0;
+		int prevSize = 0;
+		while(it.hasNext())
+		{	i++;
+			logger.log("Processing part "+i+"/"+data.size()/2);
+			String originalText = it.next();
+			String spotlightAnswer = it.next();
+			
+			try
+			{	// build DOM
+				logger.log("Build DOM");
+				SAXBuilder sb = new SAXBuilder();
+				Document doc = sb.build(new StringReader(spotlightAnswer));
+				Element root = doc.getRootElement();
+				
+				// process each detected mention
+				logger.log("Process each detected mention");
+				Element eltResources = root.getChild(ELT_RESOURCES);
+				List<Element> eltResourceList = eltResources.getChildren(ELT_RESOURCE);
+				for(Element eltResource: eltResourceList)
+				{	convertResourceElement(eltResource,prevSize,originalText,processorName,mentions,entities);
+					//TODO maybe a type could simply be retrieved from the DBpedia URI...
+				}
+				
+				// update size
+				prevSize = prevSize + originalText.length();
+			}
+			catch (JDOMException e)
+			{	e.printStackTrace();
+			}
+			catch (IOException e)
+			{	e.printStackTrace();
+			}
+		}
+		logger.decreaseOffset();
+		
+		logger.decreaseOffset();
+	}
 	
-	
+	/**
+	 * Receives an XML element and extract the information necessary to create
+	 * a mention and possibly an entity. Both are added to the specified
+	 * lists if necessary. 
+	 *  
+	 * @param element
+	 * 		Element to process.
+	 * @param prevSize
+	 * 		Size of the parts already processed. 
+	 * @param part
+	 * 		Part of the original text currently processed. 
+	 * @param processorName
+	 * 		Name of the processor (here: should be SpotLight).
+	 * @param mentions
+	 * 		List of mentions, to be completed by this method.
+	 * @param entities
+	 * 		List of entities, to be completed by this method. Can be {@code null}
+	 * 		if only recognition is performed.
+	 */
+	private static void convertResourceElement(Element element, int prevSize, String part, ProcessorName processorName, Mentions mentions, Entities entities)
+	{	logger.increaseOffset();
+		
+		// parse the element
+		StringBuffer msg = new StringBuffer();
+			// surface form (check: compare with original text)
+			String surfaceForm = element.getAttributeValue(ATT_SURFACE_FORM);
+			msg.append("SurfaceForm="+surfaceForm);
+			// type associated to the mention/entity
+			String types = element.getAttributeValue(ATT_TYPES);
+			msg.append(" Types="+types);
+			// URI associated to the entity
+			String uri = element.getAttributeValue(ATT_URI);
+			msg.append(" URI="+uri);
+			// position of the mention
+			String offsetStr = element.getAttributeValue(ATT_OFFSET);
+			int offset = Integer.parseInt(offsetStr);
+			msg.append(" Offset="+offset);
+			// support of the entity in Wikipedia
+			String supportStr = element.getAttributeValue(ATT_SUPPORT);
+			int support = Integer.parseInt(supportStr);
+			msg.append(" Support="+support);
+			// relevance score 
+			String secondRankStr = element.getAttributeValue(ATT_SECOND_RANK);
+			Float secondRank = Float.parseFloat(secondRankStr);
+			msg.append(" PerSecondRank="+secondRank);
+			// don't know exactly what this is...
+			String similarityScoreStr = element.getAttributeValue(ATT_SIMILARITY_SCORE);
+			Float similarityScore = Float.parseFloat(similarityScoreStr);
+			msg.append(" SimilarityScore="+similarityScore);
+		logger.log(msg.toString());
+			
+		// get the mention type
+		EntityType type = null;
+		String[] temp = types.split(",");
+		Set<EntityType> typeList = new TreeSet<EntityType>(); 
+		Set<String> candidateList = new TreeSet<String>(); 
+		for(String tmp: temp)
+		{	if(!IGNORE_LIST.contains(tmp))
+			{	EntityType t = CONVERSION_MAP.get(tmp);
+				if(t==null)
+				{	if(tmp.startsWith(TYPE_PREFIX))
+						candidateList.add(tmp);
+				}
+				else
+					typeList.add(t);
+			}
+		}
+		
+		// continue only if there's a type
+		if(typeList.isEmpty())
+		{	// this is mainly in case we miss some important types when reverse engineering Spotlight's output
+			if(!candidateList.isEmpty())
+				logger.log("WARNING: could not find any type, when some of them started with "+TYPE_PREFIX+": "+candidateList.toString());
+			else
+				logger.log("Entity without a type >> ignoring");
+		}
+		else
+		{	// get the type
+			type = typeList.iterator().next();
+			if(typeList.size()>1)
+				logger.log("WARNING: several different types for the same entity ("+typeList.toString()+") >> Selecting the first one ("+type+")");
+			
+			// get the mention position
+			int startPos = prevSize + offset;
+			int length = surfaceForm.length();
+			int endPos = startPos + length;
+			
+			// compare detected surface form and original text
+			String valueStr = part.substring(offset, offset+length);
+			if(!valueStr.equalsIgnoreCase(surfaceForm))
+				logger.log("WARNING: the original and returned texts differ: \""+valueStr+"\" vs. \""+surfaceForm+"\"");
+			else
+			{	AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
+				mentions.addMention(mention);
+				logger.log("Created mention "+mention.toString());
+				if(entities!=null)
+				{	if(type.isNamed())
+					{	AbstractNamedEntity entity = entities.getNamedEntityById(uri, KnowledgeBase.DB_PEDIA);
+						if(entity==null)
+						{	entity = AbstractNamedEntity.buildEntity(-1, surfaceForm, type);
+							entities.addEntity(entity);
+							logger.log("Created named entity "+entity.toString());
+						}
+						mention.setEntity(entity);
+					}
+					// valued entity: this probably never happens here (?)
+					else
+					{	Comparable<?> value = mention.getValue();
+						AbstractValuedEntity<?> entity = entities.getValuedEntityByValue(value);
+						if(entity==null)
+						{	entity = AbstractValuedEntity.buildEntity(-1, value, type);
+							entities.addEntity(entity);
+							logger.log("Created valued entity "+entity.toString());
+						}
+						mention.setEntity(entity);
+					}
+				}
+			}
+		}
+		
+		logger.decreaseOffset();
+	}
 }

@@ -32,23 +32,50 @@ package fr.univavignon.nerwip.data.entity;
 public enum EntityType
 {	
 	/** A Date or any temporal entity (Christmas...) */
-	DATE,
+	DATE(false),
 	
 	/** The role associated to a title: general, president, king, pope... */
-	FUNCTION,
+	FUNCTION(true),
 	
 	/** The name of a geographical place, artificial place, etc. */
-	LOCATION,
+	LOCATION(true),
 	
 	/** Any congress, conference... */
-	MEETING,
+	MEETING(true),
 	
 	/** Any organization name: institution, company, assocation... */
-	ORGANIZATION,
+	ORGANIZATION(true),
 	
 	/** Any real or fiction person or animal, or any group of those */
-	PERSON,
+	PERSON(true),
 	
 	/** A human production: works, buildings, awards, etc. */
-	PRODUCTION; 
+	PRODUCTION(true);
+
+	/**
+	 * Creates a new entity type.
+	 * 
+	 * @param named
+	 * 		{@code true} iff the entity is named (so: {@code false} if it is valued).
+	 */
+	EntityType(boolean named)
+	{	this.named = named;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// NAMED			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** {@code true} iff the entity is named (so: {@code false} if it is valued) */
+	private boolean named;
+	/**
+	 * Indicates if this type of entity is named 
+	 * (e.g. Person, Location, Organization, etc.) 
+	 * or valued (date, quantity...).
+	 * 
+	 * @return
+	 * 		{@code true} iff the corresponding entity is named.
+	 */
+	public boolean isNamed()
+	{	return named;
+	}
 }

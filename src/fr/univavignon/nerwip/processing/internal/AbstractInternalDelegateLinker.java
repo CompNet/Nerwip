@@ -170,7 +170,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Convert the specified objects, used internally by the associated
+	 * Converts the specified objects, used internally by the associated
 	 * linker, into objects used internally by Nerwip.  
 	 * 
 	 * @param article

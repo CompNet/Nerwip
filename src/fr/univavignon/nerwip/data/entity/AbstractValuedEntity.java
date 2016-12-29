@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.data.entity;
 
+import fr.univavignon.nerwip.tools.time.Date;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-16 Vincent Labatut et al.
@@ -44,6 +46,30 @@ public abstract class AbstractValuedEntity<T extends Comparable<T>> extends Abst
 	{	super(internalId);
 		
 		this.value = value;
+	}
+	
+	/**
+	 * Builds a named entity of the specified type, using the specified
+	 * name and id.
+	 * 
+	 * @param internalId
+	 * 		Id of the entity to build ({@code -1} to automatically define it 
+	 * 		when inserting in an {@link Entities} object).
+	 * @param value
+	 * 		Value of the entity to build.
+	 * @param type
+	 * 		Entity type of the entity to build.
+	 * @return
+	 * 		The built entity.
+	 */
+	public static AbstractValuedEntity<?> buildEntity(long internalId, Comparable<?> value, EntityType type)
+	{	AbstractValuedEntity<?> result = null;
+		switch(type)
+		{	case DATE:
+				result = new EntityDate((Date)value,internalId);
+				break;
+		}
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////

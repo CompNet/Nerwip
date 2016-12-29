@@ -192,7 +192,7 @@ public abstract class AbstractInternalDelegateRecognizer<T> extends AbstractDele
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Convert the specified objects, used internally by the associated
+	 * Converts the specified objects, used internally by the associated
 	 * recognizer, into the mention list used internally by Nerwip.  
 	 * 
 	 * @param article

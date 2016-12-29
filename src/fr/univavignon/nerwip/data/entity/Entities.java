@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -218,8 +219,12 @@ public class Entities
 	private long nextInternalId = 0;	//TODO this must be recorded/loaded with the rest of this class
 	/** Set of entities */
 	private final Set<AbstractEntity> entities = new TreeSet<AbstractEntity>();
-	/** Entities by id */
+	/** Entities by internal id */
 	private final Map<Long,AbstractEntity> entitiesById = new HashMap<Long,AbstractEntity>();
+	/** Named entities by external id */
+	private final Map<KnowledgeBase,Map<String,AbstractNamedEntity>> namedEntitiesByExternalId = new HashMap<KnowledgeBase,Map<String,AbstractNamedEntity>>();
+	/** Valued entities by value */
+	private final Map<Comparable<?>,AbstractValuedEntity<?>> valuedEntitiesByValue = new HashMap<Comparable<?>,AbstractValuedEntity<?>>();
 	
 	/**
 	 * Returns the whole set
@@ -233,15 +238,46 @@ public class Entities
 	}
 	
 	/**
-	 * Returns the entity with the specified id.
+	 * Returns the entity with the specified internal id.
 	 * 
 	 * @param id
-	 * 		Unique id of the entity.
+	 * 		Unique internal id of the entity.
 	 * @return
-	 * 		Entity possessing the specified id, or {@code null]} if none does.
+	 * 		Entity possessing the specified internal id, or {@code null]} if none does.
 	 */
 	public AbstractEntity getEntityById(long id)
 	{	AbstractEntity result = entitiesById.get(id);
+		return result;
+	}
+	
+	/**
+	 * Returns the named entity with the specified external id.
+	 * 
+	 * @param id
+	 * 		Unique external id of the named entity.
+	 * @param knowledgeBase
+	 * 		Knowledge base which delivered the external id.
+	 * @return
+	 * 		Named entity possessing the specified external id, or {@code null]} if none does.
+	 */
+	public AbstractNamedEntity getNamedEntityById(String id, KnowledgeBase knowledgeBase)
+	{	AbstractNamedEntity result = null;
+		Map<String,AbstractNamedEntity> map = namedEntitiesByExternalId.get(knowledgeBase);
+		if(map!=null)
+			result = map.get(id);
+		return result;
+	}
+
+	/**
+	 * Returns the valued entity with the specified value.
+	 * 
+	 * @param value
+	 * 		Value of the entity.
+	 * @return
+	 * 		Valued entity possessing the specified value, or {@code null]} if none does.
+	 */
+	public AbstractValuedEntity<?> getValuedEntityByValue(Comparable<?> value)
+	{	AbstractValuedEntity<?> result = valuedEntitiesByValue.get(value);
 		return result;
 	}
 	
@@ -261,6 +297,33 @@ public class Entities
 		// add the entity
 		entities.add(entity);
 		entitiesById.put(entity.internalId,entity);
+		// add the named entity
+		if(entity instanceof AbstractNamedEntity)
+		{	AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+			Set<Entry<KnowledgeBase, String>> entrySet = namedEntity.getExternalIds().entrySet();
+			for(Entry<KnowledgeBase, String> entry: entrySet)
+			{	KnowledgeBase kb = entry.getKey();
+				String id = entry.getValue();
+				Map<String, AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
+				if(map==null)
+				{	map = new HashMap<String, AbstractNamedEntity>();
+					namedEntitiesByExternalId.put(kb,map);
+				}
+				if(map.containsKey(id))
+					throw new IllegalArgumentException("Trying to add a named entity possessing the same external id ("+kb+":"+id+") than an already existing one.");
+				else
+					map.put(id,namedEntity);
+			}
+		}
+		// add the valued entity
+		else if(entity instanceof AbstractValuedEntity)
+		{	AbstractValuedEntity<?> valuedEntity = (AbstractValuedEntity<?>)entity;
+			Comparable<?> value = valuedEntity.getValue();
+			if(valuedEntitiesByValue.containsKey(value))
+				throw new IllegalArgumentException("Trying to add a valued entity possessing the same value ("+value+") than an already existing one.");
+			else
+				valuedEntitiesByValue.put(value,valuedEntity);
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -268,13 +331,13 @@ public class Entities
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Reads the specified XML file, and 
-	 * builds the corresponding Mentions object,
-	 * which contains both mentions and meta-data.
+	 * builds the corresponding Entities object,
+	 * which contains both entities and meta-data.
 	 * 
 	 * @param dataFile
 	 * 		The XML file to be read.
 	 * @return
-	 * 		The list of mentions and meta-data stored in the file.
+	 * 		The list of entities and meta-data stored in the file.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while reading the file.
@@ -318,11 +381,11 @@ public class Entities
 	}
 
 	/**
-	 * Write this Mentions object under the form of
+	 * Write this Entities object under the form of
 	 * a XML file using our own format.
 	 * 
 	 * @param dataFile
-	 * 		File to contain the mentions.
+	 * 		File to contain the entities.
 	 * 
 	 * @throws IOException
 	 * 		Problem while writing the file.
@@ -353,7 +416,7 @@ public class Entities
 			element.setAttribute(editorAttr);
 		}
 		
-		// insert mention elements
+		// insert entity elements
 //		Collections.sort(entities);
 		for(AbstractEntity entity: entities)
 		{	Element entityElt = entity.exportAsElement();
