@@ -50,7 +50,7 @@ import fr.univavignon.nerwip.processing.ProcessorName;
  * http://spotlight.dbpedia.org</a>
  * <br/>
  * TODO Spotlight is available as a set of Java libraries. We could directly 
- * integrate them in Nerwip.
+ * integrate them in Nerwip instead of using the Web service.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
@@ -59,87 +59,47 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 {
 	/**
 	 * Builds and sets up an object representing
-	 * the Spotlight recognizer.
+	 * the Spotlight recognizer, resovler and linker.
 	 * 
 	 * @param minConf 
-	 * 		Minimal confidence for the returned entities.
+	 * 		Minimal confidence for the mentions returned by the recognizer.
 	 */
 	public Spotlight(float minConf)
 	{	// recognize
 		delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
 		this.recognizer = null;
 		// resolve
-		delegateResolver = null;
-		this.resolver = null;
-		// link
-		delegateLinker = null;
-	}
-	
-	/**
-	 * Builds and sets up an object representing
-	 * the Spotlight resolver. If {@code recognizer}
-	 * is {@code null}, then this object is also a recognizer.
-	 * 
-	 * @param recognizer
-	 * 		Processor used to recognize the entity mentions, or {@code null}.
-	 * @param minConf 
-	 * 		Minimal confidence for the returned entities.
-	 */
-	public Spotlight(InterfaceRecognizer recognizer, float minConf)
-	{	// recognize
-		if(recognizer==null)
-		{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
-			//delegateRecognizer = null;
-			this.recognizer = null;
-		}
-		else
-		{	delegateRecognizer = null;
-			this.recognizer = recognizer;
-		}
-		// resolve
 		delegateResolver = new SpotlightDelegateResolver(this, minConf);
 		this.resolver = null;
 		// link
-		delegateLinker = null;
+		delegateLinker = new SpotlightDelegateLinker(this, minConf);
 	}
 	
 	/**
 	 * Builds and sets up an object representing
-	 * the Spotlight recognizer. If {@code recognizer}
-	 * is {@code null}, then this object is also a recognizer.
-	 * If {@code resolver} is {@code null}, then this object 
-	 * is also a resolver.
+	 * the Spotlight resolver and linker. The specified recognizer
+	 * is used in place of Spotlight.
+	 * <br/>
+	 * <b>Important:</b> the resolver and linker go together, one cannot
+	 * invoke the latter separately. So, if the linker method of this class
+	 * is later invoked, the provided resolved data will simply be ignored:
+	 * only the result of the recognition will be fetched Spotlight (and 
+	 * moreover, to the resolver, not the linker). Maybe the linker could
+	 * be invoked separately if we would use the Java local version of
+	 * Spotlight. 
 	 * 
 	 * @param recognizer
-	 * 		Processor used to recognize the entity mentions, or {@code null}.
-	 * @param resolver
-	 * 		Processor used to resolve the coreferences, or {@code null}.
-	 * @param minConf 
-	 * 		Minimal confidence for the returned entities.
+	 * 		Processor used to recognize the entity mentions.
 	 */
-	public Spotlight(InterfaceRecognizer recognizer, InterfaceResolver resolver, float minConf)
+	public Spotlight(InterfaceRecognizer recognizer)
 	{	// recognize
-		if(recognizer==null)
-		{	delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
-			//delegateRecognizer = null;
-			this.recognizer = null;
-		}
-		else
-		{	delegateRecognizer = null;
-			this.recognizer = recognizer;
-		}
+		delegateRecognizer = null;
+		this.recognizer = recognizer;
 		// resolve
-		if(resolver==null)
-		{	delegateResolver = new SpotlightDelegateResolver(this, minConf);
-			//delegateResolver = null;
-			this.resolver = null;
-		}
-		else
-		{	delegateResolver = null;
-			this.resolver = resolver;
-		}
+		delegateResolver = new SpotlightDelegateResolver(this, 0);
+		this.resolver = null;
 		// link
-		delegateLinker = new SpotlightDelegateLinker(this, minConf);
+		delegateLinker = new SpotlightDelegateLinker(this, 0);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -205,8 +165,8 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	/////////////////////////////////////////////////////////////////
 	// RESOLVER		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Resolver applied before this linker (can be different from the delegate) */
-	protected InterfaceResolver resolver = null;
+	/** Resolver applied before this linker (can be different from the delegate) */ //TODO actually: with spotlight, the resolver and linker must be Spotlight. 
+	protected InterfaceResolver resolver = null;	//TODO this must be removed in the case of spotlight (keep for now for latter copy to another tool class)
 	/** Delegate in charge of recognizing entity mentions */
 	protected SpotlightDelegateResolver delegateResolver;
 

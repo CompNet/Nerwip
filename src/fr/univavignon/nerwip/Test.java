@@ -2195,8 +2195,6 @@ File folder = folders.get(0);
  *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entities can be retrieved a posteriori.
  *   Also the resolver and the linker need to receive an instance of the tool on which the data they receive are built, in order to know where to record their own results.
  *   
- * - Spotlight: See the generalisation to linking only and both. Resolving also, can be deduced from the linked entities.
- *   
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
@@ -2207,10 +2205,14 @@ File folder = folders.get(0);
  *  
  *  TODO carefuly trace the processing of both new AbstractInternalDelegates
  *  
- *  TODO entities should not be a return type, because they're likley to be completed from one article to the other
+ *  TODO entities should not be a return type, because they're likely to be completed from one article to the other
  *  so, it's possible to receive an already full object, to complete with the present article.
  *  Not the case for mentions though: Mentions is specific to an article. 
- *  But when doing recognizer+..., it is supposed to be received as an empty object, then filled. 
+ *  But when doing recognizer+..., it is supposed to be received as an empty object, then filled.
+ *  
+ *  TODO related: maybe better to load the mentions/entities each time a tool is applied.
+ *  this way, no pb of modifying existing objects, no conflict.
+ *  also, no problem in knowing which parameters to pass to the methods...
  *  
  * - entities:
  *   - TODO represent the hierarchical relationships between entities?

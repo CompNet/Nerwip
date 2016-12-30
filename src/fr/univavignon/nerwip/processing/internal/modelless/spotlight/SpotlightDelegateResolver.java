@@ -21,32 +21,12 @@ package fr.univavignon.nerwip.processing.internal.modelless.spotlight;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.jdom2.Document;
-import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
@@ -56,15 +36,11 @@ import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateRecognizer;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateResolver;
-import fr.univavignon.nerwip.tools.dbpedia.DbpCommonTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
 
 /**
  * This class acts as an interface with the DBpedia Spotlight Web service.
@@ -175,19 +151,16 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Entities convert(Article article, List<String> data, Mentions mentions) throws ProcessorException 
-	{	Entities result = null;
-		ProcessorName resolverName = resolver.getName();
+	{	ProcessorName resolverName = resolver.getName();
+		Entities result = new Entities(resolverName);
 		InterfaceRecognizer recognizer = resolver.getRecognizer();
 
 		// if spotlight is also the recognizer
 		if(recognizer==null)
-		{	result = new Entities(resolverName);
-			SpotlightTools.convertAnnotate(data, resolverName, mentions, result);
-		
-		}
+			SpotlightTools.convertSpotlightToNerwip(data, resolverName, mentions, result, true);
 		// otherwise, if spotlight is only the resolver
 		else
-			result = SpotlightTools.convertDisambiguate(data, mentions, resolverName);
+			SpotlightTools.convertSpotlightToNerwip(data, resolverName, mentions, result, false);
 
 		return result;
 	}
@@ -203,7 +176,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
         {
         	i++;
         	if(i%2==1)
-        		temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size()/2 + " - Original Text <<<\n" + str + "\n";
+        		temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size()/2 + " - Original text <<<\n" + str + "\n";
         	else
         	{	try
         		{	// build DOM
@@ -216,7 +189,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 					String xmlTxt = xo.outputString(doc);
 					
 					// add SpotLight format
-					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - Spotlight Response <<<\n" + xmlTxt + "\n";
+					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - SpotLight Response <<<\n" + xmlTxt + "\n";
         		}
         		catch (JDOMException e)
         		{	e.printStackTrace();

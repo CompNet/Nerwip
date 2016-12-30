@@ -30,12 +30,17 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.AbstractValuedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.KnowledgeBase;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
+import fr.univavignon.nerwip.data.entity.mention.MentionDate;
+import fr.univavignon.nerwip.data.entity.mention.MentionFunction;
+import fr.univavignon.nerwip.data.entity.mention.MentionLocation;
+import fr.univavignon.nerwip.data.entity.mention.MentionPerson;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
@@ -78,6 +83,30 @@ public class SpotlightTools
 	/////////////////////////////////////////////////////////////////
 	/** Common object used for logging */
 	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+	
+	/**
+	 * Tests the class.
+	 * 
+	 * @param args
+	 * 		No need.
+	 * @throws ProcessorException 
+	 * 		Whatever problem occurred...
+	 */
+	public static void main(String[] args) throws ProcessorException 
+	{	String text = "Carrie Fisher, née le 21 octobre 1956 à Beverly Hills et morte le 27 décembre 2016 à Los Angeles, est une actrice, romancière et scénariste américaine.";
+		Article article = new Article("Carrie Fisher");
+		article.setLanguage(ArticleLanguage.FR);
+		article.setRawText(text);
+		Mentions mentions = new Mentions(ProcessorName.REFERENCE);
+		mentions.addMention(new MentionPerson(0, 13, ProcessorName.REFERENCE, "Carrie Fisher"));
+		mentions.addMention(new MentionDate(22, 37, ProcessorName.REFERENCE, "27 décembre 2016"));
+		mentions.addMention(new MentionLocation(85, 96, ProcessorName.REFERENCE, "Los Angeles"));
+		mentions.addMention(new MentionFunction(106, 113, ProcessorName.REFERENCE, "actrice"));
+		mentions.addMention(new MentionFunction(115, 125, ProcessorName.REFERENCE, "romancière"));
+		mentions.addMention(new MentionFunction(129, 139, ProcessorName.REFERENCE, "scénariste"));
+		List<String> list = invokeDisambiguate(article, mentions);
+		System.out.println(list);
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// URL			 		/////////////////////////////////////////
@@ -431,11 +460,16 @@ public class SpotlightTools
 	 * @param entities
 	 * 		Empty object, to be filled by this method. Can be {@code null}
 	 * 		if only recognition is performed.
+	 * @param annotate
+	 * 		{@code true} iff the specified {@code data} was obtained through 
+	 * 		an "annotate" type of request, {@code false} if it was through
+	 * 		a "disambiguate" type of request. In the former case, we must
+	 * 		create mentions, whereas in the latter we must just update them.  
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while performing the conversion.
 	 */
-	protected static void convertAnnotate(List<String> data, ProcessorName processorName, Mentions mentions, Entities entities) throws ProcessorException
+	protected static void convertSpotlightToNerwip(List<String> data, ProcessorName processorName, Mentions mentions, Entities entities, boolean annotate) throws ProcessorException
 	{	logger.increaseOffset();
 		
 		logger.log("Processing each part of data and its associated answer");
@@ -461,8 +495,8 @@ public class SpotlightTools
 				Element eltResources = root.getChild(ELT_RESOURCES);
 				List<Element> eltResourceList = eltResources.getChildren(ELT_RESOURCE);
 				for(Element eltResource: eltResourceList)
-				{	convertResourceElement(eltResource,prevSize,originalText,processorName,mentions,entities);
-					//TODO maybe a type could simply be retrieved from the DBpedia URI...
+				{	//TODO maybe a type could simply be retrieved from the DBpedia URI...
+					convertResourceElement(eltResource,prevSize,originalText,processorName,mentions,entities,annotate);
 				}
 				
 				// update size
@@ -498,8 +532,13 @@ public class SpotlightTools
 	 * @param entities
 	 * 		List of entities, to be completed by this method. Can be {@code null}
 	 * 		if only recognition is performed.
+	 * @param annotate
+	 * 		{@code true} iff the specified {@code data} was obtained through 
+	 * 		an "annotate" type of request, {@code false} if it was through
+	 * 		a "disambiguate" type of request. In the former case, we must
+	 * 		create mentions, whereas in the latter we must just update them.  
 	 */
-	private static void convertResourceElement(Element element, int prevSize, String part, ProcessorName processorName, Mentions mentions, Entities entities)
+	private static void convertResourceElement(Element element, int prevSize, String part, ProcessorName processorName, Mentions mentions, Entities entities, boolean annotate)
 	{	logger.increaseOffset();
 		
 		// parse the element
@@ -572,9 +611,16 @@ public class SpotlightTools
 			if(!valueStr.equalsIgnoreCase(surfaceForm))
 				logger.log("WARNING: the original and returned texts differ: \""+valueStr+"\" vs. \""+surfaceForm+"\"");
 			else
-			{	AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
-				mentions.addMention(mention);
-				logger.log("Created mention "+mention.toString());
+			{	AbstractMention<?> mention;
+				if(annotate)
+				{	mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
+					mentions.addMention(mention);
+					logger.log("Created mention "+mention.toString());
+				}
+				else
+				{	mention = mentions.getMentionAt(startPos);
+					logger.log("Retrieved mention "+mention.toString());
+				}
 				if(entities!=null)
 				{	if(type.isNamed())
 					{	AbstractNamedEntity entity = entities.getNamedEntityById(uri, KnowledgeBase.DB_PEDIA);

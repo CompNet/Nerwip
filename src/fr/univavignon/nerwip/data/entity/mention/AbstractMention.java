@@ -258,9 +258,9 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	/////////////////////////////////////////////////////////////////
 	// POSITION			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Start position of a mention in the text */
+	/** Start position of a mention in the text (character <i>included</i> in the mention) */
 	protected int startPos = -1;
-	/** End position of a mention in the text */
+	/** End position of a mention in the text (character <i>excluded</i> from the mention) */
 	protected int endPos = -1;
 		
 	/**

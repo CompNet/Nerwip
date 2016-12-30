@@ -144,7 +144,7 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 	public Mentions convert(Article article, List<String> data) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();
 		Mentions result = new Mentions(recognizerName);
-		SpotlightTools.convertAnnotate(data, recognizerName, result, null);
+		SpotlightTools.convertSpotlightToNerwip(data, recognizerName, result, null, true);
 		return result;
 	}
 	
@@ -172,7 +172,7 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 					String xmlTxt = xo.outputString(doc);
 					
 					// add SpotLight format
-					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - Spotlight Response <<<\n" + xmlTxt + "\n";
+					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - SpotLight Response <<<\n" + xmlTxt + "\n";
         		}
         		catch (JDOMException e)
         		{	e.printStackTrace();
