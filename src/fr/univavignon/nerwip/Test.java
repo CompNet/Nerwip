@@ -2214,6 +2214,12 @@ File folder = folders.get(0);
  *  this way, no pb of modifying existing objects, no conflict.
  *  also, no problem in knowing which parameters to pass to the methods...
  *  
+ *  TODO
+ *  - let recognizer as it is now
+ *  - resolver: do not pass the mentions. load them/process them if needed. record mentions+entities locally. if no recognizer specified >> apply the same tool for both.
+ *  - linker: do not pass the mentions nor entities. load/process them if needed. record mentions+entities locally. 
+ *  - entities are processed relatively to one article. for the corpus, this is handled outside of the linkers.
+ *  
  * - entities:
  *   - TODO represent the hierarchical relationships between entities?
  *     or just rely on the interrogation of online databases instead?
