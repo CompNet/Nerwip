@@ -41,7 +41,8 @@
 		</xsd:sequence>
 		<xsd:attribute name="creation" type="xsd:dateTime" />
 		<xsd:attribute name="modification" type="xsd:dateTime" />
-		<xsd:attribute name="source" type="xsd:string" />
+		<xsd:attribute name="recognizer" type="xsd:string" />
+		<xsd:attribute name="resolver" type="xsd:string" use="optional" />
 		<xsd:attribute name="editor" type="xsd:string" use="optional" />
 	</xsd:complexType>
 

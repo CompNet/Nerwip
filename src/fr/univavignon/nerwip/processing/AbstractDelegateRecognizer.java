@@ -643,7 +643,7 @@ public abstract class AbstractDelegateRecognizer
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Returns the XML file associated to the specified
-	 * article.
+	 * article, and representing the recognized mentions.
 	 * 
 	 * @param article
 	 * 		Article to process.

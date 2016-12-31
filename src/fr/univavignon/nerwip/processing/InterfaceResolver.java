@@ -27,7 +27,7 @@ import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.data.entity.MentionsEntities;
 
 /**
  * TODO
@@ -97,24 +97,18 @@ public interface InterfaceResolver extends InterfaceProcessor
 	 * Applies this processor to the specified article,
 	 * in order to resolve co-occurrences.
 	 * <br/>
-	 * If {@code mentions} is {@code null}, the recognizer is applied to get
-	 * the mentions. If {@code recognizer} is this object and must be applied, 
-	 * then Nerwip tries to perform simultaneously mention recognition and coreference 
-	 * resolution, if the processor allows it. Otherwise, the same processor is applied 
-	 * separately for both tasks.
-	 * <br/>
-	 * Note the {@code Mention} object will be completed so as to point towards 
-	 * their assigned entities.
+	 * The recognizer that was set up for this resolver will automatically
+	 * be applied, or its results will be loaded if its cache is enabled 
+	 * (and the results are cached). The corresponding {@code Mentions}
+	 * object will be completed and returned with the {@link Entities}.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
-	 * @param mentions
-	 * 		List of the previously recognized mentions.
 	 * @return
-	 * 		List of the entities associated to the mentions.
+	 * 		Sets of the updated mentions and their associated entities.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public Entities resolve(Article article, Mentions mentions) throws ProcessorException;
+	public MentionsEntities resolve(Article article) throws ProcessorException;
 }

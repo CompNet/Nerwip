@@ -64,6 +64,7 @@ public class Mentions
 	public Mentions()
 	{	initDates();
 		recognizer = ProcessorName.REFERENCE;
+		resolver = null;
 	}
 	
 	/**
@@ -76,8 +77,24 @@ public class Mentions
 	public Mentions(ProcessorName recognizer)
 	{	initDates();
 		this.recognizer = recognizer;
+		resolver = null;
 	}
-	
+
+	/**
+	 * Builds a Mentions object with current
+	 * date and specified recognizer.
+	 * 
+	 * @param recognizer
+	 * 		Recognizer used to get the mentions.
+	 * @param resolver
+	 * 		Resolver applied to the mentions.
+	 */
+	public Mentions(ProcessorName recognizer, ProcessorName resolver)
+	{	initDates();
+		this.recognizer = recognizer;
+		this.resolver = resolver;
+	}
+
 //	/**
 //	 * Builds a Mentions object with specified
 //	 * date and recognizer.
@@ -99,15 +116,18 @@ public class Mentions
 	 * 
 	 * @param recognizer
 	 * 		Recognizer used to get the mentions.
+	 * @param resolver
+	 * 		Resolver applied to the mentions.
 	 * @param creationDate
 	 * 		Date the mentions were detected.
 	 * @param modificationDate
 	 * 		Date the mentions were last modified.
 	 */
-	public Mentions(ProcessorName recognizer, Date creationDate, Date modificationDate)
+	private Mentions(ProcessorName recognizer, ProcessorName resolver, Date creationDate, Date modificationDate)
 	{	this.creationDate = creationDate;
 		this.modificationDate = modificationDate;
 		this.recognizer = recognizer;
+		this.resolver = resolver;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -198,6 +218,34 @@ public class Mentions
 	 */
 	public void setRecognizer(ProcessorName recognizer)
 	{	this.recognizer = recognizer;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Resolver applied to these mentions (or {@link ProcessorName#REFERENCE} for manual annotations) */
+	private ProcessorName resolver = null;
+	
+	/**
+	 * Returns the resolver applied to
+	 * these mentions.
+	 * 
+	 * @return
+	 * 		Name of the resolver applied to these mentions.
+	 */
+	public ProcessorName getResolver()
+	{	return resolver;
+	}
+	
+	/**
+	 * Changes the resolver applied to
+	 * these mentions.
+	 * 
+	 * @param resolver
+	 * 		New name of the resolver applied to these mentions.
+	 */
+	public void setResolver(ProcessorName resolver)
+	{	this.resolver = resolver;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -662,7 +710,7 @@ public class Mentions
 	
 	/**
 	 * Reads the specified XML file, and 
-	 * builds the corresponding Mentions object,
+	 * builds the corresponding {@code Mentions} object,
 	 * which contains both mentions and meta-data.
 	 * <br/>
 	 * The specified Entities are used to initialize
@@ -693,8 +741,13 @@ public class Mentions
 		Element element = XmlTools.getRootFromFile(dataFile,schemaFile);
 		
 		// get recognizer
-		String recognizerStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
+		String recognizerStr = element.getAttributeValue(XmlNames.ATT_RECOGNIZER);
 		ProcessorName recognizer = ProcessorName.valueOf(recognizerStr);
+		// possibly get resolver
+		String resolverStr = element.getAttributeValue(XmlNames.ATT_RESOLVER);
+		ProcessorName resolver = null;
+		if(resolverStr!=null)
+			resolver = ProcessorName.valueOf(resolverStr);
 		
 		// get dates
 		String creationDateStr = element.getAttributeValue(XmlNames.ATT_CREATION);
@@ -706,7 +759,7 @@ public class Mentions
 		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
 		
 		// get mentions
-		Mentions result = new Mentions(recognizer, creationDate, modificationDate);
+		Mentions result = new Mentions(recognizer, resolver, creationDate, modificationDate);
 		result.setEditor(editor);
 		List<Element> elements = element.getChildren(XmlNames.ELT_MENTION);
 		for(Element e: elements)
@@ -757,8 +810,13 @@ public class Mentions
 		Element element = new Element(XmlNames.ELT_MENTIONS);
 		
 		// insert recognizer attribute
-		Attribute recognizerAttr = new Attribute(XmlNames.ATT_SOURCE, recognizer.toString());
+		Attribute recognizerAttr = new Attribute(XmlNames.ATT_RECOGNIZER, recognizer.toString());
 		element.setAttribute(recognizerAttr);
+		// possibly insert resolver attribute
+		if(resolver!=null)
+		{	Attribute resolverAttr = new Attribute(XmlNames.ATT_RESOLVER, resolver.toString());
+			element.setAttribute(resolverAttr);
+		}
 		
 		// insert date attributes
 		String creationDateStr = TimeFormatting.formatXmlTime(creationDate);

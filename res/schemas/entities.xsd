@@ -30,11 +30,19 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:complexType name="tExternalId">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="knowledgeBase" type="xsd:string" use="required" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
 	<xsd:complexType name="tExternalIds">
 		<xsd:sequence>
 			<xsd:element name="externalId" type="xsd:string" maxOccurs="unbounded"/>
 		</xsd:sequence>
-		<xsd:attribute name="source" type="xsd:string" use="required" />
+		<xsd:attribute name="knowledgeBase" type="xsd:string" use="required" />
 	</xsd:complexType>
 	
 	<xsd:group name="gNamedEntity">
@@ -60,7 +68,8 @@
 		</xsd:sequence>
 		<xsd:attribute name="creation" type="xsd:dateTime" />
 		<xsd:attribute name="modification" type="xsd:dateTime" />
-		<xsd:attribute name="source" type="xsd:string" />
+		<xsd:attribute name="resolver" type="xsd:string" />
+		<xsd:attribute name="linker" type="xsd:string" use="optional" />
 		<xsd:attribute name="editor" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	

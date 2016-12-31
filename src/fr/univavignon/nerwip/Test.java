@@ -2201,29 +2201,23 @@ File folder = folders.get(0);
  *  TODO when dealing with folder names in resolver and linker: verify we actually add the recognizer and resolver folders, too. 
  *  
  *  TODO Where do the entities/mentions objects come from? if they're unique, they shouldn't be modified in the delegate, but cloned first.
- *  if they're not unique, then where are they created? This must be checked before testing.
+ *    if they're not unique, then where are they created? This must be checked before testing.
  *  
  *  TODO carefuly trace the processing of both new AbstractInternalDelegates
  *  
  *  TODO entities should not be a return type, because they're likely to be completed from one article to the other
- *  so, it's possible to receive an already full object, to complete with the present article.
- *  Not the case for mentions though: Mentions is specific to an article. 
- *  But when doing recognizer+..., it is supposed to be received as an empty object, then filled.
+ *    so, it's possible to receive an already full object, to complete with the present article.
+ *    Not the case for mentions though: Mentions is specific to an article. 
+ *    But when doing recognizer+..., it is supposed to be received as an empty object, then filled.
  *  
  *  TODO related: maybe better to load the mentions/entities each time a tool is applied.
- *  this way, no pb of modifying existing objects, no conflict.
- *  also, no problem in knowing which parameters to pass to the methods...
+ *    this way, no pb of modifying existing objects, no conflict.
+ *    also, no problem in knowing which parameters to pass to the methods...
  *  
  *  TODO
- *  - let recognizer as it is now
- *  - resolver: do not pass the mentions. load them/process them if needed. record mentions+entities locally. if no recognizer specified >> apply the same tool for both.
- *  - linker: do not pass the mentions nor entities. load/process them if needed. record mentions+entities locally. 
- *  - entities are processed relatively to one article. for the corpus, this is handled outside of the linkers.
- *  
- * - entities:
- *   - TODO represent the hierarchical relationships between entities?
- *     or just rely on the interrogation of online databases instead?
- *   - TODO the same question araises for the entity multiple names...
+ *  - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.
+ *    also, its entities are recorded in specific files, at the level of the corpus.
+ *    whereas the new mentions (bc of their entities) are recorded in a different file in the concerned linker folders of each article (?)
  *   
  *   TODO check the new OpenNer French models
  */

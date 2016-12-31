@@ -54,29 +54,49 @@ public class Entities
 {	
 	/**
 	 * Builds an Entities object with current
-	 * date and the reference source.
+	 * date and the reference resolver (and no
+	 * linker).
 	 */
 	public Entities()
 	{	initDates();
-		source = ProcessorName.REFERENCE;
+		resolver = ProcessorName.REFERENCE;
+		linker = null;
 	}
 	
 	/**
 	 * Builds a Entities object with current
-	 * date and specified linker.
+	 * date and specified resolver.
 	 * 
+	 * @param resolver
+	 * 		Resolver used on these entities.
+	 */
+	public Entities(ProcessorName resolver)
+	{	initDates();
+		this.resolver = resolver;
+		linker = null;
+	}
+	
+	/**
+	 * Builds a Entities object with current
+	 * date and specified resolver and linker.
+	 * 
+	 * @param resolver
+	 * 		Resolver used on these entities.
 	 * @param linker
 	 * 		Linker used on these entities.
 	 */
-	public Entities(ProcessorName linker)
+	public Entities(ProcessorName resolver, ProcessorName linker)
 	{	initDates();
-		this.source = linker;
+		this.resolver = resolver;
+		this.linker = linker;
 	}
 	
 	/**
 	 * Builds a Entities object with specified
 	 * dates and linker.
 	 * 
+	 * @param resolver
+	 * 		Resolver used on these entities.
 	 * @param linker
 	 * 		Linker used on these entities.
 	 * @param creationDate
@@ -84,10 +104,11 @@ public class Entities
 	 * @param modificationDate
 	 * 		Date the entities were last processed.
 	 */
-	public Entities(ProcessorName linker, Date creationDate, Date modificationDate)
+	private Entities(ProcessorName resolver, ProcessorName linker, Date creationDate, Date modificationDate)
 	{	this.creationDate = creationDate;
 		this.modificationDate = modificationDate;
-		this.source = linker;
+		this.resolver = resolver;
+		this.linker = linker;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -153,10 +174,37 @@ public class Entities
 	}
 	
 	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Resolver used to process these entities (or {@link ProcessorName#REFERENCE} for manual annotations) */
+	private ProcessorName resolver = null;
+	
+	/**
+	 * Returns the resolver applied to
+	 * these entities.
+	 * 
+	 * @return
+	 * 		Name of the resolver used to process these entities.
+	 */
+	public ProcessorName getResolver()
+	{	return resolver;
+	}
+	
+	/**
+	 * Changes the resolver used to process these entities.
+	 * 
+	 * @param resolver
+	 * 		New name of the resolver used to process these entities.
+	 */
+	public void setResolver(ProcessorName resolver)
+	{	this.resolver = resolver;
+	}
+	
+	/////////////////////////////////////////////////////////////////
 	// LINKER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Linker used to link these entities (or {@link ProcessorName#REFERENCE} for manual annotations) */
-	private ProcessorName source = null;
+	/** Linker used to process these entities (or {@link ProcessorName#REFERENCE} for manual annotations) */
+	private ProcessorName linker = null;
 	
 	/**
 	 * Returns the linker which detected
@@ -165,8 +213,8 @@ public class Entities
 	 * @return
 	 * 		Name of the linker used to process these entities.
 	 */
-	public ProcessorName getSource()
-	{	return source;
+	public ProcessorName getLinker()
+	{	return linker;
 	}
 	
 	/**
@@ -176,7 +224,7 @@ public class Entities
 	 * 		New name of the linker used to process these entities.
 	 */
 	public void setLinker(ProcessorName linker)
-	{	this.source = linker;
+	{	this.linker = linker;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -354,9 +402,14 @@ public class Entities
 		// load file
 		Element element = XmlTools.getRootFromFile(dataFile,schemaFile);
 		
-		// get source
-		String sourceStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
-		ProcessorName source = ProcessorName.valueOf(sourceStr);
+		// get resolver
+		String resolverStr = element.getAttributeValue(XmlNames.ATT_RESOLVER);
+		ProcessorName resolver = ProcessorName.valueOf(resolverStr);
+		// possibly get linker
+		ProcessorName linker = null; 
+		String linkerStr = element.getAttributeValue(XmlNames.ATT_LINKER);
+		if(linkerStr!=null)
+			linker = ProcessorName.valueOf(linkerStr);
 		
 		// get dates
 		String creationDateStr = element.getAttributeValue(XmlNames.ATT_CREATION);
@@ -368,7 +421,7 @@ public class Entities
 		String editor = element.getAttributeValue(XmlNames.ATT_EDITOR);
 		
 		// get entities
-		Entities result = new Entities(source, creationDate, modificationDate);
+		Entities result = new Entities(resolver, linker, creationDate, modificationDate);
 		result.setEditor(editor);
 		List<Element> elements = element.getChildren(XmlNames.ELT_ENTITY);
 		for(Element e: elements)
@@ -398,9 +451,14 @@ public class Entities
 		// build xml document
 		Element element = new Element(XmlNames.ELT_MENTIONS);
 		
-		// insert source attribute
-		Attribute sourceAttr = new Attribute(XmlNames.ATT_SOURCE, source.toString());
-		element.setAttribute(sourceAttr);
+		// insert resolver attribute
+		Attribute resolverAttr = new Attribute(XmlNames.ATT_RESOLVER, resolver.toString());
+		element.setAttribute(resolverAttr);
+		// possibly insert linker attribute
+		if(linker!=null)
+		{	Attribute linkerAttr = new Attribute(XmlNames.ATT_LINKER, linker.toString());
+			element.setAttribute(linkerAttr);
+		}
 		
 		// insert date attributes
 		String creationDateStr = TimeFormatting.formatXmlTime(creationDate);

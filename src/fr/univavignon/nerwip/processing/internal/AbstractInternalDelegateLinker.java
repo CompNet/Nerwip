@@ -32,9 +32,12 @@ import org.xml.sax.SAXException;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
+import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractDelegateLinker;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
+import fr.univavignon.nerwip.processing.InterfaceRecognizer;
+import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileTools;
@@ -100,20 +103,47 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	protected abstract T linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException;
 
 	@Override
-	public void delegateLink(Article article, Mentions mentions, Entities entities) throws ProcessorException
+	public MentionsEntities delegateLink(Article article) throws ProcessorException
 	{	ProcessorName linkerName = linker.getName();
 		logger.log("Start applying "+linkerName+" to "+article.getFolderPath()+" ("+article.getUrl()+")");
 		logger.increaseOffset();
+		MentionsEntities result = null;
 		
 		try
-		{	// checks if the result file already exists
+		{	Entities entities = null;
+			Mentions mentions = null;
+		
+			// checks if the result file already exists
 			File mentionsFile = getMentionsXmlFile(article);
 			File entitiesFile = getEntitiesXmlFile(article);
-			boolean processNeedeed = !(mentionsFile.exists() && entitiesFile.exists());
+			boolean processNeedeed = !mentionsFile.exists() || !entitiesFile.exists();
 			
 			// if needed, we process the text
 			if(!linker.doesCache() || processNeedeed)
-			{	// check language
+			{	// get the entities
+				InterfaceResolver resolver = linker.getResolver();
+				// identify the entities (or load them, if previously cached...)
+				if(resolver!=null)
+				{	MentionsEntities temp = resolver.resolve(article);
+					entities = temp.entities;
+					mentions = temp.mentions;
+				}
+				// no resolver means this linker will also perform the resolution
+				else
+					entities = new Entities(linkerName,linkerName);
+				
+				// possibly get the mentions
+				if(mentions==null)
+				{	InterfaceRecognizer recognizer = linker.getRecognizer();
+					// recognize the mentions (or detect them if previously cached...)
+					if(recognizer!=null)
+						mentions = recognizer.recognize(article);
+					// no recognizer means this linker will also perform the recognition
+					else
+						mentions = new Mentions(linkerName,linkerName);
+				}
+				
+				// check language
 				ArticleLanguage language = article.getLanguage();
 				if(language==null)
 					logger.log("WARNING: The article language is unknown >> it is possible this linker does not handle this language");
@@ -123,7 +153,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				// apply the linker
 				logger.log("Detect the mentions");
 				prepareLinker();
-				T intRes = linkEntities(article, mentions, entities);
+				T intRes = linkEntities(article, mentions, entities);//TODO voir si on se comporte bien ici par rapport à mentions et entities
 				
 				// possibly record entities as they are outputted (useful for debug)
 				if(linker.doesOutputRawResults())
@@ -135,17 +165,20 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				
 				// convert entities to our internal representation
 				logger.log("Convert entities to internal representation");
-				convert(article,mentions,entities,intRes);
+				convert(article,mentions,entities,intRes);//TODO voir si on se comporte bien ici par rapport à mentions et entities
 	
 				// record results using our xml format
 				logger.log("Record mentions and entities using our XML format");
 				writeXmlResults(article,mentions,entities);
+				
+				int nbrEnt = entities.getEntities().size();
+				logger.log(linkerName+" over ["+article.getName()+"], processed "+nbrEnt+" entities");
 			}
 			
 			// if the results already exist, we fetch them
 			else
 			{	logger.log("Loading mentions from cached file");
-				readXmlResults(article,entities);
+				result = readXmlResults(article);
 			}
 		}
 		catch (IOException e)
@@ -161,9 +194,8 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 			throw new ProcessorException(e.getMessage());
 		}
 	
-		int nbrEnt = entities.getEntities().size();
-		logger.log(linkerName+" over ["+article.getName()+"], processed "+nbrEnt+" entities");
 		logger.decreaseOffset();
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -175,12 +207,12 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * 
 	 * @param article
 	 * 		Original article (might be usefull, in order to get the full text).
-	 * @param data
-	 * 		Data objects to process.
 	 * @param mentions
 	 * 		List of the previously recognized mentions.
 	 * @param entities
 	 * 		List of the entities associated to the mentions.
+	 * @param data
+	 * 		Data objects to process.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while performing the conversion.

@@ -24,17 +24,15 @@ package fr.univavignon.nerwip.processing;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.AbstractEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
+import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
@@ -120,44 +118,70 @@ public abstract class AbstractDelegateResolver
 	 * Applies this processor to the specified article,
 	 * in order to resolve co-occurrences.
 	 * <br/>
-	 * If {@code mentions} is {@code null}, the recognizer is applied to get
-	 * the mentions. If {@code recognizer} is this object and must be applied, 
-	 * then Nerwip tries to perform simultaneously mention recognition and coreference 
-	 * resolution, if the processor allows it. Otherwise, the same processor is applied 
-	 * separately for both tasks.
-	 * <br/>
-	 * Note the {@code Mention} object will be completed so as to point towards 
-	 * their assigned entities.
+	 * The recognizer that was set up for this resolver will automatically
+	 * be applied, or its results will be loaded if its cache is enabled 
+	 * (and the results are cached). The corresponding {@code Mentions}
+	 * object will be completed and returned with the {@link Entities}.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
-	 * @param mentions
-	 * 		List of the previously recognized mentions.
 	 * @return
-	 * 		List of the entities associated to the mentions.
+	 * 		Sets of the resulting mentions and entities.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public abstract Entities delegateResolve(Article article, Mentions mentions) throws ProcessorException;
+	public abstract MentionsEntities delegateResolve(Article article) throws ProcessorException;
 
 	/////////////////////////////////////////////////////////////////
 	// XML FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Returns the XML file associated to the specified
-	 * article.
+	 * article, and representing the resolved entities.
 	 * 
 	 * @param article
 	 * 		Article to process.
 	 * @return
 	 * 		A {@code File} object representing the associated XML result file.
 	 */
-	public File getXmlFile(Article article)
+	public File getEntitiesXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
 		String resolverFolder = getFolder();
-		if(resolverFolder!=null)
+		
+		InterfaceRecognizer recognizer = resolver.getRecognizer();
+		if(recognizer==null)
 			resultsFolder = resultsFolder + File.separator + resolverFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+		
+		resultsFolder = resultsFolder + File.separator + resolverFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
+		
+		File result = new File(filePath);
+		return result;
+	}
+	
+	/**
+	 * Returns the XML file associated to the specified
+	 * article, and representing the updated mentions.
+	 * 
+	 * @param article
+	 * 		Article to process.
+	 * @return
+	 * 		A {@code File} object representing the associated XML result file.
+	 */
+	public File getMentionsXmlFile(Article article)
+	{	String resultsFolder = article.getFolderPath();
+		String resolverFolder = getFolder();
+	
+		InterfaceRecognizer recognizer = resolver.getRecognizer();
+		if(recognizer==null)
+			resultsFolder = resultsFolder + File.separator + resolverFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+		
+		resultsFolder = resultsFolder + File.separator + resolverFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
 		
 		File result = new File(filePath);
@@ -178,15 +202,18 @@ public abstract class AbstractDelegateResolver
 	 * 		Problem while writing the file.
 	 */
 	public void writeXmlResults(Article article, Mentions mentions, Entities entities) throws IOException
-	{	// data file
-		File file = getXmlFile(article);
+	{	// data files
+		File entitiesFile = getEntitiesXmlFile(article);
+		File mentionsFile = getMentionsXmlFile(article);
 		
 		// check folder
-		File folder = file.getParentFile();
+		File folder = entitiesFile.getParentFile();
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		mentions.writeToXml(file,entities);
+		// create files
+		entities.writeToXml(entitiesFile);
+		mentions.writeToXml(mentionsFile,entities);
 	}
 	
 	/**
@@ -196,10 +223,8 @@ public abstract class AbstractDelegateResolver
 	 * 
 	 * @param article
 	 * 		Article to process.
-	 * @param mentions
-	 * 		Set of existing mentions, to be completed by this method.
-	 * @param entities
-	 * 		Empty set of entities, to be completed by this method.
+	 * @return
+	 * 		Sets of previously processed mentions and entities.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while reading the file.
@@ -208,24 +233,27 @@ public abstract class AbstractDelegateResolver
 	 * @throws ParseException 
 	 * 		Problem while parsing a date. 
 	 */
-	public void readXmlResults(Article article, Mentions mentions, Entities entities) throws SAXException, IOException, ParseException
-	{	File dataFile = getXmlFile(article);
+	public MentionsEntities readXmlResults(Article article) throws SAXException, IOException, ParseException
+	{	File entitiesFile = getEntitiesXmlFile(article);
+		Entities entities = Entities.readFromXml(entitiesFile);
+		File mentionsFile = getMentionsXmlFile(article);
+		Mentions mentions = Mentions.readFromXml(mentionsFile,entities);
+		MentionsEntities result = new MentionsEntities(mentions, entities);
+		return result;
 		
-		Mentions temp = Mentions.readFromXml(dataFile,entities);
-		
-		Iterator<AbstractMention<?>> it1 = mentions.getMentions().iterator();
-		Iterator<AbstractMention<?>> it2 = temp.getMentions().iterator();
-		while(it1.hasNext() && it2.hasNext())
-		{	AbstractMention<?> m1 = it1.next();
-			AbstractMention<?> m2 = it2.next();
-			if(m1.equals(m2))
-			{	AbstractEntity entity = m2.getEntity();
-				m1.setEntity(entity);
-			}
-		}
-		
-		if(it1.hasNext() || it2.hasNext())
-			throw new IllegalArgumentException("ERROR: different numbers of mentions in the existing and loaded mention sets");
+//		Iterator<AbstractMention<?>> it1 = mentions.getMentions().iterator();
+//		Iterator<AbstractMention<?>> it2 = temp.getMentions().iterator();
+//		while(it1.hasNext() && it2.hasNext())
+//		{	AbstractMention<?> m1 = it1.next();
+//			AbstractMention<?> m2 = it2.next();
+//			if(m1.equals(m2))
+//			{	AbstractEntity entity = m2.getEntity();
+//				m1.setEntity(entity);
+//			}
+//		}
+//		
+//		if(it1.hasNext() || it2.hasNext())
+//			throw new IllegalArgumentException("ERROR: different numbers of mentions in the existing and loaded mention sets");
 	}
 
 	/////////////////////////////////////////////////////////////////

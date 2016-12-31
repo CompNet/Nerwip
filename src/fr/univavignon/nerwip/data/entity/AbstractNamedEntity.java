@@ -232,12 +232,12 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 			{	// retrieve the data
 				KnowledgeBase kb = entry.getKey();
 				String externalId = entry.getValue();
-				// set up element
+				// set up id element
 				Element externalIdElt = new Element(XmlNames.ELT_EXTERNAL_ID);
 				externalIdElt.setText(externalId);
-				// set up attribute
-				Attribute nameAttr = new Attribute(XmlNames.ATT_NAME, kb.toString());
-				externalIdElt.setAttribute(nameAttr);
+				// set up knowledge base attribute
+				Attribute kbAttr = new Attribute(XmlNames.ATT_KNOWLEDGE_BASE, kb.toString());
+				externalIdElt.setAttribute(kbAttr);
 				// add to result
 				externalIdsElt.addContent(externalIdElt);
 			}
@@ -283,7 +283,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 			{	// external id
 				String externalId = externalIdElt.getText();
 				// knowledge base name
-				String kbStr = element.getAttributeValue(XmlNames.ATT_SOURCE);
+				String kbStr = element.getAttributeValue(XmlNames.ATT_KNOWLEDGE_BASE);
 				KnowledgeBase kb = KnowledgeBase.valueOf(kbStr);
 				// add to result
 				result.setExternalId(kb,externalId);

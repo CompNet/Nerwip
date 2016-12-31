@@ -32,6 +32,7 @@ import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
@@ -118,48 +119,51 @@ public abstract class AbstractDelegateLinker
 	 * in order to link entities to unique identifiers in 
 	 * databases such as DBpedia or Freelink.
 	 * <br/>
-	 * If {@code mentions} is {@code null}, the recognizer is applied to get
-	 * the mentions. Similarly, if {@code entities} is {@code null}, the
-	 * resolver is applied to get the entities. If {@code recognizer} and/or
-	 * {@code resolver} is this object and must be applied, then Nerwip tries 
-	 * to perform simultaneously the concerned tasks, provided this processor
-	 * allows it. Otherwise, the same processor is applied separately for all
-	 * tasks.
-	 * <br/>
-	 * Note that if the resolver is applied, the {@code Mention} object will be 
-	 * completed so as to point towards their assigned entities. When the linker
-	 * is applied, some entities can be completed (i.e. unique URI) and removed/added,
-	 * whereas the  mentions can be modified (link towards their entities). 
+	 * The recognizer and resolver that were set up for this linker will 
+	 * automatically be applied, or their results will be loaded if their
+	 * cache is enabled (and the results are cached). The corresponding 
+	 * {@code Mentions} object will be completed and returned wit the
+	 * {@link Entities}.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
-	 * @param mentions
-	 * 		List of the previously recognized mentions.
-	 * @param entities
-	 * 		List of the entities associated to the mentions.
+	 * @return
+	 * 		Sets of the resulting mentions and entities.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public abstract void delegateLink(Article article, Mentions mentions, Entities entities) throws ProcessorException;
+	public abstract MentionsEntities delegateLink(Article article) throws ProcessorException;
 
 	/////////////////////////////////////////////////////////////////
-	// XML FILE			/////////////////////////////////////////////
+	// XML FILES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Returns the XML file associated to the specified
-	 * article to contain the entities.
+	 * article, and representing the linked entities.
 	 * 
 	 * @param article
 	 * 		Article to process.
 	 * @return
 	 * 		A {@code File} object representing the associated XML result file.
 	 */
-	public File getEntitiesXmlFile(Article article)//TODO pas impossible qu'il faille préciser le recognizer et le resolver ici. pareil pr delegate resolver
+	public File getEntitiesXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
 		String linkerFolder = getFolder();
-		if(linkerFolder!=null)
+	
+		InterfaceRecognizer recognizer = linker.getRecognizer();
+		if(recognizer==null)
 			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+		
+		InterfaceResolver resolver = linker.getResolver();
+		if(resolver==null)
+			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + resolver.getResolverFolder();
+
+		resultsFolder = resultsFolder + File.separator + linkerFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
 		
 		File result = new File(filePath);
@@ -168,7 +172,7 @@ public abstract class AbstractDelegateLinker
 	
 	/**
 	 * Returns the XML file associated to the specified
-	 * article to contain the mentions.
+	 * article, and representing the updated mentions.
 	 * 
 	 * @param article
 	 * 		Article to process.
@@ -178,9 +182,21 @@ public abstract class AbstractDelegateLinker
 	public File getMentionsXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
 		String linkerFolder = getFolder();
-		if(linkerFolder!=null)
+	
+		InterfaceRecognizer recognizer = linker.getRecognizer();
+		if(recognizer==null)
 			resultsFolder = resultsFolder + File.separator + linkerFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
+		else
+			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+		
+		InterfaceResolver resolver = linker.getResolver();
+		if(resolver==null)
+			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + resolver.getResolverFolder();
+	
+		resultsFolder = resultsFolder + File.separator + linkerFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
 		
 		File result = new File(filePath);
 		return result;
@@ -200,7 +216,7 @@ public abstract class AbstractDelegateLinker
 	 * 		Problem while writing the file.
 	 */
 	public void writeXmlResults(Article article, Mentions mentions, Entities entities) throws IOException
-	{	// data file
+	{	// data files
 		File mentionsFile = getMentionsXmlFile(article);
 		File entitiesFile = getEntitiesXmlFile(article);
 		
@@ -209,6 +225,7 @@ public abstract class AbstractDelegateLinker
 		if(!folder.exists())
 			folder.mkdirs();
 		
+		// create files
 		mentions.writeToXml(mentionsFile, entities);
 		entities.writeToXml(entitiesFile);
 	}
@@ -221,7 +238,7 @@ public abstract class AbstractDelegateLinker
 	 * @param article
 	 * 		Article to process.
 	 * @return
-	 * 		The list of entities stored in the file.
+	 * 		The sets of mentions and entities stored in the XML files.
 	 * 
 	 * @throws SAXException
 	 * 		Problem while reading the file.
@@ -230,41 +247,19 @@ public abstract class AbstractDelegateLinker
 	 * @throws ParseException 
 	 * 		Problem while parsing a date. 
 	 */
-	public Entities readXmlResults(Article article) throws SAXException, IOException, ParseException
-	{	File dataFile = getEntitiesXmlFile(article);
+	public MentionsEntities readXmlResults(Article article) throws SAXException, IOException, ParseException
+	{	File entitiesFile = getEntitiesXmlFile(article);
+		Entities entities = Entities.readFromXml(entitiesFile);
+		File mentionsFile = getMentionsXmlFile(article);
+		Mentions mentions = Mentions.readFromXml(mentionsFile,entities);
+		MentionsEntities result = new MentionsEntities(mentions, entities);
 		
-		Entities result = Entities.readFromXml(dataFile);
-		
-		return result;
-	}
-
-	/**
-	 * Read the XML representation of the results
-	 * previously processed by the linker, for the 
-	 * specified article.
-	 * 
-	 * @param article
-	 * 		Article to process.
-	 * @param entities
-	 * 		The list of previously loaded entities.
-	 * @return
-	 * 		The list of mentions stored in the file.
-	 * 
-	 * @throws SAXException
-	 * 		Problem while reading the file.
-	 * @throws IOException
-	 * 		Problem while reading the file.
-	 * @throws ParseException 
-	 * 		Problem while parsing a date. 
-	 */
-	public Mentions readXmlResults(Article article, Entities entities) throws SAXException, IOException, ParseException
-	{	File dataFile = getEntitiesXmlFile(article);
-		
-		Mentions result = Mentions.readFromXml(dataFile,entities);
+//		File dataFile = getEntitiesXmlFile(article);
+//		Entities result = Entities.readFromXml(dataFile);
 		
 		return result;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

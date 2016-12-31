@@ -128,7 +128,7 @@ public class MentionOrganization extends AbstractMention<String>
 	 * @param source
 	 * 		Name of the recognizer which detected the mention.
 	 * @param entities
-	 * 		Known entities as of know (can be {@code null}).
+	 * 		Known entities as of now (can be {@code null}).
 	 * @return
 	 * 		The organization mention corresponding to the specified element.
 	 */
@@ -154,7 +154,8 @@ public class MentionOrganization extends AbstractMention<String>
 			long entityId = Long.parseLong(entityIdStr);
 			AbstractEntity entity = entities.getEntityById(entityId);
 			if(entity==null)
-				entity = new EntityOrganization(value,entityId);
+//				entity = new EntityOrganization(value,entityId);
+				throw new IllegalArgumentException("Did not find the entity (id: "+entityId+") refered to in mention "+result);
 			if(entity instanceof EntityOrganization)
 			{	EntityOrganization entityOrg = (EntityOrganization)entity;
 				entityOrg.addSurfaceForm(valueStr);

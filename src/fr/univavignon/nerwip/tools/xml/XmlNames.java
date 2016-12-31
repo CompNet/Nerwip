@@ -53,12 +53,18 @@ public class XmlNames
 	public static final String ATT_ID = "id";
 	/** Id associated to some key */
 	public static final String ATT_KEYID = "id";
+	/** Representation of a knowledge base */
+	public static final String ATT_KNOWLEDGE_BASE = "knowledgeBase";
+	/** Linker applied to the entity */
+	public static final String ATT_LINKER = "linker";
 	/** Represents a modification date */
 	public static final String ATT_MODIFICATION = "modification";
 	/** Some object name */
 	public static final String ATT_NAME = "name";
-	/** Processor used to handle the mention/entity */
-	public static final String ATT_SOURCE = "source";
+	/** Recognizer used to detect the mention */
+	public static final String ATT_RECOGNIZER = "recognizer";
+	/** Resolver applied to the mention/entity */
+	public static final String ATT_RESOLVER = "resolver";
 	/** Mention start position */
 	public static final String ATT_START = "start";
 	/** GUI tooltip */

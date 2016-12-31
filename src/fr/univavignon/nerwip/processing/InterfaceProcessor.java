@@ -22,7 +22,6 @@ package fr.univavignon.nerwip.processing;
  */
 
 import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
 
 /**
  * TODO
@@ -56,8 +55,8 @@ public interface InterfaceProcessor
 	
 	/**
 	 * Changes the cache flag. If {@code true}, the {@link InterfaceRecognizer#recognize(Article) process},
-	 * {@link InterfaceResolver#resolve(Article, Mentions)} and 
-	 * {@code InterfaceLinker#link(Article, Mentions, Entities)}
+	 * {@link InterfaceResolver#resolve(Article)} and 
+	 * {@code InterfaceLinker#link(Article)}
 	 * methods will first check if the results already
 	 * exist as a file. In this case, they will be loaded
 	 * from this file. Otherwise, the process will be

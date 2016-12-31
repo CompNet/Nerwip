@@ -27,7 +27,7 @@ import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.data.entity.MentionsEntities;
 
 /**
  * TODO
@@ -109,29 +109,20 @@ public interface InterfaceLinker extends InterfaceProcessor
 	 * in order to link entities to unique identifiers in 
 	 * databases such as DBpedia or Freelink.
 	 * <br/>
-	 * If {@code mentions} is {@code null}, the recognizer is applied to get
-	 * the mentions. Similarly, if {@code entities} is {@code null}, the
-	 * resolver is applied to get the entities. If {@code recognizer} and/or
-	 * {@code resolver} is this object and must be applied, then Nerwip tries 
-	 * to perform simultaneously the concerned tasks, provided this processor
-	 * allows it. Otherwise, the same processor is applied separately for all
-	 * tasks.
-	 * <br/>
-	 * Note that if the resolver is applied, the {@code Mention} object will be 
-	 * completed so as to point towards their assigned entities. When the linker
-	 * is applied, some entities can be completed (i.e. unique URI) and removed/added,
-	 * whereas the  mentions can be modified (link towards their entities). 
+	 * The recognizer and resolver that were set up for this linker will 
+	 * automatically be applied, or their results will be loaded if their
+	 * cache is enabled (and the results are cached). The corresponding 
+	 * {@code Mentions} object will be completed and returned wit the
+	 * {@link Entities}.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
-	 * @param mentions
-	 * 		List of the previously recognized mentions.
-	 * @param entities
-	 * 		List of the entities associated to the mentions.
+	 * @return
+	 * 		Sets of the updated mentions and their associated entities.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while resolving co-occurrences. 
 	 */
-	public void link(Article article, Mentions mentions, Entities entities) throws ProcessorException;
+	public MentionsEntities link(Article article) throws ProcessorException;
 }
  

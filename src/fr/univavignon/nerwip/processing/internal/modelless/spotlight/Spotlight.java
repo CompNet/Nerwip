@@ -25,8 +25,8 @@ import java.util.List;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
@@ -188,8 +188,8 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	}
 	
 	@Override
-	public Entities resolve(Article article, Mentions mentions) throws ProcessorException
-	{	Entities result = delegateResolver.delegateResolve(article,mentions);
+	public MentionsEntities resolve(Article article) throws ProcessorException
+	{	MentionsEntities result = delegateResolver.delegateResolve(article);
 		return result;
 	}
 
@@ -212,7 +212,8 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	}
 	
 	@Override
-	public void link(Article article, Mentions mentions, Entities entities) throws ProcessorException
-	{	delegateLinker.delegateLink(article,mentions,entities);
+	public MentionsEntities link(Article article) throws ProcessorException
+	{	MentionsEntities result = delegateLinker.delegateLink(article);
+		return result;
 	}
 }
