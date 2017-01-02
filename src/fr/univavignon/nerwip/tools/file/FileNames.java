@@ -2,7 +2,7 @@ package fr.univavignon.nerwip.tools.file;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
- * Copyright 2011-16 Vincent Labatut et al.
+ * Copyright 2011-17 Vincent Labatut et al.
  * 
  * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
  * 
@@ -51,9 +51,9 @@ public class FileNames
 //	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
-//	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
+	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
-	public final static String FO_OUTPUT = "C:/Users/Vincent/Downloads/Data";
+//	public final static String FO_OUTPUT = "C:/Users/Vincent/Downloads/Data";
 	
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "C:/Users/Sabrine/Dropbox/Test/test";

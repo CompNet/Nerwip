@@ -2,7 +2,7 @@ package fr.univavignon.nerwip;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
- * Copyright 2011-16 Vincent Labatut et al.
+ * Copyright 2011-17 Vincent Labatut et al.
  * 
  * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
  * 
@@ -72,6 +72,7 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionIstanbul
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionMucMeasure;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
+import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer.SubeeMode;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
@@ -178,8 +179,7 @@ public class Test
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
-//		testSpotlightRecognizer(name);
-//		testSpotlight();
+		testSpotlightRecognizer(name);
 //     	testNLDistance(S, T);
 //		testEventsExtraction();
 //		testEventComparison();
@@ -295,205 +295,6 @@ public class Test
 		logger.decreaseOffset();
 	}
 	
-	private static void testEventExtraction() throws Exception
-	{
-		logger.setName("Test-EventExtraction");
-		logger.log("Start testing EventExtraction");
-		logger.increaseOffset();
-		Article article;
-		Mentions mentions;
-		
-		ArticleList folders = ArticleLists.getArticleList();
-		int i = 0;
-		List<Event> allEventsList = new ArrayList<Event>();
-		for(File folder: folders)
-		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-			logger.increaseOffset();
-			// get the article texts
-			logger.log("Retrieve the article");
-			String name = folder.getName();
-		    InterfaceRecognizer recognizer = new StraightCombiner();
-		    ArticleRetriever retriever = new ArticleRetriever();
-		    article = retriever.process(name);
-		    String rawText = article.getRawText();
-		    // retrieve the mentions
-		   logger.log("Retrieve the mentions");
-		   mentions = recognizer.recognize(article);
-		   
-		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions); 
-		   allEventsList.addAll(extractedEvents);
-		
-		}
-		int size = allEventsList.size();
-		logger.log("size of allEvientslist " + size);
-		for (int k=0; k<= size -1; k++)
-		{ String name = allEventsList.get(k).getPerson().getStringValue();
-		logger.log("name " + k + name);
-		//String date = allEventsList.get(k).getDate().getStringValue();
-		//logger.log("date " + k + date);
-		}
-		
-	}
-	
-	private static void testEventComparison() throws Exception
-	{
-		logger.setName("Test-EventComparison");
-		logger.log("Start testing EventComparison");
-		logger.increaseOffset();
-		Article article;
-		Mentions mentions;
-		
-		ArticleList folders = ArticleLists.getArticleList();
-		int i = 0;
-		for(File folder: folders)
-		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-			logger.increaseOffset();
-			// get the article texts
-			logger.log("Retrieve the article");
-			String name = folder.getName();
-		    InterfaceRecognizer recognizer = new StraightCombiner();
-		    ArticleRetriever retriever = new ArticleRetriever();
-		    article = retriever.process(name);
-		    String rawText = article.getRawText();
-		    // retrieve the mentions
-		   logger.log("Retrieve the mentions");
-		   mentions = recognizer.recognize(article);
-	    
-		   //event comparison
-		List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
-		String xmlText = SpotlightTools.process(mentions, article);
-		logger.log("xmltext = " + xmlText);
-		String answer = SpotlightTools.disambiguate(xmlText);
-		logger.log("answer = " + answer);
-		
-		int size = extractedEvents.size();
-		logger.log("size is " + size);
-		
-		
-		if (extractedEvents.size() > 1)
-		{
-			logger.log("starting event comparison");
-			EventComparison.compareAllPairsOfEvents(extractedEvents, answer);
-		}
-		else logger.log("no events found");
-		
-		}
-				
-	}
-	
-	/*@SuppressWarnings("null")
-	private static void test2() throws Exception
-	{
-		Article article;
-		Mentions mentions = null;
-		
-		ArticleList folders = ArticleLists.getArticleList();
-		//List<AbstractEntity<?>> allMentionsList = null;
-		Mentions allMentions =  new Mentions();
-		int i = 0;
-		for(File folder: folders)
-		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-			logger.increaseOffset();
-			// get the article texts
-			logger.log("Retrieve the article");
-			String name = folder.getName();
-		    InterfaceRecognizer recognizer = new StraightCombiner();
-		    ArticleRetriever retriever = new ArticleRetriever();
-		    article = retriever.process(name);
-		    String rawText = article.getRawText();
-		    // retrieve the mentions
-		   logger.log("Retrieve the mentions");
-		   mentions = recognizer.process(article);
-		   //logger.log("SIZE OF ENTITIES OF ARTICLE " + name + mentions.getMentions().size());
-		   
-		   //allMentions = allMentions.addMentions(mentions);
-		  // allMentions = allMentions.addMentions(mentions);
-		   allMentions.addMentions(mentions);
-		   
-		
-		}
-		int n = allMentions.getMentions().size();
-		logger.log("all folders size + " + n );
-		List<AbstractEntity<?>> personMentions = new ArrayList<AbstractEntity<?>>();
-		   
-		@SuppressWarnings("null")
-		List<AbstractEntity<?>> ent = allMentions.getMentions();
-		for(AbstractEntity<?> e: ent)
-		{ EntityType entityType = e.getType();
-		  String type = entityType.toString();
-		  //logger.log("type = " + type);
-		  if (type == "PERSON")
-		  { logger.log("add this person to list " + e.getStringValue());
-			  personMentions.add(e);
-		  }
-		}
-		
-		int p = personMentions.size();
-		
-		logger.log("personMentions size " + p);
-		logger.log("size personMentions pour est " + p);
-		for (int j=0; j<p; j++)
-		{logger.log("mentionName " + personMentions.get(j).getStringValue());}
-		
-		
-	}*/
-	
-	private static void testSpotlightAllCorpus() throws Exception
-	{ String spotlightAnswer = SpotlightTools.SpotlightAllCorpus();
-	   logger.log("SpotlightAnswer " + spotlightAnswer);
-
-	   //List<String> entityList = SpotlightTools.getEntitySpotlight(spotlightAnswer);
-	   //logger.log("entityList " + entityList);
-
-	}
-	
-	/**
-	 * Tests the feature allowing to automatically
-	 * retrieve DBpediaSpotlight ids and types of entities.
-	 * 
-	 * @throws Exception
-	 * 		Something went wrong...
-	 */
-	private static void testSpotlight() throws Exception
-	{	logger.setName("Test-Spotlight");
-		logger.log("Start testing Spotlight");
-		logger.increaseOffset();
-	    
-		Article article;
-		Mentions mentions;
-		
-		ArticleList folders = ArticleLists.getArticleList();
-		int i = 0;
-//		for(File folder: folders)
-File folder = folders.get(0);		
-		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-			logger.increaseOffset();
-			// get the article texts
-			logger.log("Retrieve the article");
-			String name = folder.getName();
-		    InterfaceRecognizer recognizer = new StraightCombiner();
-		    ArticleRetriever retriever = new ArticleRetriever();
-		    article = retriever.process(name);
-		    String rawText = article.getRawText();
-		    // retrieve the entities
-		   logger.log("Retrieve the entities");
-		   mentions = recognizer.recognize(article);
-		   logger.log("start applying Spotlight to " + name);
-		   String xmlText = SpotlightTools.process(mentions, article);
-		   //logger.log("xmltext = " + xmlText);
-		   String answer = SpotlightTools.disambiguate(xmlText);
-			logger.log("answer = " + answer);
-			
-			//SpotlightTools.getEntitySpotlight(answer);
-			//SpotlightTools.getIdSpotlight(answer);
-			//SpotlightTools.getTypeSpotlight(answer);
-			logger.decreaseOffset();
-		}
-		
-	}
-	
-	
-	
 	/**
 	 * Tests the feature allowing to automatically
 	 * retrieve DBpedia ids of entities.
@@ -526,55 +327,6 @@ File folder = folders.get(0);
 		DbTypeTools.getAllTypes("Barack_Obama");
 		logger.decreaseOffset();
 	}
-	
-	/**
-	 * Tests the normalization of the Levenshtein distance.
-	 * 
-     * @param str1
-     * 		The first string.
-     * @param str2
-     *       The second string.
-	 */
-	private static void testNLDistance(String str1, String str2) 
-	{	logger.setName("Test-NLDistance");
-		logger.increaseOffset();
-		StringTools.getNormalizedLevenshtein(str1, str2);
-		logger.decreaseOffset();
-	}
-	
-	//List<Event> extractEvents(Article article, Mentions entities)
-	private static void testEventsExtraction() throws Exception
-	{   logger.setName("Test-EventComparison");
-	    logger.log("Start testing EventComparison");
-	    logger.increaseOffset();
-	    Article article;
-	    Mentions mentions;
-	
-	    ArticleList folders = ArticleLists.getArticleList();
-	    int i = 0;
-	    for(File folder: folders)
-	    {	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-		    logger.increaseOffset();
-		    // get the article texts
-		    logger.log("Retrieve the article");
-		    String name = folder.getName();
-	        InterfaceRecognizer recognizer = new StraightCombiner();
-	        ArticleRetriever retriever = new ArticleRetriever();
-	        article = retriever.process(name);
-	        String rawText = article.getRawText();
-	        // retrieve the entities
-	       logger.log("Retrieve the entities");
-	       mentions = recognizer.recognize(article);
-	   
-		   
-	
-		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
-		   int p = extractedEvents.size();
-		   logger.log("size of eventsList " + p);
-		   }
-	    
-	}
-	
 	
 	/**
 	 * Tests the feature allowing to automatically
@@ -670,6 +422,187 @@ File folder = folders.get(0);
 	}
 		
 	/////////////////////////////////////////////////////////////////
+	// EVENTS		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	private static void testEventExtraction() throws Exception
+	{
+		logger.setName("Test-EventExtraction");
+		logger.log("Start testing EventExtraction");
+		logger.increaseOffset();
+		Article article;
+		Mentions mentions;
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		List<Event> allEventsList = new ArrayList<Event>();
+		for(File folder: folders)
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+		    InterfaceRecognizer recognizer = new StraightCombiner();
+		    ArticleRetriever retriever = new ArticleRetriever();
+		    article = retriever.process(name);
+		    String rawText = article.getRawText();
+		    // retrieve the mentions
+		   logger.log("Retrieve the mentions");
+		   mentions = recognizer.recognize(article);
+		   
+		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions); 
+		   allEventsList.addAll(extractedEvents);
+		
+		}
+		int size = allEventsList.size();
+		logger.log("size of allEvientslist " + size);
+		for (int k=0; k<= size -1; k++)
+		{ String name = allEventsList.get(k).getPerson().getStringValue();
+		logger.log("name " + k + name);
+		//String date = allEventsList.get(k).getDate().getStringValue();
+		//logger.log("date " + k + date);
+		}
+		
+	}
+	
+	private static void testEventComparison() throws Exception
+	{
+		logger.setName("Test-EventComparison");
+		logger.log("Start testing EventComparison");
+		logger.increaseOffset();
+		Article article;
+		Mentions mentions;
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		for(File folder: folders)
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+		    InterfaceRecognizer recognizer = new StraightCombiner();
+		    ArticleRetriever retriever = new ArticleRetriever();
+		    article = retriever.process(name);
+		    String rawText = article.getRawText();
+		    // retrieve the mentions
+		   logger.log("Retrieve the mentions");
+		   mentions = recognizer.recognize(article);
+	    
+		   //event comparison
+		List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
+		String xmlText = SpotlightTools.process(mentions, article);
+		logger.log("xmltext = " + xmlText);
+		String answer = SpotlightTools.disambiguate(xmlText);
+		logger.log("answer = " + answer);
+		
+		int size = extractedEvents.size();
+		logger.log("size is " + size);
+		
+		
+		if (extractedEvents.size() > 1)
+		{
+			logger.log("starting event comparison");
+			EventComparison.compareAllPairsOfEvents(extractedEvents, answer);
+		}
+		else logger.log("no events found");
+		
+		}
+				
+	}
+	
+	/**
+	 * Tests the feature allowing to automatically
+	 * retrieve DBpediaSpotlight ids and types of entities.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong...
+	 */
+	private static void testSpotlight() throws Exception
+	{	logger.setName("Test-Spotlight");
+		logger.log("Start testing Spotlight");
+		logger.increaseOffset();
+	    
+		Article article;
+		Mentions mentions;
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+//		for(File folder: folders)
+File folder = folders.get(0);		
+		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+			logger.increaseOffset();
+			// get the article texts
+			logger.log("Retrieve the article");
+			String name = folder.getName();
+			InterfaceRecognizer recognizer = new StraightCombiner();
+			ArticleRetriever retriever = new ArticleRetriever();
+			article = retriever.process(name);
+			String rawText = article.getRawText();
+			// retrieve the entities
+			logger.log("Retrieve the entities");
+			mentions = recognizer.recognize(article);
+			logger.log("start applying Spotlight to " + name);
+			String xmlText = SpotlightTools.process(mentions, article);
+			//logger.log("xmltext = " + xmlText);
+			String answer = SpotlightTools.disambiguate(xmlText);
+			logger.log("answer = " + answer);
+
+			//SpotlightTools.getEntitySpotlight(answer);
+			//SpotlightTools.getIdSpotlight(answer);
+			//SpotlightTools.getTypeSpotlight(answer);
+			logger.decreaseOffset();
+		}
+	}
+	
+	/**
+	 * Tests the normalization of the Levenshtein distance.
+	 * 
+     * @param str1
+     * 		The first string.
+     * @param str2
+     *       The second string.
+	 */
+	private static void testNLDistance(String str1, String str2) 
+	{	logger.setName("Test-NLDistance");
+		logger.increaseOffset();
+		StringTools.getNormalizedLevenshtein(str1, str2);
+		logger.decreaseOffset();
+	}
+	
+	//List<Event> extractEvents(Article article, Mentions entities)
+	private static void testEventsExtraction() throws Exception
+	{   logger.setName("Test-EventComparison");
+	    logger.log("Start testing EventComparison");
+	    logger.increaseOffset();
+	    Article article;
+	    Mentions mentions;
+	
+	    ArticleList folders = ArticleLists.getArticleList();
+	    int i = 0;
+	    for(File folder: folders)
+	    {	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+		    logger.increaseOffset();
+		    // get the article texts
+		    logger.log("Retrieve the article");
+		    String name = folder.getName();
+	        InterfaceRecognizer recognizer = new StraightCombiner();
+	        ArticleRetriever retriever = new ArticleRetriever();
+	        article = retriever.process(name);
+	        String rawText = article.getRawText();
+	        // retrieve the entities
+	       logger.log("Retrieve the entities");
+	       mentions = recognizer.recognize(article);
+	   
+		   
+	
+		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
+		   int p = extractedEvents.size();
+		   logger.log("size of eventsList " + p);
+		   }
+	    
+	}
+	
+	/////////////////////////////////////////////////////////////////
 	// RECOGNITION	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
@@ -751,7 +684,7 @@ File folder = folders.get(0);
 //		openCalais.process(article);
 
 		// all the corpus
-		testAllCorpus(openCalais,0);
+		testAllCorpusRecognizer(openCalais,0);
 
 		logger.decreaseOffset();
 	}
@@ -819,7 +752,7 @@ File folder = folders.get(0);
 //		nero.process(article);
 
 		// all the corpus
-		testAllCorpus(nero,0);
+		testAllCorpusRecognizer(nero,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1177,7 +1110,7 @@ File folder = folders.get(0);
 //			heidelTime.process(article);
 
 			// all the corpus
-			testAllCorpus(heidelTime,0);
+			testAllCorpusRecognizer(heidelTime,0);
 		}
 		
 		logger.decreaseOffset();
@@ -1205,10 +1138,10 @@ File folder = folders.get(0);
 		spotlight.setCacheEnabled(false);
 		
 		// only the specified article
-//		spotlight.process(article);
+		spotlight.recognize(article);
 		
 		// all the corpus
-		testAllCorpus(spotlight,0);
+//		testAllCorpusRecognizer(spotlight,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1477,7 +1410,7 @@ File folder = folders.get(0);
 //		opener.process(article);
 		
 		// all the corpus
-		testAllCorpus(straightCombiner,0);
+		testAllCorpusRecognizer(straightCombiner,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1494,7 +1427,7 @@ File folder = folders.get(0);
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testAllCorpus(InterfaceRecognizer recognizer, int start) throws Exception
+	private static void testAllCorpusRecognizer(InterfaceRecognizer recognizer, int start) throws Exception
 	{	logger.log("Process each article individually");
 		logger.increaseOffset();
 		
@@ -1514,6 +1447,50 @@ File folder = folders.get(0);
 						
 					logger.log("Apply the recognizer");
 					recognizer.recognize(article);
+					
+				logger.decreaseOffset();
+			}
+			i++;
+		}
+		
+		logger.decreaseOffset();
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLUTION	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Applies the specified resolver to the 
+	 * whole corpus.
+	 * 
+	 * @param resolver
+	 * 		Resolver to apply.
+	 * @param start
+	 * 		Which article to start from.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testAllCorpusResolver(InterfaceResolver resolver, int start) throws Exception
+	{	logger.log("Process each article individually");
+		logger.increaseOffset();
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		for(File folder: folders)
+		{	if(i>=start)
+			{	// get the results
+				logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+				logger.increaseOffset();
+				
+					// get article
+					logger.log("Retrieve the article");
+					String name = folder.getName();
+					ArticleRetriever retriever = new ArticleRetriever();
+					Article article = retriever.process(name);
+						
+					logger.log("Apply the recognizer");
+					resolver.resolve(article);
 					
 				logger.decreaseOffset();
 			}
@@ -2198,22 +2175,6 @@ File folder = folders.get(0);
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
- *  TODO when dealing with folder names in resolver and linker: verify we actually add the recognizer and resolver folders, too. 
- *  
- *  TODO Where do the entities/mentions objects come from? if they're unique, they shouldn't be modified in the delegate, but cloned first.
- *    if they're not unique, then where are they created? This must be checked before testing.
- *  
- *  TODO carefuly trace the processing of both new AbstractInternalDelegates
- *  
- *  TODO entities should not be a return type, because they're likely to be completed from one article to the other
- *    so, it's possible to receive an already full object, to complete with the present article.
- *    Not the case for mentions though: Mentions is specific to an article. 
- *    But when doing recognizer+..., it is supposed to be received as an empty object, then filled.
- *  
- *  TODO related: maybe better to load the mentions/entities each time a tool is applied.
- *    this way, no pb of modifying existing objects, no conflict.
- *    also, no problem in knowing which parameters to pass to the methods...
- *  
  *  TODO
  *  - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.
  *    also, its entities are recorded in specific files, at the level of the corpus.

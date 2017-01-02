@@ -2,7 +2,7 @@ package fr.univavignon.nerwip.processing.internal.modelless.spotlight;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
- * Copyright 2011-16 Vincent Labatut et al.
+ * Copyright 2011-17 Vincent Labatut et al.
  * 
  * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
  * 
@@ -59,7 +59,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 {
 	/**
 	 * Builds and sets up an object representing
-	 * the Spotlight recognizer, resovler and linker.
+	 * the Spotlight recognizer, resolver and linker.
 	 * 
 	 * @param minConf 
 	 * 		Minimal confidence for the mentions returned by the recognizer.
