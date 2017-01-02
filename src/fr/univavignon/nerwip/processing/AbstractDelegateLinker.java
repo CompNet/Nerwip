@@ -279,10 +279,22 @@ public abstract class AbstractDelegateLinker
 	public File getRawFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
 		String linkerFolder = getFolder();
-		if(linkerFolder!=null)
-			resultsFolder = resultsFolder + File.separator + linkerFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;
 	
+		InterfaceRecognizer recognizer = linker.getRecognizer();
+		if(recognizer==null)
+			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+		
+		InterfaceResolver resolver = linker.getResolver();
+		if(resolver==null)
+			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + resolver.getResolverFolder();
+	
+		resultsFolder = resultsFolder + File.separator + linkerFolder;
+		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;
+		
 		File result = new File(filePath);
 		return result;
 	}

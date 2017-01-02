@@ -150,6 +150,10 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 				logger.log("Convert results to internal representation and complete existing mentions");
 				entities = convert(article,intRes,mentions);
 				
+				// possibly complete entities, if some mentions do not have any
+				logger.log("Complete mentions/entities (in case of missing entities)");
+				complete(mentions,entities);
+				
 				// record mentions using our xml format
 				logger.log("Record mentions using our XML format, including entity references");
 				writeXmlResults(article,mentions,entities);
@@ -183,7 +187,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 		logger.decreaseOffset();
 		return result;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

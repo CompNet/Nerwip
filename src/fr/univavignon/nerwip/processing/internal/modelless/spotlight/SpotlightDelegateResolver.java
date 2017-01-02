@@ -71,7 +71,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	 * @param spotlight
 	 * 		Recognizer in charge of this delegate.
 	 * @param minConf 
-	 * 		Minimal confidence for the returned entities.
+	 * 		Minimal confidence for the recognized mentions (used only in case of recognition).
 	 */
 	public SpotlightDelegateResolver(Spotlight spotlight, float minConf)
 	{	super(spotlight);

@@ -84,29 +84,29 @@ public class SpotlightTools
 	/** Common object used for logging */
 	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
-	/**
-	 * Tests the class.
-	 * 
-	 * @param args
-	 * 		No need.
-	 * @throws ProcessorException 
-	 * 		Whatever problem occurred...
-	 */
-	public static void main(String[] args) throws ProcessorException 
-	{	String text = "Carrie Fisher, née le 21 octobre 1956 à Beverly Hills et morte le 27 décembre 2016 à Los Angeles, est une actrice, romancière et scénariste américaine.";
-		Article article = new Article("Carrie Fisher");
-		article.setLanguage(ArticleLanguage.FR);
-		article.setRawText(text);
-		Mentions mentions = new Mentions(ProcessorName.REFERENCE);
-		mentions.addMention(new MentionPerson(0, 13, ProcessorName.REFERENCE, "Carrie Fisher"));
-		mentions.addMention(new MentionDate(22, 37, ProcessorName.REFERENCE, "27 décembre 2016"));
-		mentions.addMention(new MentionLocation(85, 96, ProcessorName.REFERENCE, "Los Angeles"));
-		mentions.addMention(new MentionFunction(106, 113, ProcessorName.REFERENCE, "actrice"));
-		mentions.addMention(new MentionFunction(115, 125, ProcessorName.REFERENCE, "romancière"));
-		mentions.addMention(new MentionFunction(129, 139, ProcessorName.REFERENCE, "scénariste"));
-		List<String> list = invokeDisambiguate(article, mentions);
-		System.out.println(list);
-	}
+//	/**
+//	 * Tests the class.
+//	 * 
+//	 * @param args
+//	 * 		No need.
+//	 * @throws ProcessorException 
+//	 * 		Whatever problem occurred...
+//	 */
+//	public static void main(String[] args) throws ProcessorException 
+//	{	String text = "Carrie Fisher, née le 21 octobre 1956 à Beverly Hills et morte le 27 décembre 2016 à Los Angeles, est une actrice, romancière et scénariste américaine.";
+//		Article article = new Article("Carrie Fisher");
+//		article.setLanguage(ArticleLanguage.FR);
+//		article.setRawText(text);
+//		Mentions mentions = new Mentions(ProcessorName.REFERENCE);
+//		mentions.addMention(new MentionPerson(0, 13, ProcessorName.REFERENCE, "Carrie Fisher"));
+//		mentions.addMention(new MentionDate(22, 37, ProcessorName.REFERENCE, "27 décembre 2016"));
+//		mentions.addMention(new MentionLocation(85, 96, ProcessorName.REFERENCE, "Los Angeles"));
+//		mentions.addMention(new MentionFunction(106, 113, ProcessorName.REFERENCE, "actrice"));
+//		mentions.addMention(new MentionFunction(115, 125, ProcessorName.REFERENCE, "romancière"));
+//		mentions.addMention(new MentionFunction(129, 139, ProcessorName.REFERENCE, "scénariste"));
+//		List<String> list = invokeDisambiguate(article, mentions);
+//		System.out.println(list);
+//	}
 	
 	/////////////////////////////////////////////////////////////////
 	// URL			 		/////////////////////////////////////////
@@ -626,6 +626,7 @@ public class SpotlightTools
 					{	AbstractNamedEntity entity = entities.getNamedEntityById(uri, KnowledgeBase.DB_PEDIA);
 						if(entity==null)
 						{	entity = AbstractNamedEntity.buildEntity(-1, surfaceForm, type);
+							entity.setExternalId(KnowledgeBase.DB_PEDIA, uri);
 							entities.addEntity(entity);
 							logger.log("Created named entity "+entity.toString());
 						}

@@ -30,9 +30,13 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
+import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
+import fr.univavignon.nerwip.data.entity.AbstractValuedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
+import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
@@ -132,7 +136,42 @@ public abstract class AbstractDelegateResolver
 	 * 		Problem while resolving co-occurrences. 
 	 */
 	public abstract MentionsEntities delegateResolve(Article article) throws ProcessorException;
-
+	
+	/**
+	 * If the resolver did not associate any entity to a mention, this method
+	 * creates an <i>ad hoc</i> entity specially for the mention, and associates
+	 * it to the mention. So, it creates entities and modifies existing mentions.
+	 * 
+	 * @param mentions
+	 * 		Current mentions.
+	 * @param entities
+	 * 		Current entities.
+	 */
+	protected void complete(Mentions mentions, Entities entities)
+	{	List<AbstractMention<?>> mentionList = mentions.getMentions();
+		for(AbstractMention<?> mention: mentionList)
+		{	AbstractEntity entity = mention.getEntity();
+			if(entity==null)
+			{	EntityType type = mention.getType();
+				if(type.isNamed())
+				{	String name = mention.getStringValue();
+					entity = AbstractNamedEntity.buildEntity(-1, name, type);
+					// we could try to retrieve an existing entity of the exact same name
+					// but there is a risk to get homonyms
+				}
+				else
+				{	// for the values, there is no homonymy risk
+					Comparable<?> value = mention.getValue();
+					entity = entities.getValuedEntityByValue(value);
+					if(entity==null)
+						entity = AbstractValuedEntity.buildEntity(-1, value, type);
+				}
+				entities.addEntity(entity);
+				mention.setEntity(entity);
+			}
+		}
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// XML FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -275,10 +314,16 @@ public abstract class AbstractDelegateResolver
 	public File getRawFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
 		String resolverFolder = getFolder();
-		if(resolverFolder!=null)
+		
+		InterfaceRecognizer recognizer = resolver.getRecognizer();
+		if(recognizer==null)
 			resultsFolder = resultsFolder + File.separator + resolverFolder;
+		else
+			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+		
+		resultsFolder = resultsFolder + File.separator + resolverFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;
-	
+		
 		File result = new File(filePath);
 		return result;
 	}

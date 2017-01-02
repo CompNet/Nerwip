@@ -179,7 +179,8 @@ public class Test
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
-		testSpotlightRecognizer(name);
+//		testSpotlightRecognizer(name);
+		testSpotlightResolver(name);
 //     	testNLDistance(S, T);
 //		testEventsExtraction();
 //		testEventComparison();
@@ -1138,10 +1139,10 @@ File folder = folders.get(0);
 		spotlight.setCacheEnabled(false);
 		
 		// only the specified article
-		spotlight.recognize(article);
+//		spotlight.recognize(article);
 		
 		// all the corpus
-//		testAllCorpusRecognizer(spotlight,0);
+		testAllCorpusRecognizer(spotlight,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1459,6 +1460,36 @@ File folder = folders.get(0);
 	/////////////////////////////////////////////////////////////////
 	// RESOLUTION	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/**
+	 * Tests the features related to a resolver. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testSpotlightResolver(String name) throws Exception
+	{	logger.setName("Test-Spotlight-Resolver");
+		logger.log("Start testing Spotlight");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		Spotlight spotlight = new Spotlight(0.3f);
+		spotlight.setOutputRawResults(true);
+		spotlight.setCacheEnabled(false);
+		
+		// only the specified article
+		spotlight.resolve(article);
+		
+		// all the corpus
+//		testAllCorpusRecognizer(spotlight,0);
+		
+		logger.decreaseOffset();
+	}
+	
 	/**
 	 * Applies the specified resolver to the 
 	 * whole corpus.
@@ -2181,6 +2212,12 @@ File folder = folders.get(0);
  *    whereas the new mentions (bc of their entities) are recorded in a different file in the concerned linker folders of each article (?)
  *   
  *   TODO check the new OpenNer French models
+ *   
+ *   
+ *   TODO
+ *   - reset of the entity counter (maybe just init when creating new entities object)
+ *   - test linker
+ *   - test on another recognizer 
  */
 
 /*
