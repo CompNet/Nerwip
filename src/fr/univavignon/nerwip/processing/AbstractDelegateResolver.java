@@ -55,9 +55,14 @@ public abstract class AbstractDelegateResolver
 	 * 
 	 * @param resolver
 	 * 		Resolver associated to this delegate.
+	 * @param resolveHomonyms
+	 * 		Whether unresolved named entities should be resolved based
+	 * 		on exact homonymy, or not.
 	 */
-	public AbstractDelegateResolver(InterfaceResolver resolver)
+	public AbstractDelegateResolver(InterfaceResolver resolver, boolean resolveHomonyms)
 	{	this.resolver = resolver;
+	
+		this.resolveHomonyms = resolveHomonyms;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -155,22 +160,37 @@ public abstract class AbstractDelegateResolver
 			{	EntityType type = mention.getType();
 				if(type.isNamed())
 				{	String name = mention.getStringValue();
-					entity = AbstractNamedEntity.buildEntity(-1, name, type);
-					// we could try to retrieve an existing entity of the exact same name
-					// but there is a risk to get homonyms
+					if(resolveHomonyms)
+					{	List<AbstractNamedEntity> list = entities.getNamedEntitiesByName(name);
+						if(list.size()==1)
+							entity = list.get(0);
+						else if(list.size()>1)
+							logger.log("WARNING: several entities already have the same name >> creating a new one.");
+					}
+					if(entity==null)
+					{	entity = AbstractNamedEntity.buildEntity(-1, name, type);
+						entities.addEntity(entity);
+					}
 				}
 				else
 				{	// for the values, there is no homonymy risk
 					Comparable<?> value = mention.getValue();
 					entity = entities.getValuedEntityByValue(value);
 					if(entity==null)
-						entity = AbstractValuedEntity.buildEntity(-1, value, type);
+					{	entity = AbstractValuedEntity.buildEntity(-1, value, type);
+						entities.addEntity(entity);
+					}
 				}
-				entities.addEntity(entity);
 				mention.setEntity(entity);
 			}
 		}
 	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVE HOMONYMS		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Whether or not unresolved named entities should be resolved through homonymy */
+	protected boolean resolveHomonyms = true;
 	
 	/////////////////////////////////////////////////////////////////
 	// XML FILE			/////////////////////////////////////////////

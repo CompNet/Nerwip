@@ -61,6 +61,7 @@ import fr.univavignon.extractor.temp.tools.dbpedia.DbTypeTools;
 import fr.univavignon.extractor.temp.tools.dbspotlight.SpotlightTools;
 import fr.univavignon.extractor.temp.tools.mediawiki.WikiIdTools;
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
@@ -71,6 +72,7 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognition
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionIstanbulMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionMucMeasure;
+import fr.univavignon.nerwip.processing.InterfaceLinker;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
@@ -1133,8 +1135,10 @@ File folder = folders.get(0);
 	
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
-
-		Spotlight spotlight = new Spotlight(0.3f);
+		
+		float minConf = 0.3f;
+		boolean resolveHomonyms = true;
+		Spotlight spotlight = new Spotlight(minConf,resolveHomonyms);
 		spotlight.setOutputRawResults(true);
 		spotlight.setCacheEnabled(false);
 		
@@ -1477,15 +1481,19 @@ File folder = folders.get(0);
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
 
-		Spotlight spotlight = new Spotlight(0.3f);
+		float minConf = 0.3f;
+		boolean resolveHomonyms = true;
+//		Spotlight spotlight = new Spotlight(minConf,resolveHomonyms);
+		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, true, true);
+		Spotlight spotlight = new Spotlight(recognizer,resolveHomonyms);
 		spotlight.setOutputRawResults(true);
 		spotlight.setCacheEnabled(false);
 		
 		// only the specified article
-		spotlight.resolve(article);
+//		spotlight.resolve(article);
 		
 		// all the corpus
-//		testAllCorpusRecognizer(spotlight,0);
+		testAllCorpusResolver(spotlight,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1522,6 +1530,84 @@ File folder = folders.get(0);
 						
 					logger.log("Apply the recognizer");
 					resolver.resolve(article);
+					
+				logger.decreaseOffset();
+			}
+			i++;
+		}
+		
+		logger.decreaseOffset();
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LINKING		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Tests the features related to a linker. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testSpotlightLinker(String name) throws Exception
+	{	logger.setName("Test-Spotlight-Linker");
+		logger.log("Start testing Spotlight");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		float minConf = 0.3f;
+		boolean resolveHomonyms = true;
+		Spotlight spotlight = new Spotlight(minConf,resolveHomonyms);
+//		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, true, true);
+//		Spotlight spotlight = new Spotlight(recognizer,resolveHomonyms);
+		spotlight.setOutputRawResults(true);
+		spotlight.setCacheEnabled(false);
+		
+		// only the specified article
+		spotlight.link(article);
+		
+		// all the corpus
+//		testAllCorpusLinker(spotlight,0);
+		
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Applies the specified linker to the 
+	 * whole corpus.
+	 * 
+	 * @param linker
+	 * 		Linker to apply.
+	 * @param start
+	 * 		Which article to start from.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testAllCorpusLinker(InterfaceLinker linker, int start) throws Exception
+	{	logger.log("Process each article individually");
+		logger.increaseOffset();
+		
+		ArticleList folders = ArticleLists.getArticleList();
+		int i = 0;
+		for(File folder: folders)
+		{	if(i>=start)
+			{	// get the results
+				logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
+				logger.increaseOffset();
+				
+					// get article
+					logger.log("Retrieve the article");
+					String name = folder.getName();
+					ArticleRetriever retriever = new ArticleRetriever();
+					Article article = retriever.process(name);
+						
+					logger.log("Apply the recognizer");
+					linker.link(article);
 					
 				logger.decreaseOffset();
 			}
@@ -1671,9 +1757,9 @@ File folder = folders.get(0);
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, false),
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, true),	// LOC, ORG, PERS
 
-			new Spotlight(0.1f),	// LOC, MEET, ORG, PERS, PROD
-			new Spotlight(0.2f),	// LOC, MEET, ORG, PERS, PROD
-			new Spotlight(0.3f),	// LOC, MEET, ORG, PERS, PROD
+			new Spotlight(0.1f,true),	// LOC, MEET, ORG, PERS, PROD
+			new Spotlight(0.2f,true),	// LOC, MEET, ORG, PERS, PROD
+			new Spotlight(0.3f,true),	// LOC, MEET, ORG, PERS, PROD
 				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
@@ -2215,9 +2301,7 @@ File folder = folders.get(0);
  *   
  *   
  *   TODO
- *   - reset of the entity counter (maybe just init when creating new entities object)
- *   - test linker
- *   - test on another recognizer 
+ *   - add surface forms to entities (in resolver and in linker)
  */
 
 /*

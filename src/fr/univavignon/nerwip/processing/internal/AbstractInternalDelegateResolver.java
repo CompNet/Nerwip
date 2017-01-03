@@ -59,9 +59,12 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	 * 
 	 * @param resolver
 	 * 		Resolver associated to this delegate.
+	 * @param resolveHomonyms
+	 * 		Whether unresolved named entities should be resolved based
+	 * 		on exact homonymy, or not.
 	 */
-	public AbstractInternalDelegateResolver(InterfaceResolver resolver)
-	{	super(resolver);
+	public AbstractInternalDelegateResolver(InterfaceResolver resolver, boolean resolveHomonyms)
+	{	super(resolver,resolveHomonyms);
 	}
 	
 	/////////////////////////////////////////////////////////////////

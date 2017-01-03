@@ -24,6 +24,7 @@ package fr.univavignon.nerwip.processing.internal.modelless.spotlight;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -145,9 +146,6 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	{	ProcessorName linkerName = linker.getName();
 		Entities result = new Entities(linkerName);
 		InterfaceRecognizer recognizer = linker.getRecognizer();
-
-//TODO maybe add some test on the content of the received entites? will they be recognized during the conversion, or will new ones be created?
-//TODO also, what about the mentions? They are supposed to already be linked to existing entities (even if not properly linked to KB)
 		
 		// if spotlight is also the recognizer
 		if(recognizer==null)
@@ -160,20 +158,36 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	/////////////////////////////////////////////////////////////////
 	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    @Override
+	@Override
     protected void writeRawResults(Article article, List<String> intRes) throws IOException
-    {	String temp = "";
-        int i = 0;
-        for(String str: intRes)
-        {
-        	i++;
-        	if(i%2==1)
-        		temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size()/2 + " - Original Text <<<\n" + str + "\n";
-        	else
+    {	InterfaceRecognizer recognizer = linker.getRecognizer();
+    	
+    	// number of parts
+    	int total;
+    	if(recognizer==null)
+    		total = intRes.size()/2;
+    	else
+    		total = intRes.size()/3;
+        
+    	// build the string
+    	StringBuffer string = new StringBuffer();
+    	int i = 1;
+        Iterator<String> it = intRes.iterator();
+        while(it.hasNext())
+        {	String originalText = it.next();
+        	// original text
+			string.append("\n>>> Part " + i + "/" + total + " - Original text <<<\n" + originalText + "\n");
+			// converted text
+        	if(recognizer==null)
+        	{	String convertedText = it.next();
+        		string.append("\n>>> Part " + i + "/" + total + " - Converted text <<<\n" + convertedText + "\n");
+        	}
+        	// spotlight response
+        	String spotlightAnswer = it.next();
         	{	try
         		{	// build DOM
 					SAXBuilder sb = new SAXBuilder();
-					Document doc = sb.build(new StringReader(str));
+					Document doc = sb.build(new StringReader(spotlightAnswer));
 					Format format = Format.getPrettyFormat();
 					format.setIndent("\t");
 					format.setEncoding("UTF-8");
@@ -181,14 +195,15 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 					String xmlTxt = xo.outputString(doc);
 					
 					// add SpotLight format
-					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - SpotLight Response <<<\n" + xmlTxt + "\n";
+					string.append("\n>>> Part " + i + "/" + total + " - SpotLight Response <<<\n" + xmlTxt + "\n");
         		}
         		catch (JDOMException e)
         		{	e.printStackTrace();
         		}
         	}
+        	i++;
     	}
         
-        writeRawResultsStr(article, temp);
+        writeRawResultsStr(article, string.toString());
     }
 }

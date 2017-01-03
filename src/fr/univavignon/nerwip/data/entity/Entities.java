@@ -24,6 +24,7 @@ package fr.univavignon.nerwip.data.entity;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -264,13 +265,15 @@ public class Entities
 	// ENTITIES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Counter used to number entities */
-	private long nextInternalId = 0;	//TODO this must be recorded/loaded with the rest of this class
+	private long nextInternalId = 0;
 	/** Set of entities */
 	private final Set<AbstractEntity> entities = new TreeSet<AbstractEntity>();
 	/** Entities by internal id */
 	private final Map<Long,AbstractEntity> entitiesById = new HashMap<Long,AbstractEntity>();
 	/** Named entities by external id */
 	private final Map<KnowledgeBase,Map<String,AbstractNamedEntity>> namedEntitiesByExternalId = new HashMap<KnowledgeBase,Map<String,AbstractNamedEntity>>();
+	/** Named entities by name */
+	private final Map<String,List<AbstractNamedEntity>> namedEntitiesByName = new HashMap<String,List<AbstractNamedEntity>>();
 	/** Valued entities by value */
 	private final Map<Comparable<?>,AbstractValuedEntity<?>> valuedEntitiesByValue = new HashMap<Comparable<?>,AbstractValuedEntity<?>>();
 	
@@ -317,6 +320,21 @@ public class Entities
 	}
 
 	/**
+	 * Returns a list of named entity with the specified name.
+	 *  
+	 * @param name
+	 * 		Name of the targeted entity, which may not be unique.
+	 * @return
+	 * 		A list (possibly empty) of named entities with the specified name.
+	 */
+	public List<AbstractNamedEntity> getNamedEntitiesByName(String name)
+	{	List<AbstractNamedEntity> result = namedEntitiesByName.get(name);
+		if(result==null)
+			result = new ArrayList<AbstractNamedEntity>();
+		return result;
+	}
+
+	/**
 	 * Returns the valued entity with the specified value.
 	 * 
 	 * @param value
@@ -341,13 +359,20 @@ public class Entities
 		{	entity.internalId = nextInternalId;
 			nextInternalId++;
 		}
+		else
+		{	if(entitiesById.containsKey(entity.internalId))
+				throw new IllegalArgumentException("This Entities object already contains an entity with the same internal id.");
+			else
+				nextInternalId = Math.max(nextInternalId, entity.internalId+1);
+		}
 		
 		// add the entity
 		entities.add(entity);
 		entitiesById.put(entity.internalId,entity);
 		// add the named entity
 		if(entity instanceof AbstractNamedEntity)
-		{	AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+		{	// map by id
+			AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
 			Set<Entry<KnowledgeBase, String>> entrySet = namedEntity.getExternalIds().entrySet();
 			for(Entry<KnowledgeBase, String> entry: entrySet)
 			{	KnowledgeBase kb = entry.getKey();
@@ -361,6 +386,16 @@ public class Entities
 					throw new IllegalArgumentException("Trying to add a named entity possessing the same external id ("+kb+":"+id+") than an already existing one.");
 				else
 					map.put(id,namedEntity);
+			}
+			// map by name
+			Set<String> names = namedEntity.getSurfaceForms();
+			for(String name: names)
+			{	List<AbstractNamedEntity> list = namedEntitiesByName.get(name);
+				if(list==null)
+				{	list = new ArrayList<AbstractNamedEntity>();
+					namedEntitiesByName.put(name,list);
+				}
+				list.add(namedEntity);
 			}
 		}
 		// add the valued entity

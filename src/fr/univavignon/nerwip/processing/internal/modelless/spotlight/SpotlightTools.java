@@ -30,17 +30,12 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.AbstractValuedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.KnowledgeBase;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.MentionDate;
-import fr.univavignon.nerwip.data.entity.mention.MentionFunction;
-import fr.univavignon.nerwip.data.entity.mention.MentionLocation;
-import fr.univavignon.nerwip.data.entity.mention.MentionPerson;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
@@ -302,9 +297,20 @@ public class SpotlightTools
 		}
 		
 		// invoke the service
-		List<String> result = invokeService(convertedParts, serviceUrl, origParams);
+		List<String> temp = invokeService(convertedParts, serviceUrl, origParams);
 		
-		// add the raw text to the result?
+		// add the raw text to the result
+		List<String> result = new ArrayList<String>();
+		Iterator<String> it1 = temp.iterator();
+		Iterator<String> it2 = parts.iterator();
+		while(it2.hasNext())
+		{	String originalText = it2.next();
+			result.add(originalText);
+			String convertedText = it1.next();
+			result.add(convertedText);
+			String spotlightAnswer = it1.next();
+			result.add(spotlightAnswer);
+		}
 		
 		logger.decreaseOffset();
 		return result;
@@ -481,6 +487,8 @@ public class SpotlightTools
 		{	i++;
 			logger.log("Processing part "+i+"/"+data.size()/2);
 			String originalText = it.next();
+			if(!annotate)
+				it.next(); // pass the converted original text  
 			String spotlightAnswer = it.next();
 			
 			try
@@ -613,12 +621,13 @@ public class SpotlightTools
 			else
 			{	AbstractMention<?> mention;
 				if(annotate)
-				{	mention = AbstractMention.build(type, startPos, endPos, processorName, valueStr);
+				{	mention = AbstractMention.build(type, startPos, endPos, processorName, surfaceForm);
 					mentions.addMention(mention);
 					logger.log("Created mention "+mention.toString());
 				}
 				else
-				{	mention = mentions.getMentionAt(startPos);
+				{	List<AbstractMention<?>> list = mentions.getMentionsIn(startPos, startPos+1);
+					mention = list.get(0);
 					logger.log("Retrieved mention "+mention.toString());
 				}
 				if(entities!=null)

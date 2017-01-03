@@ -138,7 +138,8 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	}
 
 	/**
-	 * Add one name to this entity.
+	 * Add one name to this entity. If the name is already
+	 * present, it is not added.
 	 * 
 	 * @param surfaceForm
 	 * 		New name for this entity.

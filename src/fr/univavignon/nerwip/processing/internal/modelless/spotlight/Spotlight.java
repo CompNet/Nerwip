@@ -63,13 +63,16 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	 * 
 	 * @param minConf 
 	 * 		Minimal confidence for the mentions returned by the recognizer.
+	 * @param resolveHomonyms
+	 * 		Whether unresolved named entities should be resolved based
+	 * 		on exact homonymy, or not.
 	 */
-	public Spotlight(float minConf)
+	public Spotlight(float minConf, boolean resolveHomonyms)
 	{	// recognize
 		delegateRecognizer = new SpotlightDelegateRecognizer(this, minConf);
 		this.recognizer = null;
 		// resolve
-		delegateResolver = new SpotlightDelegateResolver(this, minConf);
+		delegateResolver = new SpotlightDelegateResolver(this, minConf, resolveHomonyms);
 		this.resolver = null;
 		// link
 		delegateLinker = new SpotlightDelegateLinker(this, minConf);
@@ -90,13 +93,16 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	 * 
 	 * @param recognizer
 	 * 		Processor used to recognize the entity mentions.
+	 * @param resolveHomonyms
+	 * 		Whether unresolved named entities should be resolved based
+	 * 		on exact homonymy, or not.
 	 */
-	public Spotlight(InterfaceRecognizer recognizer)
+	public Spotlight(InterfaceRecognizer recognizer, boolean resolveHomonyms)
 	{	// recognize
 		delegateRecognizer = null;
 		this.recognizer = recognizer;
 		// resolve
-		delegateResolver = new SpotlightDelegateResolver(this, 0);
+		delegateResolver = new SpotlightDelegateResolver(this, 0, resolveHomonyms);
 		this.resolver = null;
 		// link
 		delegateLinker = new SpotlightDelegateLinker(this, 0);

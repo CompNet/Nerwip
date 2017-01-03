@@ -24,6 +24,7 @@ package fr.univavignon.nerwip.processing.internal.modelless.spotlight;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -72,9 +73,12 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	 * 		Recognizer in charge of this delegate.
 	 * @param minConf 
 	 * 		Minimal confidence for the recognized mentions (used only in case of recognition).
+	 * @param resolveHomonyms
+	 * 		Whether unresolved named entities should be resolved based
+	 * 		on exact homonymy, or not.
 	 */
-	public SpotlightDelegateResolver(Spotlight spotlight, float minConf)
-	{	super(spotlight);
+	public SpotlightDelegateResolver(Spotlight spotlight, float minConf, boolean resolveHomonyms)
+	{	super(spotlight, resolveHomonyms);
 		
 		this.minConf = minConf;
 	}
@@ -86,6 +90,7 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	public String getFolder()
 	{	String result = resolver.getName().toString();
 		
+		result = result + "_" + "resHom=" + resolveHomonyms;
 		result = result + "_" + "minConf=" + minConf;
 		
 		return result;
@@ -170,18 +175,34 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 	/////////////////////////////////////////////////////////////////
     @Override
     protected void writeRawResults(Article article, List<String> intRes) throws IOException
-    {	String temp = "";
-        int i = 0;
-        for(String str: intRes)
-        {
-        	i++;
-        	if(i%2==1)
-        		temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size()/2 + " - Original text <<<\n" + str + "\n";
-        	else
+    {	InterfaceRecognizer recognizer = resolver.getRecognizer();
+    	
+    	// number of parts
+    	int total;
+    	if(recognizer==null)
+    		total = intRes.size()/2;
+    	else
+    		total = intRes.size()/3;
+        
+    	// build the string
+    	StringBuffer string = new StringBuffer();
+    	int i = 1;
+        Iterator<String> it = intRes.iterator();
+        while(it.hasNext())
+        {	String originalText = it.next();
+        	// original text
+			string.append("\n>>> Part " + i + "/" + total + " - Original text <<<\n" + originalText + "\n");
+			// converted text
+        	if(recognizer!=null)
+        	{	String convertedText = it.next();
+        		string.append("\n>>> Part " + i + "/" + total + " - Converted text <<<\n" + convertedText + "\n");
+        	}
+        	// spotlight response
+        	String spotlightAnswer = it.next();
         	{	try
         		{	// build DOM
 					SAXBuilder sb = new SAXBuilder();
-					Document doc = sb.build(new StringReader(str));
+					Document doc = sb.build(new StringReader(spotlightAnswer));
 					Format format = Format.getPrettyFormat();
 					format.setIndent("\t");
 					format.setEncoding("UTF-8");
@@ -189,14 +210,15 @@ public class SpotlightDelegateResolver extends AbstractModellessInternalDelegate
 					String xmlTxt = xo.outputString(doc);
 					
 					// add SpotLight format
-					temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size()/2 + " - SpotLight Response <<<\n" + xmlTxt + "\n";
+					string.append("\n>>> Part " + i + "/" + total + " - SpotLight Response <<<\n" + xmlTxt + "\n");
         		}
         		catch (JDOMException e)
         		{	e.printStackTrace();
         		}
         	}
+        	i++;
     	}
         
-        writeRawResultsStr(article, temp);
+        writeRawResultsStr(article, string.toString());
     }
 }
