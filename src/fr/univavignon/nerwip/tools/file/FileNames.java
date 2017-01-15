@@ -51,7 +51,7 @@ public class FileNames
 //	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/Nerwip2/out/Temp";
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
-	public final static String FO_OUTPUT = "C:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
+	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Downloads/Data";
 	

@@ -99,7 +99,7 @@ public class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalD
 	 * 		Recognizer in charge of this delegate.
 	 */
 	public WikipediaDaterDelegateRecognizer(WikipediaDater wikipediaDater)
-	{	super(wikipediaDater,false,false,false);
+	{	super(wikipediaDater,false,false,false,false);
 		
 		setIgnoreNumbers(false);
 	}

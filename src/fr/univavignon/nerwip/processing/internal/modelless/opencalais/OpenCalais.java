@@ -59,11 +59,13 @@ public class OpenCalais extends AbstractProcessor implements InterfaceRecognizer
 	 * 		Selected language.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop-words should be excluded from the detection.
 	 */
-	public OpenCalais(OpenCalaisLanguage lang, boolean ignorePronouns, boolean exclusionOn)
-	{	delegateRecognizer = new OpenCalaisDelegateRecognizer(this,lang,ignorePronouns,exclusionOn);
+	public OpenCalais(OpenCalaisLanguage lang, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
+	{	delegateRecognizer = new OpenCalaisDelegateRecognizer(this, lang, ignorePronouns, ignoreNumbers, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

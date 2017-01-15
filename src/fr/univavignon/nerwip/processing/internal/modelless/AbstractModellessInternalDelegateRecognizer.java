@@ -50,11 +50,13 @@ public abstract class AbstractModellessInternalDelegateRecognizer<T> extends Abs
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be ignored.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 */
-	public AbstractModellessInternalDelegateRecognizer(InterfaceRecognizer recognizer, boolean trim, boolean ignorePronouns, boolean exclusionOn)
-	{	super(recognizer,trim,ignorePronouns,exclusionOn);
+	public AbstractModellessInternalDelegateRecognizer(InterfaceRecognizer recognizer, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
+	{	super(recognizer,trim,ignorePronouns,ignoreNumbers,exclusionOn);
 	}
 	
 	/////////////////////////////////////////////////////////////////

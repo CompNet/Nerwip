@@ -68,7 +68,7 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 	 * 		Problem while loading some combiner.
 	 */
 	public AbstractCombinerDelegateRecognizer(InterfaceRecognizer recognizer) throws ProcessorException
-	{	super(recognizer, false, false, false);
+	{	super(recognizer, false, false, false, false);
 	}
 
 	/////////////////////////////////////////////////////////////////

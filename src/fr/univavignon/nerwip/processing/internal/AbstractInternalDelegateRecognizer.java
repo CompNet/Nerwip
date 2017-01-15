@@ -62,11 +62,13 @@ public abstract class AbstractInternalDelegateRecognizer<T> extends AbstractDele
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be ignored.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 */
-	public AbstractInternalDelegateRecognizer(InterfaceRecognizer recognizer, boolean trim, boolean ignorePronouns, boolean exclusionOn)
-	{	super(recognizer,trim,ignorePronouns,exclusionOn);
+	public AbstractInternalDelegateRecognizer(InterfaceRecognizer recognizer, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
+	{	super(recognizer,trim,ignorePronouns,ignoreNumbers,exclusionOn);
 	}
 	
 	/////////////////////////////////////////////////////////////////

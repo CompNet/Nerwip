@@ -68,11 +68,13 @@ public class OpeNer extends AbstractProcessor implements InterfaceRecognizer
 	 * 		in two distinct mentions).
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 */
-	public OpeNer(boolean parenSplit, boolean ignorePronouns, boolean exclusionOn)
-	{	delegateRecognizer = new OpeNerDelegateRecognizer(this, parenSplit, ignorePronouns, exclusionOn);
+	public OpeNer(boolean parenSplit, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
+	{	delegateRecognizer = new OpeNerDelegateRecognizer(this, parenSplit, ignorePronouns, ignoreNumbers, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

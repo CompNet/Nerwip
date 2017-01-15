@@ -23,6 +23,7 @@ package fr.univavignon.nerwip.processing.internal.modelbased.opennlp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import opennlp.tools.namefind.NameFinderME;
+import opennlp.tools.namefind.TokenNameFinder;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
@@ -63,7 +65,8 @@ public enum OpenNlpModelName
 	 * 	<li>Person</li>
 	 * 	<li>Organization</li>
 	 * </ul> 
-	 * Only handles the English language. 
+	 * Only handles the English language.
+	 * TODO check if ignoreNumbers removes year-only dates.
 	 */ 
 	ORIGINAL_MODEL(
 		"Original",
@@ -86,6 +89,7 @@ public enum OpenNlpModelName
 			EntityType.ORGANIZATION,
 			EntityType.PERSON
 		),
+		new HashMap<String, EntityType>(),
 		Arrays.asList(ArticleLanguage.EN)
 	),
 	
@@ -117,12 +121,12 @@ public enum OpenNlpModelName
 			EntityType.ORGANIZATION,
 			EntityType.PERSON
 		),
+		new HashMap<String, EntityType>(),
 		Arrays.asList(ArticleLanguage.EN)
 	),
 	
 	/** 
-	 * French model trained by Olivier Grisel.
-	 * TODO not tested yet
+	 * French model trained by <a href="https://sites.google.com/site/nicolashernandez/resources/opennlp">Olivier Grisel</a>.
 	 * It can handle: 
 	 * <ul>
 	 * 	<li>Location</li>
@@ -135,14 +139,10 @@ public enum OpenNlpModelName
 		"Grisel",
 		"fr"+File.separator+"fr-sent.bin",
 		"fr"+File.separator+"fr-token.bin", 
-		/*
-		 * TODO might need the other files
+		/* Other available resources:
 		 * pos   = part of speech tagging
 		 * mph   = morphological inflection analysis
 		 * chunk = chunking
-		 * 
-		 * TODO we should also check this FR model:
-		 * https://github.com/opener-project/nerc-fr
 		 */
 		new HashMap<String, EntityType>()
 		{	/** */
@@ -158,6 +158,54 @@ public enum OpenNlpModelName
 			EntityType.ORGANIZATION,
 			EntityType.PERSON
 		),
+		new HashMap<String, EntityType>(),
+		Arrays.asList(ArticleLanguage.FR)
+	),
+	
+	/** 
+	 * French model from the <a href="https://github.com/opener-project/nerc-fr">Nerc</a>
+	 * software.
+	 * It can handle: 
+	 * <ul>
+	 * 	<li>Date</li>
+	 * 	<li>Location</li>
+	 * 	<li>Person</li>
+	 * 	<li>Organization</li>
+	 * </ul> 
+	 * Only handles the French language. Can also handle Money and Time entities.
+	 * <br/>
+	 * For this model, it is recommended to set {@code ignoreNumbers} to {@code false},
+	 * otherwise it will miss year-only dates.
+	 */ 
+	NERC_MODEL(
+		"Nerc",
+		"fr"+File.separator+"fr-sent.bin",
+		"fr"+File.separator+"fr-token.bin", 
+		new HashMap<String, EntityType>()
+		{	/** */
+			private static final long serialVersionUID = 1L;
+			// data
+			{	put("fr"+File.separator+"nerc-fr.bin", null);
+			}
+		},
+		Arrays.asList(
+			EntityType.DATE,
+			EntityType.LOCATION,
+			EntityType.ORGANIZATION,
+			EntityType.PERSON
+		),
+		new HashMap<String, EntityType>()
+		{	/** */
+			private static final long serialVersionUID = 1L;
+			// data
+			{	put("date", EntityType.DATE);
+				put("location", EntityType.LOCATION);
+				put("person", EntityType.PERSON);
+				put("organization", EntityType.ORGANIZATION);
+//				put("time", EntityType.DATE);
+//				put("money", EntityType.MONEY);
+			}
+		},
 		Arrays.asList(ArticleLanguage.FR)
 	);
 	
@@ -175,15 +223,18 @@ public enum OpenNlpModelName
 	 * 		File names of OpenNLP NER models.
 	 * @param types
 	 * 		List of the entity types handled by the model.
+	 * @param typeMap
+	 * 		Map of the OpenNlp types into the Nerwip types.
 	 * @param languages
 	 * 		List of the languages handled by the model.
 	 */
-	OpenNlpModelName(String name, String sentenceDetectorFile, String tokenizerFile, Map<String,EntityType> modelFiles, List<EntityType> types, List<ArticleLanguage> languages)
+	OpenNlpModelName(String name, String sentenceDetectorFile, String tokenizerFile, Map<String,EntityType> modelFiles, List<EntityType> types, Map<String,EntityType> typeMap, List<ArticleLanguage> languages)
 	{	this.name = name;
 		this.sentenceDetectorFile = sentenceDetectorFile;
 		this.tokenizerFile = tokenizerFile;
 		this.modelFiles = modelFiles;
 		this.types = types;
+		this.typeMap = typeMap;
 		this.languages = languages;
 	}
 	
@@ -267,19 +318,31 @@ public enum OpenNlpModelName
 	 * @throws InvalidFormatException
 	 * 		Problem while loading the models.
 	 */
-	public Map<NameFinderME, EntityType> loadNerModels() throws InvalidFormatException, IOException
+	public Map<EntityType,List<TokenNameFinder>> loadNerModels() throws InvalidFormatException, IOException
 	{	logger.log("Load name finder models");
 		logger.increaseOffset();
 		
-		Map<NameFinderME, EntityType> result = new HashMap<NameFinderME,EntityType>();
+		Map<EntityType,List<TokenNameFinder>> result = new HashMap<EntityType,List<TokenNameFinder>>();
 		for(Entry<String,EntityType> entry: modelFiles.entrySet())
 		{	String fileName = FileNames.FO_OPENNLP + File.separator + entry.getKey();
 			EntityType type = entry.getValue();
 			File file = new File(fileName);
 			logger.log("Load model: "+file.toString());
-			TokenNameFinderModel model = new TokenNameFinderModel(file);
-			NameFinderME nameFinder = new NameFinderME(model);
-			result.put(nameFinder,type);
+			TokenNameFinder nameFinder;
+			if(type==null)
+			{	org.vicomtech.opennlp.tools.namefind.TokenNameFinderModel model = new org.vicomtech.opennlp.tools.namefind.TokenNameFinderModel(file);
+				nameFinder = new org.vicomtech.opennlp.tools.namefind.NameFinderME(model);
+			}
+			else
+			{	TokenNameFinderModel model = new TokenNameFinderModel(file);
+				nameFinder = new NameFinderME(model);
+			}
+			List<TokenNameFinder> list = result.get(type);
+			if(list==null)
+			{	list = new ArrayList<TokenNameFinder>();
+				result.put(type,list);
+			}
+			list.add(nameFinder);
 		}
 		logger.decreaseOffset();
 	
@@ -313,6 +376,8 @@ public enum OpenNlpModelName
 	/////////////////////////////////////////////////////////////////
 	/** List of entity types this model can treat */
 	private List<EntityType> types;
+	/** Map of the OpenNlp types into the Nerwip types */
+	private Map<String,EntityType> typeMap;
 	
 	/**
 	 * Returns the list of types
@@ -323,6 +388,20 @@ public enum OpenNlpModelName
 	 */
 	public List<EntityType> getHandledTypes()
 	{	return types;
+	}
+	
+	/**
+	 * Converts the specified string to an internal
+	 * {@link EntityType}.
+	 * 
+	 * @param typeStr
+	 * 		String code for the OpenNlp type.
+	 * @return
+	 * 		Corresponding internal {@code EntityType} value.
+	 */
+	public EntityType convertType(String typeStr)
+	{	EntityType result = typeMap.get(typeStr);
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////

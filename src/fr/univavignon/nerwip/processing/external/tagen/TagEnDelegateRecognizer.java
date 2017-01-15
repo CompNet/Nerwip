@@ -76,11 +76,13 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 *      Model used to perform the mention detection.
 	 * @param ignorePronouns
 	 *      Whether or not pronouns should be excluded from the detection.
+	 * @param ignoreNumbers
+	 *      Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 *      Whether or not stop words should be excluded from the detection.
 	 */
-	public TagEnDelegateRecognizer(TagEn tagEn, TagEnModelName model, boolean ignorePronouns, boolean exclusionOn)
-	{	super(tagEn, false, ignorePronouns, exclusionOn);
+	public TagEnDelegateRecognizer(TagEn tagEn, TagEnModelName model, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
+	{	super(tagEn, false, ignorePronouns, ignoreNumbers, exclusionOn);
 		
 		this.model = model;
 		setIgnoreNumbers(false);

@@ -82,14 +82,16 @@ public class LingPipeDelegateRecognizer extends AbstractModelbasedInternalDelega
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException 
 	 *		Problem while initializing the model.
 	 */
-	public LingPipeDelegateRecognizer(LingPipe lingPipe, LingPipeModelName chunkingMethod, boolean loadChunkerOnDemand, boolean splitSentences, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
-	{	super(lingPipe,chunkingMethod,loadChunkerOnDemand,trim,ignorePronouns,exclusionOn);
+	public LingPipeDelegateRecognizer(LingPipe lingPipe, LingPipeModelName chunkingMethod, boolean loadChunkerOnDemand, boolean splitSentences, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
+	{	super(lingPipe,chunkingMethod,loadChunkerOnDemand,trim,ignorePronouns,ignoreNumbers,exclusionOn);
 		this.splitSentences = splitSentences;
 	}
 	

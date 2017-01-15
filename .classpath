@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="lib/httpclient-4.2.6.jar" sourcepath="lib/httpclient-4.2.6-src.zip"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.2.5.jar" sourcepath="lib/httpcore-4.2.5-src.zip"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar" sourcepath="lib/jdom-2.0.6-sources.jar"/>
+	<classpathentry kind="lib" path="lib/nerc-fr-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

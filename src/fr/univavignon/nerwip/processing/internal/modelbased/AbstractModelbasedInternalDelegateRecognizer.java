@@ -59,14 +59,16 @@ public abstract class AbstractModelbasedInternalDelegateRecognizer<T,U> extends 
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be ignored.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 * 
 	 * @throws ProcessorException
      * 		Problem while loading the model data.
 	 */
-	public AbstractModelbasedInternalDelegateRecognizer(InterfaceRecognizer recognizer, U modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
-	{	super(recognizer,trim,ignorePronouns,exclusionOn);
+	public AbstractModelbasedInternalDelegateRecognizer(InterfaceRecognizer recognizer, U modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
+	{	super(recognizer,trim,ignorePronouns,ignoreNumbers,exclusionOn);
 		
 		// init model and supported entity types
 		this.loadModelOnDemand = loadModelOnDemand;

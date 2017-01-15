@@ -89,7 +89,7 @@ public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 *      detection.
 	 */
 	public NeroDelegateRecognizer(Nero nero, NeroTagger neroTagger, boolean flat, boolean ignorePronouns, boolean exclusionOn)
-	{	super(nero, false, ignorePronouns, exclusionOn);
+	{	super(nero, false, ignorePronouns, true, exclusionOn);
 		
 		this.neroTagger = neroTagger;
 		this.flat = flat;

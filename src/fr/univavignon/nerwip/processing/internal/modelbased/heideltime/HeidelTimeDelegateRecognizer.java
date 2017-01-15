@@ -86,7 +86,7 @@ public class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDele
 	 * 		Problem while loading the models or tokenizers.
 	 */
 	public HeidelTimeDelegateRecognizer(HeidelTime heidelTime, HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws ProcessorException
-	{	super(heidelTime,modelName,loadModelOnDemand,false,false,false);
+	{	super(heidelTime,modelName,loadModelOnDemand,false,false,false,false);
 	
 		setIgnoreNumbers(false);
 

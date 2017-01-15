@@ -72,7 +72,7 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 	 * 		Minimal confidence for the returned entities.
 	 */
 	public SpotlightDelegateRecognizer(Spotlight spotlight, float minConf)
-	{	super(spotlight,true,false,false);
+	{	super(spotlight, true, false, false, false);
 		
 		this.minConf = minConf;
 		

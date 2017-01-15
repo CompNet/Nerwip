@@ -110,7 +110,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	 * 		for the place itself, leading to an increased number of false positives.
 	 */
 	public SubeeDelegateRecognizer(Subee subee, boolean additionalOccurrences, boolean useTitle, boolean notableType, boolean useAcronyms, boolean discardDemonyms)
-	{	super(subee,false,false,false);
+	{	super(subee,false,false,true,false);
 		
 		this.additionalOccurrences = additionalOccurrences;
 		this.useTitle = useTitle;

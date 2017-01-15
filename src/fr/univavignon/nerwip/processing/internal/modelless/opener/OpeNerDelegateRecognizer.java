@@ -99,13 +99,15 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 	 * 		in two distinct mentions).
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 */
-	public OpeNerDelegateRecognizer(OpeNer opeNer, boolean parenSplit, boolean ignorePronouns, boolean exclusionOn)
+	public OpeNerDelegateRecognizer(OpeNer opeNer, boolean parenSplit, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
 	{	// it seems necessary to clean mentions with OpeNer,
 		// otherwise it sometimes includes punctation in the mentions.
-		super(opeNer,true,ignorePronouns,exclusionOn);
+		super(opeNer,true,ignorePronouns,ignoreNumbers,exclusionOn);
 		
 		setIgnoreNumbers(false);
 		this.parenSplit = parenSplit;

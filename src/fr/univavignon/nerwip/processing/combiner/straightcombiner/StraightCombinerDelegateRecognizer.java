@@ -175,8 +175,9 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 		  {	logger.log("Init OpenCalais");
 			OpenCalaisLanguage lang = OpenCalaisLanguage.FR;
 			boolean ignorePronouns = false;
+			boolean ignoreNumbers = true; //TODO not checked
 			boolean exclusionOn = false;
-			OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
+			OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, ignoreNumbers, exclusionOn);
 			recognizers.add(openCalais);
 		}
 		
@@ -184,8 +185,9 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 		  {	logger.log("Init OpeNer");
 			boolean parenSplit = true;
 			boolean ignorePronouns = false;
+			boolean ignoreNumbers = true; //TODO not checked
 			boolean exclusionOn = false;
-			OpeNer opeNer = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
+			OpeNer opeNer = new OpeNer(parenSplit, ignorePronouns, ignoreNumbers, exclusionOn);
 			recognizers.add(opeNer);
 		}
 		
@@ -193,8 +195,9 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 		  {	logger.log("Init TagEn");
 			TagEnModelName model = TagEnModelName.MUC_MODEL;
 			boolean ignorePronouns = false;
+			boolean ignorenumbers = true; //TODO not checked
 			boolean exclusionOn = false;
-			TagEn tagEn = new TagEn(model, ignorePronouns, exclusionOn);
+			TagEn tagEn = new TagEn(model, ignorePronouns, ignorenumbers, exclusionOn);
 			recognizers.add(tagEn);
 		}
 		

@@ -37,7 +37,7 @@ import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedInternalDelegateRecognizer;
-import opennlp.tools.namefind.NameFinderME;
+import opennlp.tools.namefind.TokenNameFinder;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.util.InvalidFormatException;
@@ -71,14 +71,16 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 	 * 		recognizer, or only when necessary. 
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException 
 	 * 		Problem while loading the models or tokenizers.
 	 */
-	public OpenNlpDelegateRecognizer(OpenNlp openNlp, OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
-	{	super(openNlp,modelName,loadModelOnDemand,false,ignorePronouns,exclusionOn);
+	public OpenNlpDelegateRecognizer(OpenNlp openNlp, OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
+	{	super(openNlp,modelName,loadModelOnDemand,false,ignorePronouns,ignoreNumbers,exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -122,7 +124,7 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 	/** Object used to split sentences into words */
 	private Tokenizer tokenizer;
 	/** Models used by OpenNLP to detect mentions */
-	private Map<NameFinderME,EntityType> models;
+	private Map<EntityType,List<TokenNameFinder>> models;
 
     @Override
 	protected boolean isLoadedModel()
@@ -165,7 +167,10 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Order in which the mentions should be processed */
-	private static final List<EntityType> TYPE_PRIORITIES = Arrays.asList(EntityType.ORGANIZATION,EntityType.PERSON,EntityType.LOCATION,EntityType.DATE);
+	private static final List<EntityType> TYPE_PRIORITIES = Arrays.asList(
+			EntityType.ORGANIZATION,EntityType.PERSON,EntityType.LOCATION,
+			EntityType.PRODUCTION,EntityType.MEETING,EntityType.FUNCTION,
+			EntityType.DATE);
 
 	@Override
 	protected Map<EntityType,List<Span>> detectMentions(Article article) throws ProcessorException
@@ -185,20 +190,23 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 			String tokens[] = tokenizer.tokenize(sentence);
 			Span tokenSpans[] = tokenizer.tokenizePos(sentence);
 			
-			// apply each model according to the type priorities
 //			logger.log("Process the models for each entity type");
-			for(EntityType type: TYPE_PRIORITIES)
-			{	List<Span> list = result.get(type);
-				if(list==null)
-				{	list = new ArrayList<Span>();
-					result.put(type,list);
-				}
+			// apply each model according to the type priorities
+			List<EntityType> types = new ArrayList<EntityType>(TYPE_PRIORITIES);
+			types.retainAll(handledTypes);
+			types.add(0,null);
+			for(EntityType type: types)
+			{	List<TokenNameFinder> modelList = models.get(type);
 				
-				for(Entry<NameFinderME,EntityType> entry: models.entrySet())
-				{	EntityType t = entry.getValue();
-					if(type==t)
+				if(modelList!=null)
+				{	List<Span> list = result.get(type);
+					if(list==null)
+					{	list = new ArrayList<Span>();
+						result.put(type,list);
+					}
+					
+					for(TokenNameFinder model: modelList)
 					{	// detect mentions
-						NameFinderME model = entry.getKey();
 						Span nameSpans[] = model.find(tokens);
 						
 						// add them to result list
@@ -244,14 +252,21 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 		{	EntityType type = entry.getKey();
 			List<Span> spans = entry.getValue();
 			for(Span span: spans)
-			{	// build internal representation of the mention
+			{	// possibly get the type
+				EntityType t = type;
+				if(t==null)
+				{	String typeStr = span.getType();
+					t = modelName.convertType(typeStr);
+				}
+				
+				// build internal representation of the mention
 				int startPos = span.getStart();
 				int endPos = span.getEnd();
 				String valueStr = rawText.substring(startPos,endPos);
-				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?> mention = AbstractMention.build(t, startPos, endPos, recognizerName, valueStr);
 				
 				// ignore overlapping mentions
-//				if(!result.hasMention(mention))	//TODO don't remember if i'm supposed to change that, or what?
+//				if(!result.hasMention(mention))	//TODO don't remember if I am supposed to change that, or what?
 					result.addMention(mention);
 			}
 		}	
@@ -275,7 +290,7 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 				int startPos = span.getStart();
 				int endPos = span.getEnd();
 				String valueStr = rawText.substring(startPos,endPos);
-				string.append("["+type.toString()+" '"+valueStr+"' ("+startPos+","+endPos+")]\n");
+				string.append("["+type+" '"+valueStr+"' ("+startPos+","+endPos+")]\n");
 			}
 		}
 		

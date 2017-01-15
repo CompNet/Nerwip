@@ -182,7 +182,7 @@ public class Test
 //		testDbTypeRetriever();
 //		testOpeNer(name);
 //		testSpotlightRecognizer(name);
-		testSpotlightResolver(name);
+//		testSpotlightResolver(name);
 //     	testNLDistance(S, T);
 //		testEventsExtraction();
 //		testEventComparison();
@@ -201,7 +201,7 @@ public class Test
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 //		testOpeNer(name);
-//	    testOpenNlp(url);
+	    testOpenNlp(name);
 //		testStanford(url);
 //		testSubee(url);
 //		testTagEn(name);
@@ -680,7 +680,8 @@ File folder = folders.get(0);
 		OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
+		boolean ignoreNumbers = true;
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, ignoreNumbers, exclusionOn);
 		openCalais.setCacheEnabled(false);
 
 		// only the specified article
@@ -712,7 +713,8 @@ File folder = folders.get(0);
 		OpenCalaisLanguage lang = OpenCalaisLanguage.FR;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
+		boolean ignoreNumbers = true;
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, ignoreNumbers, exclusionOn);
 		openCalais.setOutputRawResults(true);
 		openCalais.setCacheEnabled(false);
 		
@@ -780,7 +782,8 @@ File folder = folders.get(0);
 		TagEnModelName model = TagEnModelName.MUC_MODEL;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		TagEn tagen = new TagEn(model,ignorePronouns, exclusionOn);
+		boolean ignoreNumbers = true;
+		TagEn tagen = new TagEn(model,ignorePronouns, ignoreNumbers, exclusionOn);
 		tagen.setOutputRawResults(true);
 		tagen.setCacheEnabled(false);
 		
@@ -813,7 +816,8 @@ File folder = folders.get(0);
 		boolean parenSplit = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
+		boolean ignoreNumbers = true;
+		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, ignoreNumbers, exclusionOn);
 		opener.setOutputRawResults(true);
 		opener.setCacheEnabled(false);
 		
@@ -866,8 +870,9 @@ File folder = folders.get(0);
 	
 			boolean exclusionOn = false;
 			boolean ignorePronouns = false;
+			boolean ignoreNumbers = true;
 			StanfordModelName modelName = StanfordModelName.CONLLMUC_MODEL;
-			Stanford stanford = new Stanford(modelName, true, ignorePronouns, exclusionOn);
+			Stanford stanford = new Stanford(modelName, true, ignorePronouns, ignoreNumbers, exclusionOn);
 			stanford.setCacheEnabled(false);
 			stanford.recognize(article);
 		}
@@ -1007,48 +1012,55 @@ File folder = folders.get(0);
 	/**
 	 * Tests the features related to NER. 
 	 * 
-	 * @param url
-	 * 		URL of the article to parse.
+	 * @param name
+	 * 		Name of the (already cached) article.
 	 * 
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testOpenNlp(URL url) throws Exception
+	private static void testOpenNlp(String name) throws Exception
 	{	logger.setName("Test-OpenNlp");
 		logger.log("Start testing OpenNlp");
 		logger.increaseOffset();
 		
-		// training
-		{	// set articles
-//			List<File> folders = Arrays.asList(
-//				new File(FileNames.FO_OUTPUT + File.separator + "Aart_Kemink")
-//				new File(FileNames.FO_OUTPUT + File.separator + "Abraham_Adan"),
-//				new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
-//			);
-//			ArticleList folders = ArticleLists.getArticleList();
-			ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-			logger.log("Processed articles: ");
-			logger.increaseOffset();
-			for(File folder: folders)
-				logger.log(folder.getName());
-			logger.decreaseOffset();
-
-			OpenNlpTrainer trainer = new OpenNlpTrainer(OpenNlpModelName.NERWIP_MODEL);
-			trainer.setCacheEnabled(false);
-			trainer.process(folders);
-		}
-		
-//		{	ArticleRetriever retriever = new ArticleRetriever();
-//			Article article = retriever.process(url);
-//	
-//			OpenNlpModelName modelName = OpenNlpModelName.ORIGINAL_MODEL;
-//			boolean exclusionOn = false;
-//			boolean ignorePronouns = false;
-//			OpenNlp openNlp = new OpenNlp(modelName, true, ignorePronouns, exclusionOn);
-//			openNlp.setCacheEnabled(false);
-//			openNlp.process(article);
+//		// training
+//		{	// set articles
+////			List<File> folders = Arrays.asList(
+////				new File(FileNames.FO_OUTPUT + File.separator + "Aart_Kemink")
+////				new File(FileNames.FO_OUTPUT + File.separator + "Abraham_Adan"),
+////				new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
+////			);
+////			ArticleList folders = ArticleLists.getArticleList();
+//			ArticleList folders = ArticleLists.getArticleList("training.set.txt");
+//			logger.log("Processed articles: ");
+//			logger.increaseOffset();
+//			for(File folder: folders)
+//				logger.log(folder.getName());
+//			logger.decreaseOffset();
 //
+//			OpenNlpTrainer trainer = new OpenNlpTrainer(OpenNlpModelName.NERWIP_MODEL);
+//			trainer.setCacheEnabled(false);
+//			trainer.process(folders);
 //		}
+		
+		// evaluation
+		{	ArticleRetriever retriever = new ArticleRetriever();
+			Article article = retriever.process(name);
+	
+			OpenNlpModelName modelName = OpenNlpModelName.NERC_MODEL;
+			boolean exclusionOn = false;
+			boolean ignorePronouns = false;
+			boolean ignoreNumbers = true;
+			OpenNlp openNlp = new OpenNlp(modelName, true, ignorePronouns, ignoreNumbers, exclusionOn);
+			openNlp.setCacheEnabled(false);
+			openNlp.setOutputRawResults(true);
+			
+			// only the specified article
+			openNlp.recognize(article);
+
+			// all the corpus
+//			testAllCorpusRecognizer(openNlp,0);
+		}
 		
 		logger.decreaseOffset();
 	}
@@ -1482,9 +1494,12 @@ File folder = folders.get(0);
 		Article article = retriever.process(name);
 
 		float minConf = 0.3f;
+		boolean ignorePronouns = true;
+		boolean ignoreNumbers = true;
+		boolean exclusionOn = true;
 		boolean resolveHomonyms = true;
 //		Spotlight spotlight = new Spotlight(minConf,resolveHomonyms);
-		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, true, true);
+		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, ignorePronouns, ignoreNumbers, exclusionOn);
 		Spotlight spotlight = new Spotlight(recognizer,resolveHomonyms);
 		spotlight.setOutputRawResults(true);
 		spotlight.setCacheEnabled(false);
@@ -2279,29 +2294,21 @@ File folder = folders.get(0);
 
 /* TODO
  * - Move evaluation to recognition, or create several subfolders in evaluation to reflect the three recognition/resolution/linking tasks
- * - Maybe we should not put linking and resolution in different classes, since some tools do both at once.
- *   Rather set up a single abstract class, whose process can be "partially" implemented by certain tools.
- *   Tools just doing the linking part could do the resolving by just assigning each mention to a distinct entity.
- *   Actually, this could be also done by integrating to recognizers... but we'd lose the ability to combine (compose) them.
- *   The same remark applies when composing resolving and linking, in fact... so is it really a good idea?
- * - Rather: define a generic "tool" class able of performing all three tasks. Some instances do only some of them.
- *   >> this seems like the best option
- *   Maybe use some setters to decide what to do? Or dedicated methods? This'd allow performing all tasks at once when possible. Entities can be retrieved a posteriori.
- *   Also the resolver and the linker need to receive an instance of the tool on which the data they receive are built, in order to know where to record their own results.
  *   
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
- *  TODO
- *  - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.
+ * - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.
  *    also, its entities are recorded in specific files, at the level of the corpus.
  *    whereas the new mentions (bc of their entities) are recorded in a different file in the concerned linker folders of each article (?)
  *   
- *   TODO check the new OpenNer French models
- *   
- *   
- *   TODO
- *   - add surface forms to entities (in resolver and in linker)
+ * - add surface forms to entities (in resolver and in linker) >> what did I mean there?
+ * - check for french models in already working recognizers
+ * 
+ * - check if recognizers able to handle dates need to remove numeric values or not
+ *   maybe just remove the non-dates numbers (ie entity which are not of type date)
+ * - actually, check all of them: for some of them, it might just be better to simplify the constructor by making decition regarding
+ *   number removal once and for all.
  */
 
 /*

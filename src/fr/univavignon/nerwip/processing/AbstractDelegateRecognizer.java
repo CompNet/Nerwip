@@ -66,13 +66,16 @@ public abstract class AbstractDelegateRecognizer
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
+	 * @param ignoreNumbers
+	 * 		Whether or not numbers should be ignored.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 */
-	public AbstractDelegateRecognizer(InterfaceRecognizer recognizer, boolean trim, boolean ignorePronouns, boolean exclusionOn)
+	public AbstractDelegateRecognizer(InterfaceRecognizer recognizer, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
 	{	this.recognizer = recognizer;
 		
 		this.trim = trim;
+		this.ignoreNumbers = ignoreNumbers;
 		this.ignorePronouns = ignorePronouns;
 		this.exclusionOn = exclusionOn;
 		
@@ -372,6 +375,7 @@ public abstract class AbstractDelegateRecognizer
 		while(it.hasNext())
 		{	AbstractMention<?> mention = it.next();
 			String mentionStr = mention.getStringValue();
+			EntityType type = mention.getType();
 			
 			// is it a stop-word?
 			if(exclusionOn && isExcluded(mentionStr,language))
@@ -386,7 +390,7 @@ public abstract class AbstractDelegateRecognizer
 			}
 			
 			// is it a pure number?
-			else if(ignoreNumbers && StringTools.hasNoLetter(mentionStr))
+			else if(ignoreNumbers && StringTools.hasNoLetter(mentionStr) && type!=EntityType.DATE)
 			{	logger.log("Mention '"+mentionStr+"' is a number (no letter) >> filtered.)");
 				it.remove();
 			}

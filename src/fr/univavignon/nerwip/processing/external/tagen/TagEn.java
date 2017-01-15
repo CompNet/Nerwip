@@ -55,11 +55,13 @@ public class TagEn extends AbstractProcessor implements InterfaceRecognizer
 	 *      Model used to perform the mention detection.
 	 * @param ignorePronouns
 	 *      Whether or not pronouns should be excluded from the detection.
+	 * @param ignoreNumbers
+	 *      Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 *      Whether or not stop words should be excluded from the detection.
 	 */
-	public TagEn(TagEnModelName model, boolean ignorePronouns, boolean exclusionOn)
-	{	delegateRecognizer = new TagEnDelegateRecognizer(this, model, ignorePronouns, exclusionOn);
+	public TagEn(TagEnModelName model, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
+	{	delegateRecognizer = new TagEnDelegateRecognizer(this, model, ignorePronouns, ignoreNumbers, exclusionOn);
 	}
 	
 	/////////////////////////////////////////////////////////////////
