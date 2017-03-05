@@ -84,16 +84,13 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 	 * 		Selected language.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop-words should be excluded from the detection.
 	 */
-	public OpenCalaisDelegateRecognizer(OpenCalais openCalais, OpenCalaisLanguage lang, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn)
-	{	super(openCalais, false, ignorePronouns, ignoreNumbers, exclusionOn);
+	public OpenCalaisDelegateRecognizer(OpenCalais openCalais, OpenCalaisLanguage lang, boolean ignorePronouns, boolean exclusionOn)
+	{	super(openCalais, false, ignorePronouns, true, exclusionOn);
 		
 		selectedLanguage = lang;
-		setIgnoreNumbers(false);
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -104,6 +101,7 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 	{	String result = recognizer.getName().toString();
 		
 		result = result + "_" + "ignPro=" + ignorePronouns;
+		result = result + "_" + "ignNbr=" + ignoreNumbers;
 		result = result + "_" + "exclude=" + exclusionOn;
 		
 		return result;

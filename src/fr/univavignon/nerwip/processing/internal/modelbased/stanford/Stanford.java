@@ -61,16 +61,14 @@ public class Stanford extends AbstractProcessor implements InterfaceRecognizer
 	 * 		recognizer, or only when necessary. 
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException 
 	 * 		Problem while loading the model data.
 	 */
-	public Stanford(StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
-	{	delegateRecognizer = new StanfordDelegateRecognizer(this, modelName, loadModelOnDemand, ignorePronouns, ignoreNumbers, exclusionOn);
+	public Stanford(StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	delegateRecognizer = new StanfordDelegateRecognizer(this, modelName, loadModelOnDemand, ignorePronouns, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

@@ -431,9 +431,8 @@ public class Launch
 		IllinoisModelName modelName = IllinoisModelName.CONLL_MODEL;
 		boolean trim = true;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
 		boolean exclusionOn = false;
-		Illinois illinois = new Illinois(modelName, true, trim, ignorePronouns, ignoreNumbers, exclusionOn);
+		Illinois illinois = new Illinois(modelName, true, trim, ignorePronouns, exclusionOn);
 		illinois.setCacheEnabled(false);
 		illinois.recognize(article);
 		
@@ -458,9 +457,8 @@ public class Launch
 		boolean splitSentences = true;
 		boolean trim = true;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
 		boolean exclusionOn = false;
-		LingPipe lingPipe = new LingPipe(chunkingMethod, true, splitSentences, trim, ignorePronouns, ignoreNumbers, exclusionOn);
+		LingPipe lingPipe = new LingPipe(chunkingMethod, true, splitSentences, trim, ignorePronouns, exclusionOn);
 		lingPipe.setCacheEnabled(false);
 		lingPipe.recognize(article);
 		
@@ -483,9 +481,8 @@ public class Launch
 		
 		OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
 		boolean exclusionOn = false;
-		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, ignoreNumbers, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setCacheEnabled(false);
 		openCalais.recognize(article);
 
@@ -508,9 +505,8 @@ public class Launch
 		
 		OpenNlpModelName modelName = OpenNlpModelName.ORIGINAL_MODEL;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
 		boolean exclusionOn = false;
-		OpenNlp openNlp = new OpenNlp(modelName, true, ignorePronouns, ignoreNumbers, exclusionOn);
+		OpenNlp openNlp = new OpenNlp(modelName, true, ignorePronouns, exclusionOn);
 		openNlp.setCacheEnabled(false);
 		openNlp.recognize(article);
 		
@@ -533,9 +529,8 @@ public class Launch
 	
 		StanfordModelName modelName = StanfordModelName.CONLLMUC_MODEL;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
 		boolean exclusionOn = false;
-		Stanford stanford = new Stanford(modelName, true, ignorePronouns, ignoreNumbers, exclusionOn);
+		Stanford stanford = new Stanford(modelName, true, ignorePronouns, exclusionOn);
 		stanford.setCacheEnabled(false);
 		stanford.recognize(article);
 			
@@ -630,11 +625,11 @@ public class Launch
 		InterfaceRecognizer temp[] =
 		{	new DateExtractor(),
 			new WikipediaDater(),
-			new Illinois(IllinoisModelName.CONLL_MODEL, true, true, false, true, false),
-			new LingPipe(LingPipeModelName.APPROX_DICTIONARY, true, true, true, false, true, false),
-			new OpenCalais(OpenCalaisLanguage.EN, false, true, false),
-			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL, true, false, true, false),
-			new Stanford(StanfordModelName.CONLLMUC_MODEL, true, false, true, false),
+			new Illinois(IllinoisModelName.CONLL_MODEL, true, true, false, false),
+			new LingPipe(LingPipeModelName.APPROX_DICTIONARY, true, true, true, false, false),
+			new OpenCalais(OpenCalaisLanguage.EN, false, false),
+			new OpenNlp(OpenNlpModelName.ORIGINAL_MODEL, true, false, false),
+			new Stanford(StanfordModelName.CONLLMUC_MODEL, true, false, false),
 			new Subee(true, true, true, true, true)
 		};
 		List<InterfaceRecognizer> recognizers = Arrays.asList(temp);

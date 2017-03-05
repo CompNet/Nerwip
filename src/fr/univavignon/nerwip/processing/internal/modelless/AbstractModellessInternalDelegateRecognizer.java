@@ -51,7 +51,7 @@ public abstract class AbstractModellessInternalDelegateRecognizer<T> extends Abs
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
 	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be ignored.
+	 * 		Whether or not numbers should be ignored (only for non-dates).
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 */

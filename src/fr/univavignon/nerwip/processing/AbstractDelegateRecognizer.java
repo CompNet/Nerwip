@@ -67,7 +67,7 @@ public abstract class AbstractDelegateRecognizer
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be ignored.
 	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be ignored.
+	 * 		Whether or not numbers should be ignored (only for non-dates).
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be ignored.
 	 */
@@ -75,8 +75,8 @@ public abstract class AbstractDelegateRecognizer
 	{	this.recognizer = recognizer;
 		
 		this.trim = trim;
-		this.ignoreNumbers = ignoreNumbers;
 		this.ignorePronouns = ignorePronouns;
+		this.ignoreNumbers = ignoreNumbers;
 		this.exclusionOn = exclusionOn;
 		
 		this.noOverlap = true;
@@ -336,7 +336,8 @@ public abstract class AbstractDelegateRecognizer
 
 	/**
 	 * Disables/enables the removal of purely numerical mentions.
-	 * This is only used during recognition.
+	 * This is only used during recognition and only concerns
+	 * non-date entities (since dates can be numerical).
 	 * 
 	 * @param ignoreNumbers
 	 * 		If {@code true}, numbers are ignored.
@@ -347,7 +348,8 @@ public abstract class AbstractDelegateRecognizer
 	
 	/**
 	 * Whether or not purely numerical mentions should be ignored.
-	 * This is only used during recognition.
+	 * This is only used during recognition and only concerns
+	 * non-date entities (since dates can be numerical).
 	 * 
 	 * @return
 	 * 		{@code true} iff numbers are ignored.
@@ -389,9 +391,9 @@ public abstract class AbstractDelegateRecognizer
 				it.remove();
 			}
 			
-			// is it a pure number?
+			// is it a pure number? (and not a date)
 			else if(ignoreNumbers && StringTools.hasNoLetter(mentionStr) && type!=EntityType.DATE)
-			{	logger.log("Mention '"+mentionStr+"' is a number (no letter) >> filtered.)");
+			{	logger.log("Mention '"+mentionStr+"' is a number (no letter) and not a date >> filtered.)");
 				it.remove();
 			}
 		}

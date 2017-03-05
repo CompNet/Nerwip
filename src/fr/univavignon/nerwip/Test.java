@@ -201,7 +201,7 @@ public class Test
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 //		testOpeNer(name);
-	    testOpenNlp(name);
+//	    testOpenNlp(name);
 //		testStanford(url);
 //		testSubee(url);
 //		testTagEn(name);
@@ -211,7 +211,7 @@ public class Test
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-//		testEvaluator();
+		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -680,8 +680,7 @@ File folder = folders.get(0);
 		OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
-		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, ignoreNumbers, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setCacheEnabled(false);
 
 		// only the specified article
@@ -713,8 +712,7 @@ File folder = folders.get(0);
 		OpenCalaisLanguage lang = OpenCalaisLanguage.FR;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
-		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, ignoreNumbers, exclusionOn);
+		OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 		openCalais.setOutputRawResults(true);
 		openCalais.setCacheEnabled(false);
 		
@@ -782,8 +780,7 @@ File folder = folders.get(0);
 		TagEnModelName model = TagEnModelName.MUC_MODEL;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
-		TagEn tagen = new TagEn(model,ignorePronouns, ignoreNumbers, exclusionOn);
+		TagEn tagen = new TagEn(model,ignorePronouns, exclusionOn);
 		tagen.setOutputRawResults(true);
 		tagen.setCacheEnabled(false);
 		
@@ -816,8 +813,7 @@ File folder = folders.get(0);
 		boolean parenSplit = true;
 		boolean exclusionOn = false;
 		boolean ignorePronouns = false;
-		boolean ignoreNumbers = true;
-		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, ignoreNumbers, exclusionOn);
+		OpeNer opener = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
 		opener.setOutputRawResults(true);
 		opener.setCacheEnabled(false);
 		
@@ -870,9 +866,8 @@ File folder = folders.get(0);
 	
 			boolean exclusionOn = false;
 			boolean ignorePronouns = false;
-			boolean ignoreNumbers = true;
 			StanfordModelName modelName = StanfordModelName.CONLLMUC_MODEL;
-			Stanford stanford = new Stanford(modelName, true, ignorePronouns, ignoreNumbers, exclusionOn);
+			Stanford stanford = new Stanford(modelName, true, ignorePronouns, exclusionOn);
 			stanford.setCacheEnabled(false);
 			stanford.recognize(article);
 		}
@@ -1050,8 +1045,7 @@ File folder = folders.get(0);
 			OpenNlpModelName modelName = OpenNlpModelName.NERC_MODEL;
 			boolean exclusionOn = false;
 			boolean ignorePronouns = false;
-			boolean ignoreNumbers = true;
-			OpenNlp openNlp = new OpenNlp(modelName, true, ignorePronouns, ignoreNumbers, exclusionOn);
+			OpenNlp openNlp = new OpenNlp(modelName, true, ignorePronouns, exclusionOn);
 			openNlp.setCacheEnabled(false);
 			openNlp.setOutputRawResults(true);
 			
@@ -1495,11 +1489,10 @@ File folder = folders.get(0);
 
 		float minConf = 0.3f;
 		boolean ignorePronouns = true;
-		boolean ignoreNumbers = true;
 		boolean exclusionOn = true;
 		boolean resolveHomonyms = true;
 //		Spotlight spotlight = new Spotlight(minConf,resolveHomonyms);
-		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, ignorePronouns, ignoreNumbers, exclusionOn);
+		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, ignorePronouns, exclusionOn);
 		Spotlight spotlight = new Spotlight(recognizer,resolveHomonyms);
 		spotlight.setOutputRawResults(true);
 		spotlight.setCacheEnabled(false);
@@ -1772,9 +1765,9 @@ File folder = folders.get(0);
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, false),
 //			new OpenNlp(OpenNlpModelName.NERWIP_MODEL,loadOnDemand, true, true),	// LOC, ORG, PERS
 
-			new Spotlight(0.1f,true),	// LOC, MEET, ORG, PERS, PROD
-			new Spotlight(0.2f,true),	// LOC, MEET, ORG, PERS, PROD
-			new Spotlight(0.3f,true),	// LOC, MEET, ORG, PERS, PROD
+//			new Spotlight(0.1f,true),	// LOC, MEET, ORG, PERS, PROD
+//			new Spotlight(0.2f,true),	// LOC, MEET, ORG, PERS, PROD
+//			new Spotlight(0.3f,true),	// LOC, MEET, ORG, PERS, PROD
 				
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, false),
 //			new Stanford(StanfordModelName.CONLL_MODEL, loadOnDemand, false, true),
@@ -1995,7 +1988,7 @@ File folder = folders.get(0);
 		
 		// cache/no cache at the recognizer level
 		for(InterfaceRecognizer recognizer: recognizers)
-		{	recognizer.setCacheEnabled(false);	//TODO
+		{	recognizer.setCacheEnabled(true);	//TODO
 //			((AbstractCombiner)recognizer).setSubCacheEnabled(true);	//just to check combiner subcache
 		}
 		
@@ -2293,8 +2286,6 @@ File folder = folders.get(0);
 
 
 /* TODO
- * - Move evaluation to recognition, or create several subfolders in evaluation to reflect the three recognition/resolution/linking tasks
- *   
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
@@ -2302,12 +2293,14 @@ File folder = folders.get(0);
  *    also, its entities are recorded in specific files, at the level of the corpus.
  *    whereas the new mentions (bc of their entities) are recorded in a different file in the concerned linker folders of each article (?)
  *   
- * - add surface forms to entities (in resolver and in linker) >> what did I mean there?
+ * - add surface forms to entities (in resolver and in linker) 
+ *     >> what did I mean there? 
+ *     >> when building an entity, add the surface form, even during resolution
  * - check for french models in already working recognizers
  * 
  * - check if recognizers able to handle dates need to remove numeric values or not
  *   maybe just remove the non-dates numbers (ie entity which are not of type date)
- * - actually, check all of them: for some of them, it might just be better to simplify the constructor by making decition regarding
+ * - actually, check all of them: for some of them, it might just be better to simplify the constructor by making decision regarding
  *   number removal once and for all.
  */
 

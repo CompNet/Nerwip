@@ -63,16 +63,14 @@ public class Illinois extends AbstractProcessor implements InterfaceRecognizer
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException
      * 		Problem while loading the model data.
 	 */
-	public Illinois(IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
-	{	delegateRecognizer = new IllinoisDelegateRecognizer(this, modelName, loadModelOnDemand, trim, ignorePronouns, ignoreNumbers, exclusionOn);
+	public Illinois(IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	delegateRecognizer = new IllinoisDelegateRecognizer(this, modelName, loadModelOnDemand, trim, ignorePronouns, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

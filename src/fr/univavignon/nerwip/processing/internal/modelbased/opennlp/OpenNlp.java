@@ -60,16 +60,14 @@ public class OpenNlp extends AbstractProcessor implements InterfaceRecognizer
 	 * 		recognizer, or only when necessary. 
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException 
 	 * 		Problem while loading the models or tokenizers.
 	 */
-	public OpenNlp(OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
-	{	delegateRecognizer = new OpenNlpDelegateRecognizer(this, modelName, loadModelOnDemand, ignorePronouns, ignoreNumbers, exclusionOn);
+	public OpenNlp(OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	delegateRecognizer = new OpenNlpDelegateRecognizer(this, modelName, loadModelOnDemand, ignorePronouns, exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

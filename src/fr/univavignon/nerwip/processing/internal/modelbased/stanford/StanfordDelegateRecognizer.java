@@ -74,16 +74,14 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 	 * 		recognizer, or only when necessary. 
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException 
 	 * 		Problem while loading the model data.
 	 */
-	public StanfordDelegateRecognizer(Stanford stanford, StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
-	{	super(stanford,modelName,loadModelOnDemand,false,ignorePronouns,ignoreNumbers,exclusionOn);
+	public StanfordDelegateRecognizer(Stanford stanford, StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	super(stanford,modelName,loadModelOnDemand,false,ignorePronouns,true,exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

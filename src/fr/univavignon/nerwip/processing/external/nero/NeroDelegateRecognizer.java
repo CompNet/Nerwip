@@ -93,8 +93,6 @@ public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 		
 		this.neroTagger = neroTagger;
 		this.flat = flat;
-		
-		setIgnoreNumbers(false);
 	}
 
 	/////////////////////////////////////////////////////////////////

@@ -65,9 +65,7 @@ public class DateExtractorDelegateRecognizer extends AbstractModellessInternalDe
 	 * 		Recognizer in charge of this delegate.
 	 */
 	public DateExtractorDelegateRecognizer(DateExtractor dateExtractor)
-	{	super(dateExtractor,false,false,false,false);
-		
-		setIgnoreNumbers(false);
+	{	super(dateExtractor,false,false,true,false);
 	}
 
 	/////////////////////////////////////////////////////////////////

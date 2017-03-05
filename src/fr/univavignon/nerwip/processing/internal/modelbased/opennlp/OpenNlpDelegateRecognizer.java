@@ -71,16 +71,14 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 	 * 		recognizer, or only when necessary. 
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException 
 	 * 		Problem while loading the models or tokenizers.
 	 */
-	public OpenNlpDelegateRecognizer(OpenNlp openNlp, OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
-	{	super(openNlp,modelName,loadModelOnDemand,false,ignorePronouns,ignoreNumbers,exclusionOn);
+	public OpenNlpDelegateRecognizer(OpenNlp openNlp, OpenNlpModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	super(openNlp,modelName,loadModelOnDemand,false,ignorePronouns,true,exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

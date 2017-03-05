@@ -75,8 +75,6 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 	{	super(spotlight, true, false, false, false);
 		
 		this.minConf = minConf;
-		
-		setIgnoreNumbers(false);
 	}
 	
 	/////////////////////////////////////////////////////////////////

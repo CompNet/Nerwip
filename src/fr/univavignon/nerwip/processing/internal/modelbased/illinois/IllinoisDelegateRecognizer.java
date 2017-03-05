@@ -80,16 +80,14 @@ public class IllinoisDelegateRecognizer extends AbstractModelbasedInternalDelega
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not numbers should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException
      * 		Problem while loading the model data.
 	 */
-	public IllinoisDelegateRecognizer(Illinois illinois, IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
-	{	super(illinois,modelName,loadModelOnDemand,trim,ignorePronouns,ignoreNumbers,exclusionOn);
+	public IllinoisDelegateRecognizer(Illinois illinois, IllinoisModelName modelName, boolean loadModelOnDemand, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	super(illinois,modelName,loadModelOnDemand,trim,ignorePronouns,true,exclusionOn);
 	}
 
 	/////////////////////////////////////////////////////////////////

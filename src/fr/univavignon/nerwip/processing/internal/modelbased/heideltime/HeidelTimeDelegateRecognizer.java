@@ -88,8 +88,6 @@ public class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDele
 	public HeidelTimeDelegateRecognizer(HeidelTime heidelTime, HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws ProcessorException
 	{	super(heidelTime,modelName,loadModelOnDemand,false,false,false,false);
 	
-		setIgnoreNumbers(false);
-
 		this.doIntervalTagging = doIntervalTagging; //TODO this is actually ignored when loadModelOnDemand is false
 	}
 
@@ -103,6 +101,7 @@ public class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDele
 		result = result + "_" + "mainModel=" + modelName.toString();
 		result = result + "_" + "intervals=" + doIntervalTagging;
 //		result = result + "_" + "ignPro=" + ignorePronouns;
+//		result = result + "_" + "ignNbr=" + ignoreNumbers;
 //		result = result + "_" + "exclude=" + exclusionOn;
 		
 		return result;

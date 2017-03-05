@@ -67,16 +67,14 @@ public class LingPipe extends AbstractProcessor implements InterfaceRecognizer
 	 * 		cleaned from any non-letter/digit chars.
 	 * @param ignorePronouns
 	 * 		Whether or not pronouns should be excluded from the detection.
-	 * @param ignoreNumbers
-	 * 		Whether or not pronouns should be excluded from the detection.
 	 * @param exclusionOn
 	 * 		Whether or not stop words should be excluded from the detection.
 	 * 
 	 * @throws ProcessorException 
 	 *		Problem while initializing the model.
 	 */
-	public LingPipe(LingPipeModelName chunkingMethod, boolean loadChunkerOnDemand, boolean splitSentences, boolean trim, boolean ignorePronouns, boolean ignoreNumbers, boolean exclusionOn) throws ProcessorException
-	{	delegateRecognizer = new LingPipeDelegateRecognizer(this, chunkingMethod, loadChunkerOnDemand, splitSentences, trim, ignorePronouns, ignoreNumbers, exclusionOn);
+	public LingPipe(LingPipeModelName chunkingMethod, boolean loadChunkerOnDemand, boolean splitSentences, boolean trim, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
+	{	delegateRecognizer = new LingPipeDelegateRecognizer(this, chunkingMethod, loadChunkerOnDemand, splitSentences, trim, ignorePronouns, exclusionOn);
 	}
 	
 	/////////////////////////////////////////////////////////////////

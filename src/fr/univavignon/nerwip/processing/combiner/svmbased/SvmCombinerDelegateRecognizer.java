@@ -203,9 +203,8 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 				model = IllinoisModelName.NERWIP_MODEL;
 			boolean trim = false;
 			boolean ignorePronouns = false;
-			boolean ignoreNumbers = true; //TODO not checked
 			boolean exclusionOn = true;
-			Illinois illinois = new Illinois(model, loadModelOnDemand, trim, ignorePronouns, ignoreNumbers, exclusionOn);
+			Illinois illinois = new Illinois(model, loadModelOnDemand, trim, ignorePronouns, exclusionOn);
 			recognizers.add(illinois);
 		}
 		
@@ -217,9 +216,8 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			boolean splitSentences = true;
 			boolean trim = true;
 			boolean ignorePronouns = true;
-			boolean ignoreNumbers = true; //TODO not checked
 			boolean exclusionOn = false;
-			LingPipe lingPipe = new LingPipe(model, loadModelOnDemand, splitSentences, trim, ignorePronouns, ignoreNumbers, exclusionOn);
+			LingPipe lingPipe = new LingPipe(model, loadModelOnDemand, splitSentences, trim, ignorePronouns, exclusionOn);
 			recognizers.add(lingPipe);
 		}
 		
@@ -227,9 +225,8 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 		{	logger.log("Init OpenCalais");
 			OpenCalaisLanguage lang = OpenCalaisLanguage.EN;
 			boolean ignorePronouns = true;
-			boolean ignoreNumbers = true; //TODO not checked
 			boolean exclusionOn = false;
-			OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, ignoreNumbers, exclusionOn);
+			OpenCalais openCalais = new OpenCalais(lang, ignorePronouns, exclusionOn);
 			recognizers.add(openCalais);
 		}
 		
@@ -237,11 +234,10 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 		{	logger.log("Init OpenNLP");
 			boolean exclusionOn = true;
 			boolean ignorePronouns = true;
-			boolean ignoreNumbers = true; //TODO not checked
 			OpenNlpModelName model = OpenNlpModelName.ORIGINAL_MODEL;
 			if(specific)
 				model = OpenNlpModelName.NERWIP_MODEL;
-			OpenNlp openNlp = new OpenNlp(model, loadModelOnDemand, exclusionOn, ignorePronouns, ignoreNumbers);
+			OpenNlp openNlp = new OpenNlp(model, loadModelOnDemand, exclusionOn, ignorePronouns);
 			recognizers.add(openNlp);
 		}
 		
@@ -251,9 +247,8 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			if(specific)
 				model = StanfordModelName.NERWIP_MODEL;
 			boolean ignorePronouns = false;
-			boolean ignoreNumbers = true; //TODO not checked
 			boolean exclusionOn = false;
-			Stanford stanford = new Stanford(model, loadModelOnDemand, ignorePronouns, ignoreNumbers, exclusionOn);
+			Stanford stanford = new Stanford(model, loadModelOnDemand, ignorePronouns, exclusionOn);
 			recognizers.add(stanford);
 		}
 		
