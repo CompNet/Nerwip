@@ -2297,15 +2297,10 @@ File folder = folders.get(0);
  *     >> what did I mean there? 
  *     >> when building an entity, add the surface form, even during resolution
  * - check for french models in already working recognizers
- * 
- * - check if recognizers able to handle dates need to remove numeric values or not
- *   maybe just remove the non-dates numbers (ie entity which are not of type date)
- * - actually, check all of them: for some of them, it might just be better to simplify the constructor by making decision regarding
- *   number removal once and for all.
  */
 
 /*
- * Check libraries
+ * Check libraries (sabrine?)
  * - why commons-csv-1.0.jar ?
  * - what is filterbuilder.jar ?
  * - htmlexer.jar ?
