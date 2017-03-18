@@ -34,12 +34,9 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
  * This class acts as an interface with the OpenCalais Web service.
+ * It handles mention recognition.
+ * See {@link OpenCalaisDelegateRecognizer} for more details.
  * <br/>
- * Recommended parameter values:
- * <ul>
- * 		<li>{@code ignorePronouns}: {@code true}</li>
- * 		<li>{@code exclusionOn}: {@code false}</li>
- * </ul>
  * Official OpenCalais website: <a href="http://www.opencalais.com/">http://www.opencalais.com/</a>
  * <br/>
  * <b>Note:</b> if you use this tool, make sure you set up your license key

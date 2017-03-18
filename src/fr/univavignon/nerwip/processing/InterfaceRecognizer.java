@@ -29,7 +29,9 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 
 /**
- * TODO
+ * Interface implemented by all classes able to perform
+ * mention recognition, i.e. detect in some text all the
+ * expression corresponding to entities.
  * 		 
  * @author Vincent Labatut
  */

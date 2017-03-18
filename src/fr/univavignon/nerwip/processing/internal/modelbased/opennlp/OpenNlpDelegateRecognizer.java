@@ -51,8 +51,6 @@ import opennlp.tools.util.Span;
  * 		<li>{@code ignorePronouns}: {@code true}</li>
  * 		<li>{@code exclusionOn}: {@code true}</li>
  * </ul>
- * <br/>
- * Official OpenNLP website: <a href="http://opennlp.apache.org/">http://opennlp.apache.org/</a>
  * 
  * @author Vincent Labatut
  */

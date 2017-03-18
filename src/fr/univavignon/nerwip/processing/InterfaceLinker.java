@@ -30,7 +30,9 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
 
 /**
- * TODO
+ * Interface implemented by all classes able to perform
+ * entity linking, i.e. identify which entity one mention
+ * refers to.
  * 		 
  * @author Vincent Labatut
  */

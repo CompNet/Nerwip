@@ -30,7 +30,9 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
 
 /**
- * TODO
+ * Interface implemented by all classes able to perform
+ * coreference resolution, i.e. determine if two entity object
+ * actually correspond to the same entity or not.
  * 		 
  * @author Vincent Labatut
  */

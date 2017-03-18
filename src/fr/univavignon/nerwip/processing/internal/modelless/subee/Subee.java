@@ -34,19 +34,9 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.freebase.FbCommonTools;
 
 /**
- * This class implements our own recognizer, called Subee. It takes advantage of
- * hyperlinks present in  Wikipedia pages to identify mentions in the text, and 
- * of Freebase to select their type.
- * <br/>
- * Recommended parameter values:
- * <ul>
- * 		<li>{@code additionalOccurrences}: {@code true}</li>
- * 		<li>{@code useTitle}: {@code true}</li>
- * 		<li>{@code notableType}: {@code true}</li>
- * 		<li>{@code useAcronyms}: {@code true}</li>
- * 		<li>{@code discardDemonyms}: {@code true}</li>
- * </ul>
- * <br/>
+ * Wikipedia-based custom recognizer.
+ * See {@link SubeeDelegateRecognizer} for details.
+ * 
  * <b>Note:</b> if you use this tool, make sure you set up your Freebase key
  * in class {@link FbCommonTools}.
  * 

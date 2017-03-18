@@ -37,18 +37,11 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
  * This class acts as an interface with the DBpedia Spotlight Web service.
- * <br/>
- * Recommended parameter values:
-// * <ul>
-// * 		<li>{@code parenSplit}: {@code true}</li>
-// * 		<li>{@code ignorePronouns}: {@code true}</li>
-// * 		<li>{@code exclusionOn}: {@code false}</li>
-// * </ul>
- * <br/>
- * Official Spotlight website: 
- * <a href="http://spotlight.dbpedia.org">
- * http://spotlight.dbpedia.org</a>
- * <br/>
+ * It handles mention recognition, entity linking and coreference resolution.
+ * See the delegates for more details: {@link SpotlightDelegateRecognizer}
+ * for recognizer, {@link SpotlightDelegateLinker} for the linker, and
+ * {@link SpotlightDelegateResolver} for the resolver.
+ * <br>
  * TODO Spotlight is available as a set of Java libraries. We could directly 
  * integrate them in Nerwip instead of using the Web service.
  * 

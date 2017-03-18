@@ -53,8 +53,6 @@ import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedIn
  * 		<li>{@code ignorePronouns}: {@code false}</li>
  * 		<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
- * <br/>
- * Official Stanford website: <a href="http://nlp.stanford.edu/software/CRF-NER.shtml">http://nlp.stanford.edu/software/CRF-NER.shtml</a>
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut

@@ -22,8 +22,8 @@ package fr.univavignon.nerwip.processing;
  */
 
 /**
- * Problem while performing the detection
- * of mentions in some text.
+ * Problem while performing mention detection, entity linking
+ * or coreference resolution, in some text.
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut

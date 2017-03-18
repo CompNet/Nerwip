@@ -63,10 +63,6 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * 		<li>{@code ignorePronouns}: {@code true}</li>
  * 		<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
- * Official OpenCalais website: <a href="http://www.opencalais.com/">http://www.opencalais.com/</a>
- * <br/>
- * <b>Note:</b> if you use this tool, make sure you set up your license key
- * in the file res/misc/key.xml using the exact name "OpenCalais".
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut

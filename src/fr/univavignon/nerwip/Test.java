@@ -2286,6 +2286,8 @@ File folder = folders.get(0);
 
 
 /* TODO
+ * - must clean/correct the javadoc for most classes in the processing package
+ * 
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
@@ -2293,9 +2295,8 @@ File folder = folders.get(0);
  *    also, its entities are recorded in specific files, at the level of the corpus.
  *    whereas the new mentions (bc of their entities) are recorded in a different file in the concerned linker folders of each article (?)
  *   
- * - add surface forms to entities (in resolver and in linker) 
- *     >> what did I mean there? 
- *     >> when building an entity, add the surface form, even during resolution
+ * - When linking, add surface forms to entities (resolution only sets one surface form)
+ *  
  * - check for french models in already working recognizers
  */
 

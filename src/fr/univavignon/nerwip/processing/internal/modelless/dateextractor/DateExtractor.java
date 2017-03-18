@@ -35,7 +35,7 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
 
 /**
- * This class implements our first date extractor.
+ * This class implements our first date recognizer.
  * It focuses on classic date formats (eg 31 august 1903).
  * <br/>
  * However it is not efficient enough on WP articles, because

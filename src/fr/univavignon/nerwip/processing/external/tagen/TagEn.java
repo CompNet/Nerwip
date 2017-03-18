@@ -34,14 +34,8 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
  * This class acts as an interface with TagEN.
- * <br/>
- * Recommended parameter values:
- * <ul>
- * 	<li>{@code model}: {@link TagEnModelName#MUC_MODEL} for French and 
- * 					   {@link TagEnModelName#WIKI_MODEL} for English</li>
- * 	<li>{@code ignorePronouns}: {@code true}</li>
- * 	<li>{@code exclusionOn}: {@code false}</li>
- * </ul>
+ * It handles mention recognition.
+ * See {@link TagEnDelegateRecognizer} for more details.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut

@@ -44,21 +44,9 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateLinker;
 
 /**
- * This class acts as an interface with the DBpedia Spotlight Web service.
- * <br/>
- * Recommended parameter values:
-// * <ul>
-// * 		<li>{@code parenSplit}: {@code true}</li>
-// * 		<li>{@code ignorePronouns}: {@code true}</li>
-// * 		<li>{@code exclusionOn}: {@code false}</li>
-// * </ul>
- * <br/>
- * Official Spotlight website: 
- * <a href="http://spotlight.dbpedia.org">
- * http://spotlight.dbpedia.org</a>
- * <br/>
- * TODO Spotlight is available as a set of Java libraries. We could directly 
- * integrate them in Nerwip.
+ * This class acts as an interface with the DBpedia Spotlight Web service, 
+ * more precisely its service focusing on linking entities to unique 
+ * identifiers.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut

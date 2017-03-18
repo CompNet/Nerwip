@@ -34,17 +34,11 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
  * This class acts as an interface with the HeidelTime tool.
- * <br/>
- * Recommended parameter values:
- * <ul>
- * 		<li>{@code ignorePronouns}: {@code true}</li>
- * 		<li>{@code exclusionOn}: {@code true}</li>
- * 		TODO
- * </ul>
+ * It handles mention recognition.
+ * See {@link HeidelTimeDelegateRecognizer} for more details. 
  * <br/>
  * Note we ignore some of the data output by HeidelTime when
- * converting to Nerwip format. Cf. {@link HeidelTimeDelegateRecognizer}
- * for more details. 
+ * converting to Nerwip format.
  * <br/>
  * Official HeidelTime website: <a href="https://code.google.com/p/heideltime/">https://code.google.com/p/heideltime/</a>
  * 

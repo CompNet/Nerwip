@@ -22,9 +22,9 @@ package fr.univavignon.nerwip.processing;
  */
 
 /**
- * Each value of this enum type
- * represents one way of detecting
- * named entity mentions. 
+ * Each value of this enum type represents one way of processing
+ * named entities, be it detecting their mentions, linking a mentions
+ * to entites or resolving entity coreferences. 
  * 
  * @author Yasa Akbulut
  * @author Vincent Labatut

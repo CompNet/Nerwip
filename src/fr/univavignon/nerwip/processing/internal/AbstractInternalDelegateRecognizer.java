@@ -40,8 +40,10 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileTools;
 
 /**
- * This class is used to represent or implement recognizers invocable 
- * internally, i.e. programmatically, from within Nerwip. 
+ * The recognition process can be implemented either directly in the processor
+ * class, or preferably in a delegate class. In the latter case, the delegate
+ * must be based on this class, which specifically concerns internal processors,
+ * i.e. those invokable internally from within Nerwip.
  * 
   * @param <T>
  * 		Class of the internal representation of the mentions resulting from the detection.
@@ -241,7 +243,7 @@ public abstract class AbstractInternalDelegateRecognizer<T> extends AbstractDele
 	 * @param article
 	 * 		Concerned article.
 	 * @param results
-	 * 		String representation of the recognizer result.		
+	 * 		String representation of the recognizer results.		
 	 * 
 	 * @throws IOException 
 	 * 		Problem while recording the file.

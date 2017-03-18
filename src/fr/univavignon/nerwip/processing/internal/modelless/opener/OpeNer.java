@@ -34,13 +34,8 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
  * This class acts as an interface with the OpeNer Web service.
- * <br/>
- * Recommended parameter values:
- * <ul>
- * 		<li>{@code parenSplit}: {@code true}</li>
- * 		<li>{@code ignorePronouns}: {@code true}</li>
- * 		<li>{@code exclusionOn}: {@code false}</li>
- * </ul>
+ * It handles mention recognition.
+ * See {@link OpeNerDelegateRecognizer} for more details.
  * <br/>
  * Official OpeNer website: 
  * <a href="http://www.opener-project.eu/webservices/">

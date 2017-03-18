@@ -43,19 +43,20 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileTools;
 
 /**
- * This class is used to represent or implement recognizers invocable 
- * internally, i.e. programmatically, from within Nerwip. 
+ * The linking process can be implemented either directly in the processor
+ * class, or preferably in a delegate class. In the latter case, the delegate
+ * must be based on this class, which specifically concerns internal processors,
+ * i.e. those invokable internally from within Nerwip.
  * 
-  * @param <T>
- * 		Class of the internal representation of the mentions resulting from the detection.
+ * @param <T>
+ * 		Class of the internal representation of the entities resulting from the linking.
  * 		 
- * @author Yasa Akbulut
  * @author Vincent Labatut
  */
 public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegateLinker
 {	
 	/**
-	 * Builds a new internal recognizer,
+	 * Builds a new internal linker,
 	 * using the specified options.
 	 * 
 	 * @param linker
@@ -70,12 +71,12 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Possibly performs the last operations
-	 * to make this recognizer ready to be applied.
-	 * This method mainly concerns recognizers needing
+	 * to make this linker ready to be applied.
+	 * This method mainly concerns linkers needing
 	 * to load external data.
 	 * 
 	 * @throws ProcessorException
-	 * 		Problem while initializing the recognizer.
+	 * 		Problem while initializing the linker.
 	 */
 	protected abstract void prepareLinker() throws ProcessorException;
 
@@ -135,7 +136,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				// possibly get the mentions
 				if(mentions==null)
 				{	InterfaceRecognizer recognizer = linker.getRecognizer();
-					// recognize the mentions (or detect them if previously cached...)
+					// recognize the mentions (or load them if previously cached...)
 					if(recognizer!=null)
 						mentions = recognizer.recognize(article);
 					// no recognizer means this linker will also perform the recognition
@@ -153,7 +154,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				// apply the linker
 				logger.log("Detect the mentions");
 				prepareLinker();
-				T intRes = linkEntities(article, mentions, entities);//TODO voir si on se comporte bien ici par rapport à mentions et entities
+				T intRes = linkEntities(article, mentions, entities);
 				
 				// possibly record entities as they are outputted (useful for debug)
 				if(linker.doesOutputRawResults())
@@ -165,7 +166,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				
 				// convert entities to our internal representation
 				logger.log("Convert entities to internal representation");
-				convert(article,mentions,entities,intRes);//TODO voir si on se comporte bien ici par rapport à mentions et entities
+				convert(article,mentions,entities,intRes);
 	
 				// record results using our xml format
 				logger.log("Record mentions and entities using our XML format");
@@ -224,7 +225,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Reads the file generated externally by the
-	 * associated recognizer to store the detected mentions.
+	 * associated linker to store the detected mentions.
 	 * 
 	 * @param article 
 	 * 		Concerned article.
@@ -251,7 +252,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * @param article
 	 * 		Concerned article.
 	 * @param results
-	 * 		String representation of the recognizer result.		
+	 * 		String representation of the linker results.		
 	 * 
 	 * @throws IOException 
 	 * 		Problem while recording the file.
@@ -266,13 +267,13 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	}
 
 	/**
-	 * Records the results of the recognition task
+	 * Records the results of the linking task
 	 * in a text file, for archiving purposes.
 	 * 
 	 * @param article
 	 * 		Concerned article.
 	 * @param intRes
-	 * 		Result of the mention detection, represented using the format internal to the recognizer.
+	 * 		Result of the mention detection, represented using the format internal to the linker.
 	 * 
 	 * @throws IOException
 	 * 		Problem while writing the file.

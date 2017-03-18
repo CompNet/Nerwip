@@ -44,28 +44,15 @@ import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.string.StringTools;
 
 /**
- * This class acts as an interface with Nero.
+ * This class acts as a delegate for the mention recognition with Nero
  * <br/>
  * Recommended parameter values:
  * <ul>
- * <li>{@code tagger}: {@code CRF}</li>
- * <li>{@code flat}: {@code true}</li>
- * <li>{@code ignorePronouns}: {@code true}</li>
- * <li>{@code exclusionOn}: {@code false}</li>
+ * 		<li>{@code tagger}: {@code CRF}</li>
+ * 		<li>{@code flat}: {@code true}</li>
+ * 		<li>{@code ignorePronouns}: {@code true}</li>
+ * 		<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
- * Official Nero website: <a
- * href="https://nero.irisa.fr/">https://nero.irisa.fr/</a>
- * <br/>
- * <b>Warning:</b> it should be noted Nero was originally designed 
- * to treat speech transcriptions, and is therefore not very 
- * robust when handling punctuation. It is also very sensitive to 
- * specific characters like {@code û} or {@code ë}, or combinations 
- * of characters such as newline {@code '\n'} followed by 
- * {@code '"'}. Those should be avoided at all cost in the
- * parsed text, otherwise this delegate will not be able to process 
- * Nero's output.
- * <br/>
- * Nero was tested only on a Linux system.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut

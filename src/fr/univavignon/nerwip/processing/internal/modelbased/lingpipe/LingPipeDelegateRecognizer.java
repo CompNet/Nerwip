@@ -56,8 +56,6 @@ import java.util.List;
  * 		<li>{@code ignorePronouns}: {@code true}</li>
  * 		<li>{@code exclusionOn}: {@code false}</li>
  * </ul>
- * <br/>
- * Official LingPipe website: <a href="http://alias-i.com/lingpipe">http://alias-i.com/lingpipe/</a>
  * 
  * @author Samet Atdağ
  * @author Vincent Labatut

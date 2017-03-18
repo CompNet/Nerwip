@@ -42,19 +42,20 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileTools;
 
 /**
- * This class is used to represent or implement recognizers invocable 
- * internally, i.e. programmatically, from within Nerwip. 
+ * The resolution process can be implemented either directly in the processor
+ * class, or preferably in a delegate class. In the latter case, the delegate
+ * must be based on this class, which specifically concerns internal processors,
+ * i.e. those invokable internally from within Nerwip.
  * 
   * @param <T>
  * 		Class of the internal representation of the mentions resulting from the detection.
  * 		 
- * @author Yasa Akbulut
  * @author Vincent Labatut
  */
 public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelegateResolver
 {	
 	/**
-	 * Builds a new internal recognizer,
+	 * Builds a new internal resolvers,
 	 * using the specified options.
 	 * 
 	 * @param resolver
@@ -72,18 +73,18 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Possibly performs the last operations
-	 * to make this recognizer ready to be applied.
-	 * This method mainly concerns recognizers needing
+	 * to make this resolvers ready to be applied.
+	 * This method mainly concerns resolvers needing
 	 * to load external data.
 	 * 
 	 * @throws ProcessorException
-	 * 		Problem while initializing the recognizer.
+	 * 		Problem while initializing the resolver.
 	 */
 	protected abstract void prepareResolver() throws ProcessorException;
 
     /**
      * Takes an object representation of the article,  and returns the internal representation of
-     * the detected mentions. Those must then be converted to objects compatible with the rest of 
+     * the resolved entities. Those must then be converted to objects compatible with the rest of 
      * Nerwip.
      * <br/>
      * If the processor was initialized to perform as both a recognizer and a resolver, then the
@@ -218,7 +219,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Reads the file generated externally by the
-	 * associated recognizer to store the detected mentions.
+	 * associated resolver to store the detected mentions.
 	 * 
 	 * @param article 
 	 * 		Concerned article.
@@ -245,7 +246,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	 * @param article
 	 * 		Concerned article.
 	 * @param results
-	 * 		String representation of the recognizer result.		
+	 * 		String representation of the resolver results.		
 	 * 
 	 * @throws IOException 
 	 * 		Problem while recording the file.
@@ -260,13 +261,13 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 	}
 
 	/**
-	 * Records the results of the recognition task
+	 * Records the results of the resolution task
 	 * in a text file, for archiving purposes.
 	 * 
 	 * @param article
 	 * 		Concerned article.
 	 * @param intRes
-	 * 		Result of the mention detection, represented using the format internal to the recognizer.
+	 * 		Result of the mention detection, represented using the format internal to the resolver.
 	 * 
 	 * @throws IOException
 	 * 		Problem while writing the file.

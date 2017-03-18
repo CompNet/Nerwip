@@ -33,15 +33,10 @@ import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
- * This class acts as an interface with Stanford Named Entity Recognizer.
- * <br/>
- * Recommended parameter values:
- * <ul>
- * 		<li>{@code model}: {@link StanfordModelName#CONLLMUC_MODEL CONLLMUC_MODEL} if dates are not needed,
- * 			{@link StanfordModelName#MUC_MODEL MUC_MODEL} if dates are needed.</li>
- * 		<li>{@code ignorePronouns}: {@code false}</li>
- * 		<li>{@code exclusionOn}: {@code false}</li>
- * </ul>
+ * This class acts as a delegate for the mention recognition with 
+ * Stanford Named Entity Recognizer.
+ * It handles mention recognition.
+ * See {@link StanfordDelegateRecognizer} for more details.
  * <br/>
  * Official Stanford website: <a href="http://nlp.stanford.edu/software/CRF-NER.shtml">http://nlp.stanford.edu/software/CRF-NER.shtml</a>
  * 

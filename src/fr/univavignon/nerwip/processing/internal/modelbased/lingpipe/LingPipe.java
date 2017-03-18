@@ -33,16 +33,10 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import java.util.List;
 
 /**
- * This class acts as an interface with the LingPipe library.
- * <br/>
- * Recommended parameter values:
- * <ul>
- * 		<li>{@code chunkingMethod}: {@link LingPipeModelName#PREDEFINED_MODEL PREDEFINED_MODEL}</li>
- * 		<li>{@code splitSentences}: {@code true}</li>
- * 		<li>{@code trim}: {@code true}</li>
- * 		<li>{@code ignorePronouns}: {@code true}</li>
- * 		<li>{@code exclusionOn}: {@code false}</li>
- * </ul>
+ * This class acts as a delegate for the mention recognition with 
+ * the LingPipe library.
+ * It handles mention recognition.
+ * See {@link LingPipeDelegateRecognizer} for more details.
  * <br/>
  * Official LingPipe website: <a href="http://alias-i.com/lingpipe">http://alias-i.com/lingpipe/</a>
  * 

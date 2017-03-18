@@ -24,7 +24,9 @@ package fr.univavignon.nerwip.processing;
 import fr.univavignon.nerwip.data.article.Article;
 
 /**
- * TODO
+ * Interface implemented by all classes able to perform
+ * at least one task among mention recognition, entity linking
+ * and coreference resolution.
  * 		 
  * @author Vincent Labatut
  */

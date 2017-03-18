@@ -34,16 +34,10 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
  * This class acts as an interface with Nero.
+ * It handles mention recognition.
+ * See {@link NeroDelegateRecognizer} for more details.
  * <br/>
- * Recommended parameter values:
- * <ul>
- * <li>{@code tagger}: {@code CRF}</li>
- * <li>{@code flat}: {@code true}</li>
- * <li>{@code ignorePronouns}: {@code true}</li>
- * <li>{@code exclusionOn}: {@code false}</li>
- * </ul>
- * Official Nero website: <a
- * href="https://nero.irisa.fr/">https://nero.irisa.fr/</a>
+ * Official Nero website: <ahref="https://nero.irisa.fr/">https://nero.irisa.fr/</a>
  * <br/>
  * <b>Warning:</b> it should be noted Nero was originally designed 
  * to treat speech transcriptions, and is therefore not very 

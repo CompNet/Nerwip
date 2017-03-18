@@ -33,15 +33,10 @@ import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
- * This class acts as an interface with the Apache OpenNLP tool.
- * <br/>
- * Recommended recognizer parameter values:
- * <ul>
- * 		<li>{@code ignorePronouns}: {@code true}</li>
- * 		<li>{@code exclusionOn}: {@code true}</li>
- * </ul>
- * Also note that for models handling dates, it is recommended to set
- * {@code ignoreNumbers} to {@code false}.
+ * This class acts as a delegate for the mention recognition with 
+ * the Apache OpenNLP tool.
+ * It handles mention recognition.
+ * See {@link OpenNlpDelegateRecognizer} for more details.
  * <br/>
  * Official OpenNLP website: <a href="http://opennlp.apache.org/">http://opennlp.apache.org/</a>
  * 

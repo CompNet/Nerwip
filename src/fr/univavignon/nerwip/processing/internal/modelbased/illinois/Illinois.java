@@ -34,13 +34,8 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 
 /**
  * This class acts as an interface with Illinois Named Entity Tagger.
- * <br/>
- * Recommended parameter values:
- * <ul>
- * 		<li>{@code model}: {@link IllinoisModelName#CONLL_MODEL CONLL_MODEL} </li>
- * 		<li>{@code ignorePronouns}: {@code false}</li>
- * 		<li>{@code exclusionOn}: {@code true}</li>
- * </ul>
+ * It handles mention recognition.
+ * See {@link IllinoisDelegateRecognizer} for more details.
  * <br/>
  * Official Illinois website: <a href="http://cogcomp.cs.illinois.edu/page/software_view/4">http://cogcomp.cs.illinois.edu/page/software_view/4</a>
  * 

@@ -43,7 +43,9 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
- * TODO 
+ * The resolution process can be implemented either directly in the processor
+ * class, or preferably in a delegate class. In the latter case, the delegate
+ * must be based on this class.
  * 		 
  * @author Vincent Labatut
  */

@@ -52,7 +52,7 @@ import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.xml.XmlTools;
 
 /**
- * This class acts as an interface with TagEN.
+ * This class acts as a delegate for the mention recognition with TagEN.
  * <br/>
  * Recommended parameter values:
  * <ul>

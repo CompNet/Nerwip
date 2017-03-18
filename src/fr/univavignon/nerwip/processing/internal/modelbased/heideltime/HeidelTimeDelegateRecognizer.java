@@ -50,19 +50,12 @@ import fr.univavignon.nerwip.tools.time.Date;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**
- * This class acts as an interface with the HeidelTime tool.
+ * This class acts as a delegate for the mention recognition with HeidelTime.
  * <br/>
  * Recommended parameter values:
  * <ul>
- * 		<li>{@code ignorePronouns}: {@code true}</li>
- * 		<li>{@code exclusionOn}: {@code true}</li>
- * 		TODO
+ * 		<li>{@code doIntervalTagging}: {@code false}</li>
  * </ul>
- * <br/>
- * Note we ignore some of the data output by HeidelTime when
- * converting to Nerwip format.
- * <br/>
- * Official HeidelTime website: <a href="https://code.google.com/p/heideltime/">https://code.google.com/p/heideltime/</a>
  * 
  * @author Vincent Labatut
  */

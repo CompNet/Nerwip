@@ -47,7 +47,9 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.string.StringTools;
 
 /**
- * TODO 
+ * The recognition process can be implemented either directly in the processor
+ * class, or preferably in a delegate class. In the latter case, the delegate
+ * must be based on this class.
  * 		 
  * @author Yasa Akbulut
  * @author Samet Atdağ
