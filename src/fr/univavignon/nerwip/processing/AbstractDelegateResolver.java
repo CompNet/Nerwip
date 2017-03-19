@@ -167,7 +167,7 @@ public abstract class AbstractDelegateResolver
 						if(list.size()==1)
 							entity = list.get(0);
 						else if(list.size()>1)
-							logger.log("WARNING: several entities already have the same name >> creating a new one.");
+							logger.log("WARNING: several entities already have the same name >> creating a new one despite the user will to relate homonyms.");
 					}
 					if(entity==null)
 					{	entity = AbstractNamedEntity.buildEntity(-1, name, type);

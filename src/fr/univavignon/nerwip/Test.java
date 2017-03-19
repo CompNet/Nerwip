@@ -104,6 +104,7 @@ import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.StanfordModelName;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.StanfordTrainer;
 import fr.univavignon.nerwip.processing.internal.modelless.dateextractor.DateExtractor;
+import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolver;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalaisLanguage;
 import fr.univavignon.nerwip.processing.internal.modelless.opener.OpeNer;
@@ -197,7 +198,7 @@ public class Test
 //		testHeidelTime(url);
 //		testIllinois(url);
 //		testLingPipe(url);
-//		testNero(name);
+		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 //		testOpeNer(name);
@@ -206,12 +207,13 @@ public class Test
 //		testSubee(url);
 //		testTagEn(name);
 //		testWikipediaDater(url);
+    	testNaiveResolver(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
 //		testStraightCombiner(name);
 		
-		testEvaluator();
+//		testEvaluator();
 //		testEditor();
 		
 		logger.close();
@@ -1502,6 +1504,41 @@ File folder = folders.get(0);
 		
 		// all the corpus
 		testAllCorpusResolver(spotlight,0);
+		
+		logger.decreaseOffset();
+	}
+
+	/**
+	 * Tests the features related to a resolver. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testNaiveResolver(String name) throws Exception
+	{	logger.setName("Test-Naive-Resolver");
+		logger.log("Start testing Naive resolver");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+
+		int maxDist = 4;
+		boolean ignorePronouns = true;
+		boolean exclusionOn = true;
+		boolean resolveHomonyms = true;
+		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, ignorePronouns, exclusionOn);
+		NaiveResolver naiveResolver = new NaiveResolver(recognizer,maxDist);
+		naiveResolver.setOutputRawResults(true);
+		naiveResolver.setCacheEnabled(false);
+		
+		// only the specified article
+		naiveResolver.resolve(article);
+		
+		// all the corpus
+//		testAllCorpusResolver(naiveResolver,0);
 		
 		logger.decreaseOffset();
 	}

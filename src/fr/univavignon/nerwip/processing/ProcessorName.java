@@ -49,7 +49,10 @@ public enum ProcessorName
 	/** DBpedia Spotlight Web Service, a recognizer, a resolver and a linker */
 	SPOTLIGHT,
 	/** Stanford Named Entity Recognizer, a recognizer */ 
-	STANFORD, 
+	STANFORD,
+	
+	/** A custom resolver based on simple string comparisons */
+	NAIVE_RESOLVER,
 	
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL CUSTOM TOOLS	/////////////////////////////////////

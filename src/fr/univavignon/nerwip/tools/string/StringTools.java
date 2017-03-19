@@ -484,7 +484,7 @@ public class StringTools
 	// DISTANCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
     /**
-    * This method calculate the normalized Levenshtein  
+    * This method calculates the normalized Levenshtein  
     * distance between two strings. It returns a value between 0 (similar)
     * and 1 (maximally dissimilar)
     * 
