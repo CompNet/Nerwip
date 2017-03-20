@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>out</name>
-			<type>2</type>
-			<location>C:/home/sabrine/Dropbox/NetExtraction/Data</location>
-		</link>
-	</linkedResources>
 </projectDescription>
