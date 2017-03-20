@@ -177,7 +177,7 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 		}
 		while(change);
 
-		logger.log("Done: "+result.size()+"sets found");
+		logger.log("Done: "+result.size()+" sets found");
 		logger.decreaseOffset();
 		return result;
 	}
@@ -251,7 +251,7 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 			Iterator<AbstractMention<?>> it = simset.iterator();
 			AbstractMention<?> mention = it.next();
 			EntityType type = mention.getType();
-			logger.log("Mention "+j+"/"+simset.size()+mention);
+			logger.log("Mention "+j+"/"+simset.size()+": "+mention);
 			
 			// init the corresponding entity
 			AbstractEntity entity;
@@ -270,7 +270,7 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 			while(it.hasNext())
 			{	// get the mention
 				mention = it.next();
-				logger.log("Mention "+j+"/"+simset.size()+mention);
+				logger.log("Mention "+j+"/"+simset.size()+": "+mention);
 
 				// update the entity
 				if(type.isNamed())

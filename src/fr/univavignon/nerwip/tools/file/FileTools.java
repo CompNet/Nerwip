@@ -410,6 +410,7 @@ public class FileTools
 	 * @return
 	 * 		{@code true} iff the original file could be copied.
 	 */
+	@SuppressWarnings("resource")
 	private static boolean copyFile(File sourceFile, File destFile)
 	{	boolean result = false;
 		

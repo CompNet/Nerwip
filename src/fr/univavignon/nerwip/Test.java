@@ -156,10 +156,11 @@ public class Test
 
 //		String name = "Émilien_Brigault";
 //		String name = "Aimé Piton";
- //   	String name = "Albert_Chauly";
-    	String name = "Achille_Eugène_Fèvre";
+//		String name = "Albert_Chauly";
 //		String name = "Gilles_Marcel_Cachin";
 //    	String name = "Alexandre_Bracke";
+//    	String name = "Achille_Eugène_Fèvre";
+    	String name = "Adolphe_Lucien_Lecointe";
 
 //		String name = "Barack_Obama";
      	
@@ -198,7 +199,7 @@ public class Test
 //		testHeidelTime(url);
 //		testIllinois(url);
 //		testLingPipe(url);
-		testNero(name);
+//		testNero(name);
 //		testOpenCalais(url);
 //		testOpenCalais(name);
 //		testOpeNer(name);
@@ -2323,22 +2324,25 @@ File folder = folders.get(0);
 
 
 /* TODO
- * - must clean/correct the javadoc for most classes in the processing package
+ * - Note: a resolver may add new mentions, e.g. to represent pronouns
  * 
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
  * - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.
  *    also, its entities are recorded in specific files, at the level of the corpus.
- *    whereas the new mentions (bc of their entities) are recorded in a different file in the concerned linker folders of each article (?)
+ *    whereas the new mentions (bc of their entities) are recorded in a different file 
+ *    	in the concerned linker folders of each article (?)
+ *    	>> why?
  *   
- * - When linking, add surface forms to entities (resolution only sets one surface form)
+ * - When linking, set the surface forms returned by the linking tool as the official name of the entity
+ *   (keep the previous one as a possible surface form. it should already be in the list, anyway)
  *  
- * - check for french models in already working recognizers
+ * - Check for French models in already working recognizers
  */
 
 /*
- * Check libraries (sabrine?)
+ * Check libraries (probably added by Sabrine?)
  * - why commons-csv-1.0.jar ?
  * - what is filterbuilder.jar ?
  * - htmlexer.jar ?
