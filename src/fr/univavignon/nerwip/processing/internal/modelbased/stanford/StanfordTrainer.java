@@ -348,7 +348,7 @@ public class StanfordTrainer extends AbstractTrainer<List<List<CoreLabel>>>
 	{	logger.increaseOffset();
 		
 		logger.log("Init training objects");
-		// retreive properties object
+		// retrieve properties object
 		Properties properties = setUpProperties();
 		// create classifier object
 		CRFClassifier<CoreLabel> model = new CRFClassifier<CoreLabel>(properties);

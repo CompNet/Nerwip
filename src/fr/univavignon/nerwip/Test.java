@@ -2339,6 +2339,9 @@ File folder = folders.get(0);
  *   (keep the previous one as a possible surface form. it should already be in the list, anyway)
  *  
  * - Check for French models in already working recognizers
+ * 
+ * - Freebase has been discontinued: remove all Freebase-related classes, possibly replace them
+ *   using Wikimedia Foundation products. 
  */
 
 /*

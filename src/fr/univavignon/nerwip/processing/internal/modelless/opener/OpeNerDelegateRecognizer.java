@@ -21,10 +21,7 @@ package fr.univavignon.nerwip.processing.internal.modelless.opener;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -34,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -60,6 +56,7 @@ import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateRecognizer;
 import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.nerwip.tools.web.WebTools;
 
 /**
  * This class acts as an interface with the OpeNer Web service.
@@ -398,17 +395,8 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 		
 	    // read service answer
 	 	logger.log("Read the service answer");
-	    HttpEntity entity = response.getEntity();
-	    InputStream inputStream = entity.getContent();
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-	    StringBuffer sb = new StringBuffer();
-	 	String line;
-		while((line = reader.readLine()) != null)
-		{	//logger.log(line);
-			sb.append(line);
-		}
-
-		String result = sb.toString();
+		String result = WebTools.readAnswer(response);
+		
 		return result;
 	}
 

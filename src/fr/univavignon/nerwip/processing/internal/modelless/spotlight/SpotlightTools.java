@@ -42,6 +42,7 @@ import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.nerwip.tools.web.WebTools;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -359,17 +360,8 @@ public class SpotlightTools
 
 				//read service answer
 				logger.log("Read the spotlight answer");
-				HttpEntity entity = response.getEntity();
-				InputStream inputStream = entity.getContent();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
-				StringBuffer sb = new StringBuffer();
-				String line;
-				while((line = reader.readLine()) != null)
-				{	logger.log(line);
-					sb.append(line+"\n");
-				}
-
-				String answer = sb.toString();
+				String answer = WebTools.readAnswer(response);
+				
 				result.add(part);
 				result.add(answer);
 

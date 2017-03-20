@@ -21,10 +21,7 @@ package fr.univavignon.nerwip.processing.internal.modelless.opencalais;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -54,6 +51,7 @@ import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateRecognizer;
 import fr.univavignon.nerwip.tools.keys.KeyHandler;
 import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.nerwip.tools.web.WebTools;
 
 /**
  * This class acts as an interface with the OpenCalais Web service.
@@ -179,23 +177,9 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 				logger.log("Send message to OpenCalais");
 				HttpClient client = new DefaultHttpClient();
 				HttpResponse response = client.execute(method);
-				InputStream stream = response.getEntity().getContent();
-				InputStreamReader streamReader = new InputStreamReader(stream,"UTF-8");
-				BufferedReader bufferedReader = new BufferedReader(streamReader);
 				
 				// read answer
-				logger.log("Read OpenCalais answer");
-				StringBuilder builder = new StringBuilder();
-				String line;
-				int nbr = 0;
-				while((line = bufferedReader.readLine())!=null)
-				{	builder.append(line+"\n");
-					nbr++;
-					logger.log("Line:" +line);
-				}
-				logger.log("Lines read: "+nbr);
-				
-				String answer = builder.toString();
+				String answer = WebTools.readAnswer(response);
 				result.add(part);
 				result.add(answer);
 				
@@ -381,7 +365,7 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 	 * @param element
 	 * 		Element to process.
 	 * @param metaData
-	 * 		Complementary information used to retreive certain details.
+	 * 		Complementary information used to retrieve certain details.
 	 * @param prevSize
 	 * 		Size of the parts already processed. 
 	 * @return

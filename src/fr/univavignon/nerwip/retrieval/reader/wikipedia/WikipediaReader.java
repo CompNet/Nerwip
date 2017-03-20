@@ -110,7 +110,7 @@ public class WikipediaReader extends ArticleReader
 	 * to the article being retrieved.
 	 * First, we use the first line of text in the
 	 * article, of the form "Firstname Lastname (19xx-19xx) was a politician...".
-	 * If this leads to nothing, we use Freebase to retreive all
+	 * If this leads to nothing, we use Freebase to retrieve all
 	 * the FB types associated to this Wikipedia page.
 	 * 
 	 * @param article

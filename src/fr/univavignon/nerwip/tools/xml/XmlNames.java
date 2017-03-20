@@ -127,7 +127,7 @@ public class XmlNames
 	public static final String ELT_REJECT = "reject";
 	/** Date of retrieval of an article */
 	public static final String ELT_RETRIEVAL_DATE = "retrieval";
-	/** Text expressions which must be ignored because of how they start, when retreiving categories */
+	/** Text expressions which must be ignored because of how they start, when retrieving categories */
 	public static final String ELT_STARTS_WITH = "startsWith";
 	/** String describing a mention */
 	public static final String ELT_STRING = "string";
