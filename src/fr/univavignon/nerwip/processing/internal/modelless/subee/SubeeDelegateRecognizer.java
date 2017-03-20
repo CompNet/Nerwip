@@ -231,7 +231,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	private boolean useTitle;
 	
 	/**
-	 * Handles the name of the person described in the processed article. For this matter,
+	 * Handles the name of the person described in the processed article. For this purpose,
 	 * we consider the article title and name, as well as the first sentence, which generally
 	 * starts with the full name of the person.
 	 * 

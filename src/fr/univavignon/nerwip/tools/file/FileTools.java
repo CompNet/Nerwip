@@ -438,10 +438,9 @@ public class FileTools
 			}
 			finally
 			{	try
-				{
-					if(source != null)
+				{	if(source!=null)
 						source.close();
-					if(destination != null)
+					if(destination!=null)
 						destination.close();
 				}
 				catch (IOException e)

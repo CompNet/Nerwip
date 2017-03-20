@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeSet;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -125,6 +127,36 @@ public class WmCommonTools
 		String baseUrl = WIKIDATA_WEBSEARCH_URL 
 				+ WIKIDATA_WEBSEARCH_PARAM_LANG + language.toString().toLowerCase(Locale.ENGLISH)
 				+ WIKIDATA_WEBSEARCH_PARAM_SEARCH;
+		
+		// set up the list of alternative names
+		List<String> possibleNames = new ArrayList<String>();
+		possibleNames.add(name);
+		
+		
+// add the lastname alone; only with the preceeding word; only with the 2 preeceding words, etc.
+copy = new TreeSet<String>(candidateStrings);
+for(String candidateString: copy)
+{	String split[] = candidateString.split(" ");
+	for(int i=split.length-1;i>=0;i--)
+	{	String temp = "";
+		for(int j=i;j<split.length;j++)
+			temp = temp + split[j] + " ";
+		temp = temp.trim();
+		candidateStrings.add(temp);
+	}
+}
+
+// add very first and very last names (for more than 2 words)
+copy = new TreeSet<String>(candidateStrings);
+for(String candidateString: copy)
+{	String split[] = candidateString.split(" ");
+	if(split.length>2)
+	{	String temp = split[0] + " " + split[split.length-1];
+		candidateStrings.add(temp);
+	}
+}
+
+		
 		
 		// lookup the whole name
 		{	// request the server
