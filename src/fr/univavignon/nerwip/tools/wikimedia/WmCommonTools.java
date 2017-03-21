@@ -5,11 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import org.apache.commons.math3.util.Combinations;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -20,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -96,13 +103,47 @@ public class WmCommonTools
 	/** Name of the parameter representing the targeted language for the web search API of WikiData */
 	public static final String WIKIDATA_WEBSEARCH_PARAM_LANG = "&language=";
 
+	/** Prefix for the URL used to access the links inside a Wikipedia disambiguation page */
+	public static final String WIKIMEDIA_DISAMB_PREFIX = "https://";
+	/** URL and parameters used to access the links inside a Wikipedia disambiguation page */
+	public static final String WIKIMEDIA_DISAMB_PAGE = ".wikipedia.org/w/api.php?action=query&generator=links&format=xml&redirects=1&prop=pageprops&gpllimit=50&ppprop=wikibase_item&titles=";
+	
 	/////////////////////////////////////////////////////////////////
 	// XML			 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Element representing a WikiData entity */
+	private static final String ELT_ENTITY = "entity";
+	/** Element representing a matching Wikipedia page */
+	private static final String ELT_MATCH = "match";
+	/** Element representing a link in a Wikipedia page */
+	private static final String ELT_PAGE = "page";
+	/** Element representing the property associated to a Wikipedia link */
+	private static final String ELT_PAGEPROPS = "pageprops";
+	/** Element representing a list of links in a Wikipedia page */
+	private static final String ELT_PAGES = "pages";
+	/** Element representing the result of a query */
+	private static final String ELT_QUERY = "query";
+	/** Element representing the result of a web search */
 	private static final String ELT_SEARCH = "search";
-	private static final String ATT_ID = "id";
-	private static final String ATT_DESC = "description";
 	
+	/** Attribute representing a WikiData id */
+	private static final String ATT_ID = "id";
+	/** Attribute representing the text description of a WikiData entity */
+	private static final String ATT_DESC = "description";
+	/** Attribute representing the title of a Wikipedia page */
+	private static final String ATT_LABEL = "label";
+	/** Attribute representing the title of a Wikipedia page */
+	private static final String ATT_TEXT = "text";
+	/** Attribute representing the title of a Wikipedia page */
+	private static final String ATT_TITLE = "title";
+	/** Attribute representing the id associated to a Wikipedia page */
+	private static final String ATT_WIKIBASE_ITEM = "wikibase_item";
+	
+	/** Marker of a disambiguation page in a textual description */
+	private final static String VAL_DISAMB = "disambiguation";
+	
+	/** URI for the WikiMedia API XML namespace */
+	private final static String NS_WM_API = "http://www.mediawiki.org/xml/api/";
 	
 	/////////////////////////////////////////////////////////////////
 	// ENTITY ID	 		/////////////////////////////////////////
@@ -110,86 +151,242 @@ public class WmCommonTools
 	
 	
 	
-	public static void lookupName(String name)
-	{
+	public static void lookupName(String name, EntityType type, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
+	{	logger.log("Looking for entity "+name+" (in "+language+", as a "+type+")");
+		logger.increaseOffset();
+		
 		 // 1) perform the approximate search using the websearch API and get the ids
 		 // 2) if there is a desambiguisation page, also get its ids and treat it.
 		 // 3) if there is nothing, try the variants of the name (if person): this was done before. look for "firstname" in the source code.
 		 // 4) use the SPARQL API to perform a more precise search among the ids
 		 // 5) extract all relevant information from these results  
+	
+		// set up the list of alternative names
+		List<String> possibleNames;
+		if(type==EntityType.PERSON)
+			possibleNames = getPossibleNames(name);
+		else
+		{	possibleNames = new ArrayList<String>();
+			possibleNames.add(name);
+		}
 		
+		// get the entity ids associated to the possible names
+		Map<String,String> candidateIds = retrieveIdsFromName(possibleNames,language);
+		// filter them to keep only the most relevant one
+		String selectedId = filterIds(possibleNames,candidateIds);
+		
+		// retrieve the details associated to the remaining id
+		retrieveDetailsFromId(selectedId);
+		
+		logger.decreaseOffset();
 	}
 	
-	
-	private static List<String> retrieveIdFromName(String name, EntityType type, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
-	{	List<String> result = null;
+	/**
+	 * Returns a map of WikiData ids likely to correspond to the specified entity,
+	 * described by its name (surface form), type and language.
+	 * 
+	 * @param possibleNames
+	 * 		List of possible surface form representing the entity.
+	 * @param language
+	 * 		Language of the surface form.
+	 * @return
+	 * 		A map of strings associating WikiData ids to Wikipedia page titles, 
+	 * 		in no particular order.
+	 * 
+	 * @throws ClientProtocolException
+	 * 		Problem while accessing the service.
+	 * @throws IOException
+	 * 		Problem while accessing the service.
+	 * @throws JDOMException
+	 * 		Problem while parsing the service response.
+	 */
+	private static Map<String,String> retrieveIdsFromName(List<String> possibleNames, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
+	{	logger.log("Retrieving ids for entity "+possibleNames.get(0)+" (in "+language+")");
+		logger.increaseOffset();
+		Map<String,String> result = new HashMap<String,String>();
 		
 		String baseUrl = WIKIDATA_WEBSEARCH_URL 
 				+ WIKIDATA_WEBSEARCH_PARAM_LANG + language.toString().toLowerCase(Locale.ENGLISH)
 				+ WIKIDATA_WEBSEARCH_PARAM_SEARCH;
 		
-		// set up the list of alternative names
-		List<String> possibleNames = new ArrayList<String>();
-		possibleNames.add(name);
+		// process each possible name
+		Iterator<String> it = possibleNames.iterator();
+		do
+		{	String candidateName = it.next();
+			logger.log("Processing possible name "+candidateName);
+			logger.increaseOffset();
 		
-		
-// add the lastname alone; only with the preceeding word; only with the 2 preeceding words, etc.
-copy = new TreeSet<String>(candidateStrings);
-for(String candidateString: copy)
-{	String split[] = candidateString.split(" ");
-	for(int i=split.length-1;i>=0;i--)
-	{	String temp = "";
-		for(int j=i;j<split.length;j++)
-			temp = temp + split[j] + " ";
-		temp = temp.trim();
-		candidateStrings.add(temp);
-	}
-}
-
-// add very first and very last names (for more than 2 words)
-copy = new TreeSet<String>(candidateStrings);
-for(String candidateString: copy)
-{	String split[] = candidateString.split(" ");
-	if(split.length>2)
-	{	String temp = split[0] + " " + split[split.length-1];
-		candidateStrings.add(temp);
-	}
-}
-
-		
-		
-		// lookup the whole name
-		{	// request the server
-			String url = baseUrl + name;
+			// request the server
+			String url = baseUrl + URLEncoder.encode(candidateName, "UTF-8");
+			logger.log("URL: "+url);
 			HttpClient httpclient = new DefaultHttpClient();   
 			HttpGet request = new HttpGet(url);
 			HttpResponse response = httpclient.execute(request);
 			
-			// process the answer
+			// parse the answer to get an XML document
 			String answer = WebTools.readAnswer(response);
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(answer));
 			Element root = doc.getRootElement();
 			
+			// retrieve the ids and check for disambiguation pages
+			Namespace ns = Namespace.getNamespace(NS_WM_API);
+			Element searchElt = root.getChild(ELT_SEARCH,ns);
+			List<Element> entityElts = searchElt.getChildren(ELT_ENTITY,ns);
+			int i = 1;
+			for(Element entityElt: entityElts)
+			{	logger.log("Entity "+i+"/"+entityElts.size());
+				logger.increaseOffset();
+
+				String description = entityElt.getAttributeValue(ATT_DESC);
+				String label = entityElt.getAttributeValue(ATT_LABEL);
+				if(label==null)
+				{	Element matchElt = entityElt.getChild(ELT_MATCH,ns);
+					label = matchElt.getAttributeValue(ATT_TEXT);
+					logger.log("Description="+description+" text="+label);
+				}
+				else
+					logger.log("Description="+description+" label="+label);
+
+				// if it is a disambiguation page, we must retrieve the entities it contains
+				if(description!=null && description.toLowerCase().contains(VAL_DISAMB))
+				{	logger.log("It is a description page");
+					Map<String,String> tmpMap = retrieveIdsFromDisambiguation(language,label);
+					for(Entry<String,String> tmpEntry: tmpMap.entrySet())
+					{	String tmpKey = tmpEntry.getKey();
+						String tmpVal = tmpEntry.getValue();
+						if(!result.keySet().contains(tmpKey))
+							result.put(tmpKey,tmpVal);
+					}
+				}
+				// if not a disambiguation page, we directly add the entity to the map
+				else
+				{	String id = entityElt.getAttributeValue(ATT_ID);
+					logger.log("Not a description page: adding "+id+" to the map (if not already present)");
+					if(!result.keySet().contains(id))
+						result.put(id,label);
+				}
+
+				i++;
+				logger.decreaseOffset();
+			}
 			
+			logger.decreaseOffset();
+		}
+		while(result.isEmpty() && it.hasNext());
+//		while(it.hasNext()); //for testing
+		
+		logger.log("Done: "+result.size()+" ids found in total");
+		logger.decreaseOffset();
+		return result;
+	}
+	
+	/**
+	 * Receives the label (title) of the Wikipedia disambiguation page, as well as its language.
+	 * Returns a map containing all the entities listed in this page, described by their Wikidata
+	 * id and title. 
+	 * 
+	 * @param language
+	 * 		Language of the disambiguation page.
+	 * @param label
+	 * 		Title of the disambiguation page.
+	 * @return
+	 * 		Map containing the entities listed in the disambiguation page. The keys are Wikidata
+	 * 		ids and the values are Wikipedia titles.
+	 * 
+	 * @throws IOException 
+	 * 		Problem while accessing the service.
+	 * @throws IllegalStateException 
+	 * 		Problem while accessing the service.
+	 * @throws JDOMException 
+	 * 		Problem while parsing the service response.
+	 */
+	private static Map<String,String> retrieveIdsFromDisambiguation(ArticleLanguage language, String label) throws IllegalStateException, IOException, JDOMException
+	{	logger.log("Processing the disambiguation page "+label+" (in "+language+")");
+		logger.increaseOffset();
+		Map<String,String> result = new HashMap<String,String>();
+		
+		// query WikiMedia
+		String url = WIKIMEDIA_DISAMB_PREFIX + language.toString().toLowerCase() + WIKIMEDIA_DISAMB_PAGE + URLEncoder.encode(label,"UTF-8");
+		logger.log("URL: "+url);
+		HttpClient httpclient = new DefaultHttpClient();   
+		HttpGet request = new HttpGet(url);
+		HttpResponse response = httpclient.execute(request);
+		
+		// read the answer as an XML document
+		String answer = WebTools.readAnswer(response);
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(answer));
+		Element root = doc.getRootElement();
+		
+		// extract the ids from the XML document
+		Element queryElt = root.getChild(ELT_QUERY);
+		Element pagesElt = queryElt.getChild(ELT_PAGES);
+		List<Element> pageElts = pagesElt.getChildren(ELT_PAGE);
+		for(Element pageElt: pageElts)
+		{	Element propsElt = pageElt.getChild(ELT_PAGEPROPS);
+			if(propsElt!=null)
+			{	String id = propsElt.getAttributeValue(ATT_WIKIBASE_ITEM);
+				String title = pageElt.getAttributeValue(ATT_TITLE);
+				result.put(id,title);
+				logger.log("Found a possible entity, title="+title+" id="+id);
+			}
 		}
 		
-		// if nothing and the entity is a person, try playing with the first/lastname combinations
-		//TODO do that first: generate all possible search strings by order of priority, then use a while
-		
-		
+		logger.log("Finished: "+result.size()+" ids found");
+		logger.decreaseOffset();
 		return result;
 	}
 	
-	private static List<String> retrieveIdFromDisambiguation(String disambiguationId)
-	{	List<String> result = null;
-		//TODO
-		return result;
-	}
-	
-	private static String filterIds(List<String> ids)
-	{	String result = null;
-		//TODO
+	/**
+	 * Filters the map of ids previously processed. Those ids are all likely
+	 * to represent the targeted entity. We use the (ordered) list of possible
+	 * names to select the best candidate.
+	 * 
+	 * @param possibleNames
+	 * 		List of possible names for the entity, order by decreasing relevance.
+	 * @param ids
+	 * 		Maps of ids retrieved from Wikipedia/Wikidata.
+	 * @return
+	 * 		The best candidate id.
+	 */
+	private static String filterIds(List<String> possibleNames, Map<String,String> ids)
+	{	logger.log("Filtering the "+ids.size()+" ids found earlier");
+		logger.increaseOffset();
+		String result = null;
+		
+		// possibly process each variant of the entity name
+		Iterator<String> it = possibleNames.iterator();
+		while(it.hasNext() && result==null)
+		{	String possibleName = it.next();
+			logger.log("Checking the map for name "+possibleName);
+		
+			// look for the possible name in the map of available ids
+			List<String> idList = new ArrayList<String>();
+			for(Entry<String,String> entry: ids.entrySet())
+			{	String id = entry.getKey();
+				String name = entry.getValue();
+				if(name.equalsIgnoreCase(possibleName) && !idList.contains(id))
+					idList.add(id);
+			}
+			
+			// if more than one id, warn the user and keep the first one
+			if(!idList.isEmpty())
+			{	result = idList.get(0);
+				if(idList.size()>1)
+				{	logger.log("WARNING: several ids were found for entity "+possibleNames.get(0)+"(name \""+possibleName+"\")");
+					logger.increaseOffset();
+						logger.log(idList);
+					logger.decreaseOffset();
+				}
+			}
+		}
+		
+		if(result==null)
+			logger.log("Done: no appropriate id found");
+		else
+			logger.log("Done: kept id "+result);
+		logger.decreaseOffset();
 		return result;
 	}
 	
@@ -198,62 +395,74 @@ for(String candidateString: copy)
 		//TODO
 	}
 	
-    /**
-    * This method takes an entity name as parameter,
-    * and retrieves its WikiData id.
-    * 
-    * @param entityName
-    * 		Name of the entity.
-    * @return
-    * 		A String describing the WikiData id.
-    * 
-    * @throws IOException
-    *      Problem while retrieving the WikiData id. 
-    * @throws ClientProtocolException 
-    *      Problem while retrieving the WikiData id.
-    * @throws org.json.simple.parser.ParseException
-    *      Problem while retrieving the WikiData id. 
-    */
-    public static String getWikiDataId(String entityName) throws ClientProtocolException, IOException, org.json.simple.parser.ParseException 
-    {	logger.increaseOffset();
-    	String result = null;
-
-
-    	// get Wikidata answer
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpGet request = new HttpGet(url);
-		HttpResponse response = httpclient.execute(request);
-		logger.log("response=" +  response.toString());
-
-		//builds object from answer
-		JSONParser parser = new JSONParser();
-		HttpEntity entity = response.getEntity();
-		String str = EntityUtils.toString(entity);
-		logger.log("str=" + str);
+	/**
+	 * Generates all possible human names from a string representing
+	 * the full name. This methods allows considering various combinations
+	 * of lastname(s) and firstname(s).
+	 * 
+	 * @param name
+	 * 		The full name a string (should contain several names separated
+	 * 		by spaces).
+	 * @return
+	 * 		A list of strings corresponding to alternative forms of the 
+	 * 		original name.
+	 */
+	private static List<String> getPossibleNames(String name)
+	{	List<String> result = new ArrayList<String>();
+		result.add(name);
+		String split[] = name.split(" ");
 		
-		JSONObject jsonData = (JSONObject)parser.parse(str);
-		//logger.log("jsondata=" + jsonData.toString());
-		JSONArray answer = (JSONArray)jsonData.get("search");
-		//String string = answer.toString();
-		//logger.log("answer=" + string);
-
-		// extract types from the answer
-		if(answer!=null)
-		{	Object obj = answer.get(0);
-			result = (String) ((JSONObject)obj).get("id");
-			logger.log("result=" + result);
-
-/*			for (Object object : answer)
-		 	{	// process id
-				result = (String) ((JSONObject)object).get("id");
-				logger.log("result=" + result);
+		for(int i=1;i<split.length;i++)
+		{	// fix the last names
+			String lastnames = "";
+			for(int j=i;j<split.length;j++)
+				lastnames = lastnames + split[j].trim() + " ";
+			lastnames = lastnames.trim();
+			
+			// we try to fix the last names and get all combinations of firstnames 
+			for(int j=1;j<i;j++)
+			{	Combinations combi = new Combinations(i,j);
+				Iterator<int[]> it = combi.iterator();
+				while(it.hasNext())
+				{	int indices[] = it.next();
+					String firstnames = "";
+					for(int index: indices)
+						firstnames = firstnames + split[index].trim() + " ";
+					String fullname = firstnames+lastnames;
+					if(!result.contains(fullname))
+						result.add(fullname);
+				}
 			}
-*/
-	    }
-
-		logger.decreaseOffset();
-		logger.log("result=" + result);
-
+			
+			// we also try only the lastnames
+			if(!result.contains(lastnames))
+				result.add(lastnames);
+		}
+		
 		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// TESTS		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+    public static void main(String[] args) throws Exception
+    {	// possible names
+//    	System.out.println(getPossibleNames("Lastname")+"\n\n");
+//    	System.out.println(getPossibleNames("Firstname Lastname")+"\n\n");
+//    	System.out.println(getPossibleNames("Firstname Middlename Lastname")+"\n\n");
+//    	System.out.println(getPossibleNames("Firstname Middlename Lastname1 Lastname2")+"\n\n");
+//    	System.out.println(getPossibleNames("Firstname1 Firstname2 Middlename Lastname1 Lastname2")+"\n\n");
+    	
+    	// disambiguation page
+//    	Map<String,String> res = retrieveIdsFromDisambiguation(ArticleLanguage.FR, "Lecointe");
+//    	System.out.println(res);
+    	
+    	// retrieve the ids
+//    	List<String> possibleNames = getPossibleNames("Adolphe Lucien Lecointe");
+//    	Map<String,String> res = retrieveIdsFromName(possibleNames, ArticleLanguage.FR);
+//    	System.out.println(res);
+    	
+    	// general lookup method
+    	lookupName("Adolphe Lucien Lecointe", EntityType.PERSON, ArticleLanguage.FR);
 	}
 }
