@@ -29,9 +29,27 @@ package fr.univavignon.nerwip.data.entity;
  */
 public enum KnowledgeBase
 {	
+	/** Database of the Bibliothèque nationale de France */
+	BNF,
+
 	/** DBpedia database */
-	DB_PEDIA,
+	DBPEDIA,
 	
-	/** Freelink database */
-	FREELINK;
+	/** Freebase database */
+	FREEBASE,
+	
+	/** International Standard Name Identifier (subsumes ORCID) */
+	ISNI,
+	
+	/** SUDOC database (Système Universitaire de Documentation - French national university library system) */
+	SUDOC,
+	
+	/** Sycomore database (French MPs) */
+	SYCOMORE,
+	
+	/** Virtual International Authority File */
+	VIAF,
+	
+	/** WikiData database */
+	WIKIDATA;
 }

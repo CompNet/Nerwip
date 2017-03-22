@@ -266,8 +266,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		String name = element.getAttributeValue(XmlNames.ATT_NAME);
 		
 		// build the entity
-		EntityLocation result =  new EntityLocation(name,internalId);
-		AbstractNamedEntity.buildEntity(internalId, name, type);
+		AbstractNamedEntity result = AbstractNamedEntity.buildEntity(internalId, name, type);
 
 		// get the surface forms
 		{	Element surfaceFormsElt = element.getChild(XmlNames.ELT_SURFACE_FORMS);

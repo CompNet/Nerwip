@@ -2341,7 +2341,11 @@ File folder = folders.get(0);
  * - Check for French models in already working recognizers
  * 
  * - Freebase has been discontinued: remove all Freebase-related classes, possibly replace them
- *   using Wikimedia Foundation products. 
+ *   using Wikimedia Foundation products.
+ *   
+ * - Once the entities have correctly been identified, we may want to switch to a more DB-oriented representation,
+ *   in which we retrive a bunch of info describing each entity. This would make it easier comparing entities like
+ *   places, when infering event similarity. 
  */
 
 /*

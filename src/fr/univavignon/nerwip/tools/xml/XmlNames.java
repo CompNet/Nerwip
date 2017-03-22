@@ -65,6 +65,8 @@ public class XmlNames
 	public static final String ATT_RECOGNIZER = "recognizer";
 	/** Resolver applied to the mention/entity */
 	public static final String ATT_RESOLVER = "resolver";
+	/** Sex of an entity */
+	public static final String ATT_SEX = "sex";
 	/** Mention start position */
 	public static final String ATT_START = "start";
 	/** GUI tooltip */

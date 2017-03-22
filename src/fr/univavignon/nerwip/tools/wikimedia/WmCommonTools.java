@@ -1,40 +1,5 @@
 package fr.univavignon.nerwip.tools.wikimedia;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeSet;
-
-import org.apache.commons.math3.util.Combinations;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.Namespace;
-import org.jdom2.input.SAXBuilder;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.EntityType;
-
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -55,6 +20,34 @@ import fr.univavignon.nerwip.data.entity.EntityType;
  * along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
  * If not, see <http://www.gnu.org/licenses/>.
  */
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.math3.util.Combinations;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
+
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
+import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.KnowledgeBase;
 
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
@@ -102,6 +95,14 @@ public class WmCommonTools
 	public static final String WIKIDATA_WEBSEARCH_PARAM_SEARCH = "&search=";
 	/** Name of the parameter representing the targeted language for the web search API of WikiData */
 	public static final String WIKIDATA_WEBSEARCH_PARAM_LANG = "&language=";
+	/** URL used to retrieve entities through the WikiData API */
+	public static final String WIKIDATA_GETENT_URL ="https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&includexmlnamespace=true&redirects=yes";
+	/** Name of the parameter representing the searched entity */
+	public static final String WIKIDATA_GETENT_PARAM_SEARCH = "&ids=";
+	/** URL used to query WikiData using SPARQL */
+	public static final String WIKIDATA_SPARQL_URL ="https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={";
+	/** Second part of the URL used to query WikiData using SPARQL */
+	public static final String WIKIDATA_SPARQL_URL_SUFFIX ="}&format=xml";
 
 	/** Prefix for the URL used to access the links inside a Wikipedia disambiguation page */
 	public static final String WIKIMEDIA_DISAMB_PREFIX = "https://";
@@ -111,8 +112,20 @@ public class WmCommonTools
 	/////////////////////////////////////////////////////////////////
 	// XML			 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Element representing a result from a SPARQL query */
+	private static final String ELT_BINDING = "binding";
+	/** Element representing a WikiData entity */
+	private static final String ELT_CLAIM = "claim";
+	/** Element representing a WikiData entity */
+	private static final String ELT_CLAIMS = "claims";
+	/** Element representing a WikiData entity */
+	private static final String ELT_DATAVALUE = "datavalue";
+	/** Element representing a WikiData entity */
+	private static final String ELT_ENTITIES = "entities";
 	/** Element representing a WikiData entity */
 	private static final String ELT_ENTITY = "entity";
+	/** Element representing a WikiData entity */
+	private static final String ELT_MAINSNAK = "mainsnak";
 	/** Element representing a matching Wikipedia page */
 	private static final String ELT_MATCH = "match";
 	/** Element representing a link in a Wikipedia page */
@@ -121,11 +134,19 @@ public class WmCommonTools
 	private static final String ELT_PAGEPROPS = "pageprops";
 	/** Element representing a list of links in a Wikipedia page */
 	private static final String ELT_PAGES = "pages";
+	/** Element representing a WikiData entity */
+	private static final String ELT_PROPERTY = "property";
 	/** Element representing the result of a query */
 	private static final String ELT_QUERY = "query";
+	/** Element representing a result from a SPARQL query */
+	private static final String ELT_RESULT = "result";
+	/** Element representing results from a SPARQL query */
+	private static final String ELT_RESULTS = "results";
 	/** Element representing the result of a web search */
 	private static final String ELT_SEARCH = "search";
-	
+	/** Element representing a result from a SPARQL query */
+	private static final String ELT_URI = "uri";
+
 	/** Attribute representing a WikiData id */
 	private static final String ATT_ID = "id";
 	/** Attribute representing the text description of a WikiData entity */
@@ -136,6 +157,8 @@ public class WmCommonTools
 	private static final String ATT_TEXT = "text";
 	/** Attribute representing the title of a Wikipedia page */
 	private static final String ATT_TITLE = "title";
+	/** Attribute representing the value of a property in a WikiData response */
+	private static final String ATT_VALUE = "value";
 	/** Attribute representing the id associated to a Wikipedia page */
 	private static final String ATT_WIKIBASE_ITEM = "wikibase_item";
 	
@@ -146,13 +169,93 @@ public class WmCommonTools
 	private final static String NS_WM_API = "http://www.mediawiki.org/xml/api/";
 	
 	/////////////////////////////////////////////////////////////////
-	// ENTITY ID	 		/////////////////////////////////////////
+	// WIKIDATA IDS 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Id of the "role" entity in WikiData */
+	private final static String ENTITY_FUNCTION = "Q214339";		// alt: position=Q4164871
+	/** Id of the "location" entity in WikiData */
+	private final static String ENTITY_LOCATION = "Q17334923";	// alt: place=Q2221906
+	/** Id of the "event" entity in WikiData */
+	private final static String ENTITY_MEETING = "Q1656682";		// alt: meeting=Q2761147
+	/** Id of the "person" entity in WikiData */
+	private final static String ENTITY_PERSON = "Q215627";		// alt: human=Q5
+	/** Id of the "organization" entity in WikiData */
+	private final static String ENTITY_ORGANIZATION = "Q43229";
+	/** Id of the "work" entity in WikiData */
+	private final static String ENTITY_PRODUCTION = "Q386724";	// alt: artificial object=Q16686448 (artificial object is too general: France is considered as one).
+	/** Id of the "unique identifier" entity in WikiData */
+	private final static String ENTITY_IDENTIFIER = "Q6545185";	// alt: identifier=Q853614
 	
+	/** Id of the "instance of" property in WikiData */
+	private final static String PROP_INSTANCE_OF = "P31";
+	/** Id of the "subclass of" property in WikiData */
+	private final static String PROP_SUBCLASS_OF = "P279";
 	
+	/////////////////////////////////////////////////////////////////
+	// SPARQL QUERIES 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** First part of the SPARQL query used to retrieve the type of an entity */ 
+	public static final String WIKIMEDIA_GETTYPE_SPARQL_PREFIX = "SELECT DISTINCT ?type WHERE {VALUES ?type {"
+			+ " wd:" + ENTITY_FUNCTION
+			+ " wd:" + ENTITY_LOCATION
+			+ " wd:" + ENTITY_MEETING
+			+ " ws:" + ENTITY_PERSON
+			+ " ws:" + ENTITY_ORGANIZATION
+			+ " wd:" + ENTITY_PRODUCTION + "}. wd:";
+	/** Second part of the SPARQL query used to retrieve the type of an entity */ 
+	public static final String WIKIMEDIA_GETTYPE_SPARQL_SUFFIX = " wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"* ?type.}";
 	
-	public static void lookupName(String name, EntityType type, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
-	{	logger.log("Looking for entity "+name+" (in "+language+", as a "+type+")");
+	/////////////////////////////////////////////////////////////////
+	// CONVERSION MAP 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Map allowing to convert a WikiData property to a knowledge base name */
+	private final static Map<String,KnowledgeBase> MAP_ID_TO_KB = new HashMap<String,KnowledgeBase>();
+	/** Initialization of the conversion map */
+	static
+	{	MAP_ID_TO_KB.put("P268",  KnowledgeBase.BNF);
+		MAP_ID_TO_KB.put("P646",  KnowledgeBase.FREEBASE);
+		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
+		MAP_ID_TO_KB.put("P1045", KnowledgeBase.SYCOMORE);
+		MAP_ID_TO_KB.put("P214",  KnowledgeBase.VIAF);
+	}
+	
+	/** Map allowing to convert a WikiData property to an entity type*/
+	private final static Map<String,EntityType> MAP_ID_TO_TYPE = new HashMap<String,EntityType>();
+	/** Initialization of the conversion map */
+	static
+	{	//MAP_ID_TO_TYPE.put("", EntityType.DATE);
+		MAP_ID_TO_TYPE.put(ENTITY_FUNCTION, EntityType.FUNCTION);
+		MAP_ID_TO_TYPE.put(ENTITY_LOCATION, EntityType.LOCATION);
+		MAP_ID_TO_TYPE.put(ENTITY_MEETING, EntityType.MEETING);
+		MAP_ID_TO_TYPE.put(ENTITY_ORGANIZATION, EntityType.ORGANIZATION);
+		MAP_ID_TO_TYPE.put(ENTITY_PERSON, EntityType.PERSON);
+		MAP_ID_TO_TYPE.put(ENTITY_PRODUCTION, EntityType.PRODUCTION);
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// PROCESS		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Receives an incomplete entity, and try to find out its WikiData id.
+	 * Also complete the entity with various details, in particular the other
+	 * ids indicated on WikiData.
+	 * 
+	 * @param entity
+	 * 		The entity to complete.
+	 * @param language
+	 * 		Language of the article containing a mention to this entity.
+	 * 
+	 * @throws ClientProtocolException
+	 * 		Problem while accessing a WikiData or WikiMedia service.
+	 * @throws IOException
+	 * 		Problem while accessing a WikiData or WikiMedia service.
+	 * @throws JDOMException
+	 * 		Problem while parsing the XML file constituting the service response.
+	 */
+	public static void lookupNamedEntity(AbstractNamedEntity entity, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
+	{	String name = entity.getName();
+		EntityType type = entity.getType();
+		logger.log("Looking for entity "+name+" (in "+language+", as a "+type+")");
 		logger.increaseOffset();
 		
 		 // 1) perform the approximate search using the websearch API and get the ids
@@ -175,8 +278,8 @@ public class WmCommonTools
 		// filter them to keep only the most relevant one
 		String selectedId = filterIds(possibleNames,candidateIds);
 		
-		// retrieve the details associated to the remaining id
-		retrieveDetailsFromId(selectedId);
+		// retrieve the details associated to the remaining id and complete the entity
+		completeEntityWithIds(selectedId,entity);
 		
 		logger.decreaseOffset();
 	}
@@ -347,10 +450,19 @@ public class WmCommonTools
 	 * 		List of possible names for the entity, order by decreasing relevance.
 	 * @param ids
 	 * 		Maps of ids retrieved from Wikipedia/Wikidata.
+	 * @param type
+	 * 		Type of the considered mention.
 	 * @return
 	 * 		The best candidate id.
+	 * 
+	 * @throws IllegalStateException
+	 * 		Problem while accessing the WikiData service.
+	 * @throws IOException
+	 * 		Problem while accessing the WikiData service.
+	 * @throws JDOMException
+	 * 		Problem while parsing the WikiData service XML response.
 	 */
-	private static String filterIds(List<String> possibleNames, Map<String,String> ids)
+	private static String filterIds(List<String> possibleNames, Map<String,String> ids, EntityType type) throws IllegalStateException, IOException, JDOMException
 	{	logger.log("Filtering the "+ids.size()+" ids found earlier");
 		logger.increaseOffset();
 		String result = null;
@@ -369,15 +481,34 @@ public class WmCommonTools
 				if(name.equalsIgnoreCase(possibleName) && !idList.contains(id))
 					idList.add(id);
 			}
+			logger.log("Found "+idList.size()+" possible ids");
 			
 			// if more than one id, warn the user and keep the first one
 			if(!idList.isEmpty())
-			{	result = idList.get(0);
+			{	logger.log("Checking the type of each possible id");
+				logger.increaseOffset();
+				Iterator<String> it2 = idList.iterator();
+				while(it2.hasNext())
+				{	String id = it2.next();
+					logger.log("Processing id "+id);
+					List<EntityType> types = retrieveTypesFromId(id);
+					if(types.contains(type))
+						logger.log("Kept: the targeted type ("+type+") is one of the types of this entity ("+types.toString()+")");
+					else
+					{	logger.log("Rejected: the targeted type ("+type+") is not one of the types of this entity ("+types.toString()+")");
+						it2.remove();
+					}
+				}
+				logger.decreaseOffset();
+				logger.log("Number of remainign ids: "+idList.size());
+				
+				result = idList.get(0);
 				if(idList.size()>1)
 				{	logger.log("WARNING: several ids were found for entity "+possibleNames.get(0)+"(name \""+possibleName+"\")");
 					logger.increaseOffset();
 						logger.log(idList);
 					logger.decreaseOffset();
+					logger.log("We keep the first one and go on");
 				}
 			}
 		}
@@ -389,12 +520,111 @@ public class WmCommonTools
 		logger.decreaseOffset();
 		return result;
 	}
-	
-	private static void retrieveDetailsFromId(String id)
-	{
-		//TODO
+
+	/**
+	 * Receives an entity id and returns the entity type
+	 * associated to it (usually one, but can be more, e.g.
+	 * France is both a place and an organization).
+	 * 
+	 * @param id
+	 * 		Id of the entity on WikiData.
+	 * @return
+	 * 		List of associated entity types.
+	 * 
+	 * @throws IllegalStateException
+	 * 		Problem while accessing the WikiData service.
+	 * @throws IOException
+	 * 		Problem while accessing the WikiData service.
+	 * @throws JDOMException
+	 * 		Problem while parsing the WikiData service XML response.
+	 */
+	private static List<EntityType> retrieveTypesFromId(String id) throws IllegalStateException, IOException, JDOMException
+	{	//TODO
+		List<EntityType> result = new ArrayList<EntityType>();
+		
+		// request the server
+		String query = WIKIMEDIA_GETTYPE_SPARQL_PREFIX + id + WIKIMEDIA_GETTYPE_SPARQL_SUFFIX;
+		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
+		logger.log("URL: "+url);
+		HttpClient httpclient = new DefaultHttpClient();   
+		HttpGet request = new HttpGet(url);
+		HttpResponse response = httpclient.execute(request);
+		
+		// parse the answer to get an XML document
+		String answer = WebTools.readAnswer(response);
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(answer));
+		Element root = doc.getRootElement();
+		
+		// extract the type(s) from the XML doc
+		Element resultsElt = root.getChild(ELT_RESULTS);
+		List<Element> resultElts = resultsElt.getChildren(ELT_RESULT);
+		for(Element resultElt: resultElts)
+		{	Element bindingElt = resultElt.getChild(ELT_BINDING);
+			Element uriElt = bindingElt.getChild(ELT_URI);
+			String uri = uriElt.getText().trim();
+			int pos = uri.lastIndexOf('/');
+			String typeId = uri.substring(pos+1);
+			EntityType type = MAP_ID_TO_TYPE.get(typeId);
+			result.add(type);
+		}
+		
+		return result;
 	}
 	
+	/**
+	 * Complete the specified entity with as many ids as can be
+	 * found for the specified id on WikiData.
+	 * 
+	 * @param id
+	 * 		Id of the entity.
+	 * @param entity
+	 * 		Entity to complete.
+	 * 
+	 * @throws IOException
+	 * 		Problem while accessing the WikiData service. 
+	 * @throws ClientProtocolException 
+	 * 		Problem while accessing the WikiData service. 
+	 * @throws JDOMException 
+	 * 		Problem while parsing the XML WikiData response. 
+	 */
+	private static void completeEntityWithIds(String id, AbstractNamedEntity entity) throws ClientProtocolException, IOException, JDOMException
+	{	//TODO
+		
+		// request the server
+		String url = WIKIDATA_GETENT_URL + WIKIDATA_GETENT_PARAM_SEARCH + id;
+		logger.log("URL: "+url);
+		HttpClient httpclient = new DefaultHttpClient();   
+		HttpGet request = new HttpGet(url);
+		HttpResponse response = httpclient.execute(request);
+		
+		// parse the answer to get an XML document
+		String answer = WebTools.readAnswer(response);
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(answer));
+		Element root = doc.getRootElement();
+		
+		// retrieve the ids and check for disambiguation pages
+		Namespace ns = Namespace.getNamespace(NS_WM_API);
+		Element entitiesElt = root.getChild(ELT_ENTITIES,ns);
+		Element entityElt = entitiesElt.getChild(ELT_ENTITY,ns);
+		Element claimsElt = entityElt.getChild(ELT_CLAIMS,ns);
+		List<Element> propertyElts = claimsElt.getChildren(ELT_PROPERTY,ns);
+		for(Element propertyElt: propertyElts)
+		{	String propId = propertyElt.getAttributeValue(ATT_ID);
+			KnowledgeBase kn = MAP_ID_TO_KB.get(propId);
+			if(kn!=null)
+			{	Element claimElt = propertyElt.getChild(ELT_CLAIM,ns);
+				Element mainsnakElt = claimElt.getChild(ELT_MAINSNAK,ns);
+				Element datavalueElt = mainsnakElt.getChild(ELT_DATAVALUE,ns);
+				String propValue = datavalueElt.getAttributeValue(ATT_VALUE);
+				entity.setExternalId(kn, propValue);
+			}
+		}
+		
+		//TODO
+	}
+
 	/**
 	 * Generates all possible human names from a string representing
 	 * the full name. This methods allows considering various combinations
@@ -463,6 +693,7 @@ public class WmCommonTools
 //    	System.out.println(res);
     	
     	// general lookup method
-    	lookupName("Adolphe Lucien Lecointe", EntityType.PERSON, ArticleLanguage.FR);
+    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
+    	lookupNamedEntity(entity, ArticleLanguage.FR);
 	}
 }
