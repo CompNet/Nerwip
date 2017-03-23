@@ -190,20 +190,34 @@ public class WmCommonTools
 	private final static String PROP_INSTANCE_OF = "P31";
 	/** Id of the "subclass of" property in WikiData */
 	private final static String PROP_SUBCLASS_OF = "P279";
+	/** Id of the "facet of" property in WikiData */
+	private final static String PROP_FACET_OF = "P1269";
 	
 	/////////////////////////////////////////////////////////////////
 	// SPARQL QUERIES 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** First part of the SPARQL query used to retrieve the type of an entity */ 
-	public static final String WIKIMEDIA_GETTYPE_SPARQL_PREFIX = "SELECT DISTINCT ?type WHERE {VALUES ?type {"
-			+ " wd:" + ENTITY_FUNCTION
-			+ " wd:" + ENTITY_LOCATION
-			+ " wd:" + ENTITY_MEETING
-			+ " ws:" + ENTITY_PERSON
-			+ " ws:" + ENTITY_ORGANIZATION
-			+ " wd:" + ENTITY_PRODUCTION + "}. wd:";
-	/** Second part of the SPARQL query used to retrieve the type of an entity */ 
-	public static final String WIKIMEDIA_GETTYPE_SPARQL_SUFFIX = " wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"* ?type.}";
+	/** First part of the SPARQL query used to retrieve the types of an entity */ 
+	public static final String WIKIMEDIA_QUERY_TYPES_PREFIX = "SELECT DISTINCT ?type WHERE {"
+			+ " VALUES ?type {"
+				+ " wd:" + ENTITY_FUNCTION
+				+ " wd:" + ENTITY_LOCATION
+				+ " wd:" + ENTITY_MEETING
+				+ " ws:" + ENTITY_PERSON
+				+ " ws:" + ENTITY_ORGANIZATION
+				+ " wd:" + ENTITY_PRODUCTION 
+				+ "}. wd:";
+	/** Second part of the SPARQL query used to retrieve the types of an entity */ 
+	public static final String WIKIMEDIA_QUERY_TYPES_SUFFIX = " wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"* ?type.}";
+	/** First part of the SPARQL query used to retrieve the ids of an entity */ 
+	public static final String WIKIMEDIA_QUERY_IDS_PREFIX = "SELECT DISTINCT ?prop ?propLabel WHERE {"
+			+ "wd:";
+	/** Second part of the SPARQL query used to retrieve the ids of an entity */ 
+	public static final String WIKIMEDIA_QUERY_IDS_SUFFIX = " ?p ?value."
+			+ "?prop wikibase:directClaim ?p."
+			+ "?prop wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"*/wdt:"+PROP_FACET_OF+" wd:"+ENTITY_IDENTIFIER+"."
+			+ "SERVICE wikibase:label {"
+			+ "bd:serviceParam wikibase:language \"en\" ."
+			+ "}}";
 	
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION MAP 		/////////////////////////////////////////
@@ -276,7 +290,7 @@ public class WmCommonTools
 		// get the entity ids associated to the possible names
 		Map<String,String> candidateIds = retrieveIdsFromName(possibleNames,language);
 		// filter them to keep only the most relevant one
-		String selectedId = filterIds(possibleNames,candidateIds);
+		String selectedId = filterIds(possibleNames,candidateIds,type);
 		
 		// retrieve the details associated to the remaining id and complete the entity
 		completeEntityWithIds(selectedId,entity);
@@ -543,7 +557,7 @@ public class WmCommonTools
 		List<EntityType> result = new ArrayList<EntityType>();
 		
 		// request the server
-		String query = WIKIMEDIA_GETTYPE_SPARQL_PREFIX + id + WIKIMEDIA_GETTYPE_SPARQL_SUFFIX;
+		String query = WIKIMEDIA_QUERY_TYPES_PREFIX + id + WIKIMEDIA_QUERY_TYPES_SUFFIX;
 		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
 		logger.log("URL: "+url);
 		HttpClient httpclient = new DefaultHttpClient();   
