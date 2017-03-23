@@ -100,10 +100,10 @@ public class WmCommonTools
 	/** Name of the parameter representing the searched entity */
 	public static final String WIKIDATA_GETENT_PARAM_SEARCH = "&ids=";
 	/** URL used to query WikiData using SPARQL */
-	public static final String WIKIDATA_SPARQL_URL ="https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={";
+	public static final String WIKIDATA_SPARQL_URL ="https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=";
 	/** Second part of the URL used to query WikiData using SPARQL */
-	public static final String WIKIDATA_SPARQL_URL_SUFFIX ="}&format=xml";
-
+	public static final String WIKIDATA_SPARQL_URL_SUFFIX ="&format=xml";
+	
 	/** Prefix for the URL used to access the links inside a Wikipedia disambiguation page */
 	public static final String WIKIMEDIA_DISAMB_PREFIX = "https://";
 	/** URL and parameters used to access the links inside a Wikipedia disambiguation page */
@@ -124,6 +124,8 @@ public class WmCommonTools
 	private static final String ELT_ENTITIES = "entities";
 	/** Element representing a WikiData entity */
 	private static final String ELT_ENTITY = "entity";
+	/** Element representing a value returned by WikiData */
+	private static final String ELT_LITERAL = "literal";
 	/** Element representing a WikiData entity */
 	private static final String ELT_MAINSNAK = "mainsnak";
 	/** Element representing a matching Wikipedia page */
@@ -167,6 +169,8 @@ public class WmCommonTools
 	
 	/** URI for the WikiMedia API XML namespace */
 	private final static String NS_WM_API = "http://www.mediawiki.org/xml/api/";
+	/** URI for the WikiMedia SPARQL API XML namespace */
+	private final static String NS_SPARQL_API = "http://www.w3.org/2005/sparql-results#";
 	
 	/////////////////////////////////////////////////////////////////
 	// WIKIDATA IDS 		/////////////////////////////////////////
@@ -202,19 +206,19 @@ public class WmCommonTools
 				+ " wd:" + ENTITY_FUNCTION
 				+ " wd:" + ENTITY_LOCATION
 				+ " wd:" + ENTITY_MEETING
-				+ " ws:" + ENTITY_PERSON
-				+ " ws:" + ENTITY_ORGANIZATION
+				+ " wd:" + ENTITY_PERSON
+				+ " wd:" + ENTITY_ORGANIZATION
 				+ " wd:" + ENTITY_PRODUCTION 
 				+ "}. wd:";
 	/** Second part of the SPARQL query used to retrieve the types of an entity */ 
 	public static final String WIKIMEDIA_QUERY_TYPES_SUFFIX = " wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"* ?type.}";
 	/** First part of the SPARQL query used to retrieve the ids of an entity */ 
-	public static final String WIKIMEDIA_QUERY_IDS_PREFIX = "SELECT DISTINCT ?prop ?propLabel WHERE {"
+	public static final String WIKIMEDIA_QUERY_EXTIDS_PREFIX = "SELECT DISTINCT ?prop ?propLabel ?value WHERE {"
 			+ "wd:";
 	/** Second part of the SPARQL query used to retrieve the ids of an entity */ 
-	public static final String WIKIMEDIA_QUERY_IDS_SUFFIX = " ?p ?value."
-			+ "?prop wikibase:directClaim ?p."
-			+ "?prop wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"*/wdt:"+PROP_FACET_OF+" wd:"+ENTITY_IDENTIFIER+"."
+	public static final String WIKIMEDIA_QUERY_EXTIDS_SUFFIX = " ?p ?value. "
+			+ "?prop wikibase:directClaim ?p. "
+			+ "?prop wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"*/wdt:"+PROP_FACET_OF+" wd:"+ENTITY_IDENTIFIER+". "
 			+ "SERVICE wikibase:label {"
 			+ "bd:serviceParam wikibase:language \"en\" ."
 			+ "}}";
@@ -228,6 +232,7 @@ public class WmCommonTools
 	static
 	{	MAP_ID_TO_KB.put("P268",  KnowledgeBase.BNF);
 		MAP_ID_TO_KB.put("P646",  KnowledgeBase.FREEBASE);
+		MAP_ID_TO_KB.put("P1808", KnowledgeBase.SENAT_FR);
 		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
 		MAP_ID_TO_KB.put("P1045", KnowledgeBase.SYCOMORE);
 		MAP_ID_TO_KB.put("P214",  KnowledgeBase.VIAF);
@@ -272,12 +277,6 @@ public class WmCommonTools
 		logger.log("Looking for entity "+name+" (in "+language+", as a "+type+")");
 		logger.increaseOffset();
 		
-		 // 1) perform the approximate search using the websearch API and get the ids
-		 // 2) if there is a desambiguisation page, also get its ids and treat it.
-		 // 3) if there is nothing, try the variants of the name (if person): this was done before. look for "firstname" in the source code.
-		 // 4) use the SPARQL API to perform a more precise search among the ids
-		 // 5) extract all relevant information from these results  
-	
 		// set up the list of alternative names
 		List<String> possibleNames;
 		if(type==EntityType.PERSON)
@@ -294,6 +293,7 @@ public class WmCommonTools
 		
 		// retrieve the details associated to the remaining id and complete the entity
 		completeEntityWithIds(selectedId,entity);
+		//TODO should we also add all the names known in WD for this entity?
 		
 		logger.decreaseOffset();
 	}
@@ -514,7 +514,7 @@ public class WmCommonTools
 					}
 				}
 				logger.decreaseOffset();
-				logger.log("Number of remainign ids: "+idList.size());
+				logger.log("Number of remaining ids: "+idList.size());
 				
 				result = idList.get(0);
 				if(idList.size()>1)
@@ -558,7 +558,7 @@ public class WmCommonTools
 		List<EntityType> result = new ArrayList<EntityType>();
 		
 		// request the server
-		String query = WIKIMEDIA_QUERY_TYPES_PREFIX + id + WIKIMEDIA_QUERY_TYPES_SUFFIX;
+		String query = URLEncoder.encode(WIKIMEDIA_QUERY_TYPES_PREFIX + id + WIKIMEDIA_QUERY_TYPES_SUFFIX, "UTF-8");
 		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
 		logger.log("URL: "+url);
 		HttpClient httpclient = new DefaultHttpClient();   
@@ -570,13 +570,14 @@ public class WmCommonTools
 		SAXBuilder sb = new SAXBuilder();
 		Document doc = sb.build(new StringReader(answer));
 		Element root = doc.getRootElement();
+		Namespace ns = Namespace.getNamespace(NS_SPARQL_API);
 		
 		// extract the type(s) from the XML doc
-		Element resultsElt = root.getChild(ELT_RESULTS);
-		List<Element> resultElts = resultsElt.getChildren(ELT_RESULT);
+		Element resultsElt = root.getChild(ELT_RESULTS,ns);
+		List<Element> resultElts = resultsElt.getChildren(ELT_RESULT,ns);
 		for(Element resultElt: resultElts)
-		{	Element bindingElt = resultElt.getChild(ELT_BINDING);
-			Element uriElt = bindingElt.getChild(ELT_URI);
+		{	Element bindingElt = resultElt.getChild(ELT_BINDING,ns);
+			Element uriElt = bindingElt.getChild(ELT_URI,ns);
 			String uri = uriElt.getText().trim();
 			int pos = uri.lastIndexOf('/');
 			String typeId = uri.substring(pos+1);
@@ -610,6 +611,84 @@ public class WmCommonTools
 		logger.increaseOffset();
 		
 		// request the server
+		String query = URLEncoder.encode(WIKIMEDIA_QUERY_EXTIDS_PREFIX + id + WIKIMEDIA_QUERY_EXTIDS_SUFFIX, "UTF-8");
+		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
+		logger.log("URL: "+url);
+		HttpClient httpclient = new DefaultHttpClient();   
+		HttpGet request = new HttpGet(url);
+		HttpResponse response = httpclient.execute(request);
+		
+		// parse the answer to get an XML document
+		String answer = WebTools.readAnswer(response);
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(answer));
+		Element root = doc.getRootElement();
+		Namespace ns = Namespace.getNamespace(NS_SPARQL_API);
+		
+		// extract the external ids from the XML doc
+		Element resultsElt = root.getChild(ELT_RESULTS,ns);
+		List<Element> resultElts = resultsElt.getChildren(ELT_RESULT,ns);
+		logger.log("Found "+resultElts.size()+" ids:");
+		logger.increaseOffset();
+		int i = 1;
+		for(Element resultElt: resultElts)
+		{	logger.log("Processing id "+i+"/"+resultElts.size());
+			List<Element> bindingElts = resultElt.getChildren(ELT_BINDING,ns);
+			Iterator<Element> it = bindingElts.iterator();
+			while(it.hasNext())
+			{	// property
+				Element bindingPropElt = it.next();
+				Element uriElt = bindingPropElt.getChild(ELT_URI,ns);
+				String uri = uriElt.getText().trim();
+				int pos = uri.lastIndexOf('/');
+				String kbId = uri.substring(pos+1);
+				KnowledgeBase kb = MAP_ID_TO_KB.get(kbId);
+				
+				// value
+				Element bindingValueElt = it.next();
+				Element literalValueElt = bindingValueElt.getChild(ELT_LITERAL,ns);
+				String value = literalValueElt.getText().trim();
+				
+				// propLabel
+				Element bindingLabelElt = it.next();
+				Element literalLabelElt = bindingLabelElt.getChild(ELT_LITERAL,ns);
+				String label = literalLabelElt.getText().trim();
+				
+				// decision
+				if(kb==null)
+					logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");//TODO debug this to find all KB
+				else
+				{	logger.log("Found URI "+uri+" (kb="+kb+" label=\""+label+"\" value="+value+")");
+					entity.setExternalId(kb, value);
+				}
+			}
+			i++;
+		}
+		logger.decreaseOffset();
+		
+		logger.decreaseOffset();
+	}
+
+	/**
+	 * <b>Incomplete method</b>, aiming at completing an existing entity
+	 * based on information retrieved from WikiData.
+	 * 
+	 * @param entity
+	 * 		Entity to complete.
+	 * 
+	 * @throws IOException
+	 * 		Problem while accessing the WikiData service. 
+	 * @throws ClientProtocolException 
+	 * 		Problem while accessing the WikiData service. 
+	 * @throws JDOMException 
+	 * 		Problem while parsing the XML WikiData response. 
+	 */
+	public static void completeEntity(AbstractNamedEntity entity) throws ClientProtocolException, IOException, JDOMException
+	{	String id = entity.getExternalId(KnowledgeBase.WIKIDATA);
+		logger.log("Using ids retrieved from WikiData to complete entity "+entity+" ("+id+")");
+		logger.increaseOffset();
+		
+		// request the server
 		String url = WIKIDATA_GETENT_URL + WIKIDATA_GETENT_PARAM_SEARCH + id;
 		logger.log("URL: "+url);
 		HttpClient httpclient = new DefaultHttpClient();   
@@ -622,10 +701,11 @@ public class WmCommonTools
 		Document doc = sb.build(new StringReader(answer));
 		Element root = doc.getRootElement();
 		
-		// extract ids from the XML document
+		// extract data from the XML document
 		Namespace ns = Namespace.getNamespace(NS_WM_API);
 		Element entitiesElt = root.getChild(ELT_ENTITIES,ns);
 		Element entityElt = entitiesElt.getChild(ELT_ENTITY,ns);
+//TODO the below part must be adapted to the fields we want to retrieve		
 		Element claimsElt = entityElt.getChild(ELT_CLAIMS,ns);
 		List<Element> propertyElts = claimsElt.getChildren(ELT_PROPERTY,ns);
 		for(Element propertyElt: propertyElts)
@@ -642,7 +722,7 @@ public class WmCommonTools
 		
 		logger.decreaseOffset();
 	}
-
+	
 	/**
 	 * Generates all possible human names from a string representing
 	 * the full name. This methods allows considering various combinations
@@ -693,25 +773,29 @@ public class WmCommonTools
 	/////////////////////////////////////////////////////////////////
 	// TESTS		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-    public static void main(String[] args) throws Exception
-    {	// possible names
-//    	System.out.println(getPossibleNames("Lastname")+"\n\n");
-//    	System.out.println(getPossibleNames("Firstname Lastname")+"\n\n");
-//    	System.out.println(getPossibleNames("Firstname Middlename Lastname")+"\n\n");
-//    	System.out.println(getPossibleNames("Firstname Middlename Lastname1 Lastname2")+"\n\n");
-//    	System.out.println(getPossibleNames("Firstname1 Firstname2 Middlename Lastname1 Lastname2")+"\n\n");
-    	
-    	// disambiguation page
-//    	Map<String,String> res = retrieveIdsFromDisambiguation(ArticleLanguage.FR, "Lecointe");
-//    	System.out.println(res);
-    	
-    	// retrieve the ids
-//    	List<String> possibleNames = getPossibleNames("Adolphe Lucien Lecointe");
-//    	Map<String,String> res = retrieveIdsFromName(possibleNames, ArticleLanguage.FR);
-//    	System.out.println(res);
-    	
-    	// general lookup method
-    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
-    	lookupNamedEntity(entity, ArticleLanguage.FR);
-	}
+//    public static void main(String[] args) throws Exception
+//    {	// possible names
+////    	System.out.println(getPossibleNames("Lastname")+"\n\n");
+////    	System.out.println(getPossibleNames("Firstname Lastname")+"\n\n");
+////    	System.out.println(getPossibleNames("Firstname Middlename Lastname")+"\n\n");
+////    	System.out.println(getPossibleNames("Firstname Middlename Lastname1 Lastname2")+"\n\n");
+////    	System.out.println(getPossibleNames("Firstname1 Firstname2 Middlename Lastname1 Lastname2")+"\n\n");
+//    	
+//    	// disambiguation page
+////    	Map<String,String> res = retrieveIdsFromDisambiguation(ArticleLanguage.FR, "Lecointe");
+////    	System.out.println(res);
+//    	
+//    	// retrieve the ids
+////    	List<String> possibleNames = getPossibleNames("Adolphe Lucien Lecointe");
+////    	Map<String,String> res = retrieveIdsFromName(possibleNames, ArticleLanguage.FR);
+////    	System.out.println(res);
+//    	
+//    	// general lookup method
+////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
+//    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Achille Eugène Fèvre", EntityType.PERSON);
+//    	lookupNamedEntity(entity, ArticleLanguage.FR);
+//    	System.out.println(entity);
+//    	Map<KnowledgeBase, String> extIds = entity.getExternalIds();
+//    	System.out.println(extIds);
+//	}
 }

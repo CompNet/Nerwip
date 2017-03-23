@@ -44,6 +44,9 @@ public enum KnowledgeBase
 	/** SUDOC database (Système Universitaire de Documentation - French national university library system) */
 	SUDOC,
 	
+	/** Database from the French Senate website */
+	SENAT_FR,
+	
 	/** Sycomore database (French MPs) */
 	SYCOMORE,
 	
