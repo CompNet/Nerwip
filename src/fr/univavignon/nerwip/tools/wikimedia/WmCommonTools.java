@@ -276,7 +276,7 @@ public class WmCommonTools
 		// get the entity ids associated to the possible names
 		Map<String,String> candidateIds = retrieveIdsFromName(possibleNames,language);
 		// filter them to keep only the most relevant one
-		String selectedId = filterIds(possibleNames,candidateIds);
+		String selectedId = filterIds(possibleNames,candidateIds,type);
 		
 		// retrieve the details associated to the remaining id and complete the entity
 		completeEntityWithIds(selectedId,entity);
@@ -539,7 +539,8 @@ public class WmCommonTools
 	 * 		Problem while parsing the WikiData service XML response.
 	 */
 	private static List<EntityType> retrieveTypesFromId(String id) throws IllegalStateException, IOException, JDOMException
-	{	//TODO
+	{	logger.log("Retrieving the types associated to id "+id);
+		logger.increaseOffset();
 		List<EntityType> result = new ArrayList<EntityType>();
 		
 		// request the server
@@ -566,9 +567,11 @@ public class WmCommonTools
 			int pos = uri.lastIndexOf('/');
 			String typeId = uri.substring(pos+1);
 			EntityType type = MAP_ID_TO_TYPE.get(typeId);
+			logger.log("Found URI "+uri+" (type="+type+")");
 			result.add(type);
 		}
 		
+		logger.decreaseOffset();
 		return result;
 	}
 	
@@ -589,7 +592,8 @@ public class WmCommonTools
 	 * 		Problem while parsing the XML WikiData response. 
 	 */
 	private static void completeEntityWithIds(String id, AbstractNamedEntity entity) throws ClientProtocolException, IOException, JDOMException
-	{	//TODO
+	{	logger.log("Using ids retrieved from WikiData to complete entity "+entity+" ("+id+")");
+		logger.increaseOffset();
 		
 		// request the server
 		String url = WIKIDATA_GETENT_URL + WIKIDATA_GETENT_PARAM_SEARCH + id;
@@ -604,7 +608,7 @@ public class WmCommonTools
 		Document doc = sb.build(new StringReader(answer));
 		Element root = doc.getRootElement();
 		
-		// retrieve the ids and check for disambiguation pages
+		// extract ids from the XML document
 		Namespace ns = Namespace.getNamespace(NS_WM_API);
 		Element entitiesElt = root.getChild(ELT_ENTITIES,ns);
 		Element entityElt = entitiesElt.getChild(ELT_ENTITY,ns);
@@ -622,7 +626,7 @@ public class WmCommonTools
 			}
 		}
 		
-		//TODO
+		logger.decreaseOffset();
 	}
 
 	/**
