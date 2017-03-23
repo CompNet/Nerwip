@@ -289,6 +289,28 @@ public class Entities
 	}
 	
 	/**
+	 * Returns the set of all entities of a certain types. Note that
+	 * the returned set is a collection of generic entities, not of
+	 * the specifically typed entities.
+	 * 
+	 * @param type
+	 * 		Desired type. 
+	 * @return
+	 * 		All the entities possessing the specified type.
+	 */
+	public Set<AbstractEntity> getEntitiesByType(EntityType type)
+	{	Set<AbstractEntity> result = new TreeSet<AbstractEntity>();
+		
+		for(AbstractEntity entity: entities)
+		{	EntityType eType = entity.getType();
+			if(eType==type)
+				result.add(entity);
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Returns the entity with the specified internal id.
 	 * 
 	 * @param id

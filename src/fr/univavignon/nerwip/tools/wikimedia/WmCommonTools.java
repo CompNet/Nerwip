@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.math3.util.Combinations;
 import org.apache.http.HttpResponse;
@@ -66,7 +67,7 @@ public class WmCommonTools
 	// LOGGING			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Common object used for logging */
-	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
 //	/////////////////////////////////////////////////////////////////
 //	// CACHE		 		/////////////////////////////////////////
@@ -90,24 +91,24 @@ public class WmCommonTools
 	// URL			 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** URL used to access the web search API of WikiData */
-	public static final String WIKIDATA_WEBSEARCH_URL ="https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max";
+	private static final String WIKIDATA_WEBSEARCH_URL ="https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max";
 	/** Name of the parameter representing the searched string for the web search API of WikiData */
-	public static final String WIKIDATA_WEBSEARCH_PARAM_SEARCH = "&search=";
+	private static final String WIKIDATA_WEBSEARCH_PARAM_SEARCH = "&search=";
 	/** Name of the parameter representing the targeted language for the web search API of WikiData */
-	public static final String WIKIDATA_WEBSEARCH_PARAM_LANG = "&language=";
+	private static final String WIKIDATA_WEBSEARCH_PARAM_LANG = "&language=";
 	/** URL used to retrieve entities through the WikiData API */
-	public static final String WIKIDATA_GETENT_URL ="https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&includexmlnamespace=true&redirects=yes";
+	private static final String WIKIDATA_GETENT_URL ="https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&includexmlnamespace=true&redirects=yes";
 	/** Name of the parameter representing the searched entity */
-	public static final String WIKIDATA_GETENT_PARAM_SEARCH = "&ids=";
+	private static final String WIKIDATA_GETENT_PARAM_SEARCH = "&ids=";
 	/** URL used to query WikiData using SPARQL */
-	public static final String WIKIDATA_SPARQL_URL ="https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=";
+	private static final String WIKIDATA_SPARQL_URL ="https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=";
 	/** Second part of the URL used to query WikiData using SPARQL */
-	public static final String WIKIDATA_SPARQL_URL_SUFFIX ="&format=xml";
+	private static final String WIKIDATA_SPARQL_URL_SUFFIX ="&format=xml";
 	
 	/** Prefix for the URL used to access the links inside a Wikipedia disambiguation page */
-	public static final String WIKIMEDIA_DISAMB_PREFIX = "https://";
+	private static final String WIKIMEDIA_DISAMB_PREFIX = "https://";
 	/** URL and parameters used to access the links inside a Wikipedia disambiguation page */
-	public static final String WIKIMEDIA_DISAMB_PAGE = ".wikipedia.org/w/api.php?action=query&generator=links&format=xml&redirects=1&prop=pageprops&gpllimit=50&ppprop=wikibase_item&titles=";
+	private static final String WIKIMEDIA_DISAMB_PAGE = ".wikipedia.org/w/api.php?action=query&generator=links&format=xml&redirects=1&prop=pageprops&gpllimit=50&ppprop=wikibase_item&titles=";
 	
 	/////////////////////////////////////////////////////////////////
 	// XML			 		/////////////////////////////////////////
@@ -211,12 +212,12 @@ public class WmCommonTools
 				+ " wd:" + ENTITY_PRODUCTION 
 				+ "}. wd:";
 	/** Second part of the SPARQL query used to retrieve the types of an entity */ 
-	public static final String WIKIMEDIA_QUERY_TYPES_SUFFIX = " wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"* ?type.}";
+	private static final String WIKIMEDIA_QUERY_TYPES_SUFFIX = " wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"* ?type.}";
 	/** First part of the SPARQL query used to retrieve the ids of an entity */ 
-	public static final String WIKIMEDIA_QUERY_EXTIDS_PREFIX = "SELECT DISTINCT ?prop ?propLabel ?value WHERE {"
+	private static final String WIKIMEDIA_QUERY_EXTIDS_PREFIX = "SELECT DISTINCT ?prop ?propLabel ?value WHERE {"
 			+ "wd:";
 	/** Second part of the SPARQL query used to retrieve the ids of an entity */ 
-	public static final String WIKIMEDIA_QUERY_EXTIDS_SUFFIX = " ?p ?value. "
+	private static final String WIKIMEDIA_QUERY_EXTIDS_SUFFIX = " ?p ?value. "
 			+ "?prop wikibase:directClaim ?p. "
 			+ "?prop wdt:"+PROP_INSTANCE_OF+"/wdt:"+PROP_SUBCLASS_OF+"*/wdt:"+PROP_FACET_OF+" wd:"+ENTITY_IDENTIFIER+". "
 			+ "SERVICE wikibase:label {"
@@ -272,18 +273,18 @@ public class WmCommonTools
 	 * 		Problem while parsing the XML file constituting the service response.
 	 */
 	public static void lookupNamedEntity(AbstractNamedEntity entity, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
-	{	String name = entity.getName();
+	{	Set<String> names = entity.getSurfaceForms();
 		EntityType type = entity.getType();
-		logger.log("Looking for entity "+name+" (in "+language+", as a "+type+")");
+		logger.log("Looking for entity "+entity.getName()+" (in "+language+", as a "+type+")");
 		logger.increaseOffset();
 		
 		// set up the list of alternative names
 		List<String> possibleNames;
 		if(type==EntityType.PERSON)
-			possibleNames = getPossibleNames(name);
+			possibleNames = getPossibleNames(names);
 		else
 		{	possibleNames = new ArrayList<String>();
-			possibleNames.add(name);
+			possibleNames.addAll(names);
 		}
 		
 		// get the entity ids associated to the possible names
@@ -728,43 +729,46 @@ public class WmCommonTools
 	 * the full name. This methods allows considering various combinations
 	 * of lastname(s) and firstname(s).
 	 * 
-	 * @param name
-	 * 		The full name a string (should contain several names separated
-	 * 		by spaces).
+	 * @param names
+	 * 		All the surface forms of the entity, should contain several names 
+	 * 		separated by spaces.
 	 * @return
 	 * 		A list of strings corresponding to alternative forms of the 
 	 * 		original name.
 	 */
-	private static List<String> getPossibleNames(String name)
+	private static List<String> getPossibleNames(Set<String> names)
 	{	List<String> result = new ArrayList<String>();
-		result.add(name);
-		String split[] = name.split(" ");
-		
-		for(int i=1;i<split.length;i++)
-		{	// fix the last names
-			String lastnames = "";
-			for(int j=i;j<split.length;j++)
-				lastnames = lastnames + split[j].trim() + " ";
-			lastnames = lastnames.trim();
+		for(String name: names)
+		{	if(!result.contains(name))
+				result.add(name);
+			String split[] = name.split(" ");
 			
-			// we try to fix the last names and get all combinations of firstnames 
-			for(int j=1;j<i;j++)
-			{	Combinations combi = new Combinations(i,j);
-				Iterator<int[]> it = combi.iterator();
-				while(it.hasNext())
-				{	int indices[] = it.next();
-					String firstnames = "";
-					for(int index: indices)
-						firstnames = firstnames + split[index].trim() + " ";
-					String fullname = firstnames+lastnames;
-					if(!result.contains(fullname))
-						result.add(fullname);
+			for(int i=1;i<split.length;i++)
+			{	// fix the last names
+				String lastnames = "";
+				for(int j=i;j<split.length;j++)
+					lastnames = lastnames + split[j].trim() + " ";
+				lastnames = lastnames.trim();
+				
+				// we try to fix the last names and get all combinations of firstnames 
+				for(int j=1;j<i;j++)
+				{	Combinations combi = new Combinations(i,j);
+					Iterator<int[]> it = combi.iterator();
+					while(it.hasNext())
+					{	int indices[] = it.next();
+						String firstnames = "";
+						for(int index: indices)
+							firstnames = firstnames + split[index].trim() + " ";
+						String fullname = firstnames+lastnames;
+						if(!result.contains(fullname))
+							result.add(fullname);
+					}
 				}
+				
+				// we also try only the lastnames
+				if(!result.contains(lastnames))
+					result.add(lastnames);
 			}
-			
-			// we also try only the lastnames
-			if(!result.contains(lastnames))
-				result.add(lastnames);
 		}
 		
 		return result;

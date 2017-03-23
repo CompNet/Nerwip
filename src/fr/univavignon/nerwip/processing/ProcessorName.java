@@ -51,9 +51,6 @@ public enum ProcessorName
 	/** Stanford Named Entity Recognizer, a recognizer */ 
 	STANFORD,
 	
-	/** A custom resolver based on simple string comparisons */
-	NAIVE_RESOLVER,
-	
 	/////////////////////////////////////////////////////////////////
 	// INTERNAL CUSTOM TOOLS	/////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -63,6 +60,12 @@ public enum ProcessorName
 	SUBEE,
 	/** Tool specifically developped to recognize dates in Wikipedia articles */
 	WIKIPEDIADATER,
+	
+	/** A custom resolver based on simple string comparisons */
+	NAIVE_RESOLVER,
+	
+	/** A custom linker taking advantage of the WikiData knowledge base */
+	WIKIDATA_LINKER,
 	
 	/////////////////////////////////////////////////////////////////
 	// EXTERNAL TOOLS	/////////////////////////////////////////////

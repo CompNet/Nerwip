@@ -22,6 +22,7 @@ package fr.univavignon.nerwip.data.entity;
  */
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -200,6 +201,31 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	{	externalIds.put(knowledgeBase,externalId);
 	}
 	
+	/**
+	 * Checks whether the ids associated to this entity and the specified
+	 * one intersect. In other words, if the entities have at least one
+	 * id in common.
+	 * 
+	 * @param entity
+	 * 		Entity to compare to this entity.
+	 * @return
+	 * 		{@code true} iff both entities have at least one id in common. 
+	 */
+	public boolean doExternalIdsIntersect(AbstractNamedEntity entity)
+	{	boolean result = false;
+		
+		Iterator<Entry<KnowledgeBase,String>> it = externalIds.entrySet().iterator(); 
+		while(it.hasNext() && !result)
+		{	Entry<KnowledgeBase,String> entry = it.next();
+			KnowledgeBase key = entry.getKey();
+			String value1 = entry.getValue();
+			String value2 = entity.getExternalId(key);
+			result = value2!=null && value1.equals(value2);
+		}
+		
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// XML				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -291,6 +317,14 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		}
 		
 		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// ENTITIES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	public void completeWith(AbstractNamedEntity entity)
+	{
+		//TODO complete with name, surfaceforms and external ids
 	}
 	
 	/////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-package fr.univavignon.nerwip.processing.internal.modelless.spotlight;
+package fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -22,50 +22,46 @@ package fr.univavignon.nerwip.processing.internal.modelless.spotlight;
  */
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-import org.jdom2.Document;
+import org.apache.http.client.ClientProtocolException;
 import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
+import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateLinker;
+import fr.univavignon.nerwip.tools.wikimedia.WmCommonTools;
 
 /**
- * This class acts as an interface with the DBpedia Spotlight Web service, 
- * more precisely its service focusing on linking entities to unique 
- * identifiers.
+ * This implements the actual work of entity linking for 
+ * {@link WikiDataLinker}.
  * 
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<List<String>>
+public class WikiDataLinkerDelegateLinker extends AbstractModellessInternalDelegateLinker<Entities>
 {
 	/**
 	 * Builds and sets up an object representing
-	 * the Spotlight recognizer.
+	 * the WikiDataLinker delegate for linking.
 	 * 
-	 * @param spotlight
+	 * @param wikiDataLinker
 	 * 		Linker in charge of this delegate.
-	 * @param minConf 
-	 * 		Minimal confidence for the recognized mentions (used only in case of recognition).
+	 * @param revision
+	 * 		Whether or not merge entities previously considered
+	 * 		as distinct, but turning out to be linked to the same id.
 	 */
-	public SpotlightDelegateLinker(Spotlight spotlight, float minConf)
-	{	super(spotlight, false);
-		
-		this.minConf = minConf;
+	public WikiDataLinkerDelegateLinker(WikiDataLinker wikiDataLinker, boolean revision)
+	{	super(wikiDataLinker, revision);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -75,7 +71,7 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	public String getFolder()
 	{	String result = linker.getName().toString();
 		
-		result = result + "_" + "minConf=" + minConf;
+		result = result + "_" + "revision=" + revision;
 		
 		return result;
 	}
@@ -83,12 +79,14 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of entity types linked by Spotlight */
+	/** List of entity types linked by WikiDataLinker */
 	private static final List<EntityType> HANDLED_TYPES = Arrays.asList
-	(	EntityType.DATE,
+	(	EntityType.FUNCTION,
 		EntityType.LOCATION,
+		EntityType.MEETING,
 		EntityType.ORGANIZATION,
-		EntityType.PERSON
+		EntityType.PERSON,
+		EntityType.PRODUCTION
 	);
 
 	@Override
@@ -110,88 +108,63 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	{	boolean result = HANDLED_LANGUAGES.contains(language);
 		return result;
 	}
-
-	/////////////////////////////////////////////////////////////////
-	// MINIMAL CONFIDENCE	/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Minimal confidence */
-	private float minConf;
-
+	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected List<String> linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException
-	{	List<String> result = SpotlightTools.invokeAnnotate(article, minConf);
-		return result;
+	protected Entities linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException
+	{	Set<AbstractEntity> entityList = entities.getEntities();
+		logger.log("Stating linking entities ("+entityList.size()+")");
+		logger.increaseOffset();
+		ArticleLanguage language = article.getLanguage();
+		
+		int i = 1;
+		for(AbstractEntity entity: entityList)
+		{	if(entity instanceof AbstractNamedEntity)
+			{	logger.log("Processing named entity "+i+"/"+entityList.size()+": "+entity);
+				AbstractNamedEntity e = (AbstractNamedEntity)entity;
+				try
+				{	WmCommonTools.lookupNamedEntity(e, language);
+				}
+				catch (ClientProtocolException e1)
+				{	//e1.printStackTrace();
+					throw new ProcessorException(e1.getMessage());
+				}
+				catch (IOException e1)
+				{	//e1.printStackTrace();
+					throw new ProcessorException(e1.getMessage());
+				}
+				catch (JDOMException e1)
+				{	//e1.printStackTrace();
+					throw new ProcessorException(e1.getMessage());
+				}
+			}
+			else
+				logger.log("Entity "+i+"/"+entityList.size()+" is not named: "+entity);
+			i ++;
+		}
+		
+		logger.decreaseOffset();
+		return entities;
 	}
 
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	public void convert(Article article, Mentions mentions, Entities entities, List<String> data) throws ProcessorException 
+	public void convert(Article article, Mentions mentions, Entities entities, Entities data) throws ProcessorException 
 	{	ProcessorName linkerName = linker.getName();
-		Entities result = new Entities(linkerName);
-		InterfaceRecognizer recognizer = linker.getRecognizer();
-		
-		// if spotlight is also the recognizer
-		if(recognizer==null)
-			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, true);
-		// otherwise, if spotlight is only the resolver
-		else
-			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, false);
+		// in the specific case of this linker, both entities and data objects are the same
+		entities.setLinker(linkerName);
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-    protected void writeRawResults(Article article, List<String> intRes) throws IOException
-    {	InterfaceRecognizer recognizer = linker.getRecognizer();
-    	
-    	// number of parts
-    	int total;
-    	if(recognizer==null)
-    		total = intRes.size()/2;
-    	else
-    		total = intRes.size()/3;
-        
-    	// build the string
-    	StringBuffer string = new StringBuffer();
-    	int i = 1;
-        Iterator<String> it = intRes.iterator();
-        while(it.hasNext())
-        {	String originalText = it.next();
-        	// original text
-			string.append("\n>>> Part " + i + "/" + total + " - Original text <<<\n" + originalText + "\n");
-			// converted text
-        	if(recognizer==null)
-        	{	String convertedText = it.next();
-        		string.append("\n>>> Part " + i + "/" + total + " - Converted text <<<\n" + convertedText + "\n");
-        	}
-        	// spotlight response
-        	String spotlightAnswer = it.next();
-        	{	try
-        		{	// build DOM
-					SAXBuilder sb = new SAXBuilder();
-					Document doc = sb.build(new StringReader(spotlightAnswer));
-					Format format = Format.getPrettyFormat();
-					format.setIndent("\t");
-					format.setEncoding("UTF-8");
-					XMLOutputter xo = new XMLOutputter(format);
-					String xmlTxt = xo.outputString(doc);
-					
-					// add SpotLight format
-					string.append("\n>>> Part " + i + "/" + total + " - SpotLight Response <<<\n" + xmlTxt + "\n");
-        		}
-        		catch (JDOMException e)
-        		{	e.printStackTrace();
-        		}
-        	}
-        	i++;
-    	}
-        
-        writeRawResultsStr(article, string.toString());
+    protected void writeRawResults(Article article, Entities entities) throws IOException
+    {	String string = entities.toString();
+        writeRawResultsStr(article, string);
     }
 }

@@ -24,12 +24,15 @@ package fr.univavignon.nerwip.processing;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
+import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
@@ -53,9 +56,14 @@ public abstract class AbstractDelegateLinker
 	 * 
 	 * @param linker
 	 * 		Linker associated to this delegate.
+	 * @param revision
+	 * 		Whether or not merge entities previously considered
+	 * 		as distinct, but turning out to be linked to the same id.
 	 */
-	public AbstractDelegateLinker(InterfaceLinker linker)
+	public AbstractDelegateLinker(InterfaceLinker linker, boolean revision)
 	{	this.linker = linker;
+		
+		this.revision = revision;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -136,7 +144,64 @@ public abstract class AbstractDelegateLinker
 	 * 		Problem while resolving co-occurrences. 
 	 */
 	public abstract MentionsEntities delegateLink(Article article) throws ProcessorException;
+	
+	/////////////////////////////////////////////////////////////////
+	// MERGING ENTITIES		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Indicates if this linker should revise the previously resolved entities */
+	protected boolean revision;
+	
+	/**
+	 * Looks for entities having one common external id, and merges them.
+	 * Then, updates the corresponding mentions.
+	 * 
+	 * @param mentions
+	 * 		Previously detected mentions.
+	 * @param entities
+	 * 		Previously resolved and linked entities.
+	 */
+	protected void mergeEntites(Mentions mentions, Entities entities)
+	{	logger.increaseOffset();
+		
+		List<AbstractEntity> newEntityList = new ArrayList<AbstractEntity>();
+		// process separately each entity type
+		for(EntityType type: EntityType.values())
+		{	// only focus on named entities
+			if(type.isNamed())
+			{	// get the list containing only entities of this type
+				List<AbstractEntity> entityList = new ArrayList<AbstractEntity>(entities.getEntitiesByType(type));
+				
+				// process each entity iteratively
+				int i = 0;
+				while(i<entityList.size()-1)
+				{	AbstractNamedEntity entity1 = (AbstractNamedEntity)entityList.get(i);
+					newEntityList.add(entity1);
+					
+					// compare the entity to the rest of the list
+					int j = i + 1;
+					while(j<entityList.size())
+					{	AbstractNamedEntity entity2 = (AbstractNamedEntity)entityList.get(j);
+						// if the entities are equivalent
+						if(entity1.doExternalIdsIntersect(entity2))
+						{	// complete the first entity with the second one
+							entity1.completeWith(entity2);
+							// remove the second one from the list (it is now redundant)
+							entityList.remove(j);
+							// update all the mentions using the second entity
+							mentions.switchEntity(entity2, entity1);
+						}
+						// otherwise, just go to the next one
+						else
+							j++;
+					}
+					i++;
+				}
+			}
+		}//TODO fonction à relire 
 
+		logger.decreaseOffset();
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// XML FILES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

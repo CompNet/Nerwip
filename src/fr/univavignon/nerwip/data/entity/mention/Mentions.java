@@ -38,6 +38,7 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
@@ -683,6 +684,28 @@ public class Mentions
 		return result;
 	}
 
+	/////////////////////////////////////////////////////////////////
+	// ENTITIES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Review each mention and checks if it is associated to the specified
+	 * {@code oldEntity}. If it is the case, it replace the entity with
+	 * the other one specified, i.e. {@code newEntity}. This is convenient
+	 * when merging identical entities previously considered as different.
+	 *   
+	 * @param oldEntity
+	 * 		Entity previously associated to the targeted mentions.
+	 * @param newEntity
+	 * 		Entity to associate to the targeted mentions.
+	 */
+	public void switchEntity(AbstractEntity oldEntity, AbstractEntity newEntity)
+	{	for(AbstractMention<?> mention: mentions)
+		{	AbstractEntity entity = mention.getEntity();
+			if(entity.equals(oldEntity))
+				mention.setEntity(newEntity);
+		}
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// FILE ACCESS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

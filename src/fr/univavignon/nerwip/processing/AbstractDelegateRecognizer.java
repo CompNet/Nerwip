@@ -373,7 +373,7 @@ public abstract class AbstractDelegateRecognizer
 	 */
 	protected void filterNoise(Mentions mentions, ArticleLanguage language)
 	{	logger.increaseOffset();
-	
+		
 		List<AbstractMention<?>> mentionList = mentions.getMentions();
 		Iterator<AbstractMention<?>> it = mentionList.iterator();
 		while(it.hasNext())

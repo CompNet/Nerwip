@@ -45,9 +45,12 @@ public abstract class AbstractModellessInternalDelegateLinker<T> extends Abstrac
 	 * 
 	 * @param linker
 	 * 		Linker associated to this delegate.
+	 * @param revision
+	 * 		Whether or not merge entities previously considered
+	 * 		as distinct, but turning out to be linked to the same id.
 	 */
-	public AbstractModellessInternalDelegateLinker(InterfaceLinker linker)
-	{	super(linker);
+	public AbstractModellessInternalDelegateLinker(InterfaceLinker linker, boolean revision)
+	{	super(linker,revision);
 	}
 	
 	/////////////////////////////////////////////////////////////////

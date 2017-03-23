@@ -61,9 +61,12 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 	 * 
 	 * @param linker
 	 * 		Linker associated to this delegate.
+	 * @param revision
+	 * 		Whether or not merge entities previously considered
+	 * 		as distinct, but turning out to be linked to the same id.
 	 */
-	public AbstractInternalDelegateLinker(InterfaceLinker linker)
-	{	super(linker);
+	public AbstractInternalDelegateLinker(InterfaceLinker linker, boolean revision)
+	{	super(linker,revision);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -167,7 +170,15 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				// convert entities to our internal representation
 				logger.log("Convert entities to internal representation");
 				convert(article,mentions,entities,intRes);
-	
+				
+				// possibly merge existing entities with the same id
+				if(revision)
+				{	logger.log("Revising coreference resolution based on the ids retrieved by this linker");
+					mergeEntites(mentions, entities);
+				}
+				else
+					logger.log("Linker not configured to revise coreference resolutions");
+				
 				// record results using our xml format
 				logger.log("Record mentions and entities using our XML format");
 				writeXmlResults(article,mentions,entities);

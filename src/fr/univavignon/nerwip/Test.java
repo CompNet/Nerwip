@@ -2326,6 +2326,8 @@ File folder = folders.get(0);
 /* TODO
  * - Note: a resolver may add new mentions, e.g. to represent pronouns
  * 
+ * - Integrate the DBpedia tools of Sabrine.
+ * 
  * - See if OpenNer can be adapted to process links? 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   

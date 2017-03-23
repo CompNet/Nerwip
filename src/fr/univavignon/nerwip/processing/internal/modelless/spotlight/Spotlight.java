@@ -79,10 +79,10 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	 * <b>Important:</b> the resolver and linker go together, one cannot
 	 * invoke the latter separately. So, if the linker method of this class
 	 * is later invoked, the provided resolved data will simply be ignored:
-	 * only the result of the recognition will be fetched Spotlight (and 
+	 * only the result of the recognition will be fetched to Spotlight (and 
 	 * moreover, to the resolver, not the linker). Maybe the linker could
 	 * be invoked separately if we would use the Java local version of
-	 * Spotlight. 
+	 * Spotlight.
 	 * 
 	 * @param recognizer
 	 * 		Processor used to recognize the entity mentions.
