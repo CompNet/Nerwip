@@ -91,25 +91,25 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 		
 		switch(type)
 		{	case DATE:
-				result = new MentionDate(startPos, endPos, source, valueStr, null);
+				result = new MentionDate(startPos, endPos, source, valueStr);
 				break;
 			case FUNCTION:
-				result = new MentionFunction(startPos, endPos, source, valueStr, null);
+				result = new MentionFunction(startPos, endPos, source, valueStr);
 				break;
 			case LOCATION:
-				result = new MentionLocation(startPos, endPos, source, valueStr, null);
+				result = new MentionLocation(startPos, endPos, source, valueStr);
 				break;
 			case MEETING:
-				result = new MentionMeeting(startPos, endPos, source, valueStr, null);
+				result = new MentionMeeting(startPos, endPos, source, valueStr);
 				break;
 			case ORGANIZATION:
-				result = new MentionOrganization(startPos, endPos, source, valueStr, null);
+				result = new MentionOrganization(startPos, endPos, source, valueStr);
 				break;
 			case PERSON:
-				result = new MentionPerson(startPos, endPos, source, valueStr, null);
+				result = new MentionPerson(startPos, endPos, source, valueStr);
 				break;
 			case PRODUCTION:
-				result = new MentionProduction(startPos, endPos, source, valueStr, null);
+				result = new MentionProduction(startPos, endPos, source, valueStr);
 				break;
 		}
 		
