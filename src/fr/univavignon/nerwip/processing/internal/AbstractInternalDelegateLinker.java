@@ -138,7 +138,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				
 				// possibly get the mentions
 				if(mentions==null)
-				{	InterfaceRecognizer recognizer = linker.getRecognizer();
+				{	InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
 					// recognize the mentions (or load them if previously cached...)
 					if(recognizer!=null)
 						mentions = recognizer.recognize(article);

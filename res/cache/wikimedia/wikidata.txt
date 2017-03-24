@@ -1,0 +1,20 @@
+https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max&language=fr&search=Adolphe+Lucien+Lecointe
+<?xml version="1.0"?><api success="1" xmlns="http://www.mediawiki.org/xml/api/"><limits wbsearchentities="50" /><searchinfo search="Adolphe Lucien Lecointe" /><search /></api>
+
+-----------
+https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max&language=fr&search=Lucien+Lecointe
+<?xml version="1.0"?><api success="1" xmlns="http://www.mediawiki.org/xml/api/"><limits wbsearchentities="50" /><searchinfo search="Lucien Lecointe" /><search><entity repository="" id="Q3265604" concepturi="http://www.wikidata.org/entity/Q3265604" url="//www.wikidata.org/wiki/Q3265604" title="Q3265604" pageid="3115746" label="Lucien Lecointe" description="French politician"><match type="label" language="fr" text="Lucien Lecointe" /></entity></search></api>
+
+-----------
+https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max&language=fr&search=Achille+Eug%C3%A8ne+F%C3%A8vre
+<?xml version="1.0"?><api success="1" xmlns="http://www.mediawiki.org/xml/api/"><limits wbsearchentities="50" /><searchinfo search="Achille Eugène Fèvre" /><search /></api>
+
+-----------
+https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max&language=fr&search=Eug%C3%A8ne+F%C3%A8vre
+<?xml version="1.0"?><api success="1" xmlns="http://www.mediawiki.org/xml/api/"><limits wbsearchentities="50" /><searchinfo search="Eugène Fèvre" /><search /></api>
+
+-----------
+https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max&language=fr&search=Achille+F%C3%A8vre
+<?xml version="1.0"?><api success="1" xmlns="http://www.mediawiki.org/xml/api/"><limits wbsearchentities="50" /><searchinfo search="Achille Fèvre" /><search><entity repository="" id="Q2823060" concepturi="http://www.wikidata.org/entity/Q2823060" url="//www.wikidata.org/wiki/Q2823060" title="Q2823060" pageid="2703711" label="Achille Fèvre" description="French politician"><match type="label" language="fr" text="Achille Fèvre" /></entity></search></api>
+
+-----------

@@ -49,7 +49,7 @@ import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.KnowledgeBase;
-
+import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.web.WebTools;
@@ -69,27 +69,29 @@ public class WmCommonTools
 	/** Common object used for logging */
 	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
-//	/////////////////////////////////////////////////////////////////
-//	// CACHE		 		/////////////////////////////////////////
-//	/////////////////////////////////////////////////////////////////
-//	/** Whether or not WikiMedia results should be cached */
-//	protected static boolean cache = true;
-//	
-//	/**
-//	 * Enable or disable the memory cache
-//	 * for WikiMedia requests.
-//	 *  
-//	 * @param enabled
-//	 * 		If {@code true}, the results from WikiMedia are
-//	 * 		stored in memory.
-//	 */
-//	public static void setCacheEnabled(boolean enabled)
-//	{	WmCommonTools.cache = enabled;
-//	}
+	/////////////////////////////////////////////////////////////////
+	// CACHE		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Whether or not WikiMedia results should be cached */
+	protected static boolean cache = true;
+	
+	/**
+	 * Enable or disable the memory cache
+	 * for WikiMedia requests.
+	 *  
+	 * @param enabled
+	 * 		If {@code true}, the results from WikiMedia are
+	 * 		stored in memory.
+	 */
+	public static void setCacheEnabled(boolean enabled)
+	{	WmCommonTools.cache = enabled;
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// URL			 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Map used as a memory cache for WikiPedia queries */
+	private static WmCache wikidataCache = null;
 	/** URL used to access the web search API of WikiData */
 	private static final String WIKIDATA_WEBSEARCH_URL ="https://www.wikidata.org/w/api.php?action=wbsearchentities&format=xml&includexmlnamespace=true&type=item&limit=max";
 	/** Name of the parameter representing the searched string for the web search API of WikiData */
@@ -105,6 +107,8 @@ public class WmCommonTools
 	/** Second part of the URL used to query WikiData using SPARQL */
 	private static final String WIKIDATA_SPARQL_URL_SUFFIX ="&format=xml";
 	
+	/** Map used as a memory cache for WikiPedia queries */
+	private static WmCache wikimediaCache = null;
 	/** Prefix for the URL used to access the links inside a Wikipedia disambiguation page */
 	private static final String WIKIMEDIA_DISAMB_PREFIX = "https://";
 	/** URL and parameters used to access the links inside a Wikipedia disambiguation page */
@@ -201,6 +205,8 @@ public class WmCommonTools
 	/////////////////////////////////////////////////////////////////
 	// SPARQL QUERIES 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Map used as a memory cache for Sparql queries */
+	private static WmCache sparqlCache = null;
 	/** First part of the SPARQL query used to retrieve the types of an entity */ 
 	public static final String WIKIMEDIA_QUERY_TYPES_PREFIX = "SELECT DISTINCT ?type WHERE {"
 			+ " VALUES ?type {"
@@ -334,15 +340,30 @@ public class WmCommonTools
 			logger.log("Processing possible name "+candidateName);
 			logger.increaseOffset();
 		
-			// request the server
+			// build the url
 			String url = baseUrl + URLEncoder.encode(candidateName, "UTF-8");
 			logger.log("URL: "+url);
-			HttpClient httpclient = new DefaultHttpClient();   
-			HttpGet request = new HttpGet(url);
-			HttpResponse response = httpclient.execute(request);
 			
-			// parse the answer to get an XML document
-			String answer = WebTools.readAnswer(response);
+			// get the answer first through the cache
+			String answer = null;
+			if(cache)
+			{	if(wikidataCache==null)
+					wikidataCache = new WmCache(FileNames.FI_WIKIDATA);
+				answer = wikidataCache.getValue(url);
+			}
+			// if it fails, actually query the server
+			if(answer==null)
+			{	// query the server	
+				HttpClient httpclient = new DefaultHttpClient();   
+				HttpGet request = new HttpGet(url);
+				HttpResponse response = httpclient.execute(request);
+				// parse the answer to get an XML document
+				answer = WebTools.readAnswer(response);
+				if(cache)
+					wikidataCache.putValue(url,answer);
+			}
+			
+			// build the XML DOM
 			SAXBuilder sb = new SAXBuilder();
 			Document doc = sb.build(new StringReader(answer));
 			Element root = doc.getRootElement();
@@ -427,12 +448,27 @@ public class WmCommonTools
 		// query WikiMedia
 		String url = WIKIMEDIA_DISAMB_PREFIX + language.toString().toLowerCase() + WIKIMEDIA_DISAMB_PAGE + URLEncoder.encode(label,"UTF-8");
 		logger.log("URL: "+url);
-		HttpClient httpclient = new DefaultHttpClient();   
-		HttpGet request = new HttpGet(url);
-		HttpResponse response = httpclient.execute(request);
 		
-		// read the answer as an XML document
-		String answer = WebTools.readAnswer(response);
+		// get the answer first through the cache
+		String answer = null;
+		if(cache)
+		{	if(wikimediaCache==null)
+				wikimediaCache = new WmCache(FileNames.FI_WIKIMEDIA);
+			answer = wikimediaCache.getValue(url);
+		}
+		// if it fails, actually query the server
+		if(answer==null)
+		{	// query the server	
+			HttpClient httpclient = new DefaultHttpClient();   
+			HttpGet request = new HttpGet(url);
+			HttpResponse response = httpclient.execute(request);
+			// parse the answer to get an XML document
+			answer = WebTools.readAnswer(response);
+			if(cache)
+				wikimediaCache.putValue(url,answer);
+		}
+		
+		// build the XML DOM
 		SAXBuilder sb = new SAXBuilder();
 		Document doc = sb.build(new StringReader(answer));
 		Element root = doc.getRootElement();
@@ -562,12 +598,27 @@ public class WmCommonTools
 		String query = URLEncoder.encode(WIKIMEDIA_QUERY_TYPES_PREFIX + id + WIKIMEDIA_QUERY_TYPES_SUFFIX, "UTF-8");
 		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
 		logger.log("URL: "+url);
-		HttpClient httpclient = new DefaultHttpClient();   
-		HttpGet request = new HttpGet(url);
-		HttpResponse response = httpclient.execute(request);
 		
-		// parse the answer to get an XML document
-		String answer = WebTools.readAnswer(response);
+		// get the answer first through the cache
+		String answer = null;
+		if(cache)
+		{	if(sparqlCache==null)
+				sparqlCache = new WmCache(FileNames.FI_QUERIES);
+			answer = sparqlCache.getValue(url);
+		}
+		// if it fails, actually query the server
+		if(answer==null)
+		{	// query the server	
+			HttpClient httpclient = new DefaultHttpClient();   
+			HttpGet request = new HttpGet(url);
+			HttpResponse response = httpclient.execute(request);
+			// parse the answer to get an XML document
+			answer = WebTools.readAnswer(response);
+			if(cache)
+				sparqlCache.putValue(url,answer);
+		}
+		
+		// build the XML DOM
 		SAXBuilder sb = new SAXBuilder();
 		Document doc = sb.build(new StringReader(answer));
 		Element root = doc.getRootElement();
@@ -615,12 +666,27 @@ public class WmCommonTools
 		String query = URLEncoder.encode(WIKIMEDIA_QUERY_EXTIDS_PREFIX + id + WIKIMEDIA_QUERY_EXTIDS_SUFFIX, "UTF-8");
 		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
 		logger.log("URL: "+url);
-		HttpClient httpclient = new DefaultHttpClient();   
-		HttpGet request = new HttpGet(url);
-		HttpResponse response = httpclient.execute(request);
 		
-		// parse the answer to get an XML document
-		String answer = WebTools.readAnswer(response);
+		// get the answer first through the cache
+		String answer = null;
+		if(cache)
+		{	if(sparqlCache==null)
+				sparqlCache = new WmCache(FileNames.FI_QUERIES);
+			answer = sparqlCache.getValue(url);
+		}
+		// if it fails, actually query the server
+		if(answer==null)
+		{	// query the server	
+			HttpClient httpclient = new DefaultHttpClient();   
+			HttpGet request = new HttpGet(url);
+			HttpResponse response = httpclient.execute(request);
+			// parse the answer to get an XML document
+			answer = WebTools.readAnswer(response);
+			if(cache)
+				sparqlCache.putValue(url,answer);
+		}
+		
+		// build the XML DOM
 		SAXBuilder sb = new SAXBuilder();
 		Document doc = sb.build(new StringReader(answer));
 		Element root = doc.getRootElement();
@@ -657,7 +723,8 @@ public class WmCommonTools
 				
 				// decision
 				if(kb==null)
-					logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");//TODO debug this to find all KB
+					//TODO debug this to find all KB
+					logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");
 				else
 				{	logger.log("Found URI "+uri+" (kb="+kb+" label=\""+label+"\" value="+value+")");
 					entity.setExternalId(kb, value);
@@ -692,18 +759,33 @@ public class WmCommonTools
 		// request the server
 		String url = WIKIDATA_GETENT_URL + WIKIDATA_GETENT_PARAM_SEARCH + id;
 		logger.log("URL: "+url);
-		HttpClient httpclient = new DefaultHttpClient();   
-		HttpGet request = new HttpGet(url);
-		HttpResponse response = httpclient.execute(request);
 		
-		// parse the answer to get an XML document
-		String answer = WebTools.readAnswer(response);
+		// get the answer first through the cache
+		String answer = null;
+		if(cache)
+		{	if(wikidataCache==null)
+				wikidataCache = new WmCache(FileNames.FI_WIKIDATA);
+			answer = wikidataCache.getValue(url);
+		}
+		// if it fails, actually query the server
+		if(answer==null)
+		{	// query the server	
+			HttpClient httpclient = new DefaultHttpClient();   
+			HttpGet request = new HttpGet(url);
+			HttpResponse response = httpclient.execute(request);
+			// parse the answer to get an XML document
+			answer = WebTools.readAnswer(response);
+			if(cache)
+				wikidataCache.putValue(url,answer);
+		}
+		
+		// build the XML DOM
 		SAXBuilder sb = new SAXBuilder();
 		Document doc = sb.build(new StringReader(answer));
 		Element root = doc.getRootElement();
+		Namespace ns = Namespace.getNamespace(NS_WM_API);
 		
 		// extract data from the XML document
-		Namespace ns = Namespace.getNamespace(NS_WM_API);
 		Element entitiesElt = root.getChild(ELT_ENTITIES,ns);
 		Element entityElt = entitiesElt.getChild(ELT_ENTITY,ns);
 //TODO the below part must be adapted to the fields we want to retrieve		
@@ -774,9 +856,9 @@ public class WmCommonTools
 		return result;
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// TESTS		 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
+//	/////////////////////////////////////////////////////////////////
+//	// TESTS		 		/////////////////////////////////////////
+//	/////////////////////////////////////////////////////////////////
 //    public static void main(String[] args) throws Exception
 //    {	// possible names
 ////    	System.out.println(getPossibleNames("Lastname")+"\n\n");
@@ -795,8 +877,8 @@ public class WmCommonTools
 ////    	System.out.println(res);
 //    	
 //    	// general lookup method
-////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
-//    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Achille Eugène Fèvre", EntityType.PERSON);
+//    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
+////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Achille Eugène Fèvre", EntityType.PERSON);
 //    	lookupNamedEntity(entity, ArticleLanguage.FR);
 //    	System.out.println(entity);
 //    	Map<KnowledgeBase, String> extIds = entity.getExternalIds();

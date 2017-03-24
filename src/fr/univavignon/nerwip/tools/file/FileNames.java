@@ -70,6 +70,8 @@ public class FileNames
 		public final static String FO_CACHE = FO_RESOURCES + File.separator + "cache";
 			/** Folder used to store Freebase cached files */
 			public final static String FO_CACHE_FREEBASE = FO_CACHE + File.separator + "freebase";
+			/** Folder used to store WikiMedia cached files */
+			public final static String FO_CACHE_WIKIMEDIA = FO_CACHE + File.separator + "wikimedia";
 		/** Folder used to store images */
 		public final static String FO_IMAGES = FO_RESOURCES + File.separator + "images";
 		/** Folder used to store various data */
@@ -162,6 +164,8 @@ public class FileNames
 	public final static String FI_NOTABLE_TYPES = "types.notable" + FileNames.EX_TEXT;
 	/** File used to cache the mapping between Wikipedia article titles and Freebase ids  */
 	public final static String FI_IDS = "ids" + FileNames.EX_TEXT;
+	/** File used to cache the mapping queries and their results in a cache */
+	public final static String FI_QUERIES = "queries" + FileNames.EX_TEXT;
 	/** File used to list the unknown Freebase types */
 	public final static String FI_UNKNOWN_TYPES = "fb.unknown" + FileNames.EX_TEXT;
 	/** List of location-related adjectives */
@@ -174,6 +178,10 @@ public class FileNames
 	public final static String FI_NERO_BASH = "irisa_ne" + FileNames.EX_BASH;
 	/** Main program of the TagEn tool */
 	public final static String FI_TAGEN_EXE = "tagen";
+	/** File used to cache the mapping queries and their results in a cache */
+	public final static String FI_WIKIDATA = "wikidata" + FileNames.EX_TEXT;
+	/** File used to cache the mapping queries and their results in a cache */
+	public final static String FI_WIKIMEDIA = "wikimedia" + FileNames.EX_TEXT;
 	
 	/** Application icon */
 	public final static String FI_ICON_APP = "icon" + FileNames.EX_PNG;
@@ -225,6 +233,8 @@ public class FileNames
 	/////////////////////////////////////////////////////////////////
 	/** Bash file extension */
 	public final static String EX_BASH = ".bash";
+	/** Binary file extension */
+	public final static String EX_BIN = ".bin";
 	/** Comma-separated values (CSV) file extension */
 	public final static String EX_CSV = ".csv";
 	/** PDF file extension */

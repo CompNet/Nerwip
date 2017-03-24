@@ -47,7 +47,8 @@ public class NaiveResolver extends AbstractProcessor implements InterfaceResolve
 {
 	/**
 	 * Builds and sets up an object representing the naive resolver. 
-	 * The specified recognizer and linkers are used.
+	 * The specified linker is used (itself supposed to have been 
+	 * previously configured to use a specified recognizer).
 	 * 
 	 * @param recognizer
 	 * 		Processor used to recognize the entity mentions.

@@ -1,0 +1,135 @@
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ3265604+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q215627</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Fprop+%3FpropLabel+%3Fvalue+WHERE+%7Bwd%3AQ3265604+%3Fp+%3Fvalue.+%3Fprop+wikibase%3AdirectClaim+%3Fp.+%3Fprop+wdt%3AP31%2Fwdt%3AP279*%2Fwdt%3AP1269+wd%3AQ6545185.+SERVICE+wikibase%3Alabel+%7Bbd%3AserviceParam+wikibase%3Alanguage+%22en%22+.%7D%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='prop'/>
+		<variable name='propLabel'/>
+		<variable name='value'/>
+	</head>
+	<results>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1045</uri>
+			</binding>
+			<binding name='value'>
+				<literal>7664</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Sycomore ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P269</uri>
+			</binding>
+			<binding name='value'>
+				<literal>11549152X</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>SUDOC authorities</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P214</uri>
+			</binding>
+			<binding name='value'>
+				<literal>204925626</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>VIAF ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P268</uri>
+			</binding>
+			<binding name='value'>
+				<literal>150669559</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>BnF ID</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ2823060+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q215627</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Fprop+%3FpropLabel+%3Fvalue+WHERE+%7Bwd%3AQ2823060+%3Fp+%3Fvalue.+%3Fprop+wikibase%3AdirectClaim+%3Fp.+%3Fprop+wdt%3AP31%2Fwdt%3AP279*%2Fwdt%3AP1269+wd%3AQ6545185.+SERVICE+wikibase%3Alabel+%7Bbd%3AserviceParam+wikibase%3Alanguage+%22en%22+.%7D%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='prop'/>
+		<variable name='propLabel'/>
+		<variable name='value'/>
+	</head>
+	<results>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1808</uri>
+			</binding>
+			<binding name='value'>
+				<literal>senateur-3eme-republique/fevre_achille1781r3</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>senat.fr ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P214</uri>
+			</binding>
+			<binding name='value'>
+				<literal>316737657</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>VIAF ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P268</uri>
+			</binding>
+			<binding name='value'>
+				<literal>16530928b</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>BnF ID</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------

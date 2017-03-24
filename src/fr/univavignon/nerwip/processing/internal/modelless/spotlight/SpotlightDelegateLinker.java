@@ -133,7 +133,7 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	public void convert(Article article, Mentions mentions, Entities entities, List<String> data) throws ProcessorException 
 	{	ProcessorName linkerName = linker.getName();
 		Entities result = new Entities(linkerName);
-		InterfaceRecognizer recognizer = linker.getRecognizer();
+		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
 		
 		// if spotlight is also the recognizer
 		if(recognizer==null)
@@ -148,7 +148,7 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	/////////////////////////////////////////////////////////////////
 	@Override
     protected void writeRawResults(Article article, List<String> intRes) throws IOException
-    {	InterfaceRecognizer recognizer = linker.getRecognizer();
+    {	InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
     	
     	// number of parts
     	int total;

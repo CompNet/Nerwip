@@ -29,7 +29,6 @@ import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
-import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
@@ -55,18 +54,14 @@ public class WikiDataLinker extends AbstractProcessor implements InterfaceLinker
 	 * the WikiData linker. The specified recognizer and
 	 * linker as used to get the needed mentions and entities.
 	 * 
-	 * @param recognizer
-	 * 		Processor used to recognize the entity mentions.
 	 * @param resolver
 	 * 		Processor used for coreference resolution.
 	 * @param revision
 	 * 		Whether or not merge entities previously considered
 	 * 		as distinct, but turning out to be linked to the same id.
 	 */
-	public WikiDataLinker(InterfaceRecognizer recognizer, InterfaceResolver resolver, boolean revision)
-	{	// recognize
-		this.recognizer = recognizer;
-		// resolve
+	public WikiDataLinker(InterfaceResolver resolver, boolean revision)
+	{	// resolve
 		this.resolver = resolver;
 		// link
 		delegateLinker = new WikiDataLinkerDelegateLinker(this, revision);
@@ -87,17 +82,6 @@ public class WikiDataLinker extends AbstractProcessor implements InterfaceLinker
 	public String getLinkerFolder()
 	{	String result = delegateLinker.getFolder();
 		return result;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// RECOGNIZER	 		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Recognizer applied before this linker */
-	protected InterfaceRecognizer recognizer = null;
-	
-	@Override
-	public InterfaceRecognizer getRecognizer()
-	{	return recognizer;
 	}
 	
 	/////////////////////////////////////////////////////////////////

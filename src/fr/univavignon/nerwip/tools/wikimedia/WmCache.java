@@ -1,4 +1,4 @@
-package fr.univavignon.nerwip.tools.freebase;
+package fr.univavignon.nerwip.tools.wikimedia;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -27,9 +27,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -38,14 +36,14 @@ import fr.univavignon.nerwip.tools.file.FileTools;
 
 /**
  * This class is dedicated to caching 
- * Freebase requests and results.
+ * WikiMedia requests and results.
  * 
  * @author Vincent Labatut
  */
-public class FbCache
+public class WmCache
 {	
 	/**
-	 * Builds a new FB cache, using
+	 * Builds a new WikiMedia cache, using
 	 * the specified file name.
 	 * 
 	 * @param fileName
@@ -56,11 +54,11 @@ public class FbCache
 	 * @throws UnsupportedEncodingException
 	 * 		Could not handle the encoding.
 	 */
-	public FbCache(String fileName) throws FileNotFoundException, UnsupportedEncodingException
+	public WmCache(String fileName) throws FileNotFoundException, UnsupportedEncodingException
 	{	super();
 		
 		// setting up the cache file
-		String path = FileNames.FO_CACHE_FREEBASE + File.separator + fileName;
+		String path = FileNames.FO_CACHE_WIKIMEDIA + File.separator + fileName;
 		file = new File(path);
 		
 		// loading the file
@@ -72,10 +70,12 @@ public class FbCache
 	/////////////////////////////////////////////////////////////////
 	/** File object representing the cache file */
 	private File file;
+	/** Separates two entries in the file */
+	private final static String SEPARATOR = "-----------";
 	
 	/**
 	 * Loads the cache from file. This allows saving access
-	 * to Freebase.
+	 * to WikiMedia.
 	 * 
 	 * @throws FileNotFoundException
 	 * 		Problem while loading the cache.
@@ -87,12 +87,16 @@ public class FbCache
 		{	Scanner scanner = FileTools.openTextFileRead(file, "UTF-8");
 			
 			while(scanner.hasNextLine())
-			{	String line = scanner.nextLine();
-				String temp[] = line.split("\t");
-				String key = temp[0];
-				List<String> value = new ArrayList<String>();
-				for(int i=1;i<temp.length;i++)
-					value.add(temp[i]);
+			{	String key = scanner.nextLine().trim();
+				StringBuffer tmp = new StringBuffer();
+				String line;
+				do
+				{	line = scanner.nextLine().trim();
+					if(!line.equals(SEPARATOR))
+						tmp.append(line+"\n");
+				}
+				while(!line.equals(SEPARATOR));
+				String value = tmp.toString().trim();
 				map.put(key,value);
 			}
 			
@@ -125,46 +129,32 @@ public class FbCache
 	 * 
 	 * @param key
 	 * 		Key of the new entry.
-	 * @param values
-	 * 		List of values associated to the entry.
+	 * @param value
+	 * 		Value associated to the entry.
 	 * 
 	 * @throws UnsupportedEncodingException 
 	 * 		Problem while accessing the cache file.
 	 * @throws FileNotFoundException 
 	 * 		Problem while accessing the cache file.
 	 */
-	private void writeEntry(String key, List<String> values) throws FileNotFoundException, UnsupportedEncodingException
+	private void writeEntry(String key, String value) throws FileNotFoundException, UnsupportedEncodingException
 	{	PrintWriter printWriter = openCache();
 		
-		printWriter.print(key);
-		for(String value: values)
-			printWriter.print("\t" + value);
-		printWriter.println();
+		printWriter.println(key);
+		printWriter.println(value);
+		printWriter.println(SEPARATOR);
 		printWriter.flush(); // just a precaution
 		
 		printWriter.close();
 	}
+
 	
 	/////////////////////////////////////////////////////////////////
 	// MAP				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Map used to store the data */
-	private final Map<String,List<String>> map = new HashMap<String,List<String>>();
+	private final Map<String,String> map = new HashMap<String,String>();
 	 
-	/**
-	 * Retrieves the values associated to some key in the cache. 
-	 * Or {@code null} if the cache does not contain the key.
-	 * 
-	 * @param key
-	 * 		The string to look for.
-	 * @return
-	 * 		The associated list of values.
-	 */
-	public List<String> getValues(String key)
-	{	List<String> result = map.get(key);
-		return result;
-	}
-	
 	/**
 	 * Retrieves the values associated to some key in the cache,
 	 * and returns the first one, or {@code null} if the 
@@ -176,10 +166,7 @@ public class FbCache
 	 * 		The associated values.
 	 */
 	public String getValue(String key)
-	{	List<String> list = map.get(key);
-		String result = null;
-		if(list!=null && !list.isEmpty())
-			result = list.get(0);
+	{	String result = map.get(key);
 		return result;
 	}
 	
@@ -191,34 +178,8 @@ public class FbCache
 	 * 
 	 * @param key
 	 * 		The new key string.
-	 * @param values
-	 * 		The associated list of values.	
-	 * 
-	 * @throws UnsupportedEncodingException 
-	 * 		Problem while accessing the cache file.
-	 * @throws FileNotFoundException 
-	 * 		Problem while accessing the cache file.
-	 */
-	public void putValues(String key, List<String> values) throws FileNotFoundException, UnsupportedEncodingException
-	{	if(!map.containsKey(key))
-		{	// update memory cache
-			map.put(key,values);
-			
-			// update file cache
-			writeEntry(key,values);
-		}
-	}
-	
-	/**
-	 * Insert a new key in the cache,
-	 * with a single associated value.
-	 * The cache file is automatically
-	 * updated, too.
-	 * 
-	 * @param key
-	 * 		The new key string.
 	 * @param value
-	 * 		The associated value.
+	 * 		The associated value.	
 	 * 
 	 * @throws UnsupportedEncodingException 
 	 * 		Problem while accessing the cache file.
@@ -226,8 +187,11 @@ public class FbCache
 	 * 		Problem while accessing the cache file.
 	 */
 	public void putValue(String key, String value) throws FileNotFoundException, UnsupportedEncodingException
-	{	List<String> values = new ArrayList<String>();
-		values.add(value);
-		putValues(key,values);
+	{	if(!map.containsKey(key))
+		{	// update memory cache
+			map.put(key,value);
+			// update file cache
+			writeEntry(key,value);
+		}
 	}
 }

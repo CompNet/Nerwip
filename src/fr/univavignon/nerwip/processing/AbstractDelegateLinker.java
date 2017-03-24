@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.xml.sax.SAXException;
 
@@ -163,7 +165,7 @@ public abstract class AbstractDelegateLinker
 	protected void mergeEntites(Mentions mentions, Entities entities)
 	{	logger.increaseOffset();
 		
-		List<AbstractEntity> newEntityList = new ArrayList<AbstractEntity>();
+		Set<AbstractEntity> newEntityList = new TreeSet<AbstractEntity>();
 		// process separately each entity type
 		for(EntityType type: EntityType.values())
 		{	// only focus on named entities
@@ -173,9 +175,11 @@ public abstract class AbstractDelegateLinker
 				
 				// process each entity iteratively
 				int i = 0;
-				while(i<entityList.size()-1)
+				while(i<entityList.size())
 				{	AbstractNamedEntity entity1 = (AbstractNamedEntity)entityList.get(i);
 					newEntityList.add(entity1);
+					logger.log("Comparing entity "+entity1+" to the remaining entities");
+					logger.increaseOffset();
 					
 					// compare the entity to the rest of the list
 					int j = i + 1;
@@ -183,10 +187,12 @@ public abstract class AbstractDelegateLinker
 					{	AbstractNamedEntity entity2 = (AbstractNamedEntity)entityList.get(j);
 						// if the entities are equivalent
 						if(entity1.doExternalIdsIntersect(entity2))
-						{	// complete the first entity with the second one
+						{	logger.log("Merging entity "+entity2);
+							// complete the first entity with the second one
 							entity1.completeWith(entity2);
 							// remove the second one from the list (it is now redundant)
 							entityList.remove(j);
+							entities.removeEntity(entity2);
 							// update all the mentions using the second entity
 							mentions.switchEntity(entity2, entity1);
 						}
@@ -194,11 +200,13 @@ public abstract class AbstractDelegateLinker
 						else
 							j++;
 					}
+					
 					i++;
+					logger.decreaseOffset();
 				}
 			}
-		}//TODO fonction à relire 
-
+		}
+		
 		logger.decreaseOffset();
 	}
 	
@@ -218,7 +226,7 @@ public abstract class AbstractDelegateLinker
 	{	String resultsFolder = article.getFolderPath();
 		String linkerFolder = getFolder();
 	
-		InterfaceRecognizer recognizer = linker.getRecognizer();
+		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
 		if(recognizer==null)
 			resultsFolder = resultsFolder + File.separator + linkerFolder;
 		else
@@ -250,7 +258,7 @@ public abstract class AbstractDelegateLinker
 	{	String resultsFolder = article.getFolderPath();
 		String linkerFolder = getFolder();
 	
-		InterfaceRecognizer recognizer = linker.getRecognizer();
+		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
 		if(recognizer==null)
 			resultsFolder = resultsFolder + File.separator + linkerFolder;
 		else
@@ -347,7 +355,7 @@ public abstract class AbstractDelegateLinker
 	{	String resultsFolder = article.getFolderPath();
 		String linkerFolder = getFolder();
 	
-		InterfaceRecognizer recognizer = linker.getRecognizer();
+		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
 		if(recognizer==null)
 			resultsFolder = resultsFolder + File.separator + linkerFolder;
 		else

@@ -322,9 +322,32 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	/////////////////////////////////////////////////////////////////
 	// ENTITIES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/**
+	 * Complete this entity with the fields of the specified one, which
+	 * is supposed to be equivalent. Concretely, we update the name and
+	 * complete the surface forms and external ids.
+	 * 
+	 * @param entity
+	 * 		Entity uses to complete this entity.
+	 */
 	public void completeWith(AbstractNamedEntity entity)
-	{
-		//TODO complete with name, surfaceforms and external ids
+	{	// possibly update the name
+		if(entity.name.length() > name.length())
+			name = entity.name;
+		
+		// complete the surface forms
+		surfaceForms.addAll(entity.surfaceForms);
+		
+		// complete the external ids
+		for(Entry<KnowledgeBase,String> entry: entity.externalIds.entrySet())
+		{	KnowledgeBase kb = entry.getKey();
+			String extId1 = externalIds.get(kb);
+			String extId2 = entry.getValue();
+			if(extId1==null)
+				externalIds.put(kb, extId2);
+			else if(!extId1.equals(extId2))
+				throw new IllegalArgumentException("The specified entity has a different external id for KB "+kb+": "+extId1+" vs. "+extId2);
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////////

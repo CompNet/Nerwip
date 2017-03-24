@@ -431,6 +431,45 @@ public class Entities
 		}
 	}
 	
+	/**
+	 * Remove an entity from this object.
+	 * 
+	 * @param entity
+	 * 		Entity to remove.
+	 */
+	public void removeEntity(AbstractEntity entity)
+	{	entities.remove(entity);
+		entitiesById.remove(entity.internalId);
+		
+		// remove the named entity
+		if(entity instanceof AbstractNamedEntity)
+		{	// map by id
+			AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+			Set<Entry<KnowledgeBase, String>> entrySet = namedEntity.getExternalIds().entrySet();
+			for(Entry<KnowledgeBase, String> entry: entrySet)
+			{	KnowledgeBase kb = entry.getKey();
+				String id = entry.getValue();
+				Map<String, AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
+				if(map!=null)
+					map.remove(id);
+			}
+			// map by name
+			Set<String> names = namedEntity.getSurfaceForms();
+			for(String name: names)
+			{	List<AbstractNamedEntity> list = namedEntitiesByName.get(name);
+				if(list!=null)
+					list.remove(namedEntity);
+			}
+		}
+		
+		// remove the valued entity
+		else if(entity instanceof AbstractValuedEntity)
+		{	AbstractValuedEntity<?> valuedEntity = (AbstractValuedEntity<?>)entity;
+			Comparable<?> value = valuedEntity.getValue();
+			valuedEntitiesByValue.remove(value);
+		}
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// FILE ACCESS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
