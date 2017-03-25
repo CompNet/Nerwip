@@ -2364,6 +2364,17 @@ File folder = folders.get(0);
 
 
 /* TODO
+ * 
+ * - We should not have a value in mention, only the string representation. 
+ * 		- the value should be only in the entity?
+ *      - but what about dates, esp. if the NER tool is able to identify the value? 
+ *        - so it should be stored in the mention, too. maybe as something specific to dates?
+ * - so we need the value in mention too. this is a problem in terms of constructor.
+ * 
+ * - also, when do we actually parse data string to get a date value?
+ * 
+ * 
+ * 
  * - Note: a resolver may add new mentions, e.g. to represent pronouns
  * 
  * - Integrate the DBpedia tools of Sabrine.
