@@ -207,12 +207,14 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 			{	AbstractMention<?> mention2 = it2.next();
 				EntityType type2 = mention2.getType();
 				if(type1==type2)
-				{	if(type1.isNamed())
+				{	// named entities
+					if(type1.isNamed())
 					{	String surf1 = mention1.getStringValue().toLowerCase(Locale.ENGLISH);
 						String surf2 = mention2.getStringValue().toLowerCase(Locale.ENGLISH);
 						int dist = StringUtils.getLevenshteinDistance(surf1, surf2, maxDist);
 						result = dist!=-1;
 					}
+					// valued entities
 					else
 					{	Comparable<?> value1 = mention1.getValue();
 						Comparable<?> value2 = mention2.getValue();

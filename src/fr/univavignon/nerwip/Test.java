@@ -110,6 +110,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais
 import fr.univavignon.nerwip.processing.internal.modelless.opener.OpeNer;
 import fr.univavignon.nerwip.processing.internal.modelless.spotlight.Spotlight;
 import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
+import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.retrieval.reader.wikipedia.WikipediaReader;
@@ -208,7 +209,8 @@ public class Test
 //		testSubee(url);
 //		testTagEn(name);
 //		testWikipediaDater(url);
-    	testNaiveResolver(name);
+//    	testNaiveResolver(name);
+    	testWikiDataLinker(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
@@ -1615,6 +1617,44 @@ File folder = folders.get(0);
 		
 		// only the specified article
 		spotlight.link(article);
+		
+		// all the corpus
+//		testAllCorpusLinker(spotlight,0);
+		
+		logger.decreaseOffset();
+	}
+	
+	/**
+	 * Tests the features related to a linker. 
+	 * 
+	 * @param name
+	 * 		Name of the (already cached) article.
+	 * 
+	 * @throws Exception
+	 * 		Something went wrong... 
+	 */
+	private static void testWikiDataLinker(String name) throws Exception
+	{	logger.setName("Test-WikiData-Linker");
+		logger.log("Start testing WikiDataLinker");
+		logger.increaseOffset();
+	
+		ArticleRetriever retriever = new ArticleRetriever();
+		Article article = retriever.process(name);
+		boolean parenSplit = true;
+		boolean ignorePronouns = true;
+		boolean exclusionOn = true;
+		InterfaceRecognizer recognizer = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
+		int maxDist = 4;
+		InterfaceResolver resolver = new NaiveResolver(recognizer, maxDist);
+		boolean revision = false;
+		WikiDataLinker wikiDataLinker = new WikiDataLinker(resolver,revision);
+//		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, true, true);
+//		Spotlight spotlight = new Spotlight(recognizer,resolveHomonyms);
+		wikiDataLinker.setOutputRawResults(true);
+		wikiDataLinker.setCacheEnabled(false);
+		
+		// only the specified article
+		wikiDataLinker.link(article);
 		
 		// all the corpus
 //		testAllCorpusLinker(spotlight,0);
