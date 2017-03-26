@@ -532,7 +532,7 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 					AbstractMention<?> mention = AbstractMention.build
 					(	EntityType.DATE, 
 						index+offset, index+offset+length, 
-						recognizer.getName(), valueStr
+						recognizer.getName(), valueStr//, date	//TODO must fix this: the date value should be kept
 					);
 //					result.setValue(date);
 					result.add(mention);

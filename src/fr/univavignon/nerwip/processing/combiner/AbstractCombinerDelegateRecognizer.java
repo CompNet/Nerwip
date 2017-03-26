@@ -547,6 +547,91 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 		return result;
 	}
 
+	/**
+	 * Combine the recognizers results, in order to determine the
+	 * value of the detected mention. We just use a uniform voting,
+	 * since one cannot really distinguish the recognizers, here.
+	 * 
+	 * @param map 
+	 * 		Group of estimated mentions.
+	 * @param type 
+	 * 		Estimated type for the treated mention.
+	 * @return 
+	 * 		Value of the mention, or {@code null} if no value was determined.
+	 */
+	protected Comparable<?> voteForValue(Map<InterfaceRecognizer, AbstractMention<?>> map, EntityType type)
+	{	logger.log("Start voting for value:");
+		logger.increaseOffset();
+		
+		Map<Comparable<?>,Float> scores = new HashMap<Comparable<?>, Float>();
+		
+		for(InterfaceRecognizer recognizer: recognizers)
+		{	AbstractMention<?> mention = map.get(recognizer);
+		
+			// check existence
+			if(mention!=null)
+			{	EntityType t = mention.getType();
+				if(t==type)
+				{	Comparable<?> value = mention.getValue();
+					Float score = scores.get(value);
+					if(score==null)
+						score = 0f;
+					score = score + 1;
+					scores.put(value,score);
+				}
+			}
+		}
+		
+		Comparable<?> result = getValueFromScores(scores);
+		logger.decreaseOffset();
+		logger.log("Result of the vote for value: "+result);
+		return result;
+	}
+	
+	/**
+	 * Receives the scores associated to values and returns the 
+	 * value whose score is maximal, or {@code null} if the map
+	 * is empty.
+	 * 
+	 * @param <U> 
+	 * 		Type of the scores.
+	 * @param scores
+	 * 		Scores map for the values.
+	 * @return
+	 * 		The majority value, or {@code null} if the map is empty.
+	 */
+	protected <T, U extends Comparable<U>> T getValueFromScores(Map<T, U> scores)
+	{	logger.log("Process the majority value using votes");
+		logger.increaseOffset();
+		
+		// sort values depending on their respective scores
+		List<T> values = getSortedKeys(scores);
+		Collections.reverse(values);
+		
+		// display scores
+		logger.log("Propositions and votes:");
+		logger.increaseOffset();
+		{	String line = null;
+			Iterator<T> it = values.iterator();
+			while(it.hasNext())
+			{	T value = it.next();
+				line = line + value;
+				U vote = scores.get(value);
+				line = line + "("+vote+"); ";
+			}
+			logger.log(line);
+		}
+		logger.decreaseOffset();
+		
+		// get the majority value
+		Iterator<T> it = values.iterator();
+		T result = it.next();
+		
+		logger.log("Final result: "+result);
+		logger.decreaseOffset();
+		return result;
+	}
+
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

@@ -163,13 +163,6 @@ public class Date implements Comparable<Date>
 	/////////////////////////////////////////////////////////////////
 	// TEXT				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Pattern used to find years in text */
-	private static final Pattern YEAR_PATTERN = Pattern.compile("(\\D|^)(18|19|20)\\d\\d(\\D|$)");
-	/** Pattern used to find months in text */
-	private static final Pattern MONTH_PATTERN = Pattern.compile("january|february|march|april|may|june|july|august|september|october|november|december",Pattern.CASE_INSENSITIVE);
-	/** Pattern used to find days in text */
-	private static final Pattern DAY_PATTERN = Pattern.compile("(\\D|^)(([0-1]\\d)|[1-9]|30|31)(\\D|$)");
-	
 	@Override
 	public String toString()
 	{	String result = "";
@@ -231,90 +224,97 @@ public class Date implements Comparable<Date>
 		return result;
 	}
 	
-	/**
-	 * Parse a Wikipedia string representing a date.
-	 * <br/> 
-	 * TODO This should actually be generalized,
-	 * since we might parse different kinds of
-	 * format if using other sources than WP.
-	 *  
-	 * @param string
-	 * 		String containing the date.
-	 * @return
-	 * 		The corresponding custom date object.
-	 */
-	public static Date parse(String string)
-	{	int day = 0;
-		int month = 0;
-		int year = 0;
-//if(string.equals("October 6"))	//"March 10, 1969"
-//	System.out.println();
-		// purely numerical format
-//		if(string.contains("/"))
-//		{	String temp[] = string.split("/");
-//			int i = temp.length - 1;
-//			year = Integer.parseInt(temp[i]);
-//			if(i>0)
-//			{	i--;
-//				month = Integer.parseInt(temp[i]);
-//				if(i>0)
-//				{	i--;
-//					day = Integer.parseInt(temp[i]);
-//				}
+//	/** Pattern used to find years in text */
+//	private static final Pattern YEAR_PATTERN = Pattern.compile("(\\D|^)(18|19|20)\\d\\d(\\D|$)");
+//	/** Pattern used to find months in text */
+//	private static final Pattern MONTH_PATTERN = Pattern.compile("january|february|march|april|may|june|july|august|september|october|november|december",Pattern.CASE_INSENSITIVE);
+//	/** Pattern used to find days in text */
+//	private static final Pattern DAY_PATTERN = Pattern.compile("(\\D|^)(([0-1]\\d)|[1-9]|30|31)(\\D|$)");
+//	
+//	/**
+//	 * Parse a Wikipedia string representing a date.
+//	 * <br/> 
+//	 * TODO This should actually be generalized,
+//	 * since we might parse different kinds of
+//	 * format if using other sources than WP.
+//	 *  
+//	 * @param string
+//	 * 		String containing the date.
+//	 * @return
+//	 * 		The corresponding custom date object.
+//	 */
+//	public static Date parse(String string)
+//	{	int day = 0;
+//		int month = 0;
+//		int year = 0;
+////if(string.equals("October 6"))	//"March 10, 1969"
+////	System.out.println();
+//		// purely numerical format
+////		if(string.contains("/"))
+////		{	String temp[] = string.split("/");
+////			int i = temp.length - 1;
+////			year = Integer.parseInt(temp[i]);
+////			if(i>0)
+////			{	i--;
+////				month = Integer.parseInt(temp[i]);
+////				if(i>0)
+////				{	i--;
+////					day = Integer.parseInt(temp[i]);
+////				}
+////			}
+////		}
+////		
+////		// partly textual format
+////		else
+//		{	// year
+//			Matcher yearMatcher = YEAR_PATTERN.matcher(string);
+//			if(yearMatcher.find())
+//				year = retrieveInt(yearMatcher, string);
+////			else
+////				System.out.println("Date.parse: could not find a year in text '"+string+"'");
+//			
+//			// month
+//			Matcher monthMatcher = MONTH_PATTERN.matcher(string);
+//			if(monthMatcher.find())
+//			{	int monthStart = monthMatcher.start();
+//				int monthEnd = monthMatcher.end();
+//				String monthStr = string.substring(monthStart,monthEnd).toLowerCase();
+//				month = MONTHS.indexOf(monthStr)+1;
+//				
+//				// day
+//				Matcher dayMatcher = DAY_PATTERN.matcher(string);
+//				if(dayMatcher.find())
+//					day = retrieveInt(dayMatcher, string);
 //			}
 //		}
 //		
-//		// partly textual format
-//		else
-		{	// year
-			Matcher yearMatcher = YEAR_PATTERN.matcher(string);
-			if(yearMatcher.find())
-				year = retrieveInt(yearMatcher, string);
-//			else
-//				System.out.println("Date.parse: could not find a year in text '"+string+"'");
-			
-			// month
-			Matcher monthMatcher = MONTH_PATTERN.matcher(string);
-			if(monthMatcher.find())
-			{	int monthStart = monthMatcher.start();
-				int monthEnd = monthMatcher.end();
-				String monthStr = string.substring(monthStart,monthEnd).toLowerCase();
-				month = MONTHS.indexOf(monthStr)+1;
-				
-				// day
-				Matcher dayMatcher = DAY_PATTERN.matcher(string);
-				if(dayMatcher.find())
-					day = retrieveInt(dayMatcher, string);
-			}
-		}
-		
-		Date result = new Date(day,month,year);
-		return result;
-	}
-	
-	/**
-	 * Method used when parsing WP dates,
-	 * in order to get the integer value corresponding
-	 * to a year, month or day.
-	 * 
-	 * @param matcher
-	 * 		Matcher which has found something. 
-	 * @param string
-	 * 		Complete string.
-	 * @return
-	 * 		Integer value of the matched expression.
-	 */
-	private static int retrieveInt(Matcher matcher, String string)
-	{	int yearStart = matcher.start();
-		int yearEnd = matcher.end();
-		String yearStr = string.substring(yearStart,yearEnd);
-		if(!Character.isDigit(yearStr.charAt(0)))
-			yearStr = yearStr.substring(1);
-		if(!Character.isDigit(yearStr.charAt(yearStr.length()-1)))
-			yearStr = yearStr.substring(0,yearStr.length()-1);
-		int result = Integer.parseInt(yearStr);
-		return result;
-	}
+//		Date result = new Date(day,month,year);
+//		return result;
+//	}
+//	
+//	/**
+//	 * Method used when parsing WP dates,
+//	 * in order to get the integer value corresponding
+//	 * to a year, month or day.
+//	 * 
+//	 * @param matcher
+//	 * 		Matcher which has found something. 
+//	 * @param string
+//	 * 		Complete string.
+//	 * @return
+//	 * 		Integer value of the matched expression.
+//	 */
+//	private static int retrieveInt(Matcher matcher, String string)
+//	{	int yearStart = matcher.start();
+//		int yearEnd = matcher.end();
+//		String yearStr = string.substring(yearStart,yearEnd);
+//		if(!Character.isDigit(yearStr.charAt(0)))
+//			yearStr = yearStr.substring(1);
+//		if(!Character.isDigit(yearStr.charAt(yearStr.length()-1)))
+//			yearStr = yearStr.substring(0,yearStr.length()-1);
+//		int result = Integer.parseInt(yearStr);
+//		return result;
+//	}
 	
 	/////////////////////////////////////////////////////////////////
 	// COMPARISON		/////////////////////////////////////////////

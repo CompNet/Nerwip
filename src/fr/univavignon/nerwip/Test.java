@@ -2365,21 +2365,24 @@ File folder = folders.get(0);
 
 /* TODO
  * 
- * - We should not have a value in mention, only the string representation. 
- * 		- the value should be only in the entity?
- *      - but what about dates, esp. if the NER tool is able to identify the value? 
- *        - so it should be stored in the mention, too. maybe as something specific to dates?
- * - so we need the value in mention too. this is a problem in terms of constructor.
+ * - Date detection/representation
+ *   1) Design a common tool receiving a date string and returning a date object
+ *     - will be language-dependent
+ *   2) Update RESOLVERS supporting dates, based on the common tool
+ *   
+ * - Untested:
+ *   - we now vote for value in the combiners (also test the related methods).
+ *     - StraightCombiner, VoteCombiner (there's only one date tool, so there should be no pb there, as there's no value combination)
  * 
- * - also, when do we actually parse data string to get a date value?
  * 
- * 
+ * - Check if the already configured tools are able to return periods, in which case it should
+ *   be stored in the mention.
  * 
  * - Note: a resolver may add new mentions, e.g. to represent pronouns
  * 
- * - Integrate the DBpedia tools of Sabrine.
+ * - Integrate the DBpedia tools of Sabrine (but what are they doing, exactly?).
  * 
- * - See if OpenNer can be adapted to process links? 
+ * - See if OpenNer can be adapted to process links (?) 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
  * - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.

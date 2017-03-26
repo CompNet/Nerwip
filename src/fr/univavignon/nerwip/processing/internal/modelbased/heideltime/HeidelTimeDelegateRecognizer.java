@@ -41,7 +41,6 @@ import de.unihd.dbs.heideltime.standalone.exceptions.DocumentCreationTimeMissing
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.MentionDate;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
@@ -316,8 +315,7 @@ public class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDele
 					logger.log("WARNING: could not parse the date/time in element "+xo.outputString(element)); //TODO WARNING: 
 				else
 				{	int length = text.length();
-					result = (MentionDate) AbstractMention.build(EntityType.DATE, index, index+length, recognizer.getName(), text);
-					result.setValue(date);
+					result = new MentionDate(index, index+length, recognizer.getName(), text, date);
 				}
 			}
 			else

@@ -30,6 +30,7 @@ import fr.univavignon.nerwip.data.entity.EntityDate;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.time.Date;
+import fr.univavignon.nerwip.tools.time.Period;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**
@@ -38,7 +39,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * @author Burcu Küpelioğlu
  * @author Vincent Labatut
  */
-public class MentionDate extends AbstractMention<Date>
+public class MentionDate extends AbstractMention<Period>
 {	
 	/**
 	 * Builds a new date mention from a date value.
@@ -55,11 +56,29 @@ public class MentionDate extends AbstractMention<Date>
 	 * 		Actual value of the mention.
 	 */
 	public MentionDate(int startPos, int endPos, ProcessorName source, String valueStr, Date value)
+	{	super(startPos, endPos, source, valueStr, new Period(value));
+	}
+	
+	/**
+	 * Builds a new date mention from a period value.
+	 * 
+	 * @param startPos
+	 * 		Starting position in the text.
+	 * @param endPos
+	 * 		Ending position in the text.
+	 * @param source
+	 * 		Tool which detected this mention.
+	 * @param valueStr
+	 * 		String representation in the text.
+	 * @param value
+	 * 		Actual value of the mention.
+	 */
+	public MentionDate(int startPos, int endPos, ProcessorName source, String valueStr, Period value)
 	{	super(startPos, endPos, source, valueStr, value);
 	}
 	
 	/**
-	 * Builds a new date mention without any date value.
+	 * Builds a new date mention without any date or period value.
 	 * 
 	 * @param startPos
 	 * 		Starting position in the text.
@@ -145,10 +164,10 @@ public class MentionDate extends AbstractMention<Date>
 		String valueStr = stringElt.getText();
 		
 		Element valueElt = element.getChild(XmlNames.ELT_VALUE);
-		Date value = null;
+		Period value = null;
 		if(valueElt!=null)
 		{	String valueString = valueElt.getText();
-			value = Date.importFromString(valueString);
+			value = Period.importFromString(valueString);
 		}
 		
 		MentionDate result =  new MentionDate(startPos, endPos, source, valueStr, value);

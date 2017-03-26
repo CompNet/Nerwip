@@ -695,7 +695,13 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			ProcessorName source = recognizer.getName();
 			
 			// build mention
-			result = AbstractMention.build(type, startPos, endPos, source, valueStr);
+			if(type.isNamed())
+				result = AbstractMention.build(type, startPos, endPos, source, valueStr);
+			else
+			{	Comparable<?> value = voteForValue(group, type);
+				logger.log("Value: "+value);
+				result = AbstractMention.build(type, startPos, endPos, source, valueStr, value);
+			}
 			logger.log("Final mention: "+result);
 		}
 		
@@ -730,7 +736,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 	 * Produces a mention type depending on the class 
 	 * outputed by the SVM.
 	 * <br/>
-	 * This method is used when using the word-by-wprd mode.
+	 * This method is used when using the word-by-word mode.
 	 * 
 	 * @param y
 	 * 		Output of the SVM.
@@ -1009,7 +1015,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 					}
 					wordMention.setStartPosition(wordStart);
 					wordMention.setEndPosition(wordEnd);
-					wordMention.setEntity(currentMention);
+					wordMention.setMention(currentMention);
 					wordMentions.put(recognizer, wordMention);
 				}
 				

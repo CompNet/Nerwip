@@ -255,7 +255,14 @@ public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegate
 				int startPos = pos[0];
 				int endPos = pos[1];
 				String valueStr = text.substring(startPos,endPos);
-				AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?> mention;
+				if(type.isNamed())
+					mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+				else
+				{	Comparable<?> value = voteForValue(map, type);
+					rawOutput.append(">> Value="+value+"\n");
+					mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, value);
+				}
 				result.addMention(mention);
 				rawOutput.append(">> Mention="+endPos+"\n\n");
 			}

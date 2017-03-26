@@ -397,7 +397,7 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 			String lengthStr = lengthElt.getText();
 			int length = Integer.parseInt(lengthStr);
 			int endPos = startPos + length;
-			result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr);
+			result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr); //TODO maybe we can insert date values?
 		}
 		
 		return result;

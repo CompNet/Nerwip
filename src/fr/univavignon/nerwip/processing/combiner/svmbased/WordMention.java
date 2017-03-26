@@ -50,7 +50,7 @@ public class WordMention
 	 * @param endPos
 	 * 		End position of the word in the whole text. 
 	 * @param mention 
-	 * 		Entity associated to the considered word.
+	 * 		Mention associated to the considered word.
 	 * @param beginning 
 	 * 		Whether or not the considered word is at the beginning of the associated mention.
 	 */
@@ -131,7 +131,7 @@ public class WordMention
 	 * @param mention
 	 * 		New mention associated to the considered word.
 	 */
-	public void setEntity(AbstractMention<?> mention)
+	public void setMention(AbstractMention<?> mention)
 	{	this.mention = mention;
 	}
 	

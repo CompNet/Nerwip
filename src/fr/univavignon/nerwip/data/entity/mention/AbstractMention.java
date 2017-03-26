@@ -33,6 +33,8 @@ import fr.univavignon.nerwip.data.entity.AbstractEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.ProcessorName;
+import fr.univavignon.nerwip.tools.time.Date;
+import fr.univavignon.nerwip.tools.time.Period;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**
@@ -69,10 +71,9 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	}
 	
 	/**
-	 * Builds an entity of the specified type.
+	 * Builds a mention of the specified type, either of a named entity
+	 * or of a valued entity whose value is unknown at this time.
 	 * 
-	 * @param <T>
-	 * 		Class of the mention value.
 	 * @param type
 	 * 		Type of the mention.
 	 * @param startPos
@@ -86,7 +87,7 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * @return
 	 * 		An object representing the mention.
 	 */
-	public static <T> AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr)
+	public static AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr)
 	{	AbstractMention<?> result = null;
 		
 		switch(type)
@@ -117,35 +118,72 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	}
 	
 	/**
-	 * For testing purposes.
+	 * Builds a valued mention of the specified type.
 	 * 
-	 * @param args
-	 * 		None needed.
+	 * @param type
+	 * 		Type of the mention.
+	 * @param startPos
+	 * 		Starting position in the text.
+	 * @param endPos
+	 * 		Ending position in the text.
+	 * @param source
+	 * 		Tool which detected this mention.
+	 * @param valueStr
+	 * 		String representation in the text.
+	 * @param value
+	 * 		Value of the mention (can be {@code null} if unknown).
+	 * @return
+	 * 		An object representing the mention.
 	 */
-	public static void main(String[] args)
-	{	int startPos = 10;
-		String valuesStr[] = 
-		{	"Test",
-			"Test et retest",
-			" Test et retest",
-			".Test et retest",
-			"Test et retest ",
-			"Test et retest.",
-			" Test et retest ",
-			".Test et retest.",
-			" Test et retest.",
-			".Test et retest ",
-			"  Test et retest  ",
-			".!Test et retest,;",
-			". Test et retest ;"
-		};
-		for(String valueStr: valuesStr)
-		{	int endPos = startPos + valueStr.length();
-			AbstractMention<?> mention = build(EntityType.PERSON, startPos, endPos, ProcessorName.STANFORD, valueStr); 
-			mention.correctMentionSpan();
-			System.out.println("\""+valueStr + "\"\t\t>>\t\t" + mention);
+	public static AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr, Comparable<?> value)
+	{	AbstractMention<?> result = null;
+		
+		if(value==null)
+			result = build(type,startPos,endPos,source,valueStr);
+		else
+		{	switch(type)
+			{	case DATE:
+					if(value instanceof Date)
+						result = new MentionDate(startPos, endPos, source, valueStr, (Date)value);
+					else if(value instanceof Period)
+						result = new MentionDate(startPos, endPos, source, valueStr, (Period)value);
+					break;
+			}
 		}
+		
+		return result;
 	}
+	
+//	/**
+//	 * For testing purposes.
+//	 * 
+//	 * @param args
+//	 * 		None needed.
+//	 */
+//	public static void main(String[] args)
+//	{	int startPos = 10;
+//		String valuesStr[] = 
+//		{	"Test",
+//			"Test et retest",
+//			" Test et retest",
+//			".Test et retest",
+//			"Test et retest ",
+//			"Test et retest.",
+//			" Test et retest ",
+//			".Test et retest.",
+//			" Test et retest.",
+//			".Test et retest ",
+//			"  Test et retest  ",
+//			".!Test et retest,;",
+//			". Test et retest ;"
+//		};
+//		for(String valueStr: valuesStr)
+//		{	int endPos = startPos + valueStr.length();
+//			AbstractMention<?> mention = build(EntityType.PERSON, startPos, endPos, ProcessorName.STANFORD, valueStr); 
+//			mention.correctMentionSpan();
+//			System.out.println("\""+valueStr + "\"\t\t>>\t\t" + mention);
+//		}
+//	}
 	
 	/////////////////////////////////////////////////////////////////
 	// VALUE			/////////////////////////////////////////////
