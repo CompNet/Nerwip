@@ -120,6 +120,16 @@ public class DateParser
 		return result;
 	}
 	
+	/////////////////////////////////////////////////////////////////
+	// QUALIFIERS		 	/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Represents the "early" qualifier */
+	private static final String QUALIFIER_EARLY = "early";
+	/** Represents the "mid" qualifier */
+	private static final String QUALIFIER_MID = "mid";
+	/** Represents the "late" qualifier */
+	private static final String QUALIFIER_LATE = "late";
+	
 	/**
 	 * Convert a month qualifier to the appropriate pair of dates.
 	 * 
@@ -128,12 +138,13 @@ public class DateParser
 	 * @param month
 	 * 		Considered month.
 	 * @param year
-	 * 		Considered year, or -1 if unknown.
+	 * 		Considered year, or 0 if unknown.
 	 * @return
 	 * 		The corresponding pair of dates.
 	 */
 	private static int[] parseQualifier(String qualifier, int month, int year)
 	{	int result[] = new int[2];
+		
 		if(qualifier.equals(QUALIFIER_EARLY))
 		{	result[0] = 1;
 			result[1] = 10;
@@ -144,7 +155,7 @@ public class DateParser
 		}
 		else if(qualifier.equals(QUALIFIER_LATE))
 		{	result[0] = 21;
-			if(year==-1)
+			if(year==0)
 			{	if(month==2)
 					result[1] = 28;
 				else if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)
@@ -156,6 +167,119 @@ public class DateParser
 			{	YearMonth ym = YearMonth.of(year, month);
 				result[1] = ym.lengthOfMonth();
 			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Convert a decade qualifier to the appropriate pair of dates.
+	 * 
+	 * @param qualifier
+	 * 		String representing a decade qualifier (early, mid, late).
+	 * @param decade
+	 * 		Considered decade.
+	 * @return
+	 * 		The corresponding pair of dates.
+	 */
+	private static Date[] parseQualifier(String qualifier, int decade)
+	{	Date result[] = new Date[2];
+		
+		if(qualifier.equals(QUALIFIER_EARLY))
+		{	result[0] = new Date(1,1,decade);
+			result[1] = new Date(31,12,decade+2);
+		}
+		else if(qualifier.equals(QUALIFIER_MID))
+		{	result[0] = new Date(1,1,decade+3);
+			result[1] = new Date(31,12,decade+6);
+		}
+		else if(qualifier.equals(QUALIFIER_LATE))
+		{	result[0] = new Date(1,1,decade+7);
+			result[1] = new Date(31,12,decade+9);
+		}
+		
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// MISC				 	/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Convert a special day description to the appropriate pair of dates.
+	 * 
+	 * @param special
+	 * 		String representing a special day (Christmas, May day, etc).
+	 * @param year
+	 * 		Considered year (or 0 if unknown).
+	 * @return
+	 * 		The corresponding pair of dates.
+	 */
+	private static Date[] parseSpecialDay(String special, int year)
+	{	Date result[] = new Date[2];
+		
+		if(special.equals("may day"))
+		{	result[0] = new Date(1,5,year);
+			result[1] = new Date(1,5,year);
+		}
+		else if(special.startsWith("christmas") || special.startsWith("x-mas") || special.startsWith("xmas"))
+		{	result[0] = new Date(25,12,year);
+			result[1] = new Date(25,12,year);
+		}
+		else if(special.equals("new year's day"))
+		{	result[0] = new Date(1,1,year);
+			result[1] = new Date(1,1,year);
+		}
+		else if(special.equals("new year's eve"))
+		{	result[0] = new Date(31,12,year);
+			result[1] = new Date(31,12,year);
+		}
+		else if(special.equals("9/11"))
+		{	result[0] = new Date(11,9,2001);
+			result[1] = new Date(11,9,2001);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Convert a century to the appropriate pair of dates.
+	 * 
+	 * @param special
+	 * 		String representing a century.
+	 * @return
+	 * 		The corresponding pair of dates.
+	 */
+	private static Date[] parseCentury(String special)
+	{	Date result[] = new Date[2];
+		int year = 0;
+		if(special.startsWith("tenth") || special.startsWith("10"))
+			year = 900;
+		else if(special.startsWith("eleventh") || special.startsWith("11"))
+			year = 1000;
+		else if(special.startsWith("twelfth") || special.startsWith("12"))
+			year = 1100;
+		else if(special.startsWith("thirteenth") || special.startsWith("13"))
+			year = 1200;
+		else if(special.startsWith("fourteenth") || special.startsWith("14"))
+			year = 1300;
+		else if(special.startsWith("fifteenth") || special.startsWith("15"))
+			year = 1400;
+		else if(special.startsWith("sixteenth") || special.startsWith("16"))
+			year = 1500;
+		else if(special.startsWith("seventeenth") || special.startsWith("17"))
+			year = 1600;
+		else if(special.startsWith("eighteenth") || special.startsWith("18"))
+			year = 1700;
+		else if(special.startsWith("nineteenth") || special.startsWith("19"))
+			year = 1800;
+		else if(special.startsWith("twentieth") || special.startsWith("20"))
+			year = 1900;
+		else if(special.startsWith("twenty") || special.startsWith("21"))
+			year = 2000;
+		
+		if(year!=0)
+		{	result[0] = new Date(1,1,year);
+			result[1] = new Date(31,12,year+99);
 		}
 		
 		return result;
@@ -180,14 +304,8 @@ public class DateParser
 	private static final String GROUP_YEAR = "year";
 	
 	/////////////////////////////////////////////////////////////////
-	// PATTERNS		 		/////////////////////////////////////////
+	// EXPRESSIONS	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Represents the "early" qualifier */
-	private static final String QUALIFIER_EARLY = "early";
-	/** Represents the "mid" qualifier */
-	private static final String QUALIFIER_MID = "mid";
-	/** Represents the "late" qualifier */
-	private static final String QUALIFIER_LATE = "late";
 	/** Represents various forms of hyphens (or equivalent characters) */
 	private static final String EXPR_HYPHEN = "(-|–|/)";
 	/** Qualifies a following date */
@@ -222,11 +340,14 @@ public class DateParser
 	/** Represents an anniversary, of the form 40th anniversary */
 	private static final String EXPR_ANNIVERSARY_SHORT = "((\\d*(0th|1st|2nd|3rd|[4-9]th))( |"+EXPR_HYPHEN+")anniversary)";
 	/** Represents special days such as religious fests, etc. */
-	private static final String EXPR_SPECIAL_DAY ="((may day)|((christ|x-?)mas day)|(new year's (day|eve))|(9/11))";
+	private static final String EXPR_SPECIAL_DAY ="((may day)|((christ|x-?)mas( day)?)|(new year's (day|eve))|(9/11))";
 	
+	/////////////////////////////////////////////////////////////////
+	// PATTERNS		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	/** List of patterns used to detect dates based on the previous regexps */
 	private static final List<DatePattern> PATTERNS = Arrays.asList(
-		// "late May, 2010" or "late May 2010" or "late may, 2010" or "late may 2010"
+		// "late may, 2010" or "late may 2010"
 		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG+",? "+EXPR_YEAR_FULL+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
@@ -246,19 +367,40 @@ public class DateParser
 				return result;
 			}
 		},
-		// "late April of 1968" or "april of 1968"
+		// "late april of 1968"
 		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG+" of "+EXPR_YEAR_FULL+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH);
+				int month = parseMonth(monthStr);
+				// days
+				String qualif = matcher.group(GROUP_QUALIFIER);
+				int days[] = parseQualifier(qualif,month,year);
+				// result
+				Date startDate = new Date(days[0],month,year);
+				Date endDate = new Date(days[1],month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
-		// "late April" or "april"
+		// "late april"
 		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH);
+				int month = parseMonth(monthStr);
+				// days
+				String qualif = matcher.group(GROUP_QUALIFIER);
+				int days[] = parseQualifier(qualif,month,0);
+				// result
+				Date startDate = new Date(days[0],month,0);
+				Date endDate = new Date(days[1],month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
@@ -267,7 +409,15 @@ public class DateParser
 		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_DECADE_FULL+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// decade
+				String decadeStr = matcher.group(GROUP_DECADE);
+				decadeStr = decadeStr.substring(0,decadeStr.length()-1);
+				int decade = Integer.parseInt(decadeStr);
+				// qualifier
+				String qualif = matcher.group(GROUP_QUALIFIER);
+				Date dates[] = parseQualifier(qualif,decade);
+				// result
+				Period result = new Period(dates[0],dates[1]);
 				return result;
 			}
 		},
@@ -275,7 +425,17 @@ public class DateParser
 		new DatePattern("\\b"+EXPR_QUALIFIER+"'?"+EXPR_DECADE_SHORT+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// decade
+				String decadeStr = matcher.group(GROUP_DECADE);
+				decadeStr = decadeStr.substring(0,decadeStr.length()-1);
+				int decade = Integer.parseInt(decadeStr);
+				if(decade<100)
+					decade = decade + 1900;
+				// qualifier
+				String qualif = matcher.group(GROUP_QUALIFIER);
+				Date dates[] = parseQualifier(qualif,decade);
+				// result
+				Period result = new Period(dates[0],dates[1]);
 				return result;
 			}
 		},
@@ -284,14 +444,26 @@ public class DateParser
 		new DatePattern("\\b"+EXPR_SPECIAL_DAY+" "+EXPR_YEAR_FULL+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	return null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR);
+				int year = Integer.parseInt(yearStr);
+				// special day
+				String special = matcher.group(GROUP_QUALIFIER);
+				Date dates[] = parseSpecialDay(special,year);
+				// result
+				Period result = new Period(dates[0],dates[1]);
+				return result;
 			}
 		},
 		// "May Day"
 		new DatePattern("\\b"+EXPR_SPECIAL_DAY)
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// special day
+				String special = matcher.group(GROUP_QUALIFIER);
+				Date dates[] = parseSpecialDay(special,0);
+				// result
+				Period result = new Period(dates[0],dates[1]);
 				return result;
 			}
 		},
@@ -300,7 +472,11 @@ public class DateParser
 		new DatePattern("\\b"+EXPR_CENTURY_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// century
+				String century = matcher.group(GROUP_CENTURY);
+				Date dates[] = parseCentury(century);
+				// result
+				Period result = new Period(dates[0],dates[1]);
 				return result;
 			}
 		},
@@ -308,7 +484,11 @@ public class DateParser
 		new DatePattern("\\b"+EXPR_CENTURY_SHORT+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// century
+				String century = matcher.group(GROUP_CENTURY);
+				Date dates[] = parseCentury(century);
+				// result
+				Period result = new Period(dates[0],dates[1]);
 				return result;
 			}
 		},
