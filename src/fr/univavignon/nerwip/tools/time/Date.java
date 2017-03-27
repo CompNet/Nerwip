@@ -21,12 +21,8 @@ package fr.univavignon.nerwip.tools.time;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Represents a possibly partial date,
@@ -119,8 +115,8 @@ public class Date implements Comparable<Date>
 	/////////////////////////////////////////////////////////////////
 	// MONTH			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** List of month names in English */
-	private static final List<String> MONTHS = Arrays.asList("january","february","march","april","may","june","july","august","september","october","november","december");
+//	/** List of month names in English */
+//	private static final List<String> MONTHS = Arrays.asList("january","february","march","april","may","june","july","august","september","october","november","december");
 	/** Number of the month in the year (starting from 1) */
 	private int month = 0;
 	

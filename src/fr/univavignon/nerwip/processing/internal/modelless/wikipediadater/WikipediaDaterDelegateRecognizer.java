@@ -177,12 +177,12 @@ public class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalD
 	private static final String EXPR_CENTURY_SHORT = "((((1\\d|20)th)|21st)( |"+EXPR_HYPHEN+")century)";
 	/** Represents an anniversary, of the form 40th anniversary */
 	private static final String EXPR_ANNIVERSARY_SHORT = "((\\d*(0th|1st|2nd|3rd|[4-9]th))( |"+EXPR_HYPHEN+")(a|A)nniversary)";
-	/** Represents special days such as regligious fests, etc. */
-	private static final String EXPR_SPECIAL_DAY ="(((M|)ay (D|d)ay)|((C|c)hristmas (D|d)ay)|((N|n)ew (Y|y)ear's (D|d)ay)|(9/11))";
+	/** Represents special days such as religious fests, etc. */
+	private static final String EXPR_SPECIAL_DAY ="(((M|m)ay (D|d)ay)|((C|c)hristmas (D|d)ay)|((N|n)ew (Y|y)ear's (D|d)ay)|(9/11))";
 	
 	/** List of patterns used to detect dates based on the previous regexps */
 	private static final List<Pattern> PATTERNS = Arrays.asList(
-		// "late May, 2010" or "late May 2010" or "late may, 2010" or "late may 2010" or
+		// "late May, 2010" or "late May 2010" or "late may, 2010" or "late may 2010"
 		Pattern.compile("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG_BOTH+",? "+EXPR_YEAR_FULL+"\\b"),
 		// "late April of 1968" or "april of 1968"
 		Pattern.compile("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG_BOTH+" of "+EXPR_YEAR_FULL+"\\b"),
