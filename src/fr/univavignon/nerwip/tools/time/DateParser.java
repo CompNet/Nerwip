@@ -285,6 +285,47 @@ public class DateParser
 		return result;
 	}
 	
+	/**
+	 * Parse a string representing a day in an ordinal
+	 * form (1st, 2nd, etc.).
+	 * 
+	 * @param dayStr
+	 * 		String ordinal representation of the day.
+	 * @return
+	 * 		Integer representation of the day.
+	 */
+	private static int parseOrdinalDay(String dayStr)
+	{	int result = 0;
+		dayStr = dayStr.substring(0,2);
+		try
+		{	result = Integer.parseInt(dayStr);
+		}
+		catch(NumberFormatException e)
+		{	dayStr = dayStr.substring(0,1);
+			result = Integer.parseInt(dayStr);
+		}
+		return result;
+	}
+	
+	/**
+	 * Parse a string representing a decade (90s)
+	 * and returns the corresponding numerical value.
+	 * 
+	 * @param decadeStr
+	 * 		String representation of the decade
+	 * @return
+	 * 		Integer representation of the decade.
+	 */
+	private static int parseDecade(String decadeStr)
+	{	// we just remove the "s" and parse
+		decadeStr = decadeStr.substring(0,decadeStr.length()-1);
+		int result = Integer.parseInt(decadeStr);
+		// possible adds the century
+		if(result<100)
+			result = result + 1900;
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// REGEX GROUPS		 	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -296,12 +337,16 @@ public class DateParser
 	private static final String GROUP_DAY2 = "day2";
 	/** Name of the group corresponding to the decade in the regex pattern */
 	private static final String GROUP_DECADE = "decade";
-	/** Name of the group corresponding to the month in the regex pattern */
-	private static final String GROUP_MONTH = "month";
+	/** Name of the group corresponding to the first month (or only) in the regex pattern */
+	private static final String GROUP_MONTH1 = "month1";
+	/** Name of the group corresponding to the second month in the regex pattern */
+	private static final String GROUP_MONTH2 = "month2";
 	/** Name of the group corresponding to the qualifier in the regex pattern */
 	private static final String GROUP_QUALIFIER = "qualifier";
-	/** Name of the group corresponding to the year in the regex pattern */
-	private static final String GROUP_YEAR = "year";
+	/** Name of the group corresponding to the first (or only) year in the regex pattern */
+	private static final String GROUP_YEAR1 = "year1";
+	/** Name of the group corresponding to the second year in the regex pattern */
+	private static final String GROUP_YEAR2 = "year2";
 	
 	/////////////////////////////////////////////////////////////////
 	// EXPRESSIONS	 		/////////////////////////////////////////
@@ -311,20 +356,23 @@ public class DateParser
 	/** Qualifies a following date */
 	private static final String EXPR_QUALIFIER = "((?<"+GROUP_QUALIFIER+">"+QUALIFIER_EARLY+"|"+QUALIFIER_MID+"|"+QUALIFIER_LATE+")("+EXPR_HYPHEN+"| ))";
 	/** Represents a year of the form 1981 */
-	private static final String EXPR_YEAR_FULL = "(?<"+GROUP_YEAR+">(1\\d{3})|(20\\d{2}))";
+	private static final String EXPR_YEAR_FULL1 = "(?<"+GROUP_YEAR1+">(1\\d{3})|(20\\d{2}))";
 	/** Represents a year of the form 77 */
-	private static final String EXPR_YEAR_SHORT = "(?<"+GROUP_YEAR+">\\d{2})";
+	private static final String EXPR_YEAR_SHORT1 = "(?<"+GROUP_YEAR1+">\\d{2})";
+	/** Represents a year of the form 77 */
+	private static final String EXPR_YEAR_SHORT2 = "(?<"+GROUP_YEAR2+">\\d{2})";
 	/** Represents a decade of the form 1990s */
 	private static final String EXPR_DECADE_FULL = "(?<"+GROUP_DECADE+">(1\\d|20)\\d0s)";
 	/** Represents a decade of the form 90s */
 	private static final String EXPR_DECADE_SHORT = "(?<"+GROUP_DECADE+">\\d0s)";
 	/** Represents a month of the form January */
-	private static final String EXPR_MONTH_LONG = "(?<"+GROUP_MONTH+">"+printList(MONTH_LONG)+")";
+	private static final String EXPR_MONTH1_LONG = "(?<"+GROUP_MONTH1+">"+printList(MONTH_LONG)+")";
+	/** Represents a month of the form January */
+	private static final String EXPR_MONTH2_LONG = "(?<"+GROUP_MONTH2+">"+printList(MONTH_LONG)+")";
 	/** Represents a month of the form jan */
-	private static final String EXPR_MONTH_SHORT = "(?<"+GROUP_MONTH+">"+printList(MONTH_SHORT)+")";
-	/** Represents a month of the form 01 */
-	@SuppressWarnings("unused")
-	private static final String EXPR_MONTH_INT = "(?<"+GROUP_MONTH+">(0?\\d)|(1(0|1|2))";
+	private static final String EXPR_MONTH1_SHORT = "(?<"+GROUP_MONTH1+">"+printList(MONTH_SHORT)+")";
+	/** Represents a month of the form jan */
+	private static final String EXPR_MONTH2_SHORT = "(?<"+GROUP_MONTH2+">"+printList(MONTH_SHORT)+")";
 	/** Represents a day of the form 31 */
 	private static final String EXPR_DAY_INT_BASE = "((0|1|2)?\\d)|30|31";
 	/** Represents a day of the form 31 */
@@ -348,14 +396,14 @@ public class DateParser
 	/** List of patterns used to detect dates based on the previous regexps */
 	private static final List<DatePattern> PATTERNS = Arrays.asList(
 		// "late may, 2010" or "late may 2010"
-		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH1_LONG+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
 			{	// year
-				String yearStr = matcher.group(GROUP_YEAR);
+				String yearStr = matcher.group(GROUP_YEAR1);
 				int year = Integer.parseInt(yearStr);
 				// month
-				String monthStr = matcher.group(GROUP_MONTH);
+				String monthStr = matcher.group(GROUP_MONTH1);
 				int month = parseMonth(monthStr);
 				// days
 				String qualif = matcher.group(GROUP_QUALIFIER);
@@ -368,14 +416,14 @@ public class DateParser
 			}
 		},
 		// "late april of 1968"
-		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG+" of "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH1_LONG+" of "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
 			{	// year
-				String yearStr = matcher.group(GROUP_YEAR);
+				String yearStr = matcher.group(GROUP_YEAR1);
 				int year = Integer.parseInt(yearStr);
 				// month
-				String monthStr = matcher.group(GROUP_MONTH);
+				String monthStr = matcher.group(GROUP_MONTH1);
 				int month = parseMonth(monthStr);
 				// days
 				String qualif = matcher.group(GROUP_QUALIFIER);
@@ -388,11 +436,11 @@ public class DateParser
 			}
 		},
 		// "late april"
-		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH_LONG+"\\b")
+		new DatePattern("\\b"+EXPR_QUALIFIER+EXPR_MONTH1_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
 			{	// month
-				String monthStr = matcher.group(GROUP_MONTH);
+				String monthStr = matcher.group(GROUP_MONTH1);
 				int month = parseMonth(monthStr);
 				// days
 				String qualif = matcher.group(GROUP_QUALIFIER);
@@ -411,8 +459,7 @@ public class DateParser
 			public Period extractDate(String text, Matcher matcher)
 			{	// decade
 				String decadeStr = matcher.group(GROUP_DECADE);
-				decadeStr = decadeStr.substring(0,decadeStr.length()-1);
-				int decade = Integer.parseInt(decadeStr);
+				int decade = parseDecade(decadeStr);
 				// qualifier
 				String qualif = matcher.group(GROUP_QUALIFIER);
 				Date dates[] = parseQualifier(qualif,decade);
@@ -427,10 +474,7 @@ public class DateParser
 			public Period extractDate(String text, Matcher matcher)
 			{	// decade
 				String decadeStr = matcher.group(GROUP_DECADE);
-				decadeStr = decadeStr.substring(0,decadeStr.length()-1);
-				int decade = Integer.parseInt(decadeStr);
-				if(decade<100)
-					decade = decade + 1900;
+				int decade = parseDecade(decadeStr);
 				// qualifier
 				String qualif = matcher.group(GROUP_QUALIFIER);
 				Date dates[] = parseQualifier(qualif,decade);
@@ -441,11 +485,11 @@ public class DateParser
 		},
 		
 		// "May Day 2001"
-		new DatePattern("\\b"+EXPR_SPECIAL_DAY+" "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_SPECIAL_DAY+" "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
 			{	// year
-				String yearStr = matcher.group(GROUP_YEAR);
+				String yearStr = matcher.group(GROUP_YEAR1);
 				int year = Integer.parseInt(yearStr);
 				// special day
 				String special = matcher.group(GROUP_QUALIFIER);
@@ -503,201 +547,475 @@ public class DateParser
 		},
 		
 		// "18-20 April 1889" or "18-20 April, 1889" or "18-20 april 1889" or "18-20 april, 1889" 
-		new DatePattern("\\b"+EXPR_DAY1_INT+EXPR_HYPHEN+EXPR_DAY2_INT+" "+EXPR_MONTH_LONG+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+EXPR_HYPHEN+EXPR_DAY2_INT+" "+EXPR_MONTH1_LONG+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// start day
+				String startDayStr = matcher.group(GROUP_DAY1);
+				int startDay = Integer.parseInt(startDayStr);
+				// end day
+				String endDayStr = matcher.group(GROUP_DAY2);
+				int endDay = Integer.parseInt(endDayStr);
+				// result
+				Date startDate = new Date(startDay,month,year);
+				Date endDate = new Date(endDay,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "4-6 October" or "4-6 october"
-		new DatePattern("\\b"+EXPR_DAY1_INT+EXPR_HYPHEN+EXPR_DAY2_INT+" "+EXPR_MONTH_LONG+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+EXPR_HYPHEN+EXPR_DAY2_INT+" "+EXPR_MONTH1_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// start day
+				String startDayStr = matcher.group(GROUP_DAY1);
+				int startDay = Integer.parseInt(startDayStr);
+				// end day
+				String endDayStr = matcher.group(GROUP_DAY2);
+				int endDay = Integer.parseInt(endDayStr);
+				// result
+				Date startDate = new Date(startDay,month,0);
+				Date endDate = new Date(endDay,month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "12 to 21 August, 2013" or "12 to 21 august, 2013" or "12 to 21 August 2013" or "12 to 21 august 2013"
-		new DatePattern("\\b"+EXPR_DAY1_INT+" to "+EXPR_DAY2_INT+" "+EXPR_MONTH_LONG+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+" to "+EXPR_DAY2_INT+" "+EXPR_MONTH1_LONG+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// start day
+				String startDayStr = matcher.group(GROUP_DAY1);
+				int startDay = Integer.parseInt(startDayStr);
+				// end day
+				String endDayStr = matcher.group(GROUP_DAY2);
+				int endDay = Integer.parseInt(endDayStr);
+				// result
+				Date startDate = new Date(startDay,month,year);
+				Date endDate = new Date(endDay,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "12 to 21 August" or "12 to 21 august"
-		new DatePattern("\\b"+EXPR_DAY1_INT+" to "+EXPR_DAY2_INT+" "+EXPR_MONTH_LONG+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+" to "+EXPR_DAY2_INT+" "+EXPR_MONTH1_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// start day
+				String startDayStr = matcher.group(GROUP_DAY1);
+				int startDay = Integer.parseInt(startDayStr);
+				// end day
+				String endDayStr = matcher.group(GROUP_DAY2);
+				int endDay = Integer.parseInt(endDayStr);
+				// result
+				Date startDate = new Date(startDay,month,0);
+				Date endDate = new Date(endDay,month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		
 		// "20 April 1889" or "20 April, 1889" or "20 april 1889" or "20 april, 1889" 
-		new DatePattern("\\b"+EXPR_DAY1_INT+" "+EXPR_MONTH_LONG+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+" "+EXPR_MONTH1_LONG+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "5 Sep 1887" or "5 sep 1887"
-		new DatePattern("\\b"+EXPR_DAY1_INT+" "+EXPR_MONTH_SHORT+" "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+" "+EXPR_MONTH1_SHORT+" "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "4 of October, 1975" or "4 of october, 1975" or "4 of October 1975" or "4 of october 1975"
-		new DatePattern("\\b"+EXPR_DAY1_INT+" of "+EXPR_MONTH_LONG+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+" of "+EXPR_MONTH1_LONG+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "6 October" or "6 october"
-		new DatePattern("\\b"+EXPR_DAY1_INT+" "+EXPR_MONTH_LONG+"\\b")
+		new DatePattern("\\b"+EXPR_DAY1_INT+" "+EXPR_MONTH1_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,0);
+				Date endDate = new Date(day,month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		
 		// "10th of April 2004" or "10th of april 2004"
-		new DatePattern("\\b"+EXPR_DAY_ORDINAL+" of "+EXPR_MONTH_LONG+" "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_DAY_ORDINAL+" of "+EXPR_MONTH1_LONG+" "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = parseOrdinalDay(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "10th of April" or "10th of april"
-		new DatePattern("\\b"+EXPR_DAY_ORDINAL+" of "+EXPR_MONTH_LONG+"\\b")
+		new DatePattern("\\b"+EXPR_DAY_ORDINAL+" of "+EXPR_MONTH1_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = parseOrdinalDay(dayStr);
+				// result
+				Date startDate = new Date(day,month,0);
+				Date endDate = new Date(day,month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		
 		// "October 25–26, 1821" or "october 25–26, 1821" or "October 25–26 1821" or "october 25–26 1821"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" "+EXPR_DAY1_INT+EXPR_HYPHEN+EXPR_DAY2_INT+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" "+EXPR_DAY1_INT+EXPR_HYPHEN+EXPR_DAY2_INT+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
-				return result;
-			}
-		},
-		// "October 25–26, 1821" or "october 25–26, 1821" or "October 25–26 1821" or "october 25–26 1821"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" "+EXPR_DAY1_INT+EXPR_HYPHEN+EXPR_DAY2_INT+",? "+EXPR_YEAR_FULL+"\\b")
-		{	@Override
-			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// start day
+				String startDayStr = matcher.group(GROUP_DAY1);
+				int startDay = Integer.parseInt(startDayStr);
+				// end day
+				String endDayStr = matcher.group(GROUP_DAY2);
+				int endDay = Integer.parseInt(endDayStr);
+				// result
+				Date startDate = new Date(startDay,month,year);
+				Date endDate = new Date(endDay,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "March 6 and 8, 1918" or "march 6 and 8, 1918" or "March 6 and 8 1918" or "march 6 and 8 1918"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" "+EXPR_DAY1_INT+" and "+EXPR_DAY2_INT+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" "+EXPR_DAY1_INT+" and "+EXPR_DAY2_INT+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// start day
+				String startDayStr = matcher.group(GROUP_DAY1);
+				int startDay = Integer.parseInt(startDayStr);
+				// end day
+				String endDayStr = matcher.group(GROUP_DAY2);
+				int endDay = Integer.parseInt(endDayStr);
+				// result
+				Date startDate = new Date(startDay,month,year);
+				Date endDate = new Date(endDay,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		
 		// "May 30, 1914" or "may 30, 1914" or "May 30 1914" or "may 30 1914"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" "+EXPR_DAY1_INT+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" "+EXPR_DAY1_INT+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "December 4 of 1922" or "december 4 of 1922"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" "+EXPR_DAY1_INT+" of "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" "+EXPR_DAY1_INT+" of "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "December 9th 2010" or "december 9th 2010" or "December 9th, 2010" or "december 9th, 2010"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" "+EXPR_DAY_ORDINAL+",? "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" "+EXPR_DAY_ORDINAL+",? "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = parseOrdinalDay(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "February the 20th of 2010" or "february the 20th of 2010"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" the "+EXPR_DAY_ORDINAL+" of "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" the "+EXPR_DAY_ORDINAL+" of "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = parseOrdinalDay(dayStr);
+				// result
+				Date startDate = new Date(day,month,year);
+				Date endDate = new Date(day,month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "October 6" or "october 6"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" "+EXPR_DAY1_INT+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" "+EXPR_DAY1_INT+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,0);
+				Date endDate = new Date(day,month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		
-		// "October, 1926" or "October 1926" or "october, 1926" or "october 1926"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+",? "+EXPR_YEAR_FULL+"\\b")
+		// "September-December 1996" or "september-december 1996" or "September-december 1996" or "september-December 1996"
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+EXPR_HYPHEN+EXPR_MONTH2_LONG+" "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// start month
+				String startMonthStr = matcher.group(GROUP_MONTH1);
+				int startMonth = parseMonth(startMonthStr);
+				// end month
+				String endMonthStr = matcher.group(GROUP_MONTH2);
+				int endMonth = parseMonth(endMonthStr);
+				// result
+				Date startDate = new Date(startMonth,year);
+				Date endDate = new Date(endMonth,year);
+				Period result = new Period(startDate,endDate);
+				return result;
+			}
+		},
+		// "October, 1926" or "October 1926" or "october, 1926" or "october 1926"
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+",? "+EXPR_YEAR_FULL1+"\\b")
+		{	@Override
+			public Period extractDate(String text, Matcher matcher)
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// day
+				String dayStr = matcher.group(GROUP_DAY1);
+				int day = Integer.parseInt(dayStr);
+				// result
+				Date startDate = new Date(day,month,0);
+				Date endDate = new Date(day,month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "April of 1968" or "april of 1968"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+" of "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+" of "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// result
+				Date startDate = new Date(month,year);
+				Date endDate = new Date(month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "April"
-		new DatePattern("\\b"+EXPR_MONTH_LONG+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_LONG+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// result
+				Date startDate = new Date(month,0);
+				Date endDate = new Date(month,0);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		
 		// "Sep-Dec 1996" or "sep-dec 1996" or "Sep-dec 1996" or "sep-Dec 1996"
-		new DatePattern("\\b"+EXPR_MONTH_SHORT+EXPR_HYPHEN+EXPR_MONTH_SHORT+" "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_SHORT+EXPR_HYPHEN+EXPR_MONTH2_SHORT+" "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// start month
+				String startMonthStr = matcher.group(GROUP_MONTH1);
+				int startMonth = parseMonth(startMonthStr);
+				// end month
+				String endMonthStr = matcher.group(GROUP_MONTH2);
+				int endMonth = parseMonth(endMonthStr);
+				// result
+				Date startDate = new Date(startMonth,year);
+				Date endDate = new Date(endMonth,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "Dec 1996" or "dec 1996"
-		new DatePattern("\\b"+EXPR_MONTH_SHORT+" "+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_MONTH1_SHORT+" "+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// month
+				String monthStr = matcher.group(GROUP_MONTH1);
+				int month = parseMonth(monthStr);
+				// result
+				Date startDate = new Date(month,year);
+				Date endDate = new Date(month,year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		
 		// "from 2002 to 06"
-		new DatePattern("\\bfrom "+EXPR_YEAR_FULL+" to "+EXPR_YEAR_SHORT+"\\b")
+		new DatePattern("\\bfrom "+EXPR_YEAR_FULL1+" to "+EXPR_YEAR_SHORT2+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// start year
+				String startYearStr = matcher.group(GROUP_YEAR1);
+				int startYear = Integer.parseInt(startYearStr);
+				// end year
+				String endYearStr = matcher.group(GROUP_YEAR2);
+				int endYear = Integer.parseInt(endYearStr);
+				endYear = endYear + (startYear/100)*100;
+				// result
+				Date startDate = new Date(startYear);
+				Date endDate = new Date(endYear);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
@@ -706,31 +1024,63 @@ public class DateParser
 		new DatePattern("\\b"+EXPR_DECADE_FULL+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// decade
+				String decadeStr = matcher.group(GROUP_DECADE);
+				int decade = parseDecade(decadeStr);
+				// result
+				Date startDate = new Date(decade);
+				Date endDate = new Date(decade+9);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "1977-85"
-		new DatePattern("\\b"+EXPR_YEAR_FULL+EXPR_HYPHEN+EXPR_YEAR_SHORT+"\\b")
+		new DatePattern("\\b"+EXPR_YEAR_FULL1+EXPR_HYPHEN+EXPR_YEAR_SHORT2+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// start year
+				String startYearStr = matcher.group(GROUP_YEAR1);
+				int startYear = Integer.parseInt(startYearStr);
+				// end year
+				String endYearStr = matcher.group(GROUP_YEAR2);
+				int endYear = Integer.parseInt(endYearStr);
+				endYear = endYear + (startYear/100)*100;
+				// result
+				Date startDate = new Date(startYear);
+				Date endDate = new Date(endYear);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "2002-3"
-		new DatePattern("\\b"+EXPR_YEAR_FULL+EXPR_HYPHEN+"\\d\\b")
+		new DatePattern("\\b"+EXPR_YEAR_FULL1+EXPR_HYPHEN+"(?<"+GROUP_YEAR2+">\\d)\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// start year
+				String startYearStr = matcher.group(GROUP_YEAR1);
+				int startYear = Integer.parseInt(startYearStr);
+				// end year
+				String endYearStr = matcher.group(GROUP_YEAR2);
+				int endYear = Integer.parseInt(endYearStr);
+				endYear = endYear + (startYear/10)*10;
+				// result
+				Date startDate = new Date(startYear);
+				Date endDate = new Date(endYear);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "2010"
-		new DatePattern("\\b"+EXPR_YEAR_FULL+"\\b")
+		new DatePattern("\\b"+EXPR_YEAR_FULL1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				// result
+				Date startDate = new Date(year);
+				Date endDate = new Date(year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
@@ -739,15 +1089,28 @@ public class DateParser
 		new DatePattern("(\\b|')"+EXPR_DECADE_SHORT+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// decade
+				String decadeStr = matcher.group(GROUP_DECADE);
+				int decade = parseDecade(decadeStr);
+				// result
+				Date startDate = new Date(decade);
+				Date endDate = new Date(decade+9);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		},
 		// "'83"
-		new DatePattern("'"+EXPR_YEAR_SHORT+"\\b")
+		new DatePattern("'"+EXPR_YEAR_SHORT1+"\\b")
 		{	@Override
 			public Period extractDate(String text, Matcher matcher)
-			{	Period result = null;
+			{	// year
+				String yearStr = matcher.group(GROUP_YEAR1);
+				int year = Integer.parseInt(yearStr);
+				year = year + 1900;
+				// result
+				Date startDate = new Date(year);
+				Date endDate = new Date(year);
+				Period result = new Period(startDate,endDate);
 				return result;
 			}
 		}

@@ -232,8 +232,6 @@ public class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalD
 		
 		// "October 25–26, 1821" or "october 25–26, 1821" or "October 25–26 1821" or "october 25–26 1821"
 		Pattern.compile("\\b"+EXPR_MONTH_LONG_BOTH+" "+EXPR_DAY_INT+EXPR_HYPHEN+EXPR_DAY_INT+",? "+EXPR_YEAR_FULL+"\\b"),
-		// "October 25–26, 1821" or "october 25–26, 1821" or "October 25–26 1821" or "october 25–26 1821"
-		Pattern.compile("\\b"+EXPR_MONTH_LONG_BOTH+" "+EXPR_DAY_INT+EXPR_HYPHEN+EXPR_DAY_INT+",? "+EXPR_YEAR_FULL+"\\b"),
 		// "March 6 and 8, 1918" or "march 6 and 8, 1918" or "March 6 and 8 1918" or "march 6 and 8 1918"
 		Pattern.compile("\\b"+EXPR_MONTH_LONG_BOTH+" "+EXPR_DAY_INT+" and "+EXPR_DAY_INT+",? "+EXPR_YEAR_FULL+"\\b"),
 		
@@ -248,6 +246,8 @@ public class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalD
 		// "October 6" or "october 6"
 		Pattern.compile("\\b"+EXPR_MONTH_LONG_BOTH+" "+EXPR_DAY_INT+"\\b"),
 		
+		// "September-December 1996" or "september-december 1996" or "September-december 1996" or "september-December 1996"
+		Pattern.compile("\\b"+EXPR_MONTH_LONG_BOTH+EXPR_HYPHEN+EXPR_MONTH_LONG_BOTH+" "+EXPR_YEAR_FULL+"\\b"),
 		// "October, 1926" or "October 1926" or "october, 1926" or "october 1926"
 		Pattern.compile("\\b"+EXPR_MONTH_LONG_BOTH+",? "+EXPR_YEAR_FULL+"\\b"),
 		// "April of 1968" or "april of 1968"
