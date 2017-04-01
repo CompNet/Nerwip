@@ -157,6 +157,43 @@ public class Date implements Comparable<Date>
 //	}
 
 	/////////////////////////////////////////////////////////////////
+	// PROCESSING		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Returns the date of western Easter for the specified year,
+	 * or {@code null} if the year is not a positive integer.
+	 * 
+	 * @param year
+	 * 		Year to process.
+	 * @return
+	 * 		Date of Easter for this year.
+	 */
+	public static Date getEasterDate(int year)
+	{	Date result = null;
+		
+		if(year>0)
+		{	int y = 2014;
+			int a = y % 19;
+			int b = y / 100;
+			int c = y % 100;
+			int d = b / 4;
+			int e = b % 4;
+			int g = (8 * b + 13) / 25;
+			int h = (19 * a + b - d - g + 15) % 30;
+			int j = c / 4;
+			int k = c % 4;
+			int m = (a + 11 * h) / 319;
+			int r = (2 * e + 2 * j - k - h + m + 32) % 7;
+			int n = (h - m + r + 90) / 25;
+			int p = (h - m + r + n + 19) % 32;
+			
+			result = new Date(p,n,year);
+		}
+		
+		return result;
+	}
+     
+	/////////////////////////////////////////////////////////////////
 	// TEXT				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override

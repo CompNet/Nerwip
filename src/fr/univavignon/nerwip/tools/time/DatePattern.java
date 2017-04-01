@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class overrode on the fly in {@link DateParser}.
+ * Class overrode on the fly in {@link DateParserEn}.
  * Each one is able to handle a specific textual
  * form of date. 
  * 
