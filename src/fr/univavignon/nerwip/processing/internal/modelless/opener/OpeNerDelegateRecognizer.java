@@ -476,6 +476,7 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 	@Override
 	public Mentions convert(Article article, List<String> data) throws ProcessorException
 	{	logger.increaseOffset();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizer.getName());
 		
 		logger.log("Processing each part of data and its associated answer");
@@ -522,10 +523,10 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 				if(entitiesElt!=null)
 				{	List<Element> entityElts = entitiesElt.getChildren(ELT_ENTITY);
 					for(Element entityElt: entityElts)
-					{	AbstractMention<?> mention = convertElement(entityElt, wordMap, termMap, prevSize, originalText);
+					{	AbstractMention<?> mention = convertElement(entityElt, wordMap, termMap, prevSize, originalText, language);
 						if(mention!=null)
 						{	// possibly split in two distinct, smaller mentions when containing parentheses
-							AbstractMention<?>[] temp = processParentheses(mention);
+							AbstractMention<?>[] temp = processParentheses(mention,language);
 							if(temp==null)
 								result.addMention(mention);
 							else
@@ -566,12 +567,14 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 	 * @param prevSize
 	 * 		Size of the parts already processed. 
 	 * @param part
-	 * 		Part of the original text currently processed. 
+	 * 		Part of the original text currently processed.
+	 * @param language
+	 * 		Language of the processed article. 
 	 * @return
 	 * 		The resulting mention, or {@code null} if its
 	 * 		type is not supported.
 	 */
-	private AbstractMention<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part)
+	private AbstractMention<?> convertElement(Element element, Map<String,Element> wordMap, Map<String,Element> termMap, int prevSize, String part, ArticleLanguage language)
 	{	AbstractMention<?> result = null;
 		
 		String typeCode = element.getAttributeValue(ATT_TYPE);
@@ -629,7 +632,7 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 				String valueStr = part.substring(startPos, endPos);
 				startPos = startPos + prevSize;
 				endPos = endPos + prevSize;
-				result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr);
+				result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr, language);
 				
 				// TODO we could add a unique code to the several mentions of the same entity
 			}
@@ -662,11 +665,13 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 	 * 
 	 * @param mention
 	 * 		The original mention, containing both mentions.
+	 * @param language
+	 * 		Language of the processed article.
 	 * @return
 	 * 		An array containing the two smaller mentions, or {@code null} if
 	 * 		the specified mention was not of the desired form.
 	 */
-	private AbstractMention<?>[] processParentheses(AbstractMention<?> mention)
+	private AbstractMention<?>[] processParentheses(AbstractMention<?> mention, ArticleLanguage language)
 	{	AbstractMention<?>[] result = null;
 		
 		if(parenSplit && !(mention instanceof MentionDate))
@@ -685,7 +690,7 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 				String valueStr1 = original.substring(0,startPar);
 				int startPos1 = startPos;
 				int endPos1 = startPos + startPar;
-				AbstractMention<?> mention1 = AbstractMention.build(type, startPos1, endPos1, source, valueStr1);
+				AbstractMention<?> mention1 = AbstractMention.build(type, startPos1, endPos1, source, valueStr1, language);
 //if(valueStr1.isEmpty())
 //	System.out.print("");
 
@@ -693,7 +698,7 @@ public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateR
 				String valueStr2 = original.substring(startPar+1,endPar);
 				int startPos2 = startPos + startPar + 1;
 				int endPos2 = startPos + endPar;
-				AbstractMention<?> mention2 = AbstractMention.build(type, startPos2, endPos2, source, valueStr2);
+				AbstractMention<?> mention2 = AbstractMention.build(type, startPos2, endPos2, source, valueStr2, language);
 //if(valueStr2.isEmpty())
 //	System.out.print("");
 				

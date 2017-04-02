@@ -583,10 +583,11 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 		logger.increaseOffset();
 		logger.log(group.values().toString());
 		
+		ArticleLanguage language = article.getLanguage();
 		AbstractMention<?> result = null;
 		String rawText = article.getRawText();
 		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
-	
+		
 		// identify entity type
 		EntityType type = null;
 		int idx = (int)y;
@@ -696,7 +697,7 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 			
 			// build mention
 			if(type.isNamed())
-				result = AbstractMention.build(type, startPos, endPos, source, valueStr);
+				result = AbstractMention.build(type, startPos, endPos, source, valueStr, language);
 			else
 			{	Comparable<?> value = voteForValue(group, type);
 				logger.log("Value: "+value);
@@ -728,7 +729,8 @@ public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecog
 	private AbstractMention<?> convertSvmToMention(int startPos, int endPos, EntityType type, Article article)
 	{	String rawText = article.getRawText();
 		String valueStr = rawText.substring(startPos, endPos);
-		AbstractMention<?> result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr);
+		ArticleLanguage language = article.getLanguage();
+		AbstractMention<?> result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr, language);
 		return result;
 	}
 

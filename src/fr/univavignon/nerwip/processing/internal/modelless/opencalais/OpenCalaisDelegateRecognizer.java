@@ -294,6 +294,7 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 	@Override
 	public Mentions convert(Article article, List<String> text) throws ProcessorException
 	{	logger.increaseOffset();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizer.getName());
 
 		logger.log("Processing each part of data and its associated answer");
@@ -333,7 +334,7 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 				// create mentions
 				logger.log("Create mention objects");
 				for(Element element: data)
-				{	AbstractMention<?> mention = convertElement(element, metaData, prevSize);
+				{	AbstractMention<?> mention = convertElement(element, metaData, prevSize, language);
 					if(mention!=null)
 						result.addMention(mention);
 				}
@@ -367,11 +368,13 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 	 * @param metaData
 	 * 		Complementary information used to retrieve certain details.
 	 * @param prevSize
-	 * 		Size of the parts already processed. 
+	 * 		Size of the parts already processed.
+	 * @param language
+	 * 		Language of the processed article.
 	 * @return
 	 * 		The resulting mention.
 	 */
-	private AbstractMention<?> convertElement(Element element, Map<String,Element> metaData, int prevSize)
+	private AbstractMention<?> convertElement(Element element, Map<String,Element> metaData, int prevSize, ArticleLanguage language)
 	{	AbstractMention<?> result = null;
 		
 		// get subject of the instance
@@ -397,7 +400,7 @@ public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDeleg
 			String lengthStr = lengthElt.getText();
 			int length = Integer.parseInt(lengthStr);
 			int endPos = startPos + length;
-			result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr); //TODO maybe we can insert date values?
+			result = AbstractMention.build(type, startPos, endPos, recognizer.getName(), valueStr, language);
 		}
 		
 		return result;

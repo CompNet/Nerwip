@@ -253,6 +253,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	{	logger.increaseOffset();
 		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		String rawText = article.getRawText();
+		ArticleLanguage language = article.getLanguage();
 
 		// init candidate strings with article name and title 
 		Set<String> candidateStrings = new TreeSet<String>();
@@ -366,7 +367,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 			{	int startPos = m.start();
 				int endPos = m.end();
 				String valueStr = m.group();
-				AbstractMention<?> ent = AbstractMention.build(EntityType.PERSON, startPos, endPos, ProcessorName.SUBEE, valueStr);
+				AbstractMention<?> ent = AbstractMention.build(EntityType.PERSON, startPos, endPos, ProcessorName.SUBEE, valueStr, language);
 				result.add(ent);
 			}
 		}
@@ -416,8 +417,9 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	 */
 	private List<AbstractMention<?>> processHyperlinks(Article article) throws ParserException, ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
 	{	logger.increaseOffset();
+		ArticleLanguage language = article.getLanguage();
 		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
-	
+		
 		// parse linked text to automatically get hyperlink list
 		logger.log("Get hyperlink list");
 		String linkedText = article.getLinkedText();
@@ -522,7 +524,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
 //	System.out.println("ERROR: mention acronym and article do not match (position problem)");
-									AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
+									AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro, language);
 									result.add(mention);
 									logger.log("Creation of an extra mention (acronym) "+mention);
 								}
@@ -548,7 +550,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 //boolean test3 = acro.equals(valueStr3);
 //if(!test3)
 //	System.out.println("ERROR: mention acronym and article do not match (position problem)");
-										AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro);
+										AbstractMention<?> mention = AbstractMention.build(type, s, e, ProcessorName.SUBEE, acro, language);
 										result.add(mention);
 										logger.log("Creation of an extra mention (acronym) "+mention);
 									}
@@ -558,7 +560,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 					}
 					
 					// create the mention
-					AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
+					AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr, language);
 					result.add(mention);
 					logger.log("Creation of the mention "+mention);
 				}
@@ -806,6 +808,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 	private List<AbstractMention<?>> processOccurrences(Article article, List<AbstractMention<?>> sureMentions)
 	{	logger.increaseOffset();
 		String rawText = article.getRawText();
+		ArticleLanguage language = article.getLanguage();
 		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 	
 //		// sort mentions by type (we want to prioritize them)
@@ -844,7 +847,7 @@ public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRe
 //				if(!positionAlreadyUsed(startPos, result))	// this test is now done later 
 				{	int endPos = m.end();
 					EntityType type = mention.getType();
-					AbstractMention<?> ent = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr);
+					AbstractMention<?> ent = AbstractMention.build(type, startPos, endPos, ProcessorName.SUBEE, valueStr, language);
 					result.add(ent);
 				}
 			}

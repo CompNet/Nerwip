@@ -241,6 +241,7 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 	@Override
 	public Mentions convert(Article article, Map<EntityType,List<Span>> data) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizerName);
 		
 		String rawText = article.getRawText();
@@ -259,7 +260,7 @@ public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegat
 				int startPos = span.getStart();
 				int endPos = span.getEnd();
 				String valueStr = rawText.substring(startPos,endPos);
-				AbstractMention<?> mention = AbstractMention.build(t, startPos, endPos, recognizerName, valueStr);
+				AbstractMention<?> mention = AbstractMention.build(t, startPos, endPos, recognizerName, valueStr, language);
 				
 				// ignore overlapping mentions
 //				if(!result.hasMention(mention))	//TODO don't remember if I am supposed to change that, or what?

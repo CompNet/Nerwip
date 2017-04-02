@@ -132,7 +132,7 @@ public class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalD
 			{	int startPos = matcher.start();
 				int endPos = matcher.end();
 				String valueStr = matcher.group();
-				MentionDate mention = new MentionDate(startPos, endPos, recognizer.getName(), valueStr);
+				MentionDate mention = new MentionDate(startPos, endPos, recognizer.getName(), valueStr, language);
 				if(positionAlreadyUsed(mention,temp)==null)
 				{	result.add(mention);
 					temp.add(mention);

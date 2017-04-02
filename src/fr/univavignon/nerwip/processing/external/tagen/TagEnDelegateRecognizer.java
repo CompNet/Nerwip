@@ -285,6 +285,7 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	@Override
     public Mentions convert(Article article, String data) throws ProcessorException
 	{	logger.increaseOffset();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizer.getName());
 		
 		// the result file is basically an XML file, only the header is missing
@@ -331,7 +332,7 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 			// elements are processed individually
 			else if(child instanceof Element)
 			{	Element e = (Element)child;
-				List<AbstractMention<?>> entList = convertElement(e, index);
+				List<AbstractMention<?>> entList = convertElement(e, index, language);
 				String str = XmlTools.getRecText(e);
 				int length = str.length();
 				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
@@ -355,11 +356,13 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * 		Element to process.
 	 * @param index
 	 * 		Current position in the original text (in characters).
+	 * @param language
+	 * 		Language of the processed article.
 	 * @return
 	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private List<AbstractMention<?>> convertElement(Element element, int index)
+	private List<AbstractMention<?>> convertElement(Element element, int index, ArticleLanguage language)
 	{	List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		
 		// retrieving the child(ren)
@@ -372,13 +375,13 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 			
 			// enumerated mention
 			if(name.equalsIgnoreCase(ELT_ENAMEX))
-			{	AbstractMention<?> mention = convertEnumElement(innerElt,index);
+			{	AbstractMention<?> mention = convertEnumElement(innerElt,index,language);
 				result.add(mention);
 			}
 			
 			// temporal mention
 			else if(name.equalsIgnoreCase(ELT_TIMEX))
-				result = convertTemporalElement(innerElt,index);
+				result = convertTemporalElement(innerElt,index,language);
 			
 			// other mention
 			else if(!ELEMENT_BLACKLIST.contains(name))
@@ -396,11 +399,13 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * 		Element to process.
 	 * @param index
 	 * 		Current position in the original text (in characters).
+	 * @param language
+	 * 		Language of the processed article.
 	 * @return
 	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private AbstractMention<?> convertEnumElement(Element element, int index)
+	private AbstractMention<?> convertEnumElement(Element element, int index, ArticleLanguage language)
 	{	logger.increaseOffset();
 		AbstractMention<?> result = null;
 		XMLOutputter xo = new XMLOutputter();
@@ -419,7 +424,7 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 			else
 			{	String valueStr = element.getText();
 				int length = valueStr.length();
-				result = AbstractMention.build(type, index, index+length, recognizer.getName(), valueStr);
+				result = AbstractMention.build(type, index, index+length, recognizer.getName(), valueStr, language);
 			}
 		}
 		
@@ -435,11 +440,13 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * 		Element to process.
 	 * @param index
 	 * 		Current position in the original text (in characters).
+	 * @param language
+	 * 		Language of the processed article. 
 	 * @return
 	 * 		The created mention, or {@code null} if it was not
 	 * 		possible to create it due to a lack of information.
 	 */
-	private List<AbstractMention<?>> convertTemporalElement(Element element, int index)
+	private List<AbstractMention<?>> convertTemporalElement(Element element, int index, ArticleLanguage language)
 	{	logger.increaseOffset();
 		List<AbstractMention<?>> result = new ArrayList<AbstractMention<?>>();
 		XMLOutputter xo = new XMLOutputter();
@@ -533,6 +540,7 @@ public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 					(	EntityType.DATE, 
 						index+offset, index+offset+length, 
 						recognizer.getName(), valueStr//, date	//TODO must fix this: the date value should be kept
+						,language
 					);
 //					result.setValue(date);
 					result.add(mention);

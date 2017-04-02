@@ -330,6 +330,7 @@ public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	@Override
 	public Mentions convert(Article article, String data) throws ProcessorException
 	{	Mentions result = new Mentions(recognizer.getName());
+		ArticleLanguage language = article.getLanguage();
 		String originalText = article.getRawText();
 
 		LinkedList<EntityType> types = new LinkedList<EntityType>();
@@ -379,7 +380,7 @@ public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 					{
 //						String valueStr = data.substring(sp2,k2);
 						String valueStr = originalText.substring(sp1,i1);
-						AbstractMention<?> mention = AbstractMention.build(type, sp1, i1, ProcessorName.NERO, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, sp1, i1, ProcessorName.NERO, valueStr, language);
 						mention.correctMentionSpan(); // to remove some spaces located at the end of mentions
 						result.addMention(mention);
 					}

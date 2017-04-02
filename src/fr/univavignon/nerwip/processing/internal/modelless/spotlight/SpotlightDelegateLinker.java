@@ -132,15 +132,16 @@ public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLi
 	@Override
 	public void convert(Article article, Mentions mentions, Entities entities, List<String> data) throws ProcessorException 
 	{	ProcessorName linkerName = linker.getName();
+		ArticleLanguage language = article.getLanguage();
 		Entities result = new Entities(linkerName);
 		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
 		
 		// if spotlight is also the recognizer
 		if(recognizer==null)
-			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, true);
+			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, true, language);
 		// otherwise, if spotlight is only the resolver
 		else
-			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, false);
+			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, false, language);
 	}
 	
 	/////////////////////////////////////////////////////////////////

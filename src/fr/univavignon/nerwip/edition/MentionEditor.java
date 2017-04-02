@@ -99,6 +99,7 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleCategory;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
@@ -670,7 +671,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		// create and add panel
 		boolean editable = mentions==references && editableReference;
 		
-		MentionEditorPanel panel = new MentionEditorPanel(this, text, linkedText, mentions, references, params, modeState, switches, linkState, editable, name);
+		MentionEditorPanel panel = new MentionEditorPanel(this, text, linkedText, mentions, references, params, modeState, switches, linkState, editable, name, currentLanguage);
 		if(fontSize!=null)
 			panel.setFontSize(fontSize);
 		tabbedPane.add(algoName, panel);
@@ -3212,6 +3213,8 @@ public class MentionEditor implements WindowListener, ChangeListener
 	private String currentRawText = null;
 	/** Linked text of the current article */
 	private String currentLinkedText = null;
+	/** Natural language of the current article */
+	private ArticleLanguage currentLanguage = null;
 
 	/**
 	 * Returns the hyperlinked text
@@ -3351,7 +3354,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			ArticleList articles = ArticleLists.getArticleList(cf);
 			File f = new File(currentArticle);
 			currentIndex = articles.indexOf(f);
-		
+			
 			// retrieve texts
 			File tempFile = new File(articlePath);
 			String tempName = tempFile.getName();
@@ -3359,6 +3362,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			Article article = Article.read(tempName, tempFolder);
 			currentRawText = article.getRawText();
 			currentLinkedText = article.getLinkedText();
+			currentLanguage = article.getLanguage();
 			// old version (directly read the texts)
 //			File rawFile = new File(articlePath + File.separator + FileNames.FI_RAW_TEXT);
 //			currentRawText = FileTools.readTextFile(rawFile);

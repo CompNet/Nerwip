@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import org.jdom2.Element;
 
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.AbstractEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
@@ -84,15 +85,17 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
+	 * @param language 
+	 * 		Language of the text: required to parse it and retrieve the value.
 	 * @return
 	 * 		An object representing the mention.
 	 */
-	public static AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr)
+	public static AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr, ArticleLanguage language)
 	{	AbstractMention<?> result = null;
 		
 		switch(type)
 		{	case DATE:
-				result = new MentionDate(startPos, endPos, source, valueStr);
+				result = new MentionDate(startPos, endPos, source, valueStr, language);
 				break;
 			case FUNCTION:
 				result = new MentionFunction(startPos, endPos, source, valueStr);
@@ -138,17 +141,13 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	public static AbstractMention<?> build(EntityType type, int startPos, int endPos, ProcessorName source, String valueStr, Comparable<?> value)
 	{	AbstractMention<?> result = null;
 		
-		if(value==null)
-			result = build(type,startPos,endPos,source,valueStr);
-		else
-		{	switch(type)
-			{	case DATE:
-					if(value instanceof Date)
-						result = new MentionDate(startPos, endPos, source, valueStr, (Date)value);
-					else if(value instanceof Period)
-						result = new MentionDate(startPos, endPos, source, valueStr, (Period)value);
-					break;
-			}
+		switch(type)
+		{	case DATE:
+				if(value instanceof Date)
+					result = new MentionDate(startPos, endPos, source, valueStr, (Date)value);
+				else if(value instanceof Period)
+					result = new MentionDate(startPos, endPos, source, valueStr, (Period)value);
+				break;
 		}
 		
 		return result;

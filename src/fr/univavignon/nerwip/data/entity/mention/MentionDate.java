@@ -24,12 +24,14 @@ package fr.univavignon.nerwip.data.entity.mention;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.AbstractEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityDate;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.time.Date;
+import fr.univavignon.nerwip.tools.time.DateParser;
 import fr.univavignon.nerwip.tools.time.Period;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
@@ -88,9 +90,11 @@ public class MentionDate extends AbstractMention<Period>
 	 * 		Tool which detected this mention.
 	 * @param valueStr
 	 * 		String representation in the text.
+	 * @param language 
+	 * 		Language of the text: required to parse it and retrieve the value.
 	 */
-	public MentionDate(int startPos, int endPos, ProcessorName source, String valueStr)
-	{	super(startPos, endPos, source, valueStr, null);
+	public MentionDate(int startPos, int endPos, ProcessorName source, String valueStr, ArticleLanguage language)
+	{	super(startPos, endPos, source, valueStr, DateParser.parseDate(valueStr, language));
 	}
 	
 	/////////////////////////////////////////////////////////////////

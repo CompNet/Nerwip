@@ -128,8 +128,9 @@ public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelega
 	@Override
 	public Mentions convert(Article article, List<String> data) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizerName);
-		SpotlightTools.convertSpotlightToNerwip(data, recognizerName, result, null, true);
+		SpotlightTools.convertSpotlightToNerwip(data, recognizerName, result, null, true, language);
 		return result;
 	}
 	

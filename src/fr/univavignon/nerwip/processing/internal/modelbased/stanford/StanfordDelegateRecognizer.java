@@ -81,7 +81,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 	public StanfordDelegateRecognizer(Stanford stanford, StanfordModelName modelName, boolean loadModelOnDemand, boolean ignorePronouns, boolean exclusionOn) throws ProcessorException
 	{	super(stanford,modelName,loadModelOnDemand,false,ignorePronouns,true,exclusionOn);
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// FOLDER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 		
 		return result;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -105,7 +105,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 		List<EntityType> temp = modelName.getHandledTypes();
 		handledTypes.addAll(temp);
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// LANGUAGES	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 	/////////////////////////////////////////////////////////////////
 	/** Cache the classifier, so that we don't have to load it several times */
 	private CRFClassifier<CoreLabel> classifier;
-
+	
     @Override
 	protected boolean isLoadedModel()
     {	boolean result = classifier!=null;
@@ -131,7 +131,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 	protected void resetModel()
     {	classifier = null;
     }
-
+    
 	@Override
 	protected void loadModel() throws ProcessorException
     {	logger.increaseOffset();
@@ -172,7 +172,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 		logger.decreaseOffset();
 		return result;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// TYPE CONVERSION MAP	/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -219,10 +219,11 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 //
 //		return result;
 //	}
-
+	
 	@Override
 	public Mentions convert(Article article, List<List<CoreLabel>> data) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizerName);
 		
 		// consecutive words with the same type are not considered as a single mention by Stanford
@@ -254,7 +255,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 					// check for continuity with the previous mention
 					if(type!=prevType)
 					{	// case where we start a new mention
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, language);
 						result.addMention(mention);
 						lastMention = mention;
 					}
@@ -263,7 +264,7 @@ public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelega
 					{	// case where we update (recreate, actually) the previous mention
 						startPos = lastMention.getStartPos();
 						valueStr = lastMention.getStringValue() + before + valueStr;
-						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+						AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, language);
 						result.addMention(mention);
 						result.removeMention(lastMention);
 						lastMention = mention;

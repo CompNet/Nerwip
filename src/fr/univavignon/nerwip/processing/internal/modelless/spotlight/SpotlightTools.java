@@ -26,6 +26,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import fr.univavignon.nerwip.data.article.Article;
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.AbstractValuedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
@@ -458,12 +459,14 @@ public class SpotlightTools
 	 * 		{@code true} iff the specified {@code data} was obtained through 
 	 * 		an "annotate" type of request, {@code false} if it was through
 	 * 		a "disambiguate" type of request. In the former case, we must
-	 * 		create mentions, whereas in the latter we must just update them.  
+	 * 		create mentions, whereas in the latter we must just update them. 
+	 * @param language
+	 * 		Language of the processed article.
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while performing the conversion.
 	 */
-	protected static void convertSpotlightToNerwip(List<String> data, ProcessorName processorName, Mentions mentions, Entities entities, boolean annotate) throws ProcessorException
+	protected static void convertSpotlightToNerwip(List<String> data, ProcessorName processorName, Mentions mentions, Entities entities, boolean annotate, ArticleLanguage language) throws ProcessorException
 	{	logger.increaseOffset();
 		
 		logger.log("Processing each part of data and its associated answer");
@@ -492,7 +495,7 @@ public class SpotlightTools
 				List<Element> eltResourceList = eltResources.getChildren(ELT_RESOURCE);
 				for(Element eltResource: eltResourceList)
 				{	//TODO maybe a type could simply be retrieved from the DBpedia URI...
-					convertResourceElement(eltResource,prevSize,originalText,processorName,mentions,entities,annotate);
+					convertResourceElement(eltResource,prevSize,originalText,processorName,mentions,entities,annotate,language);
 				}
 				
 				// update size
@@ -532,9 +535,11 @@ public class SpotlightTools
 	 * 		{@code true} iff the specified {@code data} was obtained through 
 	 * 		an "annotate" type of request, {@code false} if it was through
 	 * 		a "disambiguate" type of request. In the former case, we must
-	 * 		create mentions, whereas in the latter we must just update them.  
+	 * 		create mentions, whereas in the latter we must just update them.
+	 * @param language
+	 * 		Language of the processed article.  
 	 */
-	private static void convertResourceElement(Element element, int prevSize, String part, ProcessorName processorName, Mentions mentions, Entities entities, boolean annotate)
+	private static void convertResourceElement(Element element, int prevSize, String part, ProcessorName processorName, Mentions mentions, Entities entities, boolean annotate, ArticleLanguage language)
 	{	logger.increaseOffset();
 		
 		// parse the element
@@ -609,7 +614,7 @@ public class SpotlightTools
 			else
 			{	AbstractMention<?> mention;
 				if(annotate)
-				{	mention = AbstractMention.build(type, startPos, endPos, processorName, surfaceForm);
+				{	mention = AbstractMention.build(type, startPos, endPos, processorName, surfaceForm, language);
 					mentions.addMention(mention);
 					logger.log("Created mention "+mention.toString());
 				}

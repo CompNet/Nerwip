@@ -332,6 +332,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 	@Override
 	protected Mentions combineMentions(Article article, Map<InterfaceRecognizer,Mentions> mentions, StringBuffer rawOutput) throws ProcessorException
 	{	logger.increaseOffset();
+		ArticleLanguage language = article.getLanguage();
 		ProcessorName recognizerName = recognizer.getName();
 		String text = article.getRawText();
 		Mentions result = new Mentions(recognizerName);
@@ -381,7 +382,7 @@ public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateReco
 				String valueStr = text.substring(startPos,endPos);
 				AbstractMention<?> mention;
 				if(type.isNamed())
-					mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+					mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, language);
 				else
 				{	Comparable<?> value = voteForValue(map, type);
 					rawOutput.append(">> Value="+value+"\n");

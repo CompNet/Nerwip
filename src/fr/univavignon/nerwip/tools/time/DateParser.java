@@ -40,21 +40,22 @@ public class DateParser
 	/** Common object used for logging */
 	protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
-	
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Parse the specified string and returns a {@link Period} object.
+	 * Parse the specified string and returns a {@link Period} object,
+	 * or {@code null} if the method failed to parse the text.
 	 * 
 	 * @param text
 	 * 		Text to parse.
 	 * @param language
 	 * 		Language of the text.
 	 * @return
-	 * 		The corresponding {@code Period} (may contain twice the same date).
+	 * 		The corresponding {@code Period} (may contain twice the same date),
+	 * 		or {@code null} if the text could not be parsed.
 	 */
-	protected static Period parseDate(String text, ArticleLanguage language)
+	public static Period parseDate(String text, ArticleLanguage language)
 	{	Period result = null;
 		
 		switch(language)
@@ -66,6 +67,8 @@ public class DateParser
 				break;
 		}
 		
+		if(result!=null && result.getStartDate()==null && result.getEndDate()==null)
+			result = null;
 		return result;
 	}
 }

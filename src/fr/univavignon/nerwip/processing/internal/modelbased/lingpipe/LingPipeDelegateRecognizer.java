@@ -228,6 +228,7 @@ public class LingPipeDelegateRecognizer extends AbstractModelbasedInternalDelega
 	@Override
 	public Mentions convert(Article article, Chunking chunking) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizerName);
 		
 		String text = chunking.charSequence().toString();
@@ -236,7 +237,7 @@ public class LingPipeDelegateRecognizer extends AbstractModelbasedInternalDelega
 			int startPos = chunk.start();
 			int endPos = chunk.end();
 			String valueStr = text.substring(startPos,endPos);
-			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr);
+			AbstractMention<?> mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, language);
 			result.addMention(mention);
 		}
 		

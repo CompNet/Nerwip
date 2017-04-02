@@ -57,6 +57,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.TextAction;
 
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
@@ -102,12 +103,15 @@ public class MentionEditorPanel extends JPanel implements AdjustmentListener, Do
 	 * 		Whether or not text can be modified in this panel (only for reference).
 	 * @param folder
 	 * 		Folder associated to the estimated mentions (relative to the article folder).
+	 * @param language
+	 * 		Natural language of the concerned article.
 	 */
 	public MentionEditorPanel(MentionEditor mainEditor, String text, String linkedText, Mentions mentions, Mentions references, String tooltip,
-		boolean mode, Map<EntityType,Boolean> typeDispl, boolean linkState, boolean editable, String folder)
+		boolean mode, Map<EntityType,Boolean> typeDispl, boolean linkState, boolean editable, String folder, ArticleLanguage language)
 	{	super(new BorderLayout());
 		this.mainEditor = mainEditor;
 		this.folder = folder;
+		this.language = language; 
 		
 		this.showHyperlinks = linkState;
 		this.linkedText = linkedText;
@@ -161,6 +165,8 @@ public class MentionEditorPanel extends JPanel implements AdjustmentListener, Do
 	/////////////////////////////////////////////////////////////////
 	/** Panel used for display */
 	private JTextPane textPane;
+	/** Language of the article (French, English, etc.) */
+	private ArticleLanguage language;
 	
 	/////////////////////////////////////////////////////////////////
 	// FONT SIZE		/////////////////////////////////////////////
@@ -679,7 +685,9 @@ if(endPos>document.getLength())
 					it.remove();
 					ProcessorName source = mention.getSource();
 					String valueStr = mention.getStringValue();
-					mention = AbstractMention.build(type, startPos, endPos, source, valueStr);
+					mention = AbstractMention.build(type, startPos, endPos, source, valueStr, language);
+					if(type==EntityType.DATE) // we don't need it in this annotation
+						mention.setValue(null);
 					result = mention;
 					
 					// update display
@@ -718,7 +726,9 @@ if(endPos>document.getLength())
 		// update mentions
 		String valueStr = textPane.getSelectedText();
 		ProcessorName source = ProcessorName.REFERENCE;
-		result = AbstractMention.build(type, start, end, source, valueStr);
+		result = AbstractMention.build(type, start, end, source, valueStr, language);
+		if(type==EntityType.DATE) // we don't need it in this annotation
+			result.setValue(null);
 		mentions.addMention(result);
 		
 		// update display

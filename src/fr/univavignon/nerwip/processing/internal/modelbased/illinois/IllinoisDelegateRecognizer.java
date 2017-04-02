@@ -210,6 +210,7 @@ public class IllinoisDelegateRecognizer extends AbstractModelbasedInternalDelega
 	@Override
 	public Mentions convert(Article article, Data data) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();
+		ArticleLanguage language = article.getLanguage();
 		Mentions result = new Mentions(recognizerName);
 	
 		String text = article.getRawText();
@@ -275,7 +276,7 @@ public class IllinoisDelegateRecognizer extends AbstractModelbasedInternalDelega
 	            		if(close)
 	            		{	// consider all detected words to constitute the mention
 	            			String valueStr = text.substring(startPos,position);
-	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, recognizerName, valueStr);
+	            			AbstractMention<?> mention = AbstractMention.build(type, startPos, position, recognizerName, valueStr, language);
 	            			result.addMention(mention);
 	            			// reset variables to (possibly) start a new mention
 	            			open = false;
