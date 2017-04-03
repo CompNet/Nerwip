@@ -240,16 +240,25 @@ public class WmCommonTools
 	/////////////////////////////////////////////////////////////////
 	/** List of Knowledge base we want to completely ignore (this just affects the log) */
 	private final static List<String> IGNORED_KB = Arrays.asList(
-		"MusicBrainz area ID"
+		"Digital Atlas of the Roman Empire ID",
+		"MusicBrainz area ID",
+		"SANDRE ID"
 	);
 	/** Map allowing to convert a WikiData property to a knowledge base name */
 	private final static Map<String,KnowledgeBase> MAP_ID_TO_KB = new HashMap<String,KnowledgeBase>();
 	/** Initialization of the conversion map */
 	static
 	{	MAP_ID_TO_KB.put("P268",  KnowledgeBase.BNF);
+		MAP_ID_TO_KB.put("P1036", KnowledgeBase.DEWEY);
+		MAP_ID_TO_KB.put("P1417", KnowledgeBase.ENCYC_BRIT);
 		MAP_ID_TO_KB.put("P1997", KnowledgeBase.FACEBOOK_PLACES);
 		MAP_ID_TO_KB.put("P646",  KnowledgeBase.FREEBASE);
 		MAP_ID_TO_KB.put("P1566", KnowledgeBase.GEONAMES);
+		MAP_ID_TO_KB.put("P227",  KnowledgeBase.GND);
+		MAP_ID_TO_KB.put("P1296", KnowledgeBase.GRAN_ENCIC_CATAL);
+		MAP_ID_TO_KB.put("P374",  KnowledgeBase.INSEE_MUNICIP);
+		MAP_ID_TO_KB.put("P244",  KnowledgeBase.LIB_CONGR);
+		MAP_ID_TO_KB.put("P281",  KnowledgeBase.POSTAL_CODE);
 		MAP_ID_TO_KB.put("P1808", KnowledgeBase.SENAT_FR);
 		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
 		MAP_ID_TO_KB.put("P1045", KnowledgeBase.SYCOMORE);
@@ -581,7 +590,7 @@ public class WmCommonTools
 				{	result = idList.get(0);
 				// if more than one id, warn the user and keep the first one
 					if(idList.size()>1)
-					{	logger.log("WARNING: several ids were found for entity "+possibleNames.get(0)+"(name \""+possibleName+"\")");
+					{	logger.log("WARNING: several ids were found for entity "+possibleNames.get(0)+" (name \""+possibleName+"\")");
 						logger.increaseOffset();
 							logger.log(idList);
 						logger.decreaseOffset();

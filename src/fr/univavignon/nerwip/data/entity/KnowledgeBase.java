@@ -35,6 +35,12 @@ public enum KnowledgeBase
 	/** DBpedia database */
 	DBPEDIA,
 	
+	/** Dewey Decimal Classification */
+	DEWEY,
+	
+	/** Encyclopædia Britannica Online ID */
+	ENCYC_BRIT,
+	
 	/** Facebook database */
 	FACEBOOK_PLACES,
 	
@@ -44,8 +50,23 @@ public enum KnowledgeBase
 	/** GeoNames database */
 	GEONAMES,
 	
+	/** Gran Enciclopèdia Catalana */
+	GRAN_ENCIC_CATAL,
+	
+	/** Gemeinsame Normdatei - Integrated Authority File */ 
+	GND,
+	
+	/** INSEE municipality code */
+	INSEE_MUNICIP,
+	
 	/** International Standard Name Identifier (subsumes ORCID) */
 	ISNI,
+	
+	/** Library of Congress */
+	LIB_CONGR,
+	
+	/** Postal code */
+	POSTAL_CODE,
 	
 	/** SUDOC database (Système Universitaire de Documentation - French national university library system) */
 	SUDOC,
