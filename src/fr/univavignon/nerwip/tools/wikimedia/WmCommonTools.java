@@ -241,29 +241,58 @@ public class WmCommonTools
 	/** List of Knowledge base we want to completely ignore (this just affects the log) */
 	private final static List<String> IGNORED_KB = Arrays.asList(
 		"Digital Atlas of the Roman Empire ID",
+		"Gazetteer of Planetary Nomenclature ID",
 		"MusicBrainz area ID",
-		"SANDRE ID"
+		"Nomisma ID", // currency related
+		"OpenStreetMap Relation identifier",
+		"SANDRE ID", // rivers and stuff
+		"trunk prefix"
 	);
 	/** Map allowing to convert a WikiData property to a knowledge base name */
 	private final static Map<String,KnowledgeBase> MAP_ID_TO_KB = new HashMap<String,KnowledgeBase>();
 	/** Initialization of the conversion map */
 	static
-	{	MAP_ID_TO_KB.put("P268",  KnowledgeBase.BNF);
+	{	MAP_ID_TO_KB.put("P2100", KnowledgeBase.BANQ_LIEUX_QUEBEC);
+		MAP_ID_TO_KB.put("P268",  KnowledgeBase.BNF);
+		MAP_ID_TO_KB.put("P3633", KnowledgeBase.BRIT_MUS_PLACE);
+		MAP_ID_TO_KB.put("P1273", KnowledgeBase.CANTIC);
+		MAP_ID_TO_KB.put("P474",  KnowledgeBase.COUNTRY_CC);
+		MAP_ID_TO_KB.put("P3569", KnowledgeBase.CULT_WOORD);
 		MAP_ID_TO_KB.put("P1036", KnowledgeBase.DEWEY);
+		MAP_ID_TO_KB.put("P1953", KnowledgeBase.DISCOG_ARTIST);
+		MAP_ID_TO_KB.put("P998",  KnowledgeBase.DMOZ);
 		MAP_ID_TO_KB.put("P1417", KnowledgeBase.ENCYC_BRIT);
+		MAP_ID_TO_KB.put("P2697", KnowledgeBase.ESPN_CRICKET);
 		MAP_ID_TO_KB.put("P1997", KnowledgeBase.FACEBOOK_PLACES);
+		MAP_ID_TO_KB.put("P901",  KnowledgeBase.FIPS_10_4);
 		MAP_ID_TO_KB.put("P646",  KnowledgeBase.FREEBASE);
 		MAP_ID_TO_KB.put("P1566", KnowledgeBase.GEONAMES);
 		MAP_ID_TO_KB.put("P227",  KnowledgeBase.GND);
 		MAP_ID_TO_KB.put("P1296", KnowledgeBase.GRAN_ENCIC_CATAL);
+		MAP_ID_TO_KB.put("P3422", KnowledgeBase.INSEE_COUNTRY);
+		MAP_ID_TO_KB.put("P2586", KnowledgeBase.INSEE_DEPT);
 		MAP_ID_TO_KB.put("P374",  KnowledgeBase.INSEE_MUNICIP);
+		MAP_ID_TO_KB.put("P213",  KnowledgeBase.ISNI);
+		MAP_ID_TO_KB.put("P297",  KnowledgeBase.ISO_3166_1_ALPHA2);
+		MAP_ID_TO_KB.put("P298",  KnowledgeBase.ISO_3166_1_ALPHA3);
+		MAP_ID_TO_KB.put("P299",  KnowledgeBase.ISO_3166_1_NUM);
+		MAP_ID_TO_KB.put("P300",  KnowledgeBase.ISO_3166_2);
 		MAP_ID_TO_KB.put("P244",  KnowledgeBase.LIB_CONGR);
+		MAP_ID_TO_KB.put("P2258", KnowledgeBase.MOBILE_COUNTRY_CODE);
+		MAP_ID_TO_KB.put("P3612", KnowledgeBase.MONDE_DIPLO);
+		MAP_ID_TO_KB.put("P434",  KnowledgeBase.MUSIC_BRAINZ_ARTIST);
+		MAP_ID_TO_KB.put("P349",  KnowledgeBase.NAT_DIET_LIB);
+		MAP_ID_TO_KB.put("P949",  KnowledgeBase.NAT_LIB_ISRAEL);
+		MAP_ID_TO_KB.put("P605",  KnowledgeBase.NUTS_CODE);
+		MAP_ID_TO_KB.put("P3221", KnowledgeBase.NYT);
 		MAP_ID_TO_KB.put("P281",  KnowledgeBase.POSTAL_CODE);
+		MAP_ID_TO_KB.put("P3417", KnowledgeBase.QUORA_TOPIC);
 		MAP_ID_TO_KB.put("P1808", KnowledgeBase.SENAT_FR);
 		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
 		MAP_ID_TO_KB.put("P1045", KnowledgeBase.SYCOMORE);
+		MAP_ID_TO_KB.put("P2612", KnowledgeBase.TED_TOPIC);
 		MAP_ID_TO_KB.put("P214",  KnowledgeBase.VIAF);
-		
+		MAP_ID_TO_KB.put("P1281", KnowledgeBase.WOEID);
 	}
 	
 	/** Map allowing to convert a WikiData property to an entity type*/
