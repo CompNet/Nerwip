@@ -315,7 +315,7 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 			logger.decreaseOffset();
 		}
 		
-		logger.log("Done: "+result.getEntities().size()+"entities created");
+		logger.log("Done: "+result.getEntities().size()+" entities created");
 		logger.increaseOffset();
 		return result;
 	}
