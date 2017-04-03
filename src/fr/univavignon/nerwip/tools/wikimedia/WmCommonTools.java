@@ -553,8 +553,10 @@ public class WmCommonTools
 			}
 			logger.log("Found "+idList.size()+" possible ids");
 			
-			// if more than one id, warn the user and keep the first one
-			if(!idList.isEmpty())
+			// check the obtained ids
+			if(idList.isEmpty())
+				logger.log("Could not find any entity for name "+possibleName);
+			else
 			{	logger.log("Checking the type of each possible id");
 				logger.increaseOffset();
 				Iterator<String> it2 = idList.iterator();
@@ -572,13 +574,19 @@ public class WmCommonTools
 				logger.decreaseOffset();
 				logger.log("Number of remaining ids: "+idList.size());
 				
-				result = idList.get(0);
-				if(idList.size()>1)
-				{	logger.log("WARNING: several ids were found for entity "+possibleNames.get(0)+"(name \""+possibleName+"\")");
-					logger.increaseOffset();
-						logger.log(idList);
-					logger.decreaseOffset();
-					logger.log("We keep the first one and go on");
+				// check the remaining ids
+				if(idList.isEmpty())
+					logger.log("No id remaining for name "+possibleName);
+				else
+				{	result = idList.get(0);
+				// if more than one id, warn the user and keep the first one
+					if(idList.size()>1)
+					{	logger.log("WARNING: several ids were found for entity "+possibleNames.get(0)+"(name \""+possibleName+"\")");
+						logger.increaseOffset();
+							logger.log(idList);
+						logger.decreaseOffset();
+						logger.log("We keep the first one and go on");
+					}
 				}
 			}
 		}
