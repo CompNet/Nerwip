@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -97,7 +98,9 @@ public class WmCommonTools
 	/** Name of the parameter representing the searched string for the web search API of WikiData */
 	private static final String WIKIDATA_WEBSEARCH_PARAM_SEARCH = "&search=";
 	/** Name of the parameter representing the targeted language for the web search API of WikiData */
-	private static final String WIKIDATA_WEBSEARCH_PARAM_LANG = "&language=";
+	private static final String WIKIDATA_WEBSEARCH_PARAM_LANG1 = "&language=";
+	/** Name of the parameter representing the targeted language for the web search API of WikiData */
+	private static final String WIKIDATA_WEBSEARCH_PARAM_LANG2 = "&uselang=";
 	/** URL used to retrieve entities through the WikiData API */
 	private static final String WIKIDATA_GETENT_URL ="https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&includexmlnamespace=true&redirects=yes";
 	/** Name of the parameter representing the searched entity */
@@ -160,6 +163,8 @@ public class WmCommonTools
 	private static final String ATT_DESC = "description";
 	/** Attribute representing the title of a Wikipedia page */
 	private static final String ATT_LABEL = "label";
+	/** Attribute representing the language of some Wikidata text */
+	private static final String ATT_LANGUAGE = "language";
 	/** Attribute representing the title of a Wikipedia page */
 	private static final String ATT_TEXT = "text";
 	/** Attribute representing the title of a Wikipedia page */
@@ -233,16 +238,23 @@ public class WmCommonTools
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION MAP 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** List of Knowledge base we want to completely ignore (this just affects the log) */
+	private final static List<String> IGNORED_KB = Arrays.asList(
+		"MusicBrainz area ID"
+	);
 	/** Map allowing to convert a WikiData property to a knowledge base name */
 	private final static Map<String,KnowledgeBase> MAP_ID_TO_KB = new HashMap<String,KnowledgeBase>();
 	/** Initialization of the conversion map */
 	static
 	{	MAP_ID_TO_KB.put("P268",  KnowledgeBase.BNF);
+		MAP_ID_TO_KB.put("P1997", KnowledgeBase.FACEBOOK_PLACES);
 		MAP_ID_TO_KB.put("P646",  KnowledgeBase.FREEBASE);
+		MAP_ID_TO_KB.put("P1566", KnowledgeBase.GEONAMES);
 		MAP_ID_TO_KB.put("P1808", KnowledgeBase.SENAT_FR);
 		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
 		MAP_ID_TO_KB.put("P1045", KnowledgeBase.SYCOMORE);
 		MAP_ID_TO_KB.put("P214",  KnowledgeBase.VIAF);
+		
 	}
 	
 	/** Map allowing to convert a WikiData property to an entity type*/
@@ -330,7 +342,8 @@ public class WmCommonTools
 		Map<String,String> result = new HashMap<String,String>();
 		
 		String baseUrl = WIKIDATA_WEBSEARCH_URL 
-				+ WIKIDATA_WEBSEARCH_PARAM_LANG + language.toString().toLowerCase(Locale.ENGLISH)
+				+ WIKIDATA_WEBSEARCH_PARAM_LANG1 + language.toString().toLowerCase(Locale.ENGLISH)
+				+ WIKIDATA_WEBSEARCH_PARAM_LANG2 + language.toString().toLowerCase(Locale.ENGLISH)
 				+ WIKIDATA_WEBSEARCH_PARAM_SEARCH;
 		
 		// process each possible name
@@ -379,32 +392,38 @@ public class WmCommonTools
 
 				String description = entityElt.getAttributeValue(ATT_DESC);
 				String label = entityElt.getAttributeValue(ATT_LABEL);
+				Element matchElt = entityElt.getChild(ELT_MATCH,ns);
 				if(label==null)
-				{	Element matchElt = entityElt.getChild(ELT_MATCH,ns);
-					label = matchElt.getAttributeValue(ATT_TEXT);
+				{	label = matchElt.getAttributeValue(ATT_TEXT);
 					logger.log("Description="+description+" text="+label);
 				}
 				else
 					logger.log("Description="+description+" label="+label);
-
-				// if it is a disambiguation page, we must retrieve the entities it contains
-				if(description!=null && description.toLowerCase().contains(VAL_DISAMB))
-				{	logger.log("It is a description page");
-					Map<String,String> tmpMap = retrieveIdsFromDisambiguation(language,label);
-					for(Entry<String,String> tmpEntry: tmpMap.entrySet())
-					{	String tmpKey = tmpEntry.getKey();
-						String tmpVal = tmpEntry.getValue();
-						if(!result.keySet().contains(tmpKey))
-							result.put(tmpKey,tmpVal);
+				
+				// if not in the targeted language, just skip it
+				String lang = matchElt.getAttributeValue(ATT_LANGUAGE);
+				if(lang.equalsIgnoreCase(language.toString()))
+				{	// if it is a disambiguation page, we must retrieve the entities it contains
+					if(description!=null && description.toLowerCase().contains(VAL_DISAMB))
+					{	logger.log("It is a description page");
+						Map<String,String> tmpMap = retrieveIdsFromDisambiguation(language,label);
+						for(Entry<String,String> tmpEntry: tmpMap.entrySet())
+						{	String tmpKey = tmpEntry.getKey();
+							String tmpVal = tmpEntry.getValue();
+							if(!result.keySet().contains(tmpKey))
+								result.put(tmpKey,tmpVal);
+						}
+					}
+					// if not a disambiguation page, we directly add the entity to the map
+					else
+					{	String id = entityElt.getAttributeValue(ATT_ID);
+						logger.log("Not a disambiguation page: adding "+id+" to the map (if not already present)");
+						if(!result.keySet().contains(id))
+							result.put(id,label);
 					}
 				}
-				// if not a disambiguation page, we directly add the entity to the map
 				else
-				{	String id = entityElt.getAttributeValue(ATT_ID);
-					logger.log("Not a description page: adding "+id+" to the map (if not already present)");
-					if(!result.keySet().contains(id))
-						result.put(id,label);
-				}
+					logger.log("Ignoring the entity because its language is "+lang+" instead of "+language);
 
 				i++;
 				logger.decreaseOffset();
@@ -723,8 +742,12 @@ public class WmCommonTools
 				
 				// decision
 				if(kb==null)
-					//TODO debug this to find all KB
-					logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");
+				{	if(IGNORED_KB.contains(label))
+						logger.log("The knowledge base \""+label+"\" is ignored.");
+					else
+						//TODO debug this to find all KB
+						logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");
+				}
 				else
 				{	logger.log("Found URI "+uri+" (kb="+kb+" label=\""+label+"\" value="+value+")");
 					entity.setExternalId(kb, value);

@@ -24,7 +24,7 @@ package fr.univavignon.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
-import fr.univavignon.nerwip.tools.time.Date;
+import fr.univavignon.nerwip.tools.time.Period;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**
@@ -32,7 +32,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-public class EntityDate extends AbstractValuedEntity<Date>
+public class EntityDate extends AbstractValuedEntity<Period>
 {	
 	/**
 	 * Constructs a date entity.
@@ -42,7 +42,7 @@ public class EntityDate extends AbstractValuedEntity<Date>
 	 * @param internalId
 	 * 		Internal id of the entity to create.
 	 */
-	public EntityDate(Date value, long internalId)
+	public EntityDate(Period value, long internalId)
 	{	super(value,internalId);
 	}
 	
@@ -90,7 +90,7 @@ public class EntityDate extends AbstractValuedEntity<Date>
 	{	// get the date
 		Element valueElt = element.getChild(XmlNames.ELT_VALUE);
 		String valueStr = valueElt.getText();
-		Date value = Date.importFromString(valueStr);
+		Period value = Period.importFromString(valueStr);
 		
 		// get the id
 		String internalIdStr = element.getAttributeValue(XmlNames.ATT_ID);

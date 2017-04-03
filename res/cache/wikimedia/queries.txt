@@ -133,3 +133,450 @@ https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3
 </sparql>
 
 -----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ41604+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q17334923</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q43229</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ2843298+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ24800274+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q386724</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Fprop+%3FpropLabel+%3Fvalue+WHERE+%7Bwd%3AQ41604+%3Fp+%3Fvalue.+%3Fprop+wikibase%3AdirectClaim+%3Fp.+%3Fprop+wdt%3AP31%2Fwdt%3AP279*%2Fwdt%3AP1269+wd%3AQ6545185.+SERVICE+wikibase%3Alabel+%7Bbd%3AserviceParam+wikibase%3Alanguage+%22en%22+.%7D%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='prop'/>
+		<variable name='propLabel'/>
+		<variable name='value'/>
+	</head>
+	<results>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P646</uri>
+			</binding>
+			<binding name='value'>
+				<literal>/m/0l17s</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Freebase ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P982</uri>
+			</binding>
+			<binding name='value'>
+				<literal>d28c6c7f-6956-4b96-8f3f-12b1962b6102</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>MusicBrainz area ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1997</uri>
+			</binding>
+			<binding name='value'>
+				<literal>115433925136698</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Facebook Places ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1566</uri>
+			</binding>
+			<binding name='value'>
+				<literal>3037854</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>GeoNames ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P269</uri>
+			</binding>
+			<binding name='value'>
+				<literal>028085027</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>SUDOC authorities</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P227</uri>
+			</binding>
+			<binding name='value'>
+				<literal>4085690-2</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>GND ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P214</uri>
+			</binding>
+			<binding name='value'>
+				<literal>162797643</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>VIAF ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P244</uri>
+			</binding>
+			<binding name='value'>
+				<literal>n79116223</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>LCAuth ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P374</uri>
+			</binding>
+			<binding name='value'>
+				<literal>80021</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>INSEE municipality code</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1036</uri>
+			</binding>
+			<binding name='value'>
+				<literal>2--442625</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Dewey Decimal Classification</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1296</uri>
+			</binding>
+			<binding name='value'>
+				<literal>0003580</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Gran Enciclopèdia Catalana ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P281</uri>
+			</binding>
+			<binding name='value'>
+				<literal>80000</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>postal code</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P268</uri>
+			</binding>
+			<binding name='value'>
+				<literal>15276507w</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>BnF ID</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ37646+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q17334923</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ1736061+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q17334923</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ12770+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q17334923</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ2982293+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ692689+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ3489862+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q17334923</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ3489863+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q17334923</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ3489867+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+		<result>
+			<binding name='type'>
+				<uri>http://www.wikidata.org/entity/Q386724</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ225744+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ218005+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Fprop+%3FpropLabel+%3Fvalue+WHERE+%7Bwd%3AQ37646+%3Fp+%3Fvalue.+%3Fprop+wikibase%3AdirectClaim+%3Fp.+%3Fprop+wdt%3AP31%2Fwdt%3AP279*%2Fwdt%3AP1269+wd%3AQ6545185.+SERVICE+wikibase%3Alabel+%7Bbd%3AserviceParam+wikibase%3Alanguage+%22en%22+.%7D%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='prop'/>
+		<variable name='propLabel'/>
+		<variable name='value'/>
+	</head>
+	<results>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1936</uri>
+			</binding>
+			<binding name='value'>
+				<literal>43895</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Digital Atlas of the Roman Empire ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P646</uri>
+			</binding>
+			<binding name='value'>
+				<literal>/m/03lbsd</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Freebase ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1566</uri>
+			</binding>
+			<binding name='value'>
+				<literal>2974308</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>GeoNames ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P269</uri>
+			</binding>
+			<binding name='value'>
+				<literal>027622118</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>SUDOC authorities</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1417</uri>
+			</binding>
+			<binding name='value'>
+				<literal>place/Somme-River</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>Encyclopædia Britannica Online ID</literal>
+			</binding>
+		</result>
+		<result>
+			<binding name='prop'>
+				<uri>http://www.wikidata.org/entity/P1717</uri>
+			</binding>
+			<binding name='value'>
+				<literal>E6---140</literal>
+			</binding>
+			<binding name='propLabel'>
+				<literal xml:lang='en'>SANDRE ID</literal>
+			</binding>
+		</result>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Fprop+%3FpropLabel+%3Fvalue+WHERE+%7Bwd%3Anull+%3Fp+%3Fvalue.+%3Fprop+wikibase%3AdirectClaim+%3Fp.+%3Fprop+wdt%3AP31%2Fwdt%3AP279*%2Fwdt%3AP1269+wd%3AQ6545185.+SERVICE+wikibase%3Alabel+%7Bbd%3AserviceParam+wikibase%3Alanguage+%22en%22+.%7D%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='prop'/>
+		<variable name='propLabel'/>
+		<variable name='value'/>
+	</head>
+	<results>
+	</results>
+</sparql>
+
+-----------
+https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=SELECT+DISTINCT+%3Ftype+WHERE+%7B+VALUES+%3Ftype+%7B+wd%3AQ214339+wd%3AQ17334923+wd%3AQ1656682+wd%3AQ215627+wd%3AQ43229+wd%3AQ386724%7D.+wd%3AQ407657+wdt%3AP31%2Fwdt%3AP279*+%3Ftype.%7D&format=xml
+<?xml version='1.0' encoding='UTF-8'?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+	<head>
+		<variable name='type'/>
+	</head>
+	<results>
+	</results>
+</sparql>
+
+-----------

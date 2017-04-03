@@ -218,7 +218,12 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 					else
 					{	Comparable<?> value1 = mention1.getValue();
 						Comparable<?> value2 = mention2.getValue();
-						result = value1.equals(value2);
+						try
+						{	result = value1.equals(value2);						
+						}
+						catch(IllegalArgumentException e)
+						{	result = false;
+						}
 					}
 				}
 			}

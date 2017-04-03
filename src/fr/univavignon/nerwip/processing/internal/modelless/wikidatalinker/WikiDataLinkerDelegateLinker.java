@@ -115,7 +115,7 @@ public class WikiDataLinkerDelegateLinker extends AbstractModellessInternalDeleg
 	@Override
 	protected Entities linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException
 	{	Set<AbstractEntity> entityList = entities.getEntities();
-		logger.log("Stating linking entities ("+entityList.size()+")");
+		logger.log("Starting linking entities ("+entityList.size()+")");
 		logger.increaseOffset();
 		ArticleLanguage language = article.getLanguage();
 		

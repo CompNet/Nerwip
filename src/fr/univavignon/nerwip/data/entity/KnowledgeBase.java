@@ -35,8 +35,14 @@ public enum KnowledgeBase
 	/** DBpedia database */
 	DBPEDIA,
 	
+	/** Facebook database */
+	FACEBOOK_PLACES,
+	
 	/** Freebase database */
 	FREEBASE,
+	
+	/** GeoNames database */
+	GEONAMES,
 	
 	/** International Standard Name Identifier (subsumes ORCID) */
 	ISNI,

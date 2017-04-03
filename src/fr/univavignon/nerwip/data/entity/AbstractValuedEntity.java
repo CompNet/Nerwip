@@ -1,7 +1,5 @@
 package fr.univavignon.nerwip.data.entity;
 
-import fr.univavignon.nerwip.tools.time.Date;
-
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -22,6 +20,8 @@ import fr.univavignon.nerwip.tools.time.Date;
  * along with Nerwip - Named Entity Extraction in Wikipedia Pages.  
  * If not, see <http://www.gnu.org/licenses/>.
  */
+
+import fr.univavignon.nerwip.tools.time.Period;
 
 /**
  * Abstract class representing a valued entity, i.e. an entity
@@ -66,7 +66,7 @@ public abstract class AbstractValuedEntity<T extends Comparable<T>> extends Abst
 	{	AbstractValuedEntity<?> result = null;
 		switch(type)
 		{	case DATE:
-				result = new EntityDate((Date)value,internalId);
+				result = new EntityDate((Period)value,internalId);
 				break;
 		}
 		return result;
