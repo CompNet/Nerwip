@@ -1656,10 +1656,10 @@ File folder = folders.get(0);
 		wikiDataLinker.setCacheEnabled(false);
 		
 		// only the specified article
-		wikiDataLinker.link(article);
+//		wikiDataLinker.link(article);
 		
 		// all the corpus
-//		testAllCorpusLinker(spotlight,0);
+		testAllCorpusLinker(wikiDataLinker,0);
 		
 		logger.decreaseOffset();
 	}
