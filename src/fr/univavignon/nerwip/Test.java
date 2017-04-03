@@ -1644,7 +1644,7 @@ File folder = folders.get(0);
 		boolean ignorePronouns = true;
 		boolean exclusionOn = true;
 		InterfaceRecognizer recognizer = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
-		recognizer.setCacheEnabled(false);
+		recognizer.setCacheEnabled(true);
 		int maxDist = 4;
 		InterfaceResolver resolver = new NaiveResolver(recognizer, maxDist);
 		resolver.setCacheEnabled(false);

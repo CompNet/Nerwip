@@ -219,7 +219,13 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 					{	Comparable<?> value1 = mention1.getValue();
 						Comparable<?> value2 = mention2.getValue();
 						try
-						{	result = value1.equals(value2);						
+						{	if(value1==null || value2==null)
+							{	String name1 = mention1.getStringValue();
+								String name2 = mention2.getStringValue();
+								result = name1.equalsIgnoreCase(name2);
+							}
+							else
+								result = value1.equals(value2);				
 						}
 						catch(IllegalArgumentException e)
 						{	result = false;
@@ -252,44 +258,57 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 		for(List<AbstractMention<?>> simset: simsets)
 		{	logger.log("Similarity set #"+i+"/"+simsets.size());
 			logger.increaseOffset();
-			int j = 1;
-		
-			// get the first mention in the similarity set
+			
+			// find one mention and create the entity (if valued, need a value)
+			AbstractEntity entity = null;
 			Iterator<AbstractMention<?>> it = simset.iterator();
-			AbstractMention<?> mention = it.next();
-			EntityType type = mention.getType();
-			logger.log("Mention "+j+"/"+simset.size()+": "+mention);
-			
-			// init the corresponding entity
-			AbstractEntity entity;
-			if(type.isNamed())
-			{	String surfaceForm = mention.getStringValue();
-				entity = AbstractNamedEntity.buildEntity(-1, surfaceForm, type);
-			}
-			else
-			{	Comparable<?> value = mention.getValue();
-				entity = AbstractValuedEntity.buildEntity(-1l, value, type);
-			}
-			result.addEntity(entity);
-			mention.setEntity(entity);
-			
-			// process the rest of the similarity set
-			while(it.hasNext())
-			{	// get the mention
-				mention = it.next();
+			int j = 1;
+			String name = null;
+			EntityType type = null;
+			while(it.hasNext() && entity==null)
+			{	AbstractMention<?> mention = it.next();
+				type = mention.getType();
+				if(name==null)
+					name = mention.getStringValue();
 				logger.log("Mention "+j+"/"+simset.size()+": "+mention);
-
-				// update the entity
+				
+				// init the corresponding entity
 				if(type.isNamed())
-				{	AbstractNamedEntity e = (AbstractNamedEntity)entity;
-					String surfaceForm = mention.getStringValue();
-					e.addSurfaceForm(surfaceForm);
+				{	String surfaceForm = mention.getStringValue();
+					entity = AbstractNamedEntity.buildEntity(-1, surfaceForm, type);
 				}
+				else
+				{	Comparable<?> value = mention.getValue();
+					if(value!=null)
+						entity = AbstractValuedEntity.buildEntity(-1l, value, type);
+				}
+			}
+			
+			if(entity==null)
+				logger.log("Cannot a build a value for this set ("+name+"): none of its mentions possesses a value");
+			else
+			{	result.addEntity(entity);
 				
-				// update the mention
-				mention.setEntity(entity);
-				
-				j++;
+				// update the mentions in the similarity set
+				it = simset.iterator();
+				j = 1;
+				while(it.hasNext())
+				{	// get the mention
+					AbstractMention<?> mention = it.next();
+					logger.log("Mention "+j+"/"+simset.size()+": "+mention);
+
+					// update the entity
+					if(type.isNamed())
+					{	AbstractNamedEntity e = (AbstractNamedEntity)entity;
+						String surfaceForm = mention.getStringValue();
+						e.addSurfaceForm(surfaceForm);
+					}
+					
+					// update the mention
+					mention.setEntity(entity);
+					
+					j++;
+				}
 			}
 			
 			i++;

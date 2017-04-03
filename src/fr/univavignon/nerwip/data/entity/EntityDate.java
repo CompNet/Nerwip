@@ -24,6 +24,7 @@ package fr.univavignon.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import fr.univavignon.nerwip.tools.time.Date;
 import fr.univavignon.nerwip.tools.time.Period;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
@@ -44,6 +45,9 @@ public class EntityDate extends AbstractValuedEntity<Period>
 	 */
 	public EntityDate(Period value, long internalId)
 	{	super(value,internalId);
+		
+//		if(value==null)
+//			value = new Period(new Date(0));
 	}
 	
 	/////////////////////////////////////////////////////////////////
