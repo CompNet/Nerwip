@@ -241,34 +241,52 @@ public class WmCommonTools
 	/** List of Knowledge base we want to completely ignore (this just affects the log) */
 	private final static List<String> IGNORED_KB = Arrays.asList(
 		"Digital Atlas of the Roman Empire ID",
+		"Find a Grave grave ID",
 		"Gazetteer of Planetary Nomenclature ID",
+		"InPhO ID", // Indiana Philosophy Ontology project
 		"MusicBrainz area ID",
 		"Nomisma ID", // currency related
 		"OpenStreetMap Relation identifier",
 		"SANDRE ID", // rivers and stuff
+		"Social Networks and Archival Context ID",
 		"trunk prefix"
 	);
 	/** Map allowing to convert a WikiData property to a knowledge base name */
 	private final static Map<String,KnowledgeBase> MAP_ID_TO_KB = new HashMap<String,KnowledgeBase>();
 	/** Initialization of the conversion map */
 	static
-	{	MAP_ID_TO_KB.put("P2100", KnowledgeBase.BANQ_LIEUX_QUEBEC);
-		MAP_ID_TO_KB.put("P268",  KnowledgeBase.BNF);
+	{	MAP_ID_TO_KB.put("P2342", KnowledgeBase.AGORHA);
+		MAP_ID_TO_KB.put("P1977", KnowledgeBase.ARCH_SPECT);
+		MAP_ID_TO_KB.put("P2100", KnowledgeBase.BANQ_LIEUX_QUEBEC);
+		MAP_ID_TO_KB.put("P2188", KnowledgeBase.BIBLIONET_AUTHOR);
+		MAP_ID_TO_KB.put("P1711", KnowledgeBase.BRIT_MUS_PERSINST);
 		MAP_ID_TO_KB.put("P3633", KnowledgeBase.BRIT_MUS_PLACE);
+		MAP_ID_TO_KB.put("P2799", KnowledgeBase.BVMC_PERS);
 		MAP_ID_TO_KB.put("P1273", KnowledgeBase.CANTIC);
+		MAP_ID_TO_KB.put("P1871", KnowledgeBase.CERL);
+		MAP_ID_TO_KB.put("P1280", KnowledgeBase.CONOR_SI);
 		MAP_ID_TO_KB.put("P474",  KnowledgeBase.COUNTRY_CC);
+		MAP_ID_TO_KB.put("P2383", KnowledgeBase.CTHS_PERS);
 		MAP_ID_TO_KB.put("P3569", KnowledgeBase.CULT_WOORD);
 		MAP_ID_TO_KB.put("P1036", KnowledgeBase.DEWEY);
+		MAP_ID_TO_KB.put("P723",  KnowledgeBase.DBNL);
 		MAP_ID_TO_KB.put("P1953", KnowledgeBase.DISCOG_ARTIST);
 		MAP_ID_TO_KB.put("P998",  KnowledgeBase.DMOZ);
+		MAP_ID_TO_KB.put("P860",  KnowledgeBase.EARCHIV_LI);
+		MAP_ID_TO_KB.put("P1309", KnowledgeBase.EGAXA);
 		MAP_ID_TO_KB.put("P1417", KnowledgeBase.ENCYC_BRIT);
 		MAP_ID_TO_KB.put("P2697", KnowledgeBase.ESPN_CRICKET);
 		MAP_ID_TO_KB.put("P1997", KnowledgeBase.FACEBOOK_PLACES);
+		MAP_ID_TO_KB.put("P2163", KnowledgeBase.FAST_ID);
+		MAP_ID_TO_KB.put("P2639", KnowledgeBase.FILM_PORT);
 		MAP_ID_TO_KB.put("P901",  KnowledgeBase.FIPS_10_4);
 		MAP_ID_TO_KB.put("P646",  KnowledgeBase.FREEBASE);
+		MAP_ID_TO_KB.put("P1819", KnowledgeBase.GENEA_ORG_PERS);
 		MAP_ID_TO_KB.put("P1566", KnowledgeBase.GEONAMES);
 		MAP_ID_TO_KB.put("P227",  KnowledgeBase.GND);
 		MAP_ID_TO_KB.put("P1296", KnowledgeBase.GRAN_ENCIC_CATAL);
+		MAP_ID_TO_KB.put("P1741", KnowledgeBase.GTAA);
+		MAP_ID_TO_KB.put("P345",  KnowledgeBase.IMDB);
 		MAP_ID_TO_KB.put("P3422", KnowledgeBase.INSEE_COUNTRY);
 		MAP_ID_TO_KB.put("P2586", KnowledgeBase.INSEE_DEPT);
 		MAP_ID_TO_KB.put("P374",  KnowledgeBase.INSEE_MUNICIP);
@@ -277,21 +295,50 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P298",  KnowledgeBase.ISO_3166_1_ALPHA3);
 		MAP_ID_TO_KB.put("P299",  KnowledgeBase.ISO_3166_1_NUM);
 		MAP_ID_TO_KB.put("P300",  KnowledgeBase.ISO_3166_2);
+		MAP_ID_TO_KB.put("P1287", KnowledgeBase.KOMP_GEG);
+		MAP_ID_TO_KB.put("P1284", KnowledgeBase.KOMP_GEG_IBA);
+		MAP_ID_TO_KB.put("P1899", KnowledgeBase.LIBRIVOX_AUTH);
 		MAP_ID_TO_KB.put("P244",  KnowledgeBase.LIB_CONGR);
 		MAP_ID_TO_KB.put("P2258", KnowledgeBase.MOBILE_COUNTRY_CODE);
 		MAP_ID_TO_KB.put("P3612", KnowledgeBase.MONDE_DIPLO);
 		MAP_ID_TO_KB.put("P434",  KnowledgeBase.MUSIC_BRAINZ_ARTIST);
 		MAP_ID_TO_KB.put("P349",  KnowledgeBase.NAT_DIET_LIB);
-		MAP_ID_TO_KB.put("P949",  KnowledgeBase.NAT_LIB_ISRAEL);
+		MAP_ID_TO_KB.put("P409",  KnowledgeBase.NAT_LIB_AU);
+		MAP_ID_TO_KB.put("P950",  KnowledgeBase.NAT_LIB_ES);
+		MAP_ID_TO_KB.put("P268",  KnowledgeBase.NAT_LIB_FR);
+		MAP_ID_TO_KB.put("P3348", KnowledgeBase.NAT_LIB_GR);
+		MAP_ID_TO_KB.put("P949",  KnowledgeBase.NAT_LIB_IL);
+		MAP_ID_TO_KB.put("P396",  KnowledgeBase.NAT_LIB_IT);
+		MAP_ID_TO_KB.put("P1015", KnowledgeBase.NAT_LIB_NO);
+		MAP_ID_TO_KB.put("P1017", KnowledgeBase.NAT_LIB_VA);
+		MAP_ID_TO_KB.put("P1816", KnowledgeBase.NAT_PORT_GALL_PERS);
+		MAP_ID_TO_KB.put("P1006", KnowledgeBase.NAT_THES_AUTH);
+		MAP_ID_TO_KB.put("P691",  KnowledgeBase.NKCR_AUT);
+		MAP_ID_TO_KB.put("P1263", KnowledgeBase.NNDB);
+		MAP_ID_TO_KB.put("P1207", KnowledgeBase.NUKAT);
 		MAP_ID_TO_KB.put("P605",  KnowledgeBase.NUTS_CODE);
 		MAP_ID_TO_KB.put("P3221", KnowledgeBase.NYT);
+		MAP_ID_TO_KB.put("P648",  KnowledgeBase.OPEN_LIB);
+		MAP_ID_TO_KB.put("P3762", KnowledgeBase.OPEN_MLOL);
+		MAP_ID_TO_KB.put("P1430", KnowledgeBase.OPEN_PLAQUE);
+		MAP_ID_TO_KB.put("P1415", KnowledgeBase.OX_BIO_IDX);
+		MAP_ID_TO_KB.put("P1331", KnowledgeBase.PACE);
+		MAP_ID_TO_KB.put("P1315", KnowledgeBase.PEOPLE_AUSTR);
+		MAP_ID_TO_KB.put("P866",  KnowledgeBase.PERLENTAUCHER);
+		MAP_ID_TO_KB.put("P2732", KnowledgeBase.PERSEE);
+		MAP_ID_TO_KB.put("P1938", KnowledgeBase.PROJ_GUT_AUTHOR);
+		MAP_ID_TO_KB.put("P1005", KnowledgeBase.PTBNP);
 		MAP_ID_TO_KB.put("P281",  KnowledgeBase.POSTAL_CODE);
 		MAP_ID_TO_KB.put("P3417", KnowledgeBase.QUORA_TOPIC);
+		MAP_ID_TO_KB.put("P906",  KnowledgeBase.SELIBR);
 		MAP_ID_TO_KB.put("P1808", KnowledgeBase.SENAT_FR);
+		MAP_ID_TO_KB.put("P3123", KnowledgeBase.STAN_ENC_PHIL);
 		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
 		MAP_ID_TO_KB.put("P1045", KnowledgeBase.SYCOMORE);
 		MAP_ID_TO_KB.put("P2612", KnowledgeBase.TED_TOPIC);
+		MAP_ID_TO_KB.put("P245",  KnowledgeBase.ULAN);
 		MAP_ID_TO_KB.put("P214",  KnowledgeBase.VIAF);
+		MAP_ID_TO_KB.put("P2949", KnowledgeBase.WIKI_TREE);
 		MAP_ID_TO_KB.put("P1281", KnowledgeBase.WOEID);
 	}
 	
@@ -827,7 +874,7 @@ public class WmCommonTools
 	 * 		Problem while parsing the XML WikiData response. 
 	 */
 	public static void completeEntity(AbstractNamedEntity entity) throws ClientProtocolException, IOException, JDOMException
-	{	String id = entity.getExternalId(KnowledgeBase.WIKIDATA);
+	{	String id = entity.getExternalId(KnowledgeBase.WIKI_DATA);
 		logger.log("Using ids retrieved from WikiData to complete entity "+entity+" ("+id+")");
 		logger.increaseOffset();
 		
