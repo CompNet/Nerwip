@@ -121,7 +121,7 @@ public class MentionDate extends AbstractMention<Period>
 		Attribute typeAttr = new Attribute(XmlNames.ATT_TYPE, getType().toString());
 		result.setAttribute(typeAttr);
 		
-		if(entities!=null)
+		if(entities!=null && entity!=null)
 		{	long entityId = entity.getInternalId();
 			Attribute entityIdAttr = new Attribute(XmlNames.ATT_ENTITY_ID, Long.toString(entityId));
 			result.setAttribute(entityIdAttr);

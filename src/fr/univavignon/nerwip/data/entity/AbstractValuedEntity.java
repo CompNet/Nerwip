@@ -45,9 +45,9 @@ public abstract class AbstractValuedEntity<T extends Comparable<T>> extends Abst
 	public AbstractValuedEntity(T value, long internalId)
 	{	super(internalId);
 		
-//		if(value==null)
-//			throw new NullPointerException("Tried to create a new valued entity with a null value");
-//		else
+		if(value==null)
+			throw new NullPointerException("Tried to create a new valued entity with a null value");
+		else
 			this.value = value;
 	}
 	

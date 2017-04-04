@@ -10,3 +10,7 @@ https://fr.wikipedia.org/w/api.php?action=query&generator=links&format=xml&redir
 <?xml version="1.0"?><api batchcomplete="" />
 
 -----------
+https://fr.wikipedia.org/w/api.php?action=query&generator=links&format=xml&redirects=1&prop=pageprops&gpllimit=50&ppprop=wikibase_item&titles=Limousine
+<?xml version="1.0"?><api batchcomplete=""><query><redirects><r from="Limousine (voiture)" to="Type de carrosserie" tofragment="Limousine" /><r from="Limousin" to="Limousin (ancienne région administrative)" /></redirects><pages><page _idx="-1" ns="0" title="Limousine (groupe)" missing="" /><page _idx="1096931" pageid="1096931" ns="0" title="Cape (vêtement)"><pageprops wikibase_item="Q516992" /></page><page _idx="2006509" pageid="2006509" ns="0" title="Limousine (hippomobile)"><pageprops wikibase_item="Q3241223" /></page><page _idx="127227" pageid="127227" ns="0" title="Limousine (race bovine)"><pageprops wikibase_item="Q586876" /></page><page _idx="1478696" pageid="1478696" ns="0" title="Limousine (race ovine)"><pageprops wikibase_item="Q3241224" /></page><page _idx="9058446" pageid="9058446" ns="12" title="Aide:Homonymie" /><page _idx="1724" pageid="1724" ns="0" title="Limousin (ancienne région administrative)"><pageprops wikibase_item="Q1190" /></page><page _idx="478049" pageid="478049" ns="0" title="Type de carrosserie"><pageprops wikibase_item="Q15729598" /></page></pages></query></api>
+
+-----------

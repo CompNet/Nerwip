@@ -24,7 +24,6 @@ package fr.univavignon.nerwip.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
-import fr.univavignon.nerwip.tools.time.Date;
 import fr.univavignon.nerwip.tools.time.Period;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 

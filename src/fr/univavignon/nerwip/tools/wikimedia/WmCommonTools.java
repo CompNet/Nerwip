@@ -779,7 +779,9 @@ public class WmCommonTools
 				// value
 				Element bindingValueElt = it.next();
 				Element literalValueElt = bindingValueElt.getChild(ELT_LITERAL,ns);
-				String value = literalValueElt.getText().trim();
+				String value = null;
+				if(literalValueElt!=null)
+					value = literalValueElt.getText().trim();
 				
 				// propLabel
 				Element bindingLabelElt = it.next();
@@ -795,8 +797,12 @@ public class WmCommonTools
 						logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");
 				}
 				else
-				{	logger.log("Found URI "+uri+" (kb="+kb+" label=\""+label+"\" value="+value+")");
-					entity.setExternalId(kb, value);
+				{	if(value==null)
+						logger.log("Found URI "+uri+" (kb="+kb+" but value="+value+")");
+					else
+					{	logger.log("Found URI "+uri+" (kb="+kb+" label=\""+label+"\" value="+value+")");
+						entity.setExternalId(kb, value);
+					}
 				}
 			}
 			i++;

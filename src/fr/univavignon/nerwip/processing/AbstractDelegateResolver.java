@@ -175,12 +175,14 @@ public abstract class AbstractDelegateResolver
 					}
 				}
 				else
-				{	// for the values, there is no homonymy risk
+				{	// for the values, there is no homonymy risk, but we don't add any entity if the value is missing
 					Comparable<?> value = mention.getValue();
-					entity = entities.getValuedEntityByValue(value);
-					if(entity==null)
-					{	entity = AbstractValuedEntity.buildEntity(-1, value, type);
-						entities.addEntity(entity);
+					if(value!=null)
+					{	entity = entities.getValuedEntityByValue(value);
+						if(entity==null)
+						{	entity = AbstractValuedEntity.buildEntity(-1, value, type);
+							entities.addEntity(entity);
+						}
 					}
 				}
 				mention.setEntity(entity);
