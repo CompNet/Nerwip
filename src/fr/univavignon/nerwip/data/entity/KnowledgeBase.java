@@ -44,14 +44,32 @@ public enum KnowledgeBase
 	/** Archives du Spectacle */
 	ARCH_SPECT,
 	
+	/** Babelio author */
+	BABELIO_AUTH,
+	
+	/** BanQ author */
+	BAN_Q_AUTH,
+	
 	/** Banque de noms de lieux du Québec */
 	BANQ_LIEUX_QUEBEC,
+	
+	/** Bayerisches Musiker-Lexikon Online */
+	BAYER_MUSIK_LEX,
+	
+	/** BBC Things */
+	BBC_THINGS,
 	
 	/** Belgian ODIS database */
 	BE_ODIS,
 	
+	/** Benezit Dictionary of Artists */
+	BENEZIT,
+	
 	/** BiblioNet author */
 	BIBLIONET_AUTHOR,
+	
+	/** Brazilian municipality code */
+	BR_MUNI,
 	
 	/** British Museum person-institution */
 	BRIT_MUS_PERSINST,
@@ -59,6 +77,9 @@ public enum KnowledgeBase
 	BRIT_MUS_PLACE,
 	/** British Museum thesaurus */
 	BRIT_MUS_THES,
+	
+	/** Bureau du patrimoine de Seine-Saint-Denis */
+	BUR_PAT_SSD,
 	
 	/** Biblioteca Virtual Miguel de Cervantes */
 	BVMC_PERS,
@@ -114,6 +135,9 @@ public enum KnowledgeBase
 	/** Discogs artist ID */
 	DISCOG_ARTIST,
 	
+	/** Dizionario Biografico degli Italiani */
+	DIZIO_BIO_IT,
+	
 	/** directory.mozilla.org */
 	DMOZ,
 	
@@ -129,8 +153,14 @@ public enum KnowledgeBase
 	/** Bibliotheca Alexandrina */
 	EGAXA,
 	
+	/** elCinema person */
+	EL_CINE_PERS,
+	
 	/** Elonet person ID */
 	ELONET_PERS,
+	
+	/** EMLO - Early Modern Letters Online project run by the Bodleian Library */
+	EMLO,
 	
 	/** Encyclopædia Britannica Online ID */
 	ENCYC_BRIT,
@@ -218,6 +248,9 @@ public enum KnowledgeBase
 	/** Institutional identifier from the GRID.ac global research identifier database */
 	GRID_AC,
 	
+	/** Nine-character UK Government Statistical Service code */
+	GSS,
+	
 	/** Common Thesaurus of Audiovisual Archives (Dutch) */
 	GTAA,
 	
@@ -227,8 +260,14 @@ public enum KnowledgeBase
 	/** HDS/HLS/DHS/DSS: Historical Dictionary of Switzerland */
 	HDS,
 	
+	/** IATA airport code */
+	IATA,
+	
 	/** IMDb - Internet Movie Database */
 	IMDB,
+	
+	/** International Music Score Library Project */
+	IMSLP,
 	
 	/** INSEE countries and foreign territories code */
 	INSEE_COUNTRY,
@@ -236,6 +275,12 @@ public enum KnowledgeBase
 	INSEE_DEPT,
 	/** INSEE municipality code */
 	INSEE_MUNICIP,
+	
+	/** Instagram username */
+	INSTRAGRAM,
+	
+	/** Internet Broadway Database person */
+	INT_BROAD_DB_PERS,
 	
 	/** International Securities Identification Number */
 	ISIN,
@@ -254,13 +299,37 @@ public enum KnowledgeBase
 	/**  International Organization for Standardization - country name that has been deleted from ISO 3166-1 since its first publication in 1974 */
 	ISO_3166_3,
 	
+	/** Italian Chamber of Deputies */
+	IT_CHAMB_DEP,
+	
+	/** Jewish Encyclopedia ID (Russian) */
+	JEW_ENCYC_RUSS,
+	
+	/** Kansallisbiografia */
+	KANSAL_BIO,
+	
+	/** Key to English Place-Names - KEPN */
+	KEPN,
+	
 	/** Person, in the Kinopoisk.ru database */
 	KINOPOISK_PERS,
+	
+	/** KLfG Critical Dictionary of foreign contemporary literature */
+	KLFG,
+	
+	/** Korean Movie Database - KMDb */
+	KMDB,
 	
 	/** Komponisten der Gegenwart -- Munzinger Archiv */
 	KOMP_GEG,
 	/** Komponisten der Gegenwart -- Munzinger Archiv */
 	KOMP_GEG_IBA,
+	
+	/** KulturNav-id */
+	KULTURNAV,
+	
+	/** Library and Archives Canada */
+	LAC,
 	
 	/** Legal Entity */
 	LEGAL_ENT,
@@ -274,6 +343,15 @@ public enum KnowledgeBase
 	/** Library of Congress */
 	LIB_CONGR,
 	
+	/** Mémoire des hommes - French govermnment database indexing all french soldier war casualties */
+	MEM_HOM,
+	
+	/** Past or present MEP in a directory of all members of the European Parliament */
+	MEP_DIR,
+	
+	/** Diseases and other medically relevant concepts, in the MeSH descriptor database */
+	MESH,
+	
 	/** Mobile country code */
 	MOBILE_COUNTRY_CODE,
 	
@@ -286,8 +364,15 @@ public enum KnowledgeBase
 	/** Musée d'Orsay artist */
 	MUSEE_ORSAY_ART,
 	
+	/** MusicBrainz area ID */
+	MUSIC_BRAINZ_AREA,
 	/** MusicBrainz artist ID */
 	MUSIC_BRAINZ_ARTIST,
+	/** MusicBrainz place ID */
+	MUSIC_BRAINZ_PLACE,
+	
+	/** Musopen composer */
+	MUSOPEN_COMP,
 	
 	/** MySpace ID */
 	MYSPACE_USER,
@@ -297,6 +382,9 @@ public enum KnowledgeBase
 	
 	/** National-Football-Teams.com player ID */
 	NAT_FOOT_PLR,
+	
+	/** National Gallery of Victoria artist */
+	NAT_GAL_VICT_ART,
 	
 	/** NLA - National Library of Australia */
 	NAT_LIB_AU,
@@ -312,18 +400,33 @@ public enum KnowledgeBase
 	NAT_LIB_IL,
 	/** National Library Service (SBN) of Italy */
 	NAT_LIB_IT,
+	/** LNB - National Library of Latvia */
+	NAT_LIB_LV,
 	/** BIBSYS - Bibliothèque nationale de Norvège */
 	NAT_LIB_NO,
 	/** National Library of Poland */
 	NAT_LIB_PL,
+	/** National Library of Romania */
+	NAT_LIB_RO,
+	/** Russian State Library */
+	NAT_LIB_RU_PERS,
 	/** Vatican Library */
 	NAT_LIB_VA,
+	
+	/** Nationalmuseum Sweden artist */
+	NAT_MUS_SE_ART,
 	
 	/** National Portrait Gallery (London) person ID */
 	NAT_PORT_GALL_PERS,
 	
 	/** National Thesaurus for Author Names */
 	NAT_THES_AUTH,
+	
+	/** NGA artist - National Gallery of Art in Washington DC */
+	NGA_ART,
+	
+	/** Vegetti Catalog of Fantastic Literature */
+	NILF_AUTH,
 	
 	/** Czech National Authority Database - National Library of Czech Republic */
 	NKCR_AUT,
@@ -333,6 +436,9 @@ public enum KnowledgeBase
 	
 	/** Nobel prize */
 	NOBEL_PRIZE,
+	
+	/** National and University Library in Zagreb */
+	NSK,
 	
 	/** NUKAT Center of the University of Warsaw Library */
 	NUKAT,
@@ -346,8 +452,14 @@ public enum KnowledgeBase
 	/** Classification on Objects territory of municipal formations (Russia) */
 	OKTMO,
 	
+	/** Omni topic */
+	OMNI_TOPIC,
+	
 	/** OpenCorporates */
 	OPEN_CORP,
+	
+	/** OpenDomesday settlement */
+	OPEN_DOME,
 	
 	/** Open Library */
 	OPEN_LIB,
@@ -376,6 +488,9 @@ public enum KnowledgeBase
 	/** Persée, an open access digital library of French-language scholarly journals */
 	PERSEE,
 	
+	/** Pinterest username */
+	PINTEREST_USER,
+	
 	/** Localisation géographique historique - identifiant de la base Pleiades.stoa.org */
 	PLEIADES,
 	
@@ -400,8 +515,17 @@ public enum KnowledgeBase
 	/** Unique identifier for organisations in the publishing industry supply chain */
 	RINGGOLD,
 	
+	/** rodovid.org -- Family tree */
+	RODOVID,
+	
 	/** Web-based edition of Joachim von Sandrart’s "Teutscher Academie der Edlen Bau, Bild- und Mahlerey-Künste" */
 	SANDRART_PER,
+	
+	/** Serbian Academy of Sciences and Arts */
+	SANU,
+	
+	/** Scope.dk person */
+	SCOPE_DK_PERS,
 	
 	/** National Library of Sweden Libris library catalog */
 	SELIBR,
@@ -411,6 +535,9 @@ public enum KnowledgeBase
 	
 	/** Swedish Film Database (SFDb) */
 	SFDB,
+	
+	/** Songkick artist */
+	SONGKICK_ART,
 	
 	/** Stanford Encyclopedia of Philosophy */
 	STAN_ENC_PHIL,
@@ -427,14 +554,22 @@ public enum KnowledgeBase
 	/** Sycomore database (French MPs) */
 	SYCOMORE,
 	
+	/** TED speaker */
+	TED_SPEAKER,
 	/** TED topic */
 	TED_TOPIC,
 	
 	/** Teuchos */
 	TEUCHOS,
 	
+	/** Theatricalia person */
+	THEATR_PERS,
+	
 	/** TheFinalBall player ID */
 	TFB_PLYR,
+	
+	/** TOID - TOpographic IDentifier assigned by the Ordnance Survey to identify a feature in Great Britain */
+	TOID,
 	
 	/** Enciclopedia Treccani */
 	TRECCANI,
@@ -468,8 +603,17 @@ public enum KnowledgeBase
 	/** WikiTree genealogy website */
 	WIKI_TREE,
 	
+	/** Place in the University of Portsmouth's Vision of Britain database */
+	VISION_PORT,
+	
+	/** The Vogue List */
+	VOGUE_LIST,
+	
 	/** Where On Earth IDentifier */
 	WOEID,
+	
+	/** WomenWriters */
+	WOM_WRIT,
 	
 	/** Worldfootball.net ID */
 	WORLD_FOOT,
