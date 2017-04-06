@@ -271,7 +271,7 @@ public class Entities
 	/** Entities by internal id */
 	private final Map<Long,AbstractEntity> entitiesById = new HashMap<Long,AbstractEntity>();
 	/** Named entities by external id */
-	private final Map<KnowledgeBase,Map<String,AbstractNamedEntity>> namedEntitiesByExternalId = new HashMap<KnowledgeBase,Map<String,AbstractNamedEntity>>();
+	private final Map<String,Map<String,AbstractNamedEntity>> namedEntitiesByExternalId = new HashMap<String,Map<String,AbstractNamedEntity>>();
 	/** Named entities by name */
 	private final Map<String,List<AbstractNamedEntity>> namedEntitiesByName = new HashMap<String,List<AbstractNamedEntity>>();
 	/** Valued entities by value */
@@ -333,7 +333,7 @@ public class Entities
 	 * @return
 	 * 		Named entity possessing the specified external id, or {@code null]} if none does.
 	 */
-	public AbstractNamedEntity getNamedEntityById(String id, KnowledgeBase knowledgeBase)
+	public AbstractNamedEntity getNamedEntityById(String id, String knowledgeBase)
 	{	AbstractNamedEntity result = null;
 		Map<String,AbstractNamedEntity> map = namedEntitiesByExternalId.get(knowledgeBase);
 		if(map!=null)
@@ -395,9 +395,9 @@ public class Entities
 		if(entity instanceof AbstractNamedEntity)
 		{	// map by id
 			AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
-			Set<Entry<KnowledgeBase, String>> entrySet = namedEntity.getExternalIds().entrySet();
-			for(Entry<KnowledgeBase, String> entry: entrySet)
-			{	KnowledgeBase kb = entry.getKey();
+			Set<Entry<String, String>> entrySet = namedEntity.getExternalIds().entrySet();
+			for(Entry<String, String> entry: entrySet)
+			{	String kb = entry.getKey();
 				String id = entry.getValue();
 				Map<String, AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
 				if(map==null)
@@ -445,9 +445,9 @@ public class Entities
 		if(entity instanceof AbstractNamedEntity)
 		{	// map by id
 			AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
-			Set<Entry<KnowledgeBase, String>> entrySet = namedEntity.getExternalIds().entrySet();
-			for(Entry<KnowledgeBase, String> entry: entrySet)
-			{	KnowledgeBase kb = entry.getKey();
+			Set<Entry<String, String>> entrySet = namedEntity.getExternalIds().entrySet();
+			for(Entry<String, String> entry: entrySet)
+			{	String kb = entry.getKey();
 				String id = entry.getValue();
 				Map<String, AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
 				if(map!=null)

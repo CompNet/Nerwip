@@ -1,0 +1,1618 @@
+ISBN_13	P212	212	identifier for a book (edition), thirteen digit
+ISNI	P213	213	International Standard Name Identifier for an identity
+VIAF_ID	P214	214	identifier in the Virtual International Authority File. Format: up to 22 digits
+INVENTORY_NUMBER	P217	217	identifier for a physical object or a set of physical objects in a collection
+ISO_639_1_CODE	P218	218	two-letter identifier for a language or family of languages defined in ISO 639-1 standard
+ISO_639_2_CODE	P219	219	identifier for a language or macrolanguage or language family language, defined in ISO 639-2 standard, 3-letter technical or bibliographical  code
+ISO_639_3_CODE	P220	220	identifier for a language defined in ISO 639-3
+ISO_639_6_CODE	P221	221	identifier for a language per ISO 639-6
+GND_ID	P227	227	identifier from an international authority file of names, subjects, and organizations (please don't use type n = name, disambiguation)
+IATA_AIRLINE_DESIGNATOR	P229	229	two-character identifier for an airline
+ICAO_AIRLINE_DESIGNATOR	P230	230	three letter identifier for an airline (for airports, see P239)
+CAS_REGISTRY_NUMBER	P231	231	identifier for a chemical compound per CAS Registry
+EC_NO_	P232	232	identifier for a chemical compound per EINECS or ELINCS
+CANONICAL_SMILES	P233	233	Simplified Molecular Input Line Entry Specification (canonical format)
+INCHI	P234	234	International Chemical Identifier
+INCHIKEY	P235	235	A hashed version of the full standard InChI - designed to create an identifier that encodes structural information and a can also be practically used in web searching.
+ISSN	P236	236	International Standard Serial Number (print or electronic)
+IATA_AIRPORT_CODE	P238	238	three-letter identifier for designating airports or cities (for airlines, see P229)
+ICAO_AIRPORT_CODE	P239	239	four-character alphanumeric identifier for designating airports (for airlines, see P230)
+FAA_AIRPORT_CODE	P240	240	three-letter or four-letter alphanumeric code identifying United States airports
+OCLC_CONTROL_NUMBER	P243	243	identifier from the Online Computer Library Center
+LCAUTH_ID	P244	244	Library of Congress ID for authority control for persons and organizations (for books use P1144)
+ULAN_ID	P245	245	identifier from the Getty Union List of Artist Names
+COSPAR_ID	P247	247	international satellite designation, administered by the UN Committee on Space Research (COSPAR) and the US National Space Science Data Center (NSSDC)
+TICKER_SYMBOL	P249	249	identifier for a publicly traded share of a particular stock on a particular stock market
+ATC_CODE	P267	267	therapeutic chemical identification code per ATC
+BNF_ID	P268	268	identifier for the subject issued by BNF (Bibliothèque nationale de France). Format: 8 digits followed by a check-digit or letter
+SUDOC_AUTHORITIES	P269	269	identifier for authority control in the French collaborative library catalog (see also P1025). Format: 8 digits followed by a digit or "X"
+CALIS	P270	270	identifier for authority control per CALIS (China Academic Library & Information System)
+CINII_AUTHOR_ID	P271	271	identifier for an author in CiNii (Scholarly and Academic Information Navigator)  ("DA" + 8 digits)
+GOST_7_75_97_CODE	P278	278	identifier for a language according to GOST 7.75-97
+POSTAL_CODE	P281	281	identifier assigned by postal authorities for the subject area or building
+STATION_CODE	P296	296	identifier for a railway station
+ISO_3166_1_ALPHA_2_CODE	P297	297	identifier for a country in two-letter format per ISO 3166-1
+ISO_3166_1_ALPHA_3_CODE	P298	298	identifier for a country in three-letter format per ISO 3166-1
+ISO_3166_1_NUMERIC_CODE	P299	299	identifier for a country in numeric format per ISO 3166-1
+ISO_3166_2_CODE	P300	300	identifier for a country subdivision per ISO 3166-2 (include country code)
+EE_BREED_NUMBER	P303	303	breed identification number per the EE list of the breeds of fancy pigeons (ELFP)
+IETF_LANGUAGE_TAG	P305	305	identifier for a language per the Internet Engineering Task Force
+IMDB_ID	P345	345	identifier from the Internet Movie Database (IMDb) with prefix ('tt', 'nm', 'ch', 'co', or 'ev')
+JOCONDE_ID	P347	347	identifier in the Joconde database of the French Ministry of Culture
+NDLAUTH_ID	P349	349	identifier for authority control per the National Diet Library of Japan
+RKDIMAGES	P350	350	identifier per RKDimages of the Netherlands Institute for Art History
+ENTREZ_GENE_ID	P351	351	identifier for a gene per the NCBI Entrez database
+UNIPROT_ID	P352	352	identifier for a protein per the UniProt database.
+HGNC_GENE_SYMBOL	P353	353	identifier for a human gene
+HGNC_ID	P354	354	identifier for a gene from the HGNC database
+DOI	P356	356	serial code used to uniquely identify digital  objects like academic papers
+RIJKSMONUMENT_ID	P359	359	identifier for a monument assigned by the Rijksdienst voor het Cultureel Erfgoed
+INSEE_MUNICIPALITY_CODE	P374	374	identifier for a municipality per the National Institute of Statistics and Economic Studies in France
+SCN	P377	377	Satellite Catalog Number, 5-digit-number including leading zeros (e.g. '00266')
+MERIMEE_ID	P380	380	identifier for a monument in the Mérimée database of French cultural heritage
+PCP_REFERENCE_NUMBER	P381	381	identifier for cultural properties in Switzerland
+CBS_MUNICIPALITY_CODE	P382	382	identifier for a Dutch municipality as defined by Statistics Netherlands (CBS)
+LICENCE_PLATE_CODE	P395	395	distinguishing signs or parts of license plate associated with the subject. For countries: international licence plate country code or distinguishing sign of vehicles
+SBN_ID	P396	396	identifier issued by National Library Service (SBN) of Italy
+OPENSTREETMAP_RELATION_IDENTIFIER	P402	402	identifer for a relation in OpenStreetMap
+NLA__AUSTRALIA__ID	P409	409	identifier issued by the National Library of Australia (see also P1315 for the newer People Australia identifier). VIAF component. Format: 1-12 digits, removing leading zero-padding.
+WIKIMEDIA_LANGUAGE_CODE	P424	424	identifier for a language or variant as used by Wikimedia projects. The single item that describes the language best should use it with the qualifier P794 ("as") with value Q22283033 ("primary definition"). Languages without a code can use "mis".
+AIRCRAFT_REGISTRATION	P426	426	identifier assigned to an individual aircraft by civil aircraft registry
+DANTAI_CODE	P429	429	identifier for administrative division in 6-digit format assigned by the interior ministry of Japan
+MUSICBRAINZ_ARTIST_ID	P434	434	identifier for an artist per the MusicBrainz open music encyclopedia
+MUSICBRAINZ_WORK_ID	P435	435	identifier for a work per the MusicBrainz open music encyclopedia
+MUSICBRAINZ_RELEASE_GROUP_ID	P436	436	identifier for a release group per the MusicBrainz open music encyclopedia (album)
+GERMAN_MUNICIPALITY_KEY	P439	439	identifier for municipalities and independent towns in Germany
+GERMAN_DISTRICT_KEY	P440	440	identifier for districts (Landkreise) and independent towns in Germany
+CHINA_ADMINISTRATIVE_DIVISION_CODE	P442	442	identifier for administrative divisions of People's Republic of China (with spaces)
+STRUCTURAE_ID__STRUCTURE_	P454	454	identifier for a building in the Structurae database
+EMPORIS_BUILDING_ID	P455	455	identifier for a building in the Emporis database (for building complexes, see P2270)
+IMO_SHIP_NUMBER	P458	458	identifier for a ship per IMO
+NOR	P464	464	identifier for French official texts
+LOCAL_DIALING_CODE	P473	473	identifier dedicated to subject city by the area communication network
+COUNTRY_CALLING_CODE	P474	474	identifier for a country - dialed on phone after the international dialing prefix (precede value by +)
+CELEX_NUMBER	P476	476	identifier for European legal texts in EUR-Lex database
+CANADIAN_REGISTER_OF_HISTORIC_PLACES_ID	P477	477	identifier in the Canadian Register of Historic Places
+FILMAFFINITY_ID	P480	480	FilmAffinity identification number of a creative work
+PALISSY_ID	P481	481	identifier in the Palissy database of moveable objects of French cultural heritage
+IMA_NUMBER__BROAD_SENSE	P484	484	identifier for a mineral per the International Mineralogical Association - Commission on New Minerals, Nomenclature and Classification (IMA-CNMNC)
+MESH_ID	P486	486	identifier for diseases and other medically relevant concepts, in the MeSH descriptor database
+OMIM_ID	P492	492	Online "Mendelian Inheritance in Man" catalogue codes for diseases
+ORCID_ID	P496	496	identifier for a person
+CBDB_ID	P497	497	identifer for a person in the China Biographical Database
+ISO_4217_CODE	P498	498	identifier for a currency per ISO 4217
+HURDAT_IDENTIFIER	P502	502	identifier per HURDAT (North Atlantic hurricane database)
+ISO_STANDARD	P503	503	number of the ISO standard which normalizes the object
+ISO_15924_ALPHA_4_CODE	P506	506	identifier for a writing system
+SWEDISH_COUNTY_CODE	P507	507	identifier for a county in Sweden "länskod" (two-digit)
+BNCF_THESAURUS	P508	508	identifier in the subject indexing tool of the National Central Library of Florence
+SWEDISH_MUNICIPALITY_CODE	P525	525	identifier for a municipality in Sweden "kommunkod" (four-digit)
+CATALOG_CODE	P528	528	catalog name of an object, use with qualifier P972
+RUNWAY	P529	529	name (direction) of runway at airport/airfield/airstrip
+FIND_A_GRAVE_GRAVE_ID	P535	535	identifier of an individual's  burial place in the Find a Grave database
+ATP_ID	P536	536	ATP tennis male player identifier
+MUSEOFILE	P539	539	identifer for a museum in the Museofile database of the French ministry of culture
+MATHEMATICS_GENEALOGY_PROJECT_ID	P549	549	identifier for mathematicians and computer scientists at the Mathematics Genealogy Project
+WEBSITE_USERNAME	P554	554	username on a website that the person or organization has an account on (only use as qualifier of P553)
+IPNI_AUTHOR_ID	P586	586	numerical identifier for a person in the International Plant Names Index
+MMSI	P587	587	Maritime Mobile Service Identity of a ship station
+GNIS_ID	P590	590	identifier for geographic objects in the US issued by the USGS. For Antarctica, use Property:P804
+EC_NUMBER	P591	591	classification scheme for enzymes
+CHEMBL_ID	P592	592	identifier from a chemical database of bioactive molecules with drug-like properties
+HOMOLOGENE_ID	P593	593	identifier in the HomoloGene database
+ENSEMBL_GENE_ID	P594	594	identifier for a gene as per the Ensembl (European Bioinformatics Institute and the Wellcome Trust Sanger Institute) database
+GUIDE_TO_PHARMACOLOGY_LIGAND_ID	P595	595	ligand identifier of the Guide to Pharmacology database
+WTA_ID	P597	597	identifier for a female tennis player per WTA
+ITF_ID	P599	599	identifier for a tennis player per ITF
+WINE_APPDB_ID	P600	600	identifier for an application in the AppDB of WineHQ
+MEDLINEPLUS_ID	P604	604	health information from U.S. government agencies, and health-related organizations
+NUTS_CODE	P605	605	identifier for a region per NUTS
+YARD_NUMBER	P617	617	identifier of a ship assigned by its builder (shipyard)
+IUCN_ID	P627	627	identifier for a taxon in the International Union for Conservation of Nature database; source for conservation status (P141)
+E_NUMBER	P628	628	number for food additives that are legal in the European Union
+PARIS_CITY_DIGITAL_CODE	P630	630	identifier for a street in Paris
+CULTURAL_PROPERTIES_OF_BELARUS_REFERENCE_NUMBER	P632	632	identifier for a cultural property of Belarus
+QUEBEC_CULTURAL_HERITAGE_DIRECTORY_ID	P633	633	identifier in the directory of the cultural heritage of Quebec
+ISTAT_ID	P635	635	identifier for municipalities in Italy
+PDB_ID	P638	638	gene entry for 3D structural data as per the PDB (Protein Data Bank) database
+LEONORE_ID	P640	640	identifier of a person in the Léonore database
+FREEBASE_ID	P646	646	identifier for a page in the Freebase database. For those starting with "/g/", use Google Knowledge Graph identifier (P2671)
+OPEN_LIBRARY_ID	P648	648	identifier for works, editions and authors
+NRHP_REFERENCE_NUMBER	P649	649	identifier in the National Register of Historic Places assigned by the National Park Service of the USA
+RKDARTISTS_ID	P650	650	identifier in the RKDartists database (Rijksbureau voor Kunsthistorische Documentatie)
+BIOGRAFISCH_PORTAAL_NUMBER	P651	651	identifier at Biografisch Portaal van Nederland
+UNII	P652	652	identifier issued by the FDA / Unique Ingredient Identifier
+RTECS_NUMBER	P657	657	chemical identifier from the Registry of Toxic Effects of Chemical Substances
+CHEMSPIDER_ID	P661	661	identifier in a free chemical database, owned by the Royal Society of Chemistry
+PUBCHEM_CID	P662	662	identifier from database of chemical molecules and their activities in biological assays (Compound ID number)
+KEGG_ID	P665	665	identifier from databases dealing with genomes, enzymatic pathways, and biological chemicals
+STREET_NUMBER	P670	670	number in the street address. To be used as a qualifier of Property:P669 "street"
+MOUSE_GENOME_INFORMATICS_ID	P671	671	identifier for a gene in the Mouse Genome Informatics database
+GOOGLE_BOOKS_ID	P675	675	identifier for a book that Google has scanned
+USOP_CODE	P677	677	identifier in drusop.nature.cz, a national database of protected areas and trees
+ZVG_NUMBER	P679	679	identifier of GESTIS database
+CHEBI_ID	P683	683	identifier from database and ontology of molecular entities focused on 'small' chemical compounds
+NCBI_TAXONOMY_ID	P685	685	identifer for a taxon in the Taxonomy Database by the National Center for Biotechnology Information
+GENE_ONTOLOGY_ID	P686	686	identifier in the Gene Ontology
+BHL_PAGE_ID	P687	687	identifier in the Biodiversity Heritage Library (BHL)
+NKCR_AUT_ID	P691	691	identifier in the Czech National Authority Database (National Library of Czech Republic)
+UN_NUMBER	P695	695	four-digit numbers that identify hazardous substances, and articles (such as explosives, flammable liquids, toxic substances, etc.) in the framework of international transport
+DODIS	P701	701	identifier in the dodis database (Diplomatic Documents of Switzerland 1945-1969), see Q661051
+ENSEMBL_TRANSCRIPT_ID	P704	704	transcript ID issued by Ensembl database
+ENSEMBL_PROTEIN_ID	P705	705	identifier for a protein issued by Ensembl database
+HISTORIC_SCOTLAND_ID	P709	709	identifier for a building in the Historic Scotland database
+DRUGBANK_ID	P715	715	identifier in the bioinformatics and cheminformatics database from the University of Alberta
+MINOR_PLANET_CENTER_OBSERVATORY_CODE	P717	717	observational data for minor planets (asteroids) and comets
+CANMORE_ID	P718	718	identifier in the Royal Commission on the Ancient and Historical Monuments of Scotland's Canmore database
+OKATO_ID	P721	721	identifier for every administrative unit in Russia
+UIC_STATION_CODE	P722	722	identifier for a railway station in Europe, CIS-countries, China, Mongolia, north Africa and Middle-east.
+DBNL_AUTHOR_ID	P723	723	identifier for an author on the DBNL-website for Dutch language authors
+INTERNET_ARCHIVE_ID	P724	724	identifier for an item on archive.org
+EUROPEANA_ID	P727	727	identifier in europeana.eu for books, paintings, films, museum objects and archival records that have been digitised throughout Europe
+LITHOLEX_ID	P731	731	identifier in the Lithostratigraphic database of Germany maintained by the BGR
+LOW_GERMAN_BIBLIOGRAPHY_AND_BIOGRAPHY_ID	P745	745	identifier
+WORLD_HERITAGE_SITE_ID	P757	757	identifier for a site as assigned by UNESCO. Use on one item per site, link parts with property "has part" (P527)
+KULTURMINNE_ID	P758	758	Norwegian heritage property identification number of Riksantikvaren (the Directorate for Cultural Heritage)
+ALBERTA_REGISTER_OF_HISTORIC_PLACES_ID	P759	759	identifier of historic resources in the Alberta Register of Historic Places
+DPLA_ID	P760	760	identifier for books, paintings, films, museum objects and archival records that have been digitised throughout United States
+LAKE_ID__SWEDEN_	P761	761	Identification code for lakes in Sweden, for lakes important enough also used, with SE- prefix, as EU_CD
+CZECH_CULTURAL_HERITAGE_ID	P762	762	identifier for cultural heritage properties in the Czech Republic
+PEI_REGISTER_OF_HISTORIC_PLACES_ID	P763	763	identifier of a historic place in Prince Edward Island, Canada
+OKTMO_ID	P764	764	identifier in Classification on Objects territory of municipal formations (Russia)
+SWISS_MUNICIPALITY_CODE	P771	771	identifier for a municipality in Switzerland
+INE_MUNICIPALITY_CODE	P772	772	identifier for Spanish municipalities, by the Spanish Statistical Office (INE)
+ISO_3166_3	P773	773	identifier for a country name that has been deleted from ISO 3166-1 since its first publication in 1974
+FIPS_55_3__LOCATIONS_IN_THE_US_	P774	774	identifier for places in the United States per former Federal Information Processing Standard FIPS 55-3
+SWEDISH_URBAN_AREA_CODE	P775	775	identifier for an urban area in Sweden
+SWEDISH_MINOR_URBAN_AREA_CODE	P776	776	identifier for a minor urban area in Sweden
+SWEDISH_CIVIL_PARISH_CODE_ATA_CODE	P777	777	identifier for a civil parish in Sweden
+SIKART	P781	781	identifier in SIKART, a biographical dictionary and a database on visual art in Switzerland and Liechtenstein
+LAU	P782	782	identifier for a local administrative unit, renamed from NUTS 4 and NUTS 5
+ISIL_ID	P791	791	identifier for a library or related organization
+MILITARY_DESIGNATION	P798	798	officially assigned designation for a vehicle in military service
+GNIS_ANTARCTICA_ID	P804	804	identifier for geographic objects in Antarctica, used in the US Geological Survey's Geographic Names Information System. For U.S. IDs, use Property:P590
+ITALIAN_CADASTRE_CODE	P806	806	identifier for Italian comunes in the cadastre
+CODE_BIEN_DE_INTERES_CULTURAL	P808	808	identifier for an item in the Spanish heritage register
+WDPA_ID	P809	809	identifier in World Database on Protected Areas
+ITIS_TSN	P815	815	Taxonomic Serial Number within the Integrated Taxonomic Information System
+ARXIV_ID	P818	818	identifier of a document in arXiv pre-print archive
+ADS_BIBCODE	P819	819	bibcode in the Astrophysics Data System
+CGNDB_UNIQUE_ID	P821	821	identifier the geographical feature of the Geographical Names Board of Canada
+METEORITICAL_BULLETIN_DATABASE_ID	P824	824	identifier for a meteorite in the database of the Meteoritical Society
+BBC_PROGRAMME_ID	P827	827	identifier for the corresponding item on the BBC website and internal systems
+OEIS_ID	P829	829	identifer on the On-Line Encyclopedia of Integer Sequences
+ENCYCLOPEDIA_OF_LIFE_ID	P830	830	eol.org item reference number
+AUTHOR_CITATION__ZOOLOGY_	P835	835	short form of the name used after a taxon this person has authored
+GSS_CODE__2011_	P836	836	nine-character UK Government Statistical Service code, introduced in 2011 to replace older ONS codes
+IMSLP_ID	P839	839	identifier for a page on the International Music Score Library Project
+FOSSILWORKS_ID	P842	842	identifier for fossil animals, plants, and microorganisms
+SIRUTA_CODE	P843	843	identifier for an area of Romania per National Institute of Statistics
+UBIGEO_CODE	P844	844	identifier for a geographical location in Peru used by the National Statistics Institute
+SASKATCHEWAN_REGISTER_OF_HERITAGE_PROPERTY_ID	P845	845	identifier in the Saskatchewan Register of Heritage Property
+GLOBAL_BIODIVERSITY_INFORMATION_FACILITY_ID	P846	846	identifier in GBIF
+WORMS_ID	P850	850	identifier in the World Register of Marine Species
+ESPNSCRUM_PLAYER_ID	P858	858	identifier for any international rugby union player, from website espn.co.uk
+E_ARCHIV_LI_ID	P860	860	identifier in e-archiv.li, a directory of sources of Landesarchiv Liechtenstein
+PREMIERSHIPRUGBY_COM_ID	P861	861	identifier for each rugby union player who plays - or played - the English Premiership
+INPHO_ID	P863	863	identifier in the Indiana Philosophy Ontology project
+ACM_DIGITAL_LIBRARY_AUTHOR_ID	P864	864	Association for Computing Machinery Digital Library (ACM DL) author identifier
+BMLO	P865	865	identifier per Bayerisches Musiker-Lexikon Online (Q47191)
+PERLENTAUCHER_ID	P866	866	identifier in Perlentaucher (Q2071388)
+ROME_OCCUPATION_CODE__V3_	P867	867	ROME Code for a given occupation in France (V3, 1 letter, 4 digits)
+PENNANT_NUMBER	P879	879	the number or designation associated with individual warships, often painted on the hull
+FIPS_6_4__US_COUNTIES_	P882	882	identifier for US counties per former Federal Information Processing Standard FIPS 6-4. Use two-digit state code followed by three digit county code
+FIPS_5_2__CODE_FOR_US_STATES_	P883	883	identifier for US states and other associated areas (numeric or alpha) per Federal Information Processing Standard FIPS 5-2
+STATE_WATER_REGISTER_CODE__RUSSIA_	P884	884	identifier of a body of water in Russia
+JSTOR_ARTICLE_ID	P888	888	identifier for an article in JSTOR
+MATHEMATICAL_REVIEWS_ID	P889	889	identifier in Mathematical Reviews, a journal and online database
+RFC_ID	P892	892	identifier for an item in Request for Comments, a publication of IETF and the Internet Society (without "RFC" prefix)
+SOCIAL_SCIENCE_RESEARCH_NETWORK_ID	P893	893	identifier for an article/paper at the SSRN
+ZBMATH_ID	P894	894	identifier in the zbMath database
+UNITED_STATES_ARMY_AND_AIR_FORCE_AIRCRAFT_DESIGNATION	P897	897	identifier for a US Army and Air Force aircraft until 1962
+FIPS_10_4__COUNTRIES_AND_REGIONS_	P901	901	identifier for countries and regions per former Federal Information Processing Standard FIPS 10-4
+HDS_ID	P902	902	identifier in HDS/HLS/DHS/DSS: Historical Dictionary of Switzerland (Q642074), a national encyclopedia
+PORT_FILM_ID	P905	905	PORT-network film database: identifier for a film or television program
+SELIBR	P906	906	identifier per National Library of Sweden Libris library catalog
+ALLGAME_ID	P907	907	identifier in the allgame video game database
+NOVA_SCOTIA_REGISTER_OF_HISTORIC_PLACES_ID	P909	909	identifier in the Nova Scotia Register of Historic Places
+SOUTH_AFRICAN_MUNICIPALITY_CODE	P911	911	identifier for a municipality in South Africa
+GRAU_INDEX	P917	917	index of Russian (and Soviet) weapons and rockets
+SOC_CODE__2010_	P919	919	Standard Occupational Classification code for US jobs (2010 version)
+LEM_ID	P920	920	subject headings for public libraries maintained by the Spanish Ministry of Education, Culture and Sport
+PMCID	P932	932	identifier issued by PubMed Central
+HERITAGEFOUNDATION_CA_ID	P933	933	identifier of Heritage Foundation of Newfoundland and Labrador
+FISHBASE_SPECIES_ID	P938	938	identifier for a specie in FishBase
+KSH_CODE	P939	939	identifier for every municipality (town and commune) in Hungary issued by the Hungarian Central Statistical Office
+ISIN	P946	946	identifier for a security
+RSL_ID__PERSON_	P947	947	identifier of the Russian State Library
+NATIONAL_LIBRARY_OF_ISRAEL_ID	P949	949	identifier for authority control used at the National Library of Israel
+BNE_ID	P950	950	identifier from the authority file of the Biblioteca Nacional de España. Format for persons: "XX" followed by 4 to 7 digits
+NSZL_ID	P951	951	identifier from the authority file of the National Széchényi Library
+IBNR_ID	P954	954	identifier for a railway station (Internationale Bahnhofsnummer)
+ISBN_10	P957	957	identifier for a book (edition), ten digit
+MSW_ID	P959	959	identifier from Mammal Species of the World: a database that claims to provide an authoritative and comprehensive list of names of mammals (but the ICZN does not agree)
+TROPICOS_TAXON_NAME_ID	P960	960	identifier in the Tropicos database
+IPNI_PLANT_ID	P961	961	numerical identifier for a plant in the International Plant Names Index
+MYCOBANK_TAXON_NAME_ID	P962	962	identifier per MycoBank - a database that provides an authoritative and comprehensive list of names of fungi
+AUSTRIAN_MUNICIPALITY_KEY	P964	964	identifier for municipalities in Austria
+BURIAL_PLOT_REFERENCE	P965	965	string of references which identify a specific plot in a burial area, e.g. cemetery
+MUSICBRAINZ_LABEL_ID	P966	966	identifier for a label in the MusicBrainz open music encyclopedia
+LOCATED_AT_STREET_ADDRESS	P969	969	full street address that the subject is located at. Include building number through to post code.
+CODE_FOR_WEEKEND_AND_HOLIDAY_HOMES__SWEDEN_	P980	980	identifier for a for weekend or holiday home in Sweden, assigned by Statistics Sweden
+BAG_CODE_FOR_DUTCH_LOCATIONS	P981	981	BAG (Basisregistraties Adressen en Gebouwen) code for Dutch locations
+MUSICBRAINZ_AREA_ID	P982	982	identifier for an area in the MusicBrainz open music database
+PHILIPPINE_STANDARD_GEOGRAPHIC_CODE	P988	988	systematic classification and coding of geographic areas of the Philippines.
+DMOZ_ID	P998	998	Open Directory Project
+ARICNS	P999	999	identifier for stars in ARICNS
+NLR__ROMANIA__ID	P1003	1003	identifier for authority control used at the National Library of Romania
+MUSICBRAINZ_PLACE_ID	P1004	1004	Identifier for a place in the MusicBrainz open music encyclopedia
+PTBNP_ID	P1005	1005	identifier for the Portuguese National Library
+NATIONAL_THESAURUS_FOR_AUTHOR_NAMES_ID	P1006	1006	identifier from the Dutch National Thesaurus for Author names
+LATTES_PLATFORM_NUMBER	P1007	1007	number for the Lattes Platform entry on the person or group. Relationship between entry and subject must be supported by a source
+IRAN_STATISTICS_ID	P1010	1010	identifier for places in Iran
+AAT_ID	P1014	1014	identifier in the Art & Architecture Thesaurus by the Getty Research Institute
+BIBSYS_ID	P1015	1015	identifier in the Norwegian information system BIBSYS
+BAV_ID	P1017	1017	identifier for authority control used at the Vatican Library
+CNO_11_OCCUPATION_CODE	P1022	1022	Spanish classification of occupations CNO-11 maintained by the Spanish INE (Instituto Nacional de Estadística)
+SUDOC_EDITIONS	P1025	1025	identifier in the French union catalog (see also P269)
+LEGAL_CITATION_OF_THIS_TEXT	P1031	1031	legal citation of legislation or a court decision
+ZDB_ID	P1042	1042	identifier for serials German National Serials Database
+SYCOMORE_ID	P1045	1045	identifer in the Sycomore database of French MPs, National Assembly (France)
+CATHOLIC_HIERARCHY_PERSON_ID	P1047	1047	identifer for the person on catholic-hierarchy.org
+NCL_ID	P1048	1048	identifier for authority control issued by the National Central Library in Taiwan
+PSH_ID	P1051	1051	identifier in the authority database of the Czech Technical Library
+PORTUGUESE_JOB_CODE_CPP_2010	P1052	1052	N/A
+RESEARCHERID	P1053	1053	identifier for a researcher in a system for scientific authors, primarily used in Web of Science
+NDL_BIB_ID	P1054	1054	identifier in the National Diet Library
+NLM_UNIQUE_ID	P1055	1055	identifier in the catalog of the National Library of Medicine
+ERA_JOURNAL_ID	P1058	1058	identifier for academic journals
+CVR_NUMBER	P1059	1059	unique identifier for a business in Denmark's Central Business Register (CVR), the official database of Danish businesses.
+KOATUU_IDENTIFIER	P1077	1077	identifier for each of the Ukrainian administrative units
+EUL_EDITIONS	P1084	1084	identifier for a book (edition) in the Egyptian union catalog
+ATVK_ID	P1115	1115	identifier for each of the Latvian administrative units, i.e. municipality, parish, city under state jurisdiction and city under municipality jurisdiction. Based on the {{Q|15621843}}.
+ELSTAT_GEOGRAPHICAL_CODE	P1116	1116	identifier for administrative regions of Greece by the Greek Statistical Authority (starting 2010)
+DGO4_IDENTIFIER	P1133	1133	identifier per Direction générale opérationelle (Wallonia)
+KUNSTINDEKS_DANMARK_ARTIST_ID	P1138	1138	unique artist identifier used by Kunstindeks Danmark
+EHAK_ID	P1140	1140	Estonian Administrative and Settlement Classification
+BN__ARGENTINE__EDITIONS	P1143	1143	catalogue number for books (editions) in the National Library of the Argentine Republic
+LCOC_LCCN__BIBLIOGRAPHIC_	P1144	1144	Library of Congress ID for bibliographic records (for books, serials, maps, music, video, etc only; for names use P244)
+IAAF_ID	P1146	1146	identifier for athletes in International Association of Athletics Federations (IAAF) database and website
+REGENSBURG_CLASSIFICATION	P1150	1150	identifier used for this class in the Regensburg Classification system
+SCOPUS_AUTHOR_ID	P1153	1153	identifier for an author assigned in Scopus bibliographic database
+SCOPUS_EID	P1154	1154	unique academic work identifier assigned in Scopus bibliographic database
+SCOPUS_AFFILIATION_ID	P1155	1155	identifier for an organisation in author affiliations per Scopus
+SCOPUS_SOURCE_ID	P1156	1156	Scopus uses a unique identifier for each source/publication venue (journal, conference, etc)
+US_CONGRESS_BIO_ID	P1157	1157	identifier for a person on the Biographical Directory of the United States Congress
+CODEN	P1159	1159	CODEN bibliographic code
+Z39_5_ABBREVIATION	P1161	1161	Z39.5 bibliographic code/abbreviation established in 1969 by National Information Standards Organization and used widely in the US
+BLUEBOOK_ABBREVIATION	P1162	1162	Bluebook citation style includes abbreviations
+USB_ID	P1167	1167	vendor ID used in USB devices
+MUNICIPALITY_CODE__DENMARK_	P1168	1168	identifier for municipalities in Denmark
+GEOKOD	P1172	1172	identifier for historical administrative division of Sweden (1862-1951)
+LIBRIS_EDITIONS	P1182	1182	identifier for the items in the libris-catalogue about specific books
+GEWASSERKENNZAHL	P1183	1183	a number to hydrographically order rivers and streams
+HANDLE	P1184	1184	Handle System identifier, which is a superset of the DOI
+RODOVID_ID	P1185	1185	identifer for a person on rodovid.org
+MEP_DIRECTORY_ID	P1186	1186	identifier for a past or present MEP in a directory of all members of the European Parliament
+DHARMA_DRUM_BUDDHIST_COLLEGE_PERSON_ID	P1187	1187	identifier for a person in DDBC
+DHARMA_DRUM_BUDDHIST_COLLEGE_PLACE_ID	P1188	1188	identifier for a place in DDBC
+CHINESE_LIBRARY_CLASSIFICATION	P1189	1189	identifier used for this class in the CLC
+UNIVERSAL_DECIMAL_CLASSIFICATION	P1190	1190	type of library classification
+FILE_EXTENSION	P1195	1195	identifier for a file format (e.g. txt for a text file) used as suffix to the file name, don't use dot at start
+FINNISH_MUNICIPALITY_NUMBER	P1203	1203	identifier for a municipality in Finland
+NUKAT__WARSAWU__AUTHORITIES	P1207	1207	identifier for authority control in the Center of Warsaw University Library catalog
+ISMN	P1208	1208	International Standard Music Number
+CN	P1209	1209	identifier for a newspaper or magazine issued by State Administration of Press, Publication, Radio, Film and Television of the People’s Republic of China
+ATLAS_ID	P1212	1212	identifier in the Atlas database of the Louvre Museum
+NLC_AUTHORITIES	P1213	1213	identifier for a person per National Library of China
+RIKSDAGEN_PERSON_ID	P1214	1214	identifier at data.riksdagen.se
+NATIONAL_HERITAGE_LIST_FOR_ENGLAND_NUMBER	P1216	1216	number on the National Heritage List for England
+INTERNET_BROADWAY_DATABASE_VENUE_ID	P1217	1217	identifier for a theatre or other venue in the IBDB
+INTERNET_BROADWAY_DATABASE_PRODUCTION_ID	P1218	1218	identifier for a specific run of a show
+INTERNET_BROADWAY_DATABASE_SHOW_ID	P1219	1219	identifier for a play or other work (which may have had 1 or more productions)
+INTERNET_BROADWAY_DATABASE_PERSON_ID	P1220	1220	identifier for personnel on Broadway
+OPENPOLIS_ID	P1229	1229	identifier in Openpolis, a database of Italian politicians
+JSTOR_JOURNAL_CODE	P1230	1230	identifier for a journal in JSTOR
+LINGUIST_LIST_CODE	P1232	1232	identifier for a language per Linguist list
+ISFDB_AUTHOR_ID	P1233	1233	identifier for a person in the Internet Speculative Fiction Database
+ISFDB_PUBLICATION_ID	P1234	1234	identifier for an edition of a publication in the Internet Speculative Fiction Database
+ISFDB_SERIES_ID	P1235	1235	identifier for a series, periodical or franchise in the Internet Speculative Fiction Database
+PARSONS_CODE	P1236	1236	identifier for melodic contours of music
+BOX_OFFICE_MOJO_FILM_ID	P1237	1237	identifier for a movie at the website Box Office Mojo
+SWEDISH_FOOTBALL_ASSOCIATION_ID	P1238	1238	identifier for Swedish soccer players
+SWISS_FOOTBALL_ASSOCIATION_CLUB_NUMBER	P1241	1241	identifier
+THEATRICALIA_PLAY_ID	P1242	1242	identifier for a theatrical work, in the Theatricalia database
+OMEGAWIKI_DEFINED_MEANING	P1245	1245	"Defined Meaning"" on the site OmegaWiki
+CONOR_ID	P1280	1280	identifier in the CONOR.SI database
+JUFO_ID	P1277	1277	identifier in a Finnish Publication Forum
+BIBCODE	P1300	1300	bibcode for a journal
+LNB_ID	P1368	1368	identifier assigned by the National Library of Latvia
+GRIN_URL	P1421	1421	URL for the website GRIN
+NATIONAL_CANCER_INSTITUTE_ID	P1395	1395	identifier at www.cancer.gov
+WALS_GENUS_CODE	P1467	1467	identifier for a language genus
+WALS_LECT_CODE	P1466	1466	identifier for a language
+GLAD_IDENTIFIER	P1529	1529	identifier for a cultural property per the Glad database of French cultural heritage
+KULTURNOE_NASLEDIE_RU_ID	P1483	1483	identifier for an item in a Russian cultural heritage register
+INTERNATIONAL_STANDARD_RECORDING_CODE	P1243	1243	identifier
+UBERON_ID	P1554	1554	identifier from UBERON ontology (without prefix)
+GEONAMES_ID	P1566	1566	identifier in the GeoNames geographical database
+NIS_INS_CODE	P1567	1567	place? code used by Belgium Statistics
+LAC_ID	P1670	1670	identifier for authority control per the Library and Archives Canada
+TGN_ID	P1667	1667	identifier in the Getty Thesaurus of Geographic Names
+SIPA_ID	P1700	1700	identifier in the SIPA (Sistema de Informação para o Património Arquitectónico) database of heritage sites in Portugal
+DEWEY_DECIMAL_CLASSIFICATION	P1036	1036	use with qualifier ""edition (p747)"" with item value ""DDC 23"" or create new item to represent the corresponding DDC edition
+KLG_KRITISCHES_LEXIKON_DER_GEGENWARTSLITERATUR	P1288	1288	identifier on the Munzinger Archiv
+PLANTLIST_ID	P1070	1070	identifier in the database of 'The Plant List'
+THAILAND_CENTRAL_ADMINISTRATIVE_UNIT_CODE	P1067	1067	identifier for each of the Thai central administrative units
+LIBRARYTHING_WORK_ID	P1085	1085	LibraryThing (LT) control number
+NATIONAL_ARCHIVES_IDENTIFIER	P1225	1225	identifier for the Unites States National Archives and Records Administration's online catalog
+LOSTBRIDGES_ORG_ID	P1311	1311	identifier from database of covered bridges in the United States and Canada
+INDEX_FUNGORUM_ID	P1391	1391	identifier in Index Fungorum (see Q1860469)
+ENCYCLOP_DIA_BRITANNICA_ONLINE_ID	P1417	1417	identifer for an article in the online version of Encyclopædia Britannica
+JEWISH_ENCYCLOPEDIA_ID__RUSSIAN_	P1438	1438	identifier on the Electronic Jewish Encyclopedia (Elektronnaja Evrejskaja Entsiklopedia)
+CADW_BUILDING_ID	P1459	1459	identifier for listed buildings in Wales
+EXCEPTIONAL_HERITAGE_OF_WALLONIA_ID	P1551	1551	The unique identifier of the ""Patrimoine immobilier exceptionnel de la Région wallonne"
+KULTURNAV_ID	P1248	1248	identifier for people, places, events, etc. used by some Nordic museums
+DANISH_BIBLIOMETRIC_RESEARCH_INDICATOR__BFI__SNO_CNO	P1250	1250	serial & conference identifier
+ABS_ASCL_CODE	P1251	1251	Australian Standard Classification of Languages ID for languages
+AUSTLANG_CODE	P1252	1252	identifier for a language in the Australian Indigenous Languages Database
+BCU_ECRIVAINSVD	P1253	1253	identifier in the database of writers from the canton of Vaud
+SLOVENSKA_BIOGRAFIJA_ID	P1254	1254	identifier in the "Slovenska biografija" reference project
+HELVETICARCHIVES_ID	P1255	1255	identifier in the Swiss National Library's archive database
+ROTTEN_TOMATOES_ID	P1258	1258	identifier on Rotten Tomatoes: must use prefix "m/" for movies, "tv/" for TV series (remove /s number on end unless the item is a specific season), "celebrity/" for celebrities, "critic/" for film critics, "source-" for review sources
+CULTURAL_HERITAGE_DATABASE_IN_SWEDEN	P1260	1260	identifier
+RUNDATA	P1261	1261	database about runestones, mainly in Sweden, but stones in all of Europe, Greenland and U.S. can be found here
+RAA_NUMBER	P1262	1262	qualifier that identify an element with its ID in Database of the cultural heritage in Sweden
+NNDB_PEOPLE_ID	P1263	1263	identifier in the Notable Names Database, a biographical database: only for people entries
+ALLOCINE_FILM_ID	P1265	1265	identifier for a film in the AlloCiné database
+ALLOCINE_PERSON_ID	P1266	1266	identifier for a person on the AlloCiné film database
+ALLOCINE_SERIES_ID	P1267	1267	identifier for a serie in the AlloCiné film database
+NORWEGIAN_REGISTER_JOURNAL_ID	P1270	1270	identifier for academic journals
+NORWAY_DATABASE_FOR_STATISTICS_ON_HIGHER_EDUCATION_PUBLISHER_ID	P1271	1271	identifier
+NORWAY_IMPORT_SERVICE_AND_REGISTRATION_AUTHORITY_PERIODICAL_CODE	P1272	1272	N/A
+CANTIC_ID	P1273	1273	identifier for authority control managed by the National Library of Catalonia (BNC)
+ISFDB_TITLE_ID	P1274	1274	identifier for a title in the Internet Speculative Fiction Database
+NORWAY_IMPORT_SERVICE_AND_REGISTRATION_AUTHORITY_PUBLISHER_CODE	P1275	1275	identifier
+DICTIONNAIRE_DU_JURA_ID	P1276	1276	identifier in the encyclopedia Dictionnaire du Jura
+LEGAL_ENTITY_ID	P1278	1278	identifier for a legally distinct entity per ISO 17442
+WOEID	P1281	1281	identifier for a location on Yahoo! GeoPlanet and Flickr
+OPENSTREETMAP_TAG_OR_KEY	P1282	1282	OpenStreetMap tagging schema (a Key:key or Tag:key=value) for classes of things
+MUNZINGER_IBA	P1284	1284	identifier on the Munzinger Archiv
+MUNZINGER_SPORT_NUMBER	P1285	1285	identifer on the Munzinger Archiv
+MUNZINGER_POP_ID	P1286	1286	identifier on the Munzinger Archiv
+KDG_KOMPONISTEN_DER_GEGENWART	P1287	1287	identifier on the Munzinger Archiv
+KLFG_CRITICAL_DICTIONARY_OF_FOREIGN_CONTEMPORARY_LITERATURE	P1289	1289	N/A
+ASSOCIATION_AUTHORS_OF_SWITZERLAND_ID	P1291	1291	identifier in a Swiss database of modern writers
+DNB_EDITIONS	P1292	1292	identifier in the German National Library catalogue (see also authority data P227)
+ROYAL_AERO_CLUB_AVIATOR_S_CERTIFICATE_ID	P1293	1293	identifier
+WWF_ECOREGION_CODE	P1294	1294	identifier for ecoregions
+GRAN_ENCICLOPEDIA_CATALANA_ID	P1296	1296	identifier for an item in the Gran Enciclopèdia Catalana
+IRS_EMPLOYER_IDENTIFICATION_NUMBER	P1297	1297	number given to businesses by the United States Internal Revenue Service
+SKYSCRAPER_CENTER_ID	P1305	1305	identifier for a building as used on the CTBUH's www.skyscrapercenter.com
+SWISS_PARLIAMENT_ID	P1307	1307	identifier for a member of the Swiss Parliament since 1848
+EGAXA_ID	P1309	1309	identifier in Bibliotheca Alexandrina
+PEOPLE_AUSTRALIA_ID	P1315	1315	identifier for people per National Library of Australia (see also P409 for the older Libraries Australia identifier). Format: 6 to 8 digits.
+SMDB_ID	P1316	1316	identifier in the Swedish Media Database
+OPENCORPORATES_ID	P1320	1320	identifier for a corporation, in the OpenCorporates database
+PHONE_NUMBER	P1329	1329	telephone number in standard format
+MUSICBRAINZ_INSTRUMENT_ID	P1330	1330	identifier for an instrument on the music encyclopedia MusicBrainz
+PACE_MEMBER_ID	P1331	1331	identifier for a member of the Parliamentary Assembly of the Council of Europe
+EPSG_ID	P1338	1338	identifier for geodetic datum per European Petroleum Survey Group Geodesy
+ITALIAN_CHAMBER_OF_DEPUTIES_ID	P1341	1341	identifier for incumbent and former deputies from the Italian Chamber of Deputies
+THEATERLEXIKON_DER_SCHWEIZ_ONLINE_ID	P1362	1362	identifier in the online edition of the Theater Dictionary of Switzerland
+ITTF_ID	P1364	1364	6-digit identifier for a table tennis player as per International Table Tennis Federation (ITTF)
+ART_UK_ARTIST_ID	P1367	1367	authority control identifier for artists (creators of publicly owned oil paintings in the UK)
+IRANIAN_NATIONAL_HERITAGE_REGISTRATION_NUMBER	P1369	1369	identifier in the Iranian National Heritage database
+IHSI_ID	P1370	1370	identifier for an administrative territorial entity in Haiti
+ASI_MONUMENT_ID	P1371	1371	identifier assigned to monuments catalogued by the Archaeological Survey of India
+NSK_ID	P1375	1375	identifier for an item in the National and University Library in Zagreb (including leading zeroes)
+UGLYBRIDGES_COM_ID	P1380	1380	identifier from database based on the National Bridge Inventory. Lists every U.S. bridge over 20 feet (6 meters) long
+ENCICLOPEDIA_ACORIANA_ID	P1385	1385	identifier for an item in Enciclopédia Açoriana
+JAPANESE_HIGH_SCHOOL_CODE	P1386	1386	identifier for a high school in Japan
+GERMAN_REGIONAL_KEY	P1388	1388	identifier for municipalities and unincorporated areas in Germany
+COMICBOOKDB_ID	P1392	1392	identifier in a comic book database
+GLOTTOLOG_CODE	P1394	1394	identifier for a language in the Glottolog database
+LINGUASPHERE_CODE	P1396	1396	identifier for a language from Linguasphere Observatory
+STATE_CATALOGUE_OF_GEOGRAPHICAL_NAMES__RUSSIA__ID	P1397	1397	identifier in State Catalogue of Geographical Names (Russia)
+FOUNDATIONAL_MODEL_OF_ANATOMY_ID	P1402	1402	identifier for human anatomical terminology
+MUSICBRAINZ_SERIES_ID	P1407	1407	identifier for a series per the MusicBrainz open music encyclopedia
+CYCLING_ARCHIVES_ID__CYCLIST_	P1409	1409	identifier in the Cycling Archives
+OXFORD_BIOGRAPHY_INDEX_NUMBER	P1415	1415	identifier for authority control used by Oxford University Press for online biographical resources, predominantly the Oxford Dictionary of National Biography
+SANDRART_NET_PERSON_ID	P1422	1422	identifier in the web-based edition of Joachim von Sandrart’s "Teutscher Academie der Edlen Bau, Bild- und Mahlerey-Künste" (1675–80)
+LOST_ART_ID	P1428	1428	identifier in the Lost Art Internet Database
+OPENPLAQUES_SUBJECT_ID	P1430	1430	identifier for a person or other subject in the OpenPlaques database - http://openplaques.org/
+NORSK_FILMOGRAFI_ID	P1439	1439	identifier from Norsk filmografi, published by the National Library of Norway
+FIDE_ID	P1440	1440	identifier on the FIDE database for chess players
+SPORTS_REFERENCE_ID	P1447	1447	identifier on the website sports-reference.com
+CATHOLIC_RU_ID	P1453	1453	identifier on the site catholic.ru
+NIEA_BUILDING_ID	P1460	1460	identifier for listed buildings in Northern Ireland
+PATIENTPLUS_ID	P1461	1461	identifier of disease at Patient UK
+PRDL_AUTHOR_ID	P1463	1463	identifier from Post-Reformation Digital Library
+WALS_FAMILY_CODE	P1468	1468	identifier for a language family
+FIFA_PLAYER_ID	P1469	1469	identifier for a soccer player per FIFA
+REPORTING_MARK	P1471	1471	reporting mark for railroads in North America
+NUPILL_LITERATURA_DIGITAL___AUTHOR	P1473	1473	identifier for an author from Nupill Literatura Digital
+NUPILL_LITERATURA_DIGITAL___DOCUMENT	P1474	1474	identifier for a document in Nupill Literatura Digital
+CYCLING_QUOTIENT_ID__CYCLIST__MAN_	P1541	1541	identifier on cqranking.com
+FEDERAL_REGISTER_DOCUMENT_NUMBER	P1544	1544	Authority file ID in the United States Federal Register
+SERIES_ORDINAL	P1545	1545	position of an item in its parent series, generally to be used as a qualifier. Different from "rank"
+YANDEX_MUSIC_ARTIST_ID	P1553	1553	identifier for artist on the site music.yandex.ru
+EXECUTIVE_ORDER_NUMBER	P1555	1555	identifier for an executive order of the US
+ZBMATH_AUTHOR_ID	P1556	1556	identifier of a person in the Zentralblatt MATH database
+ALLMOVIE_MOVIE_ID	P1562	1562	identifier for a movie on the site AllMovie
+MACTUTOR_ID__BIOGRAPHIES_	P1563	1563	identifier of the person's biography in the MacTutor History of Mathematics archive
+AT_THE_CIRCULATING_LIBRARY_ID	P1564	1564	identifier in the At the Circulating Library Victorian literature database
+ENCICLOPEDIA_DE_LA_LITERATURA_EN_MEXICO_ID	P1565	1565	identifier
+BBC_GENOME_ID	P1573	1573	identifier for a single episode/ programme in the BBC Genome database of Radio Times programme listings
+RISS_CATALOG	P1575	1575	union catalog of South Korea and Japan, maintained by RISS
+GMELIN_NUMBER	P1578	1578	identifier for inorganic chemical compounds, in the Gmelin database
+UNIVERSITY_OF_BARCELONA_AUTHORITY_ID	P1580	1580	identifier
+MALACARDS_ID	P1583	1583	identifier in the Malacards database of diseases
+PLEIADES_ID	P1584	1584	identifier for a place in Pleiades hosted at pleiades.stoa.org
+BRAZILIAN_MUNICIPALITY_CODE	P1585	1585	identifier for municipalities in Brazil
+CATALAN_OBJECT_OF_CULTURAL_INTEREST_ID	P1586	1586	N/A
+SLOVENE_CULTURAL_HERITAGE_REGISTER_ID	P1587	1587	identifier for a cultural monument in the Slovene Cultural Heritage Register
+DESA_CODE_OF_INDONESIA	P1588	1588	identifier by Statistics Indonesia
+CAMBRIDGE_ALUMNI_DATABASE_ID	P1599	1599	identifier in the Cambridge Alumni Database/Alumni Cantabrigienses (ACAD)
+CODE_INVENTARI_DEL_PATRIMONI_ARQUITECTONIC_DE_CATALUNYA	P1600	1600	identifier for an architectural property in Catalonia. max. 5-digit numeric
+ESPERANTIST_ID	P1601	1601	number in the address book of early Esperanto speakers by Zamenhof
+ART_UK_VENUE_ID	P1602	1602	authority control identifier for venues housing art, in the UK
+DIALNET_AUTHOR_ID	P1607	1607	identifier for an author in Dialnet
+DIALNET_BOOK	P1608	1608	N/A
+DIALNET_JOURNAL	P1609	1609	N/A
+DIALNET_ARTICLE	P1610	1610	N/A
+HISTORY_OF_PARLIAMENT_ID	P1614	1614	identifier on the History of Parliament website
+CLARA_ID	P1615	1615	identifier from database about women visual artists
+SIREN_NUMBER	P1616	1616	identifer for an organization in the SIRENE register maintained by INSEE
+BBC_THINGS_ID	P1617	1617	identifier in the BBC Things database
+MARINETRAFFIC_PORT_ID	P1624	1624	identifier for a port assigned by the MarineTraffic database
+THAI_CULTURAL_HERITAGE_ID	P1626	1626	identifier for cultural heritage properties in Thailand
+ETHNOLOGUE_COM_CODE	P1627	1627	identifier for a language in ethnologue.com
+CHINA_VITAE_ID	P1631	1631	identifier for a person in the China Vitae database
+EGLISEINFO_ID	P1644	1644	identifier
+NIST_CODATA_ID	P1645	1645	identifier for a physical constant
+DICTIONARY_OF_WELSH_BIOGRAPHY_ID	P1648	1648	identifier per the Dictionary of Welsh Biography
+KMDB_PERSON_ID	P1649	1649	identifier for a person on the Korean Movie Database (KMDb)
+BBF_ID	P1650	1650	identifier in the archive database of the German "Research Library for the History of Education" (personal data of the teachers of Prussia)
+YOUTUBE_VIDEO_ID	P1651	1651	identifier of a notable video on YouTube
+TERYT_MUNICIPALITY_CODE	P1653	1653	identifier for a municipality per the Główny Urząd Statystyczny in Poland
+DOI_PREFIX	P1662	1662	identifier specific to a DOI registrant
+PROCYCLINGSTATS_ID__CYCLIST_	P1663	1663	identifier on the website ProCyclingStats (www.procyclingstats.com)
+CYCLING_DATABASE_ID	P1664	1664	identifier on the website Cycling Database (www.cyclingdatabase.com)
+CHESS_GAMES_ID	P1665	1665	identifier on the website Chess Games (www.chessgames.com)
+CHESS_CLUB_ID	P1666	1666	identifier on the website Chess Club (www6.chessclub.com)
+CONA_ID	P1669	1669	identifier from Cultural Objects Name Authority
+ROUTE_NUMBER	P1671	1671	number of a railway line
+ART_UK_ARTWORK_ID	P1679	1679	identifier for artworks (publicly owned oil paintings in the UK)
+POKEMON_BROWSER_NUMBER	P1685	1685	a Pokémon identification number
+ANIDB_ID	P1688	1688	identifier on the site anidb.net
+NLP_ID	P1695	1695	identifier for authority control per the National Library of Poland
+SKYSCRAPERPAGE_BUILDING_ID	P1699	1699	identifier for a building in the SkyscraperPage database
+IGESPAR_ID	P1702	1702	identifier in the IGESPAR  (Instituto de Gestão do Património Arquitectónico e Arqueológico) database of heritage sites in Portugal
+DAAO_ID	P1707	1707	identifier per Design & Art Australia Online
+LFDS_OBJECT_ID	P1708	1708	identifer for national heritage sites issued by the Landesamt für Denkmalpflege Sachsen
+SACHSISCHE_BIOGRAFIE	P1710	1710	identifier in a biographical dictionary of people from Saxony
+BRITISH_MUSEUM_PERSON_INSTITUTION	P1711	1711	identifier in the British Museum person-institution thesaurus
+METACRITIC_ID	P1712	1712	identifier in Metacritic
+BIOGRAPHY_AT_THE_BUNDESTAG_OF_GERMANY	P1713	1713	link to the biography pages of the German parliament
+JOURNALISTED_ID	P1714	1714	identifier on Journalisted, an independent, not-for-profit website (by Media Standards Trust) listing the published writing of journalists and politicians
+RKD_ESD__SLOVENIA__ID	P1715	1715	reference number of intangible cultural heritage of Slovenia (EID)
+SANDRE_ID	P1717	1717	identifer of the French national Water Information System
+FLORENTINE_MUSEA_INVENTARIO_1890__ID	P1726	1726	national florentine musea inventory from 1890 identifier
+FLORA_OF_NORTH_AMERICA_TAXON_ID	P1727	1727	identifier of a taxon in Flora of North America
+ALLMUSIC_ARTIST_ID	P1728	1728	identifier for an artist in AllMusic database
+ALLMUSIC_ALBUM_ID	P1729	1729	identifier for an album in AllMusic database
+ALLMUSIC_SONG_ID	P1730	1730	identifier for a song in AllMusic database
+NATURBASE_ID	P1732	1732	identifier in the Naturbase database published by the Norwegian Environment Agency
+STEAM_APPLICATION_ID	P1733	1733	identifier for an application on the Steam website
+INFORMATION_CENTER_FOR_ISRAELI_ART_ARTIST_ID	P1736	1736	identifier for an artist found in the Information Center for Israeli Art
+MERCK_INDEX_MONOGRAPH	P1738	1738	URL stem of page in The Merck Index Online
+CINII_BOOK_ID	P1739	1739	identifier for books, in the Japanese CiNii bibliography.
+GTAA_ID	P1741	1741	identifier for GTAA, a thesaurus used in audiovisual archives (NISV, EYE)
+VASCAN_ID	P1745	1745	identifier in the Database of Vascular Plants of Canada
+NCI_THESAURUS_ID	P1748	1748	identifier in the United States National Cancer Institute Thesaurus, vocabulary for clinical care, translational and basic research, etc
+PARLEMENT___POLITIEK_ID	P1749	1749	entry of described object on Parlement & Politiek, website describing Dutch politics
+ART_UK_COLLECTION_ID	P1751	1751	identifier for art collections, in the UK
+AVIATION_SAFETY_NETWORK_ACCIDENT_ID	P1755	1755	identifier for an accident description per the Aviation Safety Network's database
+AVIATION_SAFETY_NETWORK_WIKIBASE_OCCURRENCE	P1760	1760	identifier for an item in the Aviation Safety Network's database
+WATSON___DALLWITZ_FAMILY_ID	P1761	1761	familyID in Watson & Dallwitz: The families of flowering plants
+NATIONAL_PIPE_ORGAN_REGISTER_ID	P1763	1763	identifier in the (United Kingdom) National Pipe Organ Register
+FLEMISH_ORGANIZATION_FOR_IMMOVABLE_HERITAGE_RELICT_ID	P1764	1764	identifier for a "relict" in the database of the Flemish organization for Immovable Heritage
+DENKXWEB_IDENTIFIER	P1769	1769	identifier in the  online database for cultural heritage monuments in the German state of Hesse
+ROMANIA_LMI_CODE	P1770	1770	identifier in 'Lista monumentelor istorice din România' (Romanian heritage sites)
+INTEGRATED_POSTSECONDARY_EDUCATION_DATA_SYSTEM_ID	P1771	1771	identifier for colleges and universities in the United States
+USDA_PLANTS_ID	P1772	1772	identifier in the United States Department of Agriculture PLANTS Database
+DVN_ID	P1788	1788	identifier in the Dutch Digitaal Vrouwenlexicon van Nederland (Online Dictionary of Dutch Women), a biography portal of prominent women in Dutch history.
+BUREAU_DU_PATRIMOINE_DE_SEINE_SAINT_DENIS_ID	P1794	1794	identifier in the atlas-patrimoine93.fr website
+SMITHSONIAN_AMERICAN_ART_MUSEUM__PERSON_INSTITUTION_THESAURUS_ID	P1795	1795	identifier for a person or institution, in the Smithsonian American Art Museum: person/institution thesaurus
+INTERNATIONAL_STANDARD_INDUSTRIAL_CLASSIFICATION_CODE_REV_4	P1796	1796	code of industry by ISIC (International Standard Industrial Classification of All Economic Activities)
+ISO_639_5_CODE	P1798	1798	identifier for a language family per ISO 639-5
+MALTESE_ISLANDS_NATIONAL_INVENTORY_OF_CULTURAL_PROPERTY_ID	P1799	1799	identifier in the National Inventory of Cultural Property of the Maltese Islands
+WIKIMEDIA_DATABASE_NAME	P1800	1800	identifier for a Wikimedia project database
+EMLO_PERSON_ID	P1802	1802	identifier in the Early Modern Letters Online project run by the Bodleian Library
+MASARYK_UNIVERSITY_PERSON_ID	P1803	1803	identifer for a person affiliated with Masaryk University (staff, alumnus, student…)
+DNF_FILM_ID	P1804	1804	identifier for a film in the Danish National Filmography
+GREAT_ARAGONESE_ENCYCLOPEDIA_ID	P1807	1807	identifier in the Spanish language, Aragon-themed, Great Aragonese Encyclopedia (GEA)
+SENAT_FR_ID	P1808	1808	identifier on the website of the French senate
+RSL_SCANNED_BOOK_S_IDENTIFIER	P1815	1815	identifier of the Russian State Library
+NATIONAL_PORTRAIT_GALLERY__LONDON__PERSON_ID	P1816	1816	identifier for sitters and artists represented in the National Portrait Gallery, London
+KAISERHOF_ID	P1818	1818	identifier in the personnel database of the courtiers of the Austrian Habsburg imperial line and the branch lines
+GENEALOGICS_ORG_PERSON_ID	P1819	1819	identifier for a person at genealogics.org
+DSH_OBJECT_ID	P1822	1822	identifier for cultural monuments in Hamburg, Germany
+BANQ_ID	P1823	1823	identifier for a work in the collection of Bibliothèque et Archives nationales du Québec
+ROAD_NUMBER	P1824	1824	number assigned to a stretch of public roadway
+BASEBALL_REFERENCE_COM_MAJOR_LEAGUE_PLAYER_ID	P1825	1825	identifier for a Major League Baseball player assigned by Baseball-Reference.com
+BASEBALL_REFERENCE_COM_MINOR_LEAGUE_PLAYER_ID	P1826	1826	identifier for a Minor League Baseball player assigned by Baseball-Reference.com
+ISWC	P1827	1827	identifier for musical works, adopted as international standard ISO 15707
+IPI_NAME_NUMBER	P1828	1828	identifier for the name of a composer, author and other relevant parties
+ROUD_FOLK_SONG_INDEX_NUMBER	P1829	1829	number assigned to a folk song in the Roud Folk Song Index
+GRASSBASE_ID	P1832	1832	identifier in GrassBase - The Online World Grass Flora
+GAOLOUMI_ID	P1837	1837	identifier for a building in the Gaoloumi database
+PSS_ARCHI_ID	P1838	1838	identifier for a building in the PSS-archi database
+US_FEDERAL_ELECTION_COMMISSION_ID	P1839	1839	identifier assigned by the US Federal Election Commission for federal candidates, parties, and other committees
+SWEDISH_DISTRICT_CODE	P1841	1841	identifier for Swedish districts from 2016
+GLOBAL_ANABAPTIST_MENNONITE_ENCYCLOPEDIA_ONLINE_ID	P1842	1842	identifier for Global Anabaptist Mennonite Encyclopedia Online
+HATHITRUST_ID	P1844	1844	identifier from the HathiTrust Digital Library
+ANTI_VIRUS_ALIAS	P1845	1845	alias issued by anti-virus companies to classify malware
+NASJONALBIBLIOTEKET_PHOTOGRAPHER_ID	P1847	1847	identifier used by the Nasjonalbiblioteket (Norwegian National Library) for photographers
+PROTECTED_AREAS_INPN_CODE	P1848	1848	identifier from the Inventaire national du patrimoine naturel for protected areas
+STEDSNUMMER	P1850	1850	identifier for a place, used by "Sentralt stedsnavnregister" in Norway for keeping track of names for that place
+PERRY_INDEX	P1852	1852	The item's value on the Perry Index primarily for fables attributed to Aesop
+KIEV_STREET_CODE	P1854	1854	identifier for a street of Kiev
+CATHOLIC_HIERARCHY_DIOCESE_ID	P1866	1866	identifer for a diocese on catholic-hierarchy.org
+HALL_OF_VALOR_ID	P1869	1869	identifier for a medal recipient, in the US Hall of Valor
+CERL_ID	P1871	1871	identifier in the Consortium of European Research Libraries thesaurus
+NETFLIX_ID	P1874	1874	identifier for a creative work on Netflix
+WEB_GALLERY_OF_ART_ID	P1882	1882	identifier for an artist in the Web Gallery of Art
+DECLARATOR_ORG_ID	P1883	1883	Person ID on Declarator.org database
+SMITHSONIAN_VOLCANO_ID	P1886	1886	Identifier of volcano in the Smithsonian Global Volcanism Program
+BNC_ID	P1890	1890	Biblioteca Nacional de Chile authority file ID
+OPENPLAQUES_PLAQUE_ID	P1893	1893	identifier for a commemorative plaque, on a building or other structure in OpenPlaques
+DANISH_URBAN_AREA_CODE	P1894	1894	official identifier for an urban area in Denmark
+FAUNA_EUROPAEA_ID	P1895	1895	identifier in Fauna Europaea
+LIBRIVOX_AUTHOR_ID	P1899	1899	author ID for an author represented at LibriVox
+EAGLE_ID	P1900	1900	identifier of an epigraphic concept in the Europeana Network of Ancient Greek and Latin Epigraphy (EAGLE) vocabulary
+BALAT_PERSON_ORGANISATION_ID	P1901	1901	identifier for person or organisation in the People & Institutions database of Belgian Art Links & Tools (BALaT), maintained by KIK-IRPA, Belgium's Royal Institute for Cultural Heritage.
+SPOTIFY_ARTIST_ID	P1902	1902	identifier for an artist on Spotify
+FUNDREF_REGISTRY_NAME	P1905	1905	standardised name, in the FundRef taxonomy of funder names
+AUSTRALIAN_DICTIONARY_OF_BIOGRAPHY_ID	P1907	1907	article about the person in the Australian Dictionary of Biography
+CWGC_PERSON_ID	P1908	1908	identifier for a person, in the online database of Commonwealth War Graves Commission
+MINISTRY_OF_EDUCATION_OF_CHILE_SCHOOL_ID	P1919	1919	ID number (Rol Base de Datos, RBD, in Spanish, meaning database role) of all schools (high, middle, primary) in Chile, as registered by the Ministry of Education of Chile
+CWGC_BURIAL_GROUND_ID	P1920	1920	identifier for a cemetery, churchyard, or memorial, in the online database of Commonwealth War Graves Commission
+VACCINE_ONTOLOGY_ID	P1928	1928	identifier in the Vaccine Ontology database
+NIOSH_POCKET_GUIDE_ID	P1931	1931	Identifier for a chemical in the NIOSH Pocket Guide to Chemical Hazards
+MOBYGAMES_ID	P1933	1933	identifier for MobyGames
+ANIMATOR_RU_FILM_ID	P1934	1934	ID of animated film in Animator.ru database
+DATABASE_OF_CLASSICAL_SCHOLARS_ID	P1935	1935	identifer of a person in the University of South Carolina's Database of Classical Scholars
+DIGITAL_ATLAS_OF_THE_ROMAN_EMPIRE_ID	P1936	1936	Identifier of a Roman site, in the Digital Atlas of the Roman Empire
+UN_LOCODE	P1937	1937	geographic location code mantained by UNECE
+PROJECT_GUTENBERG_AUTHOR_ID	P1938	1938	author identifier at Project Gutenberg
+DYNTAXA_ID	P1939	1939	Swedish Taxonomic Database ID
+CONIFERS_ORG_ID	P1940	1940	string that identifies a page in the conifers.org website
+STREET_KEY	P1945	1945	identification number for a specific street within the street cadastre of a municipality
+NATIONAL_LIBRARY_OF_IRELAND_AUTHORITY	P1946	1946	National Library of Ireland (N6I) authority identifier
+MAPILLARY_ID	P1947	1947	ID for a photo on Mapillary, a service for crowdsourcing map photos
+BERLPAP_IDENTIFIER	P1948	1948	link to the Berliner Papyrusdatenbank
+CULTURAITALIA_ID	P1949	1949	identification number for the CulturaItalia LOD section
+ENCYCLOPAEDIA_METALLUM_BAND_ID	P1952	1952	identifier for a band in the Encyclopaedia Metallum database
+DISCOGS_ARTIST_ID	P1953	1953	identifier for a band or person in the Discogs database
+DISCOGS_MASTER_ID	P1954	1954	identifier for a musical work in the Discogs database
+DISCOGS_LABEL_ID	P1955	1955	identifier for a record label, studio or series in the Discogs database
+TRISMEGISTOS_GEO_ID	P1958	1958	Identifier of an ancient place
+DUTCH_SENATE_PERSON_ID	P1959	1959	identifier for a person on the website of the Dutch Senate
+GOOGLE_SCHOLAR_ID	P1960	1960	Identifier of a person, in the Google Scholar academic search service
+BIBLIOTECA_NACIONAL_DE_CHILE_CATALOGUE_NUMBER	P1966	1966	catalogue number for books (editions), periodical, magazine, map, photography and other media in the Biblioteca Nacional de Chile
+BOXREC_ID	P1967	1967	Identifier for a boxer, in the BoxRec database
+FOURSQUARE_VENUE_ID	P1968	1968	ID of a place in Foursquare
+MOVIEMETER_DIRECTOR_ID	P1969	1969	identifier for a person on the MovieMeter film database
+MOVIEMETER_MOVIE_ID	P1970	1970	idMovieMeter movie identifier for a movie on the website MovieMeter
+OPEN_HUB_ID	P1972	1972	Identifier for free software, at Open Hub
+RSL_EDITIONS	P1973	1973	catalogue number of the Russian State Library of Moscow (see also P1815 and P947)
+INEGI_LOCALITY_ID	P1976	1976	identifier for a locality of Mexico
+LES_ARCHIVES_DU_SPECTACLE_ID	P1977	1977	Identifier for an actor/actress/playwright/play, in the lesarchivesduspectacle database of actors/actresses
+USDA_NDB_NUMBER	P1978	1978	identifier for a food item in the United States Department of Agriculture National Nutrient Database
+RIGHTEOUS_AMONG_THE_NATIONS_ID	P1979	1979	identifier in the database of The Righteous Among The Nations
+POLSYS_ID	P1980	1980	identifier for a person in the PolSys database of Norwegian politicians
+ANIME_NEWS_NETWORK_PERSON_ID	P1982	1982	identifier for a person on animenewsnetwork.com
+ANIME_NEWS_NETWORK_COMPANY_ID	P1983	1983	identifier of a company on animenewsnetwork.com
+ANIME_NEWS_NETWORK_MANGA_ID	P1984	1984	identifier of a manga on animenewsnetwork.com
+ANIME_NEWS_NETWORK_ANIME_ID	P1985	1985	identifier of an anime on animenewsnetwork.com
+DIZIONARIO_BIOGRAFICO_DEGLI_ITALIANI	P1986	1986	identifier of the Biographical dictionary of italian people
+MCN_CODE	P1987	1987	code for item in the Mercosur Common Nomenclature
+DELARGE_ID	P1988	1988	identifer for an artist in the Delarge dictionary
+ENCYCLOPAEDIA_METALLUM_ARTIST_ID	P1989	1989	identifier for a person in the Encyclopaedia Metallum database
+PLAZI_ID	P1992	1992	UUID for a taxon treatment at (Q7203726)
+ALLMUSIC_COMPOSITION_ID	P1994	1994	identifier for a composition in AllMusic
+PARLIAMENT_UK_ID	P1996	1996	link to an MP or Peer's biography on parliament.uk
+FACEBOOK_PLACES_ID	P1997	1997	identifier for a place in Facebook
+CPDL_ID	P2000	2000	identifier of a work or person, in the Choral Public Domain Library
+TWITTER_USERNAME	P2002	2002	this item's username on Twitter
+INSTAGRAM_USERNAME	P2003	2003	item's username on Instagram
+NALT_ID	P2004	2004	identifier in the subject categories of the Agricultural Thesaurus of United States National Agricultural Library
+CATALOGUS_PROFESSORUM_HALENSIS	P2005	2005	biographical entry in the Catalogus Professorum Halensis
+ZOOBANK_AUTHOR_ID	P2006	2006	identifier for an author at ZooBank
+ZOOBANK_PUBLICATION_ID	P2007	2007	identifier for a publication at ZooBank
+IPNI_PUBLICATION_ID	P2008	2008	identifier for a publication in the International Plant Names Index
+EXIF_MODEL	P2009	2009	string as it appears in the exif generated by a camera
+EXIF_MAKE	P2010	2010	string of the manufacturer as it appears in the exif generated by a specific digital camera model
+COOPER_HEWITT_PERSON_ID	P2011	2011	identifier for a person or organization in the Cooper-Hewitt (Smithsonian Museum) catalogue
+FACEBOOK_ID	P2013	2013	identifier for a person or organization in Facebook
+MOMA_ARTWORK_ID	P2014	2014	identifier for a Museum of Modern Art artwork
+HANSARD__1803_2005__ID	P2015	2015	Identifier of a person in the Hansard 1803-2005 database, indexing speeches in the British parliament (both Commons and Lords).
+CATALOGUS_PROFESSORUM_ACADEMIAE_GRONINGANAE_ID	P2016	2016	identifier for a professor, in the Catalogus Professorum Academiae Groninganae
+ISOMERIC_SMILES	P2017	2017	dedicated SMILES for isomer
+TEUCHOS_ID	P2018	2018	Identification String in the Teuchos Database
+ALLMOVIE_ARTIST_ID	P2019	2019	identifier for a person on the AllMovie film database
+WORLDFOOTBALL_NET_ID	P2020	2020	identifier for a soccer player on worldfootball.net
+FIND_A_GRAVE_CEMETERY_ID	P2025	2025	identifier assigned to a cemetery at Find A Grave
+AVIBASE_ID	P2026	2026	identifier for a species or genus in Avibase - the world bird database
+COLOUR_INDEX_INTERNATIONAL_CONSTITUTION_ID	P2027	2027	identifier issued by Colour Index International, for manufactured colour products
+UNITED_STATES_ARMED_FORCES_SERVICE_NUMBER	P2028	2028	number assigned by the US military to soldiers and sailors as the primary means of service member identification from 1918 until 1974
+DICTIONARY_OF_ULSTER_BIOGRAPHY_ID	P2029	2029	identifer for a person in the Dictionary of Ulster Biography
+NASA_BIOGRAPHICAL_ID	P2030	2030	Identifier used by NASA for an astronaut or cosmonaut
+PROJECT_GUTENBERG_EBOOK_ID	P2034	2034	ebook identifier at Project Gutenberg
+LINKEDIN_PERSONAL_PROFILE_URL	P2035	2035	public autobiographic profile URL of the person at Linkedin.com, don't use on companies
+GITHUB_USERNAME	P2037	2037	username of this person or organization on GitHub
+RESEARCHGATE_PERSON_ID	P2038	2038	identifier for a person, used by ResearchGate
+NATIONAL_GALLERY_OF_VICTORIA_ARTIST_ID	P2041	2041	identifier assigned to an artist by the National Gallery of Victoria in Australia
+ARTSY_ARTIST_ID	P2042	2042	identifier at the artsy website
+HMDB_ID	P2057	2057	ID in Human Metabolome Database
+HSDB_ID	P2062	2062	ID in Hazardous Substances Data Bank
+LIPID_MAPS_ID	P2063	2063	identifier used in the LIPID MAPS database for lipids
+KNAPSACK_ID	P2064	2064	identifier in the KNApSAcK Core System
+NIAID_CHEMDB_ID	P2065	2065	ID in NIAID ChemDB
+FELLOW_OF_THE_ROYAL_SOCIETY	P2070	2070	Fellow ID of the Royal Society
+MEMOIRE_DES_HOMMES_ID	P2071	2071	French govermnment database indexing all french soldier war casualties
+CDB_CHEMICAL_ID	P2072	2072	ID in UCI chemical database
+INTERNETMEDICIN_SE_ID	P2074	2074	ID in the Swedish database about medical topics
+ACADEMIANET	P2080	2080	identifier in the AcademiaNet database for excellent female scientists
+BLDAM_OBJECT_ID	P2081	2081	Object ID to identify cultural heritage monuments in Brandenburg, Germany
+M_49_CODE	P2082	2082	United Nations M.49 code for the subject item
+LEADSCOPE_ID	P2083	2083	identifier for a chemical compound in leadscope.com
+ZINC_ID	P2084	2084	identifier for a chemical compound in the ZINC database
+NIKKAJI	P2085	2085	identifier for a chemical compound in the Japan Chemical Substance Dictionary (Nikkaji)
+CDD_PUBLIC_ID	P2086	2086	identifier for a chemical compound in the Collaborative Drug Discovery database
+CRUNCHBASE_PERSON_ID	P2087	2087	Identifier for a person, in the CrunchBase database of companies and start-ups, operated by TechCrunch
+CRUNCHBASE_ORGANISATION_ID	P2088	2088	Identifier for an organisation, in the CrunchBase database of companies and start-ups, operated by TechCrunch
+LIBRARY_OF_CONGRESS_JUKEBOX_ID	P2089	2089	identifier in the Library of Congress JukeBox database of singers
+POWER_OF_10_ATHLETE_ID	P2090	2090	identifier for an athlete in the Power of 10 database
+FISA_ROWER_ID	P2091	2091	identifier for a rower in the database of the International Rowing Federation (FISA)
+BILDINDEX_DER_KUNST_UND_ARCHITEKTUR_ID	P2092	2092	property for Bildindex
+BC_GEOGRAPHICAL_NAMES_ID	P2099	2099	Unique ID of the BC Geographical Names
+BANQUE_DE_NOMS_DE_LIEUX_DU_QUEBEC_ID	P2100	2100	unique identifier for geographical names in Quebec
+RXNO_ONTOLOGY	P2106	2106	RSC ontology for organic reactions
+KUNSTINDEKS_DANMARK_ARTWORK_ID	P2108	2108	identifier for artwork in the Danish art database
+NDF_RT_ID	P2115	2115	identifier for the National Drug File Reference Terminology
+YERELNET_VILLAGE_ID	P2123	2123	identifier for a village, in YerelNet.org.tr, which contains detailed informations about all villages in Turkey
+PUBCHEM_SUBSTANCE_ID__SID_	P2153	2153	substance (e.g. mixtures, undefined stereochemistry, ...) identifier in the PubChem database.
+CELL_LINE_ONTOLOGY_ID	P2158	2158	Identifier for an ontology which describes anatomic origin and nature of eukaryotic cell lines.
+GUTHRIE_CODE	P2161	2161	Guthrie code of a Bantu language
+DEUTSCHE_ULTRAMARATHON_VEREINIGUNG_ID	P2162	2162	Identifier for individual runners inside Deutsche Ultramarathon-Vereinigung's database
+FAST_ID	P2163	2163	authority control identifier in WorldCat's “FAST Linked Data” authority file
+SIGIC_AUTHOR_ID	P2164	2164	SIGIC - Slovenian Music Information Center (property for author/person)
+SIGIC_GROUP_ID	P2165	2165	SIGIC - Slovenian Music Information Center (property for music group)
+SIGIC_INSTITUTION_ID	P2166	2166	SIGIC - Slovenian Music Information Center (property for institution)
+UNSPSC_CODE	P2167	2167	identifier for taxonomy of products and services for use in eCommerce
+SFDB_PERSON_ID	P2168	2168	identifier for a person on the Swedish Film Database (SFDb)
+PUBLICWHIP_ID	P2169	2169	identifer in the PublicWhip database of British MPs
+HANSARD__2006_MARCH_2016__ID	P2170	2170	identifier for a British MP in Hansard (2006–March 2016)
+THEY_WORK_FOR_YOU_ID	P2171	2171	Identifer in the 'They Work for You' database of British MPs
+PARLIAMENTARY_RECORD_IDENTIFIER	P2172	2172	Parliamentary record identifier for British MPs
+BBC_NEWS_DEMOCRACY_LIVE_ID	P2173	2173	Identifer in the BBC News Democracy Live database of British MPs
+MOMA_ARTIST_ID	P2174	2174	identifier assigned to an artist by the Museum of Modern Art in New York
+ACM_CLASSIFICATION_CODE__2012_	P2179	2179	ACM Computing Classification Code of 2012 (8 digits)
+KANSALLISBIOGRAFIA_ID	P2180	2180	code of the entry on the Kansallisbiografia database
+FINNISH_MP_ID	P2181	2181	code of the entry on the Finnish parliament database
+FINNISH_MINISTERS_DATABASE_ID	P2182	2182	code of the entry on the Finnish ministers database
+DLI_ID	P2185	2185	identifier for a work, in the Digital Library of India
+WIKI_LOVES_MONUMENTS_ID	P2186	2186	unique ID for the monuments included in Wiki Loves Monument's national lists
+BIBLIONET_PUBLICATION_ID	P2187	2187	Identifier in the BiblioNet database of book editions
+BIBLIONET_AUTHOR_ID	P2188	2188	Identifier in the BiblioNet database of authors, created by the National Book Centre of Greece, many Greek individual publishers and their professional associations
+BIBLIONET_PUBLISHER_ID	P2189	2189	identifier in the BiblioNet database of publishers
+C_SPAN_PERSON_ID	P2190	2190	identifier for a person's appearances on C-SPAN
+NILF_AUTHOR_ID	P2191	2191	Numeric author identifier within the Vegetti Catalog of Fantastic Literature
+ENDANGEREDLANGUAGES_COM_ID	P2192	2192	project of Alliance for Linguistic Diversity which provides some informations on endangered languages from all over the world
+SOCCERBASE_PLAYER_ID	P2193	2193	player ID on the Soccerbase.com website
+PSS_ARCHI_ARCHITECT_ID	P2194	2194	identifier for an architect in the PSS-archi database
+SOCCERBASE_MANAGER_ID	P2195	2195	manager ID on the Soccerbase.com website
+SPOTIFY_ALBUM_ID	P2205	2205	identifier for an album on Spotify
+DISCOGS_RELEASE_ID	P2206	2206	identifier for a musical work (release) in the Discogs database, if there is no master ID
+SPOTIFY_TRACK_ID	P2207	2207	Identifier for a track on Spotify
+SOURCEFORGE_PROJECT	P2209	2209	Identifier for an official SourceForge repository ("project") for a software product
+FLORENTINE_MUSEA_CATALOGUE_ID	P2242	2242	identifier for artworks from the catalogue of the national Florentine musea
+REFSEQ_GENOME_ID	P2249	2249	ID in the RefSeq Genome database
+NGA_ARTIST_ID	P2252	2252	identifier assigned to an artist by the National Gallery of Art in Washington DC
+DFE_URN	P2253	2253	Department for Education Unique Reference Number; school identifier used by the UK government
+DEBRETT_S_PEOPLE_OF_TODAY_ID	P2255	2255	identifier for a person, in Debrett's "People of Today"
+MOBILE_COUNTRY_CODE	P2258	2258	identifier for countries in ITU-T Recommendation E.212 for use in describing mobile networks
+MOBILE_NETWORK_CODE	P2259	2259	code for mobile networks defined by ITU-T Recommendation E.212
+ISOCAT_ID	P2263	2263	numeric ID from the Data Category Registry
+FASHION_MODEL_DIRECTORY_MODEL_ID	P2266	2266	external link to a model's profile at the Fashion Model Directory (FMD) website
+POLITIFACT_PERSONALITY_ID	P2267	2267	person or group whose statements have been fact checked by Politifact.com
+MUSEE_D_ORSAY_ARTIST_ID	P2268	2268	numeric ID for an artist in the database of the Orsay Museum
+EMPORIS_BUILDING_COMPLEX_ID	P2270	2270	identifier for a building complex, as opposed to a single building, in the Emporis architecture database
+HEDERICH_ENCYCLOPEDIA_ARTICLE_ID	P2272	2272	entry in Hederich’s encyclopedia of mythology, 3rd edition (1770), via zeno.org
+HEIDELBERG_ACADEMY_FOR_SCIENCES_AND_HUMANITIES_MEMBER_ID	P2273	2273	entry in the list of members of the Heidelberg Academy for Sciences and Humanities
+UEFA_PLAYER_ID	P2276	2276	identifier for UEFA players
+MAGDEBURGER_BIOGRAPHISCHES_LEXIKON	P2277	2277	biographical article about people from the Magdeburg area
+MEMBER_OF_THE_HELLENIC_PARLIAMENT_ID	P2278	2278	an identifier for members, or former members, of the national parliament of Greece
+AUSTRIAN_PARLIAMENT_ID	P2280	2280	identifier for an individual, in the Austrian Parliament's "Who's Who" database
+ITUNES_ALBUM_ID	P2281	2281	identifier for a musical work in the iTunes website
+GROENINGEMUSEUM_WORK_PID	P2282	2282	persistent identifier for an artwork from the collection of the Groeningemuseum in Bruges, Belgium
+CRISTIN_ID	P2287	2287	ID in the database for Norwegian scientists
+DANISH_PARISH_CODE	P2290	2290	identifier for an parish in Denmark
+NSDAP_MEMBERSHIP_NUMBER__1925_1945_	P2298	2298	N/A
+CALL_SIGN	P2317	2317	short form identifier for a radio operator or broadcaster and (as flag signal) previous for watercrafts
+ARTICLE_ID	P2322	2322	identifier for an article in an online publication
+SWEDISH_OLYMPIC_COMMITTEE_ATHLETE_ID	P2323	2323	entry in the bibliographic database of the Swedish Olympic Committee
+GNS_UNIQUE_FEATURE_ID	P2326	2326	identifier for geographic entities according to the National Geospatial-Intelligence Agency's GEOnet Names Server
+PROCYCLINGSTATS_ID__RACE_	P2327	2327	N/A
+PROCYCLINGSTATS_ID__TEAM_	P2328	2328	N/A
+CYCLING_ARCHIVES_ID__RACE_	P2330	2330	identifier in the Cycling Archives
+CYCLING_ARCHIVES_ID__TEAM_	P2331	2331	identifier in the Cycling Archives
+DICTIONARY_OF_ART_HISTORIANS_ID	P2332	2332	identifier for a person in the Dictionary of Art Historians
+NORWEGIAN_ORGANIZATION_NUMBER	P2333	2333	organization's ID in the Norwegian Entity Registry
+SWEDISH_FILM_DATABASE_FILM_ID	P2334	2334	identifier for a movie on the Swedish Film Database (SFDb)
+SFDB_COMPANY_ID	P2335	2335	company identifier in the Swedish Film Database (SFDb)
+SFDB_SOUNDTRACK_ID	P2336	2336	soundtrack identifier in the Swedish Film Database (SFDb)
+SFDB_GROUP_ID	P2337	2337	group identifier in the Swedish Film Database (SFDb)
+MUSOPEN_COMPOSER_ID	P2338	2338	idenifier for a composer in the musopen.org database
+BOARDGAMEGEEK_ID	P2339	2339	identifier for a board game in the BoardGameGeek database
+CESAR_PERSON_ID	P2340	2340	identifer for a person in the CESAR database of French theatre of the seventeenth and eighteenth centuries
+AGORHA_PERSON_INSTITUTION_ID	P2342	2342	identifier for a person or institution in the Agorha database (INHA)
+AGORHA_WORK_ID	P2344	2344	Accès global et organisé aux ressources en histoire de l’art
+AGORHA_EVENT_IDENTIFIER	P2345	2345	N/A
+ELONET_MOVIE_ID	P2346	2346	identifier for a movie in the Elonet database
+YSO_ID	P2347	2347	identifier for a concept in the General Finnish Ontology YSO
+STUTTGART_DATABASE_OF_SCIENTIFIC_ILLUSTRATORS_ID	P2349	2349	Identifier for a person, in the University of Stuttgart's Database of Scientific Illustrators, 1450-1950
+SPEEDSKATINGBASE_EU_ID	P2350	2350	identifier for a speed skater in the Speedskatingbase.eu database with personal best distance records
+UNESCO_ENDANGERED_LANGUAGE_ID	P2355	2355	identifier for endangered languages listed by UNESCO
+CLASSIFICATION_OF_INSTRUCTIONAL_PROGRAMS_CODE	P2357	2357	code representing academic disciplines in the U.S. Department of Education's Classification of Instructional Programs
+PRODUCTION_CODE	P2364	2364	production code of an episode
+AUSTRALIAN_STRATIGRAPHIC_UNITS_DATABASE_ID	P2367	2367	identifier for a stratigraphic unit listed in the Australian Stratigraphic Units Database
+SOCCERWAY_PLAYER_ID	P2369	2369	player id on the Soccerway website
+ODIS_ID	P2372	2372	identifier in the Belgian ODIS database
+GENIUS_ARTIST_ID	P2373	2373	identifier for an artist on Genius.com
+FRENCH_SCULPTURE_CENSUS_ARTIST_ID	P2380	2380	Identifier in the French Sculpture Census
+ACADEMIC_TREE_ID	P2381	2381	identifer on academictree.org
+CHEMINS_DE_MEMOIRE_ID	P2382	2382	N/A
+CTHS_PERSON_ID	P2383	2383	identifier for a person in the directory of French learned societies
+FRENCH_DIOCESAN_ARCHITECTS_ID	P2385	2385	identifier for a person in the French diocesan architects index
+ELONET_PERSON_ID	P2387	2387	identifier for a person, in the Elonet database
+OKPO_ID	P2391	2391	identifier for a company, in the Russian National Classifier of Enterprises and Organizations (OKPO) database
+YOUTUBE_CHANNEL_ID	P2397	2397	ID of the YouTube channel of a person or organisation (not to be confused with the name of the channel)
+MLS_PLAYER_ID	P2398	2398	identifier for soccer player profile on MLSSoccer.com, website of Major League Soccer
+BRITISH_COUNCIL_ARTIST_ID	P2399	2399	Identifier for an artist, in the catalogue of the British Council
+JMDB_FILM_ID	P2400	2400	film IDs on Japanese Movie Database
+SIX_DEGREES_OF_FRANCIS_BACON_ID	P2401	2401	identifier in the Six Degrees of Francis Bacon database
+CINII_ARTICLE_ID	P2409	2409	identifier for an article in CiNii
+ARTSY_GENE	P2411	2411	generalization of artwork type, technique, material, genre, movement, etc. from artsy.net
+FASHION_MODEL_DIRECTORY_DESIGNER_ID	P2412	2412	external link to a designer's profile at the Fashion Model Directory (FMD) website
+FASHION_MODEL_DIRECTORY_MAGAZINE_ID	P2413	2413	external link to a magazine profile at the Fashion Model Directory (FMD) website
+STRUCTURAE_PERSON_ID	P2418	2418	identifier for a person in the Structurae database
+PROSOPOGRAPHIA_ATTICA	P2421	2421	identifier for a person in Prosopographia Attica (Q2113277) by Johannes Kirchner (Q1697841)
+FIE_ID	P2423	2423	Identifier in the database of all fencers holding an international licence at the Fédération Internationale d'Escrime (FIE)
+BERLIN_CULTURAL_HERITAGE_ID	P2424	2424	identifer for an object in the cultural heritage database of Berlin
+XENO_CANTO_SPECIES_ID	P2426	2426	Identifier of a bird species in the Xeno-canto database
+GRID_ID	P2427	2427	institutional identifier from the GRID.ac global research identifier database
+REPEC_SHORT_ID	P2428	2428	identifier for a researcher in the IDEAS database
+THYSSEN_BORNEMISZA_ARTIST_ID	P2431	2431	identifier assigned to an artist by the Thyssen-Bornemisza Museum
+J__PAUL_GETTY_MUSEUM_ARTIST_ID	P2432	2432	identifier assigned to an artist by the J. Paul Getty Museum
+PORT_PERSON_ID	P2435	2435	PORT-network film database: identifier for a person
+TRANSFERMARKT_PLAYER_ID	P2446	2446	identifier for a association football (soccer) player, in the transfermarkt.com database
+TRANSFERMARKT_MANAGER_ID	P2447	2447	identifier for a manager or coach, in the transfermarkt.com database
+TURKISH_FOOTBALL_FEDERATION_PLAYER_ID	P2448	2448	identifier for a player in the Turkish Football Federation's database
+TURKISH_FOOTBALL_FEDERATION_COACH__ID	P2449	2449	identifier for a coach or manager in the Turkish Football Federation's database
+ENCYCLOP_DIA_BRITANNICA_CONTRIBUTOR_ID	P2450	2450	identifier for contributors to Encyclopædia Britannica
+GEONAMES_FEATURE_CODE	P2452	2452	identifier for feature classes in GeoNames
+KNAW_PAST_MEMBER_ID	P2454	2454	identifier for people in the Royal Netherlands Academy of Arts and Sciences past member database
+SPECIES_PROFILE_AND_THREATS_DATABASE_ID	P2455	2455	Identifier from Species Profile and Threats Database managed by Australian Government Department of the Environment
+DBLP_PID	P2456	2456	identifier for person entries in the DBLP computer science bibliography (use portion of DBLP person key after homepages/)
+AUSTRALIAN_NATIONAL_SHIPWRECK_ID	P2457	2457	identifier for shipwrecks used by the Australian National Shipwreck Database
+MACKOLIK_COM_PLAYER_ID	P2458	2458	ID for an association football (soccer) player in the Turkish Mackolik.com database
+IBU_BIATHLETE_ID	P2459	2459	biathlete's identifier in the International Biathlon Union's database
+PERSONS_OF_ANCIENT_ATHENS	P2460	2460	identifier for a person in Persons of Ancient Athens (Q21994990) by John S. Traill (Q13422797)
+COMLAW_ID	P2461	2461	identifier for Commonwealth of Australia legislation, bills, regulations, etc, in the ComLaw database
+ELIBRARY_RU_ORGANISATION_ID	P2463	2463	identifier for an organization in the elibrary.ru database of science, education, and government organisations in Russia
+BUGGUIDE_ID	P2464	2464	identifier in BugGuide.net
+ALLCINEMA_FILM_ID	P2465	2465	film IDs on Allcinema Movie Database
+GLOBAL_GEOPARKS_NETWORK_ID	P2467	2467	N/A
+THEATRICALIA_THEATRE_ID	P2468	2468	identifier for a theatre, in the theatricalia.com database
+THEATRICALIA_PERSON_ID	P2469	2469	identifier for a person, in the Theatricalia  database
+TALOUSELAMAN_VAIKUTTAJAT_ID	P2470	2470	identifer for a person, in the Talouselämän vaikuttajat database
+MODELS_COM_PERSON_ID	P2471	2471	identifier of a person in the Models.com website
+ACMA_RADIOCOMMUNICATIONS_LICENCE_ID	P2472	2472	identifier of an organisation or person who holds a radiocommunications licence within Australia
+ASSET_OF_LOCAL_RELEVANCE_ID	P2473	2473	Cultural property identifier for Property of Local Relevance in Valencian Community
+CDLI_ID	P2474	2474	unique identifier of an object in the Cuneiform Digital Library Initiative
+NAVA_ID	P2475	2475	identifier of a work, in the National Audiovisual Archive of Hungary
+HNI_PERSON_INSTITUTION_ID	P2476	2476	identifier for a person or organization in the database of Het Nieuwe Instituut
+TBRC_RESOURCE_ID	P2477	2477	Unique identifier from the Tibetan Buddhist Resource Center online database and digital library
+RAILWAYS_ARCHIVE_EVENT_ID	P2478	2478	Event ID in the Railways Archive database
+SPDX_ID	P2479	2479	SPDX license identifier
+IHO_HYDROGRAPHIC_DICTIONARY__S_32__NUMBER	P2480	2480	Identification number for items in the Hydrographic Dictionary S-32, issued by International Hydrographic Organization (IHO)
+ELITE_PROSPECTS_PLAYER_ID	P2481	2481	ice hockey player ID assigned by Elite Prospects
+SABR_ID	P2482	2482	identifier of a person in the Society for American Baseball Research database
+NCES_DISTRICT_ID	P2483	2483	identifier for a school district or education agency in the United States
+NCES_SCHOOL_ID	P2484	2484	Identifier for a school in the United States
+FASHION_MODEL_DIRECTORY_PHOTOGRAPHER_ID	P2485	2485	external link to a photographer's profile at the Fashion Model Directory (FMD) website
+FASHION_MODEL_DIRECTORY_BRAND_ID	P2486	2486	external link to a brand's profile at the Fashion Model Directory (FMD) website
+PAGE_AT_WEBSITE_OF_BELARUS_GEOCENTER	P2487	2487	State centre of cartographic and geodetic materials and data of the Republic of Belarus
+PAGE_AT_BELARUS_GLOBE_WEBSITE	P2488	2488	N/A
+PAGE_AT_HRAM_BY	P2489	2489	internet page corresponding to Orthodox architectural sites in Belarus
+PAGE_AT_OSTIS_BELARUS_WIKI	P2490	2490	N/A
+RADZIMA_ORG_ID	P2491	2491	identifier in the Radzima.org database of landmarks and tourist attractions of Belarus, Lithuania and the Podlasie region of Poland
+MTMT_AUTHOR_ID	P2492	2492	author's identifier in the Hungarian Scientific Bibliography
+OM_INSTITUTION_ID	P2493	2493	identifier of primary and secondary schools at the Hungarian Ministry of Education
+LATVIAN_CULTURAL_HERITAGE_REGISTER_ID	P2494	2494	ID of the cultural heritage on http://saraksts.mantojums.lv/
+LATVIAN_TOPONYMIC_NAMES_DATABASE_ID	P2496	2496	Latvian Geospatial Information Agency geographical names database identifier
+LATVIAN_NATIONAL_ADDRESS_REGISTER_ID	P2497	2497	National Address Register classifier code (State Land Service of the Republic of Latvia)
+CATALAN_BIOGRAPHICAL_DICTIONARY_OF_WOMEN_ID	P2498	2498	identifier in the biographical dictionary of Catalan women
+GENEALOGICAL_GAZETTEER__GOV__ID	P2503	2503	N/A
+NORWEGIAN_MUNICIPALITY_NUMBER	P2504	2504	unique identifier for municipalities of Norway
+INSEE_CANTON_CODE	P2506	2506	number sequence for the identification of canton in France
+KINENOTE_FILM_ID	P2508	2508	identifier of a film, in the KINENOTE movie database
+MOVIE_WALKER_ID	P2509	2509	identifier of a film, a person or a cinema in the Movie Walker Database
+NATIONAL_DISCOGRAPHY_OF_ITALIAN_SONG_ID	P2510	2510	artist or music group identity code on the National Discography of Italian Song website
+MSK_GENT_WORK_PID	P2511	2511	identifier for an artwork from the collection of the Museum of Fine Arts, Ghent
+JAMENDO_ALBUM_ID	P2513	2513	identifier for an album per the Jamendo website
+JAMENDO_ARTIST_ID	P2514	2514	identifier for an artist per the Jamendo website
+AUSTRALIAN_RAMSAR_SITE_ID	P2516	2516	identifier of a Ramsar wetland listed in the Australian Wetlands Database managed by the Australian Government Department of the Environment
+SCOPE_DK_FILM_ID	P2518	2518	Identifier for a film on the website Scope.dk
+SCOPE_DK_PERSON_ID	P2519	2519	Identifier for a person on the website Scope.dk
+SEED_NUMBER	P2524	2524	identifier for a school in Scotland, in the Scottish Government's SEED database
+RAMSAR_SITES_INFORMATION_SERVICE_ID	P2525	2525	The id ont the Ramsar Sites Information Service of a Ramsar site
+NATIONAL_HISTORIC_SITES_OF_CANADA_ID	P2526	2526	the unique identificator of a National Historic Sites of Canada on the Directory of Federal Heritage Designations
+CSFD_FILM_ID	P2529	2529	identifier for a movie in the Czech film database ČSFD
+BOX_OFFICE_MOJO_FRANCHISE_ID	P2530	2530	identifier of a franchise in the Box Office Mojo database
+BOX_OFFICE_MOJO_STUDIO_ID	P2531	2531	identifier for a film in the Box Office Mojo database
+WOMENWRITERS_ID	P2533	2533	Identifier in the Women Writers database of the Huygens Institute for Dutch History
+NATIONALMUSEUM_SWEDEN_ARTIST_ID	P2538	2538	Artist identifier for Nationalmuseum in Sweden
+NATIONALMUSEUM_SWEDEN_ARTWORK_ID	P2539	2539	Artwork identifier for Nationalmuseum in Sweden
+ITALIAN_SENATE_OF_THE_REPUBLIC_ID	P2549	2549	identifier for incumbent and former senators from the Italian Senate of the Republic
+AUTORES_UY_DATABASE_ID	P2558	2558	unique identifier of Uruguayan authors and artistic, scientific or literary works
+ECHA_INFOCARD_ID	P2566	2566	identifier of a chemical substance used by the European Chemicals Agency (ECHA)
+NATIONAL_FOOTBALL_TEAMS_COM_PLAYER_ID	P2574	2574	identifier for a football player, at National-Football-Teams.com
+BALTISCHES_BIOGRAPHISCHES_LEXIKON_DIGITAL_ID	P2580	2580	person's ID at Baltisches Biographisches Lexikon digital encyclopedia
+BABELNET_ID	P2581	2581	ID in BabelNet encyclopedic dictionary
+J__PAUL_GETTY_MUSEUM_OBJECT_ID	P2582	2582	N/A
+AUSTRALIAN_WETLANDS_CODE	P2584	2584	identifier of a wetland listed in the Australian Wetlands Database Directory of Important Wetlands managed by the Australian Government Department of the Environment
+INSEE_REGION_CODE	P2585	2585	number sequence for the identification of regions in France
+INSEE_DEPARTMENT_CODE	P2586	2586	number sequence for the identification of departments in France
+ADMINISTRATIVE_CODE_OF_INDONESIA	P2588	2588	unique administrative code for a place, issued by the Ministry of Home Affairs of Republic of Indonesia in 2015
+STATISTICS_INDONESIA_ETHNICITY_CODE	P2589	2589	ethnicity code in Indonesia by Statistics Indonesia
+BPS_LANGUAGE_CODE	P2590	2590	language code in Indonesia issued by Statistics Indonesia
+QUEBEC_CULTURAL_HERITAGE_DIRECTORY_PEOPLE_IDENTIFIER	P2592	2592	people listed on the Répertoire du patrimoine culturel du Québec
+LATVIAN_OLYMPIC_COMMITTEE_ATHLETE_ID	P2593	2593	identifier of a person, in the database of the Latvian Olympic Committee
+SERIAL_NUMBER	P2598	2598	an identifier for a specific object among the same product. Not a product code or model number
+GENI_COM_PROFILE_ID	P2600	2600	profile on the Geni.com genealogy website
+EUROHOCKEY_COM_PLAYER_ID	P2601	2601	identifier for an ice hockey player in the database of Eurohockey.com
+HOCKEYDB_COM_PLAYER_ID	P2602	2602	identifier for an ice hockey player in the Internet Hockey Database
+KINOPOISK_FILM_ID	P2603	2603	identifier for a film/ movie in the Kinopoisk.ru database
+KINOPOISK_PERSON_ID	P2604	2604	identifer for a person, in the Kinopoisk.ru database
+CSFD_PERSON_ID	P2605	2605	identifier for a person in the Czech film database ČSFD
+PLAYSTATION_ID	P2606	2606	unique identifier of PlayStation software and hardware assigned by Sony Computer Entertainment Inc.
+BOOKBRAINZ_CREATOR_ID	P2607	2607	identifier for a creator per the BookBrainz open book encyclopedia
+TED_SPEAKER_ID	P2611	2611	identifier of a person, in the TED database of talks
+TED_TOPIC_ID	P2612	2612	identifier of a topic, in the TED database of talks
+TED_TALK_ID	P2613	2613	identifier of a talk, in the TED database
+WORLD_HERITAGE_CRITERIA__2005_	P2614	2614	selection criteria for UNESCO's cultural and natural 'World Heritage' designation
+SHOWA_ID	P2618	2618	identifier for a heritage place, issued by the State Heritage Office of Western Australia
+HUNGARIAN_COMPANY_ID	P2619	2619	identifier for a company in the company register of Hungary
+ISO_15924_NUMERIC_CODE	P2620	2620	numeric code for a writing system in ISO 15924
+SITE_OF_SPECIAL_SCIENTIFIC_INTEREST__ENGLAND__ID	P2621	2621	identifier for Sites of Special Scientific Interest (SSSIs) in England
+COMPANIES_HOUSE_ID	P2622	2622	numeric identifier for company registered with Companies House in the United Kingdom
+MEK_ID	P2623	2623	identifier of a book or translation in the Hungarian Electronic Library
+METROLYRICS_ID	P2624	2624	identifier for a song at the MetroLyrics website
+PASE_ID	P2625	2625	numerical identifier for a person in the Prosopography of Anglo-Saxon England
+DNF_PERSON_ID	P2626	2626	identifier for a person in the Danish National Filmography
+ISO_9362_SWIFT_BIC_CODE	P2627	2627	ISO 9362 SWIFT/BIC code
+GERMAN_TAX_AUTHORITY_ID	P2628	2628	numerical identifier for a local German tax office; forms part of the Steuernummer, assigned to individual taxpayers by that authority
+TURNER_CLASSIC_MOVIES_FILM_ID	P2631	2631	identifier for a film on the Turner Classic Movies website
+MINKULTURY_FILM_ID	P2636	2636	identifier for a movie in the Russian Ministry of culture's public register of films
+TV_COM_ID	P2638	2638	identifier for an entry on TV.com for movies, people and TV series
+FILMPORTAL_ID	P2639	2639	identifier of the German Filmportal.de
+SWIMRANKINGS_NET_SWIMMER_ID	P2640	2640	identifier for a swimmer, in the Swimrankings.net database
+DAVIS_CUP_PLAYER_ID	P2641	2641	identifier for a tennis player, in the Davis Cup database
+FED_CUP_PLAYER_ID	P2642	2642	identifier for a women's tennis player, in the Fed Cup database
+CYCLING_QUOTIENT_ID__RACES_FOR_MEN_	P2648	2648	Cycling Quotient identifier (mens race)
+CRICOS_PROVIDER_CODE	P2651	2651	unique identifier for Australian education providers assigned by the Commonwealth Register of Institutions and Courses for Overseas Students (CRICOS)
+ESTYN_ID	P2655	2655	identifier for a school in Wales, in the Welsh Assembly's Estyn database
+EU_TRANSPARENCY_REGISTER_ID	P2657	2657	identity code for an organisation, in the transparency register of the European Union
+DATAHUB_PAGE	P2666	2666	Datahub page of a dataset
+GOOGLE_KNOWLEDGE_GRAPH_IDENTIFIER	P2671	2671	identifier for Google Knowledge Graph API
+SOATO_ID	P2672	2672	identifier for the Belarusian Code System for Administrative-territory Division Objects and Settlements
+RATING_CERTIFICATE_ID	P2676	2676	reference certificate identifier of content rating decisions
+RUSSIANCINEMA_RU_FILM_ID	P2678	2678	id number for films in Russiancinema.ru
+BEKKER_NUMBER	P2683	2683	reference to works in the Corpus Aristotelicum
+BASKETBALL_REFERENCE_COM_NBA_PLAYER_ID	P2685	2685	identifier for a NBA player on the Basketball Reference website
+OPENSECRETS_IDENTIFIER	P2686	2686	identifier used by Opensecrets for people and organizations involved in US elections
+NDL_JPNO	P2687	2687	Japanese National Bibliography Number of the National Diet Library
+BOX_OFFICE_MOJO_PERSON_ID	P2688	2688	identifier of a person in the Box Office Mojo database
+BARTOC_ID	P2689	2689	identifier in the BARTOC Terminology Registry
+ISU_FIGURE_SKATER_ID	P2694	2694	identifier for a figure skater in the International Skating Union database
+FIG_GYMNAST_ID	P2696	2696	gymnast's identifier at the database of the International Federation of Gymnastics
+ESPNCRICINFO_PLAYER_ID	P2697	2697	ID for a cricketer in ESPNcricinfo's database
+CRICKETARCHIVE_PLAYER_ID	P2698	2698	identifier for a person in the CricketArchive.com database
+BFI_WORK_ID	P2703	2703	Identifier for (creative) works and objects (moving image, documents, stills, posters, designs, books, articles) in the BFI's Collections Information Database (CID)
+EIDR_IDENTIFIER	P2704	2704	Identifier for a film or television work, edit or manifestation, in the Entertainment IDentifier Registry.
+KARATE_RECORDS_ID	P2705	2705	identifier for karatekas in the Karate Records database
+CYCLING_QUOTIENT_ID__WOMEN_RACES_	P2708	2708	Cycling Quotient identifier (women races)
+CYCLING_QUOTIENT_ID__CYCLIST__WOMAN_	P2709	2709	Cycling Quotient identifier (cyclist, woman)
+ENCYCLOPAEDIA_METALLUM_RELEASE_ID	P2721	2721	identifier for a release in the Encyclopaedia Metallum database
+DEEZER_ARTIST_ID	P2722	2722	identifier for an artist on Deezer
+DEEZER_ALBUM_ID	P2723	2723	identifier for an album on Deezer
+DEEZER_TRACK_ID	P2724	2724	identifier for a track on Deezer
+UIPM_ID	P2726	2726	identifier for a athlete, in the Union Internationale de Pentathlon Moderne database
+UNITED_WORLD_WRESTLING_ID	P2727	2727	identifier for an athlete in the United World Wrestling database
+CAGEMATCH_WORKER_ID	P2728	2728	identifier for a professional wrestling performer at www.cagematch.net
+BADMINTON_WORLD_FEDERATION_ID	P2729	2729	Badminton World Federation identifier for a player profile at bwfbadminton.org (via tournamentsoftware.com)
+ISSF_ID	P2730	2730	identifier for an athlete in the International Shooting Sport Federation database
+PROJETO_EXCELENCIAS_ID	P2731	2731	identifier used by Transparência Brasil for congresspeople from Brazil
+PERSEE_AUTHOR_ID	P2732	2732	identifier for an author, in Persée, an open access digital library of French-language scholarly journals, established by the Ministry of National Education of France
+PERSEE_JOURNAL_ID	P2733	2733	identifier for a journal in Persée, an open access digital library of French-language scholarly journals, established by the Ministry of National Education of France
+UNZ_AUTHOR_IDENTIFIER	P2734	2734	author identifier in unz.org, a content-archiving website with old open-access publications
+UNZ_JOURNAL_IDENTIFIER	P2735	2735	journal identifier in unz.org, a content-archiving website with old open-access publications
+BIOGRAPHICAL_DIRECTORY_OF_FEDERAL_JUDGES_ID	P2736	2736	identifier for a judge in the Biographical Directory of Federal Judges
+RESEARCHGATE_INSTITUTE_ID	P2740	2740	identifier of an institute in ResearchGate
+TATE_ARTIST_IDENTIFIER	P2741	2741	Identifier of an artist in the Tate collection
+AUSTRALIAN_GEOLOGICAL_PROVINCES_ID	P2742	2742	identifier of a geologic province in the Australian Geological Provinces Database published by Geoscience Australia
+PASE_NAME	P2744	2744	standardised name (including disambiguation number) given to a person in the Prosopography of Anglo-Saxon England
+DICTIONARY_OF_NEW_ZEALAND_BIOGRAPHY	P2745	2745	identifier in the Dictionary of New Zealand Biography
+PRONOM_FILE_FORMAT_IDENTIFIER	P2748	2748	identifier (PUID) for a file format in the technical registry PRONOM
+PRONOM_SOFTWARE_IDENTIFIER	P2749	2749	identifier (PUID) for software in the technical registry PRONOM
+PHOTOGRAPHERS__IDENTITIES_CATALOG_ID	P2750	2750	identifier used in Photographers' Identities Catalog
+ROLLER_COASTER_DATABASE_ID	P2751	2751	identifier in Roller Coaster Database
+NEW_ZEALAND_ORGANISMS_REGISTER_ID	P2752	2752	identifier for a taxon names in the New Zealand Organisms Register
+DICTIONARY_OF_CANADIAN_BIOGRAPHY_ID	P2753	2753	entry of the item in the Dictionary of Canadian Biography
+AUSNUT_FOOD_ID	P2759	2759	identifier of a food in the Australian Food, Supplement and Nutrient Database (AUSNUT) managed by Food Standards Australia New Zealand (FSANZ)
+NUTTAB_FOOD_ID	P2760	2760	Identifier of a food within the Nutrient Tables for use in Australia (NUTTAB) which is managed by Food Standards Australia New Zealand (FSANZ)
+RESEARCH_PAPERS_IN_ECONOMICS_SERIES_HANDLE	P2761	2761	identifier of academic journals in Research Papers in Economics
+SKYSCRAPER_CENTER_BUILDING_COMPLEX_ID	P2762	2762	identifier for a building complex as used on the CTBUH's www.skyscrapercenter.com
+DANISH_PROTECTED_AREA_ID	P2763	2763	Identifier for Danish protected area
+WRESTLINGDATA_PERSON_ID	P2764	2764	id for a professional wrestling performer on the Wrestlingdata database
+BLUE_STYLE_COM_ID	P2765	2765	identifier at blue-style.com, database of skyscrapers and contemporary architecture in Japan
+ISO_4063_PROCESS_NUMBER	P2766	2766	identifier for a process, in the ISO-approved classification scheme for welding & soldering processes
+JUDOINSIDE_COM_ID	P2767	2767	Identifier for any remarkable judoka in the JudoInside.com database
+BNE_JOURNAL_ID	P2768	2768	identifier for a journal in BNE's journals archive, an open access digital library of Spanish-language periodical publications, established by Biblioteca Nacional de España
+D_U_N_S	P2771	2771	unique company identifier from Dun & Bradstreet
+FIS_ALPINE_SKIER_ID	P2772	2772	identifier for an alpine skier, in the International Ski Federation database
+FIS_CROSS_COUNTRY_SKIER_ID	P2773	2773	identifier for a cross-country skier, in the International Ski Federation database
+FIS_FREESTYLE_SKIER_ID	P2774	2774	identifier for a freestyle skier, in the International Ski Federation database
+FIS_SKI_JUMPER_ID	P2775	2775	identifier for a ski jumper, in the International Ski Federation database
+FIS_NORDIC_COMBINED_SKIER_ID	P2776	2776	identifier for a Nordic combined skier, in the International Ski Federation database
+FIS_SNOWBOARDER_ID	P2777	2777	identifier for a snowboarder, in the International Ski Federation database
+IAT_TRIATHLETE_ID	P2778	2778	identifier for a triathlete, in the Institut für Angewandte Trainingswissenschaft database
+IAT_WEIGHTLIFTER_ID	P2779	2779	identifier for a weightlifter, in the Institut für Angewandte Trainingswissenschaft database
+IAT_DIVER_ID	P2780	2780	identifier for a diver, in the Institut für Angewandte Trainingswissenschaft database
+MODELS_COM_CLIENT_ID	P2782	2782	identifier of a client in models.com
+DANISH_LISTED_BUILDINGS_CASE_ID	P2783	2783	case number of a listed building in Denmark
+CZECH_NEIGHBOURHOOD_ID_CODE	P2788	2788	identifier for a neighbourhood in the Czech Republic
+ASF_KID_CAVE_TAG_NUMBER	P2792	2792	unique identifier for caves within the Karst Index Database of the Australian Speleological Federation
+INDEX_HEPATICARUM_ID	P2794	2794	identifier in the Index Hepaticarum, a nomenclatural database
+3DMET_ID	P2796	2796	identifier of chemical compounds in 3DMet database
+LOOP_ID	P2798	2798	identifier for a person, in the Loop database of researcher impact
+BVMC_PERSON_ID	P2799	2799	identifier of an author on the Biblioteca Virtual Miguel de Cervantes
+BEACH_VOLLEYBALL_DATABASE_ID	P2800	2800	identifier for an athlete, in the Beach Volleyball Database
+FIVB_BEACH_VOLLEYBALL_PLAYER_ID	P2801	2801	identifier for a beach volleyball player, in the FIVB database
+WORLD_SAILING_MEMBER_ID	P2804	2804	member identifier for a sailor in the World Sailing database
+GORATINGS_ID	P2805	2805	goratings.org player identifier
+AUSTRALASIAN_POLLEN_AND_SPORE_ATLAS_CODE	P2809	2809	Code identifying a pollen or spore listed in the Australasian Pollen and Spore Atlas managed by the Australian National University
+LPGA_TOUR_ID	P2810	2810	identifier for a golf player, in the LPGA database
+PGA_TOUR_ID	P2811	2811	identifier for a golf player, in the PGA Tour database
+MATHWORLD_IDENTIFIER	P2812	2812	Identifier for entries in MathWorld, online mathematics reference work.
+P_NUMBER	P2814	2814	P-number identifier from the Danish company register for linking physical sites to an organization
+ESR_STATION_CODE	P2815	2815	unique railway station/operation point code used in USSR and later in former USSR countries
+HOWLONGTOBEAT_ID	P2816	2816	identifier of a video game at the website HowLongToBeat
+SHERDOG_ID	P2818	2818	identifier for a mixed martial arts athlete, in the Sherdog database
+YANDEX_MUSIC_ALBUM_ID	P2819	2819	identifier for the album in the database Yandex.Music
+ROYAL_BELGIAN_FOOTBALL_ASSOCIATION_PLAYER_ID	P2823	2823	identifier for a player, on the official Belgian football federation website
+GAZETTEER_OF_PLANETARY_NOMENCLATURE_ID	P2824	2824	identifier of a feature on an astronomical body in the Gazetteer of Planetary Nomenclature
+MEGOGO_ID	P2826	2826	identifier for the film in the database Megogo
+INTERNET_WRESTLING_DATABASE_ID	P2829	2829	identifier for a professional wrestling performer at the Internet Wrestling Database
+ONLINE_WORLD_OF_WRESTLING_ID	P2830	2830	identifier for a professional wrestling performer or tag team at Online World of Wrestling
+JOINT_ELECTRONICS_TYPE_DESIGNATION_AUTOMATED_SYSTEM_DESIGNATION	P2832	2832	unclassified designator for United States military electronic equipment
+BENEZIT_ID	P2843	2843	identifier in Benezit Dictionary of Artists
+RAN_ID	P2845	2845	identifier in National archaeological register of Romania
+ITUNES_ARTIST_ID	P2850	2850	artist identifier in iTunes
+EU_SURFACE_WATER_BODY_CODE	P2856	2856	unique EU identifier for a surface water body
+WWE_COM_SUPERSTAR_ID	P2857	2857	identifier for a professional wrestling performer or tag team at WWE.com
+KLOV_ID	P2858	2858	identifier in Killer List of Videogames
+LEIDSE_HOOGLERAREN_ID	P2861	2861	Identifier in the Leidse Hoogleraren, a catalogue of University Professors of Leiden University since 1575.
+CATALOGUS_PROFESSORUM_ACADEMIAE_RHENO_TRAIECTINAE_ID	P2862	2862	Identifier for a Professor at Utrecht University
+NEDERLANDSE_MOLENDATABASE_ID	P2863	2863	Identifier of mills in the Nederlandse Molendatabase, with records of all functioning mills, windmills and watermills, in the Netherlands.
+OPENCRITIC_ID	P2864	2864	identifier in OpenCritic
+BAND_NUMBER	P2865	2865	identifier of First Nation in Canada
+HOLLANDSCHE_MOLEN_ID	P2866	2866	identifier of mills in "Vereniging de Hollandsche Molen", an organization that focuses on preservation of wind- and watermills in the Netherlands.
+MOLENECHO_S_ID	P2867	2867	identifier of mills in Molenecho's, a database on windmills and watermills in Belgium.
+MIRBASE_PRE_MIRNA_ID	P2870	2870	identifier for pre-miRNAs in miRBase, the reference database for microRNAs
+MIRBASE_MATURE_MIRNA_ID	P2871	2871	identifier for mature miRNAs in miRBase, the reference database for microRNAs
+PUBCHEM_BIOASSAY_ID__AID_	P2874	2874	central identifier in PubChem, used as accession number for biological and biochemical assays
+SURECHEMBL_ID	P2877	2877	the chemical compound identifier for the EBI SureChEMBL 'chemical compounds in patents' database
+MINITEL_CODE	P2878	2878	access code of a service on the Minitel Videotex
+LIBRARY_OF_THE_NATIONAL_CONGRESS_OF_ARGENTINA_ID	P2879	2879	identifier of a work, in the National Library of Argentine Congress
+NIOSHTIC_2_ID	P2880	2880	identifier in the NIOSHTIC-2 database run by National Institute for Occupational Safety and Health (part of US CDC)
+HKMDB_FILM_ID	P2883	2883	film identifiers on Hong Kong Movie Database
+SHAKEOSPHERE_PERSON_ID	P2886	2886	identifier in the Shakeosphere database of the University of Iowa
+FAMILYSEARCH_ID	P2889	2889	ID of a person in familysearch.org
+UMLS_CUI	P2892	2892	NLM Unified Medical Language System (UMLS) controlled biomedical vocabulary unique identifier
+ELDOBLAJE_MOVIE_ID	P2897	2897	Identifier of dubbing in the website eldoblaje.com, a database of Spanish dubbings
+FAX_NUMBER	P2900	2900	number of fax line
+MOLENDATABASE_VERDWENEN_MOLENS_ID	P2903	2903	identifier of former/disappeared mills in the Netherlands at the Molendatabase verdwenen molens
+BEER_ADVOCATE_BREWERY_ID	P2904	2904	identifier for a brewery, in the Beer Advocate database
+RATEBEER_BREWERY_ID	P2905	2905	identifier for a brewery, in the RateBeer database
+SECONDHANDSONGS_SONG_ID	P2908	2908	Identifier for a song, in the SecondHandSongs database about covers and samplings
+SECONDHANDSONGS_ARTIST_ID	P2909	2909	identifier for an artist, in the SecondHandSongs database
+MSBI_PERSON_ID	P2914	2914	identifier of a person, in the Mapping the Practice and Profession of Sculpture in Britain and Ireland database
+ECARTICO_PERSON_ID	P2915	2915	identifier for a person, in the ECARTICO biographical database of the Dutch and Flemish Golden Ages
+COAM_ID	P2917	2917	identifier of a building or structure of the city of Madrid in the Official Architects' Association of Madrid (COAM) database
+GREAT_RUSSIAN_ENCYCLOPEDIA_ONLINE_ID	P2924	2924	identifier for an entry on the official website of the Great Russian Encyclopedia
+INTERPRO_ID	P2926	2926	InterPro unique identifier
+INSPIRE_HEP_AUTHOR_ID	P2930	2930	identifier for authors in INSPIRE-HEP, a major database for high energy physics
+PLEIADES_PLACE_TYPE_IDENTIFIER	P2938	2938	place type identifier in the Pleiades gazetteer
+CAGEMATCH_TAG_TEAM_ID	P2939	2939	identifier for a professional wrestling tag team at www.cagematch.net
+CATALOGUS_PROFESSORUM_ROSTOCHIENSIUM_ID	P2940	2940	identifier in the Catalogus Professorum Rostochensium database on professors of the Rostock University from 1419 to present
+MUNK_S_ROLL_ID	P2941	2941	identifier of a person, in the biographical website of the Royal College of Physicians, London
+DAILYMOTION_CHANNEL_ID	P2942	2942	identifier of the Dailymotion channel of a person, or organisation
+WARHEROES_RU_ID	P2943	2943	identifier of a person at warheroes.ru, awarded with title Hero of the Soviet Union or Hero of the Socialist Labour
+PLARR_ID	P2944	2944	identifier of a person, in the biographical website of the Royal College of Surgeons, London
+BRITISH_BOOK_TRADE_INDEX_ID	P2945	2945	identifier for an individual or business entity listed in the  University of Oxford's Bodleian Libraries' British Book Trade Index database
+BACDIVE_ID	P2946	2946	identifier for a microorganism, in the BacDive database
+ESTONIAN_CULTURAL_MONUMENT_ID	P2948	2948	identifier in the Estonian national registry of cultural monuments
+WIKITREE_ID	P2949	2949	identifier for a person in the WikiTree genealogy website
+NOMISMA_ID	P2950	2950	identifier in Nomisma.org, a linked open data thesaurus of numismatic concepts
+CULTURAL_HERITAGE_DATABASE_IN_AUSTRIA_OBJEKTID	P2951	2951	identifier given by the published BDA (Bundesdenkmalamt) list of monuments
+BATEAU_D_INTERET_PATRIMONIAL	P2952	2952	identifier of a ship
+ESTONIAN_RESEARCH_PORTAL_PERSON_ID	P2953	2953	identifier for a person, in the Estonian Research Portal
+TRANSFERRED_ACCOUNT_DATA_INTERCHANGE_GROUP_CODE	P2954	2954	N/A
+BVPH_ID	P2961	2961	identifier in Biblioteca Virtual de Prensa Histórica
+GOODREADS_AUTHOR_ID	P2963	2963	identifier of an author, in the GoodReads.com website
+EU_RIVER_BASIN_DISTRICT_CODE	P2965	2965	unique code for a EU River Basin District
+NATIONAL_LIBRARY_OF_WALES_ID	P2966	2966	identifier of persons, corporate entities and families in the National Library of Wales Archives and Manuscripts database
+QUEENSLAND_HERITAGE_REGISTER_ID	P2967	2967	identifier of a property listed on the Queensland Heritage Register
+QUDT_UNIT_ID	P2968	2968	identifier for unit of measure definition according to QUDT ontology
+GOODREADS_BOOK_ID	P2969	2969	identifier of a book, in the GoodReads.com website
+KINOPOLIS_FILM_ID	P2970	2970	identifier for films in the Kinopolis database
+SNAP_ID	P2972	2972	identifier for an ancient person, in the SNAP project
+SPENSERIANS_PERSON_ID	P2973	2973	identifier of a person on the site of the Spenserians project
+LBT_PERSON_ID	P2977	2977	identifier of a person, on Lord Byron and his Times website
+ARLHS_LIGHTHOUSE_ID	P2980	2980	identifier on the ARLHS World List of Lights
+UIC_ALPHABETICAL_COUNTRY_CODE	P2981	2981	alphebetical country code issued by the International Union of Railways
+UIC_NUMERICAL_COUNTRY_CODE	P2982	2982	numerical country code issued by International Union of Railways
+UNDP_COUNTRY_CODE	P2983	2983	country code by the United Nations Development Programme (UNDP)
+SNAPCHAT_USERNAME	P2984	2984	this item's username on Snapchat
+DSBE_ID	P2985	2985	identifier in the Diccionario Biográfico del Socialismo Español
+AIRCRAFT_REGISTRATION_PREFIX	P2986	2986	national prefix used in civil aircraft registration numbers
+TAEKWONDO_DATA_ID	P2987	2987	identifier for sportsperson in the Taekwondo Data database
+GOST_7_67_CYRILLIC	P2988	2988	country codes in Cyrillic from the GOST standards committee
+FIL_ID	P2990	2990	identifier for sportsperson in the International Luge Federation (FIL) database
+IBSF_ID	P2991	2991	identifier for sportsperson in the International Bobsleigh & Skeleton Federation (IBSF) database
+UNTAPPD_BREWERY_ID	P3002	3002	numerical identifier for a brewery, in the Untappd database
+ZANIKLEOBCE_CZ_ABANDONED_OBJECTS_ID	P3003	3003	identifier of abandoned objects from zanikleobce.cz
+GALICIANA_WORK_ID	P3004	3004	identifier of a work in Galiciana
+MARINE_REGIONS_GEOGRAPHIC_ID	P3006	3006	identifier for marine geographic objects, in the marineregions.org database
+CADW_MONUMENT_ID	P3007	3007	identifier for a scheduled monument in Wales
+AUSTRALIAN_HERITAGE_DATABASE_PLACE_ID	P3008	3008	identifier "Place ID" on the Australian Heritage Database
+CONSERVATOIRE_DU_LITTORAL_ID	P3009	3009	identifier on the Conservatoire du littoral website
+WORLD_ARCHERY_ID	P3010	3010	identifier for sportsperson in the World Archery database
+STANDARD_GEOGRAPHICAL_CLASSIFICATION_CODE	P3012	3012	system maintained by Statistics Canada for categorizing and enumerating the census geographic units of Canada
+FRENCH_NATIONAL_RESEARCH_STRUCTURE_IDENTIFIER	P3016	3016	identifier in the French national research structure repertory
+ROLLING_STONE_ARTIST_ID	P3017	3017	identifier for an artist (person or group) in Rolling Stone magazine's website
+IRANICA_ID	P3021	3021	identifier of an article, on iranicaonline.org
+LEGACIES_OF_BRITISH_SLAVE_OWNERSHIP_PERSON_ID	P3023	3023	identifier of a person, in University College London's 'Legacies of British Slave-ownership' project
+UK_NATIONAL_ARCHIVES_ID	P3029	3029	identifier for a person, family or organisation, in the UK's National Archives database
+INDONESIAN_ETHNICITY_CODE	P3034	3034	code for ethnic groups in Indonesia, defined in Ensiklopedi Suku Bangsa di Indonesia
+ISBN_PUBLISHER_PREFIX	P3035	3035	part of an ISBN(-13) specific to a publisher
+IWM_MEMORIAL_ID	P3038	3038	identifier for a war memorial, in the UK Imperial War Museum's War Memorials Register
+SOUNDCLOUD_ID	P3040	3040	identifier for a person, band, radio station or other entity, on SoundCloud
+CAGEMATCH_WRESTLING_STABLE_ID	P3042	3042	identifier for a professional wrestling stable at CageMatch.net
+SCORESWAY_SOCCER_PERSON_ID	P3043	3043	identifier for a association football (soccer) player, manager or referee at the Scoresway website
+COLLEGE_FOOTBALL_HOF_ID	P3044	3044	identifier for a person, in the College Football Hall of Fame
+HANCINEMA_PERSON_ID	P3045	3045	identifier for a person in the HanCinema database
+FORADEJOGO_PLAYER_ID	P3046	3046	ForaDeJogo.net identifier for an association football (soccer) player
+THEFINALBALL_PLAYER_ID	P3047	3047	TheFinalBall.com identifier for an association football (soccer) player
+RACING_REFERENCE_DRIVER_ID	P3048	3048	identifier of a driver, in the racing-reference.info database
+SCOTTISH_FOOTBALL_ASSOCIATION_PLAYER_ID	P3049	3049	identifier of a player in the records of the Scottish Football Association
+FACR_PLAYER_ID	P3050	3050	identifier for an association football player at nv.fotbal.cz, website of the Football Association of the Czech Republic (FAČR: Fotbalová asociace České republiky), formerly the Bohemian-Moravian Football Union (ČMFS: Českomoravský fotbalový svaz)
+BLOOMBERG_PERSON_ID	P3052	3052	identifier for a business person, at Bloomberg
+K_LEAGUE_PLAYER_ID	P3053	3053	identifier for an association football (soccer) player, in the official K League database
+ONTARIO_MPP_ID	P3054	3054	official identifier for a Member of Provincial Parliament of Ontario
+NAQ_ELECTED_PERSON_ID	P3055	3055	official identifier of a person elected to the National Assembly of Quebec (NAQ) or one of its predecessors
+TURNER_CLASSIC_MOVIES_PERSON_ID	P3056	3056	identifier for a person (cast or crew member) in the Turner Classic Movies database
+CHARITY_COMMISSION_NO_	P3057	3057	official number of a charity registered with the Charity Commission of England and Wales
+ARCHITECTUURGIDS_ARCHITECT_ID	P3058	3058	unique identifier for an architect in the Dutch architectuurgids.nl database
+ARCHITECTUURGIDS_BUILDING_ID	P3059	3059	unique identifier for a building in the Dutch architectuurgids.nl database
+BUTMOTH_ID	P3060	3060	identifier for a butterfly or moth genus in the UK Natural History Museum's 'Butterflies and Moths of the World' database
+BASISREGISTRATIE_INSTELLINGEN_NUMBER	P3061	3061	register number, issued by the Dutch ministry of Education, given to schools
+LEPINDEX_ID	P3064	3064	identifier for a Lepidoptera taxon, in the UK Natural History Museum's 'Global Lepidoptera Names Index'
+RERO_ID	P3065	3065	identifier in the Library network of Western Switzerland's RERO database
+GS1_COUNTRY_CODE	P3067	3067	GS1 Prefix, the first three digits, usually identifying the national GS1 Member Organization to which the manufacturer is registered (not necessarily where the product is actually made)
+WIPO_ST_3	P3068	3068	World Intellectual Property Organization standard for the two-letter codes of countries and certain organizations
+UN_DOCUMENT_SYMBOL	P3069	3069	unique number assigned to United Nations  documents
+STORTING_PERSON_ID	P3072	3072	identifier for a Norwegian parliamentarian in the official Storting database
+COSING_NUMBER	P3073	3073	Number for a chemical substance in the European CosIng database
+GRACE_S_GUIDE_ID	P3074	3074	identifier of an article, on http://www.gracesguide.co.uk/
+OPEN_BEAUTY_FACTS_CATEGORY_ID	P3076	3076	category on the Open Beauty Facts website
+CINEPLEX_FILM_ID	P3077	3077	identifier for films in the Cineplex database
+SIMBAD_ID	P3083	3083	identifier for an astronomical object, in the University of Strasbourg's SIMBAD database
+CATALOGUE_OF_LIFE_IN_TAIWAN_ID	P3088	3088	identifier (name code) of a taxon, in the Catalogue of Life in Taiwan
+FLAGS_OF_THE_WORLD_ID	P3089	3089	identifier for a flag, in the Flags of the World database
+ISBN_IDENTIFIER_GROUP	P3097	3097	ISBN prefix for countries or languages
+CLINICALTRIALS_GOV_IDENTIFIER	P3098	3098	identifier in the ClinicalTrials.gov database
+PLANTARIUM_ID	P3102	3102	identifier for a plant taxon, in the Plantarium database
+GARES___CONNEXIONS_ID	P3104	3104	ID for a railway station on the official website for French railway stations
+TELA_BOTANICA_ID	P3105	3105	identifier for a plant taxon in Tela Botanica's 'base des trachéophytes de France métropolitaine' - BDTFX - (Metropolitan France Tracheophyte Database)
+GUARDIAN_TOPIC_ID	P3106	3106	identifier for a topic at the Guardian newspaper website
+LDIF_ID	P3107	3107	identifier of a film (movie) in the Lexikon des Internationalen Films (Lexicon of International Films)
+YELP_ID	P3108	3108	identifier of a place, in Yelp.com
+PEAKBAGGER_MOUNTAIN_ID	P3109	3109	identifier for a mountain, on the www.peakbagger.com website
+ISZDB_FILM_ID	P3110	3110	identifier of a film in the ISzDb (a Hungarian dub database)
+FEI_ID	P3111	3111	identifier of athlete in the FEI database
+DISTROWATCH_ID	P3112	3112	identifier for an operating system at DistroWatch.com
+ISZDB_PERSON_ID	P3114	3114	identifier of a person in the ISzDb (a Hungarian dub database)
+ISZDB_COMPANY_ID	P3115	3115	identifier of a company in the ISzDb (a Hungarian dub database)
+ISZDB_DUB_ID	P3116	3116	identifier of a dub version for a film in the ISzDb (a Hungarian dub database)
+DSSTOX_SUBSTANCE_IDENTIFIER	P3117	3117	DSSTox substance identifier used in the Environmental Protection Agency CompTox Dashboard
+OPENDOMESDAY_SETTLEMENT_ID	P3118	3118	Identifier for a British settlement, in the OpenDomesday digitisation of the Domesday Book
+CODE_FOR_CHINA_RESERVOIR_NAME	P3119	3119	an identifer for Chinese reservoirs
+TOID	P3120	3120	TOpographic IDentifier assigned by the Ordnance Survey to identify a feature in Great Britain
+EPGUIDES_ID	P3121	3121	identifier for a television programme or series, at epguides.com
+OPENDOMESDAY_PERSON_ID	P3122	3122	Identifier for a person, in the OpenDomesday digitisation of the Domesday Book
+STANFORD_ENCYCLOPEDIA_OF_PHILOSOPHY_ID	P3123	3123	identifier of a topic in the online Stanford Encyclopedia of Philosophy
+POLISH_SCIENTIST_ID	P3124	3124	identifier for a scientist, in the Polish Government's Information Processing Centre database
+ALCUIN_ID	P3126	3126	identifier of a philosopher in the ALCUIN Infothek der Scholastik
+LATINDEX_ID	P3127	3127	identifier of a journal in Latindex
+CINETMAG_FILM_ID	P3128	3128	identifier for a movie at the Iranian movie database CiNetMag
+CINE_GR_FILM_ID	P3129	3129	identifier for a movie at the Greek movie database cine.gr
+NSW_FLORA_ID	P3130	3130	identifier for a plant taxon, in the NSW Flora Online
+REDALYC_JOURNAL_ID	P3131	3131	identifier of a journal in Red de Revistas Científicas de América Latina y el Caribe, España y Portugal (Redalyc)
+NSZL_NAME_AUTHORITY_ID	P3133	3133	ID of a person or organisation in the "Integral Information System of the National Library" (NEKTÁR) in Hungary
+TRIPADVISOR_ID	P3134	3134	identifier of a place (region, hotel, restaurant, attraction), in TripAdvisor
+ELCINEMA_FILM_ID	P3135	3135	identifier for a movie at the Egypt movie database elCinema
+ELCINEMA_PERSON_ID	P3136	3136	identifier for a person at the Egypt movie database elCinema
+OFDB_ID	P3138	3138	identifier for a film (movie) in the German Online-Filmdatenbank website
+SOUREHCINEMA_FILM_ID	P3139	3139	identifier for a movie at the Iranian movie database SourehCinema
+SOUREHCINEMA_PERSON_ID	P3140	3140	identifier for a person at the Iranian movie database SourehCinema
+EDB_FILM_ID	P3141	3141	identifier for a movie at the Israeli movie database EDb
+EDB_PERSON_ID	P3142	3142	identifier for a person at the Israeli movie database EDb
+ELFILM_FILM_ID	P3143	3143	identifier for a movie at the Arabic movie database elFilm
+ELFILM_PERSON_ID	P3144	3144	identifier for a person at the Egypt movie database elFilm
+SRATIM_ID	P3145	3145	identifier for a movie or person at the Israeli movie database Sratim (sratim.co.il)
+CINETMAG_PERSON_ID	P3146	3146	identifier for a person at the Iranian movie database CiNetMag
+UNITED_STATES_REPORTS_ID	P3147	3147	ID for US Supreme Court Opinions on OpenJurist website
+FINDSMILEY_ID	P3152	3152	identifier for Danish companies serving food
+CROSSREF_FUNDER_ID	P3153	3153	identifier for an organisation that funds research, in the Crossref registry
+RUNEBERG_AUTHOR_ID	P3154	3154	Identifier for an author in the Runeberg digital library
+RUNEBERG_BOOK_ID	P3155	3155	Identifier for book item in the Runeberg digital library collection
+UGENTMEMORIALIS_ID	P3159	3159	identifier for a professor at the Ghent University
+MINNESOTA_LEGISLATOR_ID	P3160	3160	official identifier for a Minnesota legislator
+ROCK_HALL_OF_FAME_ID	P3162	3162	identifier for an inductee (individual or group), in the US Rock & Roll Hall of Fame
+SCOTTISH_CHARITY_NUMBER	P3163	3163	official number of a charity registered with the Scottish Charity Regulator
+HORSETELEX_ID	P3165	3165	identifier for a horse on Horsetelex database
+WEBPEDIGREES_ID	P3166	3166	identifier for a horse on Webpedigrees database
+ALLBREEDPEDIGREE_ID	P3167	3167	identifier for a horse on Allbreedpedigree database
+SPORTHORSE_DATA_ID	P3168	3168	identifier for a horse on Sporthorse data database
+HARASIRE_ID	P3169	3169	identifier for a horse on the official French Harasire database
+CULTURAL_HERITAGE_ARMENIA_ID	P3170	3170	An identifier for cultural object in Armenia
+OLYMPIC_ORG_ID	P3171	3171	identifier for a person, on the official Olympic website
+WORLD_BRIDGE_FEDERATION_ID	P3172	3172	identifier for a bridge player, issued by the World Bridge Federation
+STATOIDS_ID	P3175	3175	identifier for a place in the Statoids wiki
+PATRIMONIO_WEB_JCYL_ID	P3177	3177	identifier of a building or site in Patrimonio Web of Junta de Castilla y León
+ZARAGOZA_MONUMENT_ID	P3178	3178	ID of a monument catalogued in zaragoza.es
+VISUAL_NOVEL_DATABASE_ID	P3180	3180	identifier for a graphic novel in the Visual Novel Database
+OPENCITATIONS_BIBLIOGRAPHIC_RESOURCE_ID	P3181	3181	identifier for an article or publication, in the OpenCitations Corpus
+FANTOIR_CODE	P3182	3182	unique code to identify French thoroughfares and places
+WSJ_TOPIC_ID	P3183	3183	identifier for a topic, at the Wall Street Journal website
+CZECH_NATIONAL_BIBLIOGRAPHY_BOOK_ID	P3184	3184	identifier for a book at the Czech National Library
+VKONTAKTE_USERNAME	P3185	3185	identifier for a person or organization in VKontakte
+TAXREF_ID	P3186	3186	identifier of a taxon in TAXREF, the national taxonomic reference for fauna, flora and Fungi of metropolitan France and overseas developed by the National Museum of Natural History
+MARBURGER_PROFESSORENKATALOG_ID	P3187	3187	identifier for a professor, in the Marburger Professorenkatalog of professors at the Philipps-Universität Marburg, Germany
+NOBEL_PRIZE_ID	P3188	3188	ID in the Nobel prize organization homepage
+IMIS_PERSON_ID	P3191	3191	identifier for a person in IMIS, database of Flanders Marine Institute
+LAST_FM_MUSIC_ID	P3192	3192	identifier for an artist, group or work, on Last.fm
+GS1_MANUFACTURER_CODE	P3193	3193	codes for a company or organisation, used in GS1 barcodes
+USGS_EARTHQUAKE_ID	P3196	3196	identifier for an earthquake or other seismic event, in the United States Geological Survey database
+FEDERAL_HERITAGE_BUILDINGS_ID__CANADA_	P3197	3197	identifier of a building designated by the   Federal Heritage Buildings Review Office of Canada
+JEWISHGEN_LOCALITY_ID	P3198	3198	identifier of a town in The JewishGen Communities Database
+CHARITY_NUMBER__ISLE_OF_MAN_	P3199	3199	Charity number of a charity or charitable organisation registered on the Isle of Man.
+NORTHERN_IRELAND_CHARITY_NUMBER	P3200	3200	official number of a charity registered with the Charity Commission for Northern Ireland
+MEDICAL_DICTIONARY_FOR_REGULATORY_ACTIVITIES_ID	P3201	3201	identifier in the Medical Dictionary for Regulatory Activities
+CINE_RESSOURCES_FILM_ID	P3203	3203	page of a movie on the website "Ciné-Ressources"
+CINE_RESSOURCES_PERSON_ID	P3204	3204	page of a person on the website "Ciné-Ressources"
+DATA_GOUV_FR_ID	P3206	3206	identifier of an organization on the French national open-data platform data.gouv.fr
+VINE_USER_ID	P3207	3207	ID of the Vine account of a person or organisation
+NEW_GENERAL_CATALOGUE_ID	P3208	3208	identifier for an astronomical object, on the New General Catalogue of Nebulae and Clusters of Stars, or its supplements
+HERITAGE_LIGHTHOUSE_OF_CANADA_ID	P3211	3211	identifier of the Heritage Lighthouse designated by the Historic Sites and Monuments Board of Canada
+ISAN	P3212	3212	unique identifier for audiovisual works and related versions, similar to ISBN for books
+INDIAN_CENSUS_AREA_CODE	P3213	3213	code used for an area for census calculations in India
+SIRET_NUMBER	P3215	3215	number of a French establishment or company
+DICTIONARY_OF_SWEDISH_NATIONAL_BIOGRAPHY	P3217	3217	entry in the Dictionary of Swedish National Biography
+AUNAMENDI_ID	P3218	3218	identifier of an item in Auñamendi Encyclopaedia
+ENCYCLOP_DIA_UNIVERSALIS_ONLINE_ID	P3219	3219	identifer for an article in the online version of Encyclopædia Universalis
+KVK_COMPANY_ID	P3220	3220	identifier of a company in the KvK Business Register
+NYT_TOPIC_ID	P3221	3221	identifier for a topic, at the New York Times' website
+LIST_OF_LIGHTS_ID	P3223	3223	identifier in the Online List of Lights database
+NAICS_CODE	P3224	3224	classification in the North American Industry Classification System
+CULTURAL_HERITAGE_KOSOVO_ID	P3227	3227	identifier for a cultural object in Kosovo
+SOUTH_DAKOTA_LEGISLATOR_ID	P3229	3229	official identifier for a South Dakota legislator
+SCAR_COMPOSITE_GAZETTEER	P3230	3230	identifer in the international composite gazetteer for Antarctica run by the Scientific Committee on Antarctic Research
+PHILPAPERS_PROFILE	P3233	3233	an identifier for user profiles on PhilPapers
+LIBRARY_OF_CONGRESS_CULTURAL_HERITAGE_ORGANIZATIONS	P3234	3234	a system of classification for Cultural Heritage Organizations developed by the Library of Congress.
+PHILPAPERS_TOPIC	P3235	3235	An identifier for topics on PhilPapers
+PHILPAPERS_PUBLICATION_ID	P3236	3236	an identifier for publications (journals) on PhilPapers
+KU_LEUVEN_PERSON_ID	P3237	3237	identifier for a person in the Who's Who database of the Catholic University of Leuven
+TRUNK_PREFIX	P3238	3238	a digit or digits to be dialled before a telephone number to initiate a telephone call for the purpose of selecting an appropriate telecommunications circuit by which the call is to be routed
+NBN_SYSTEM_KEY	P3240	3240	identifier of a taxon in the National Biodiversity Network (UK)
+CATHOLIC_ENCYCLOPEDIA_ID	P3241	3241	page of an article on newadvent.org
+SIC_CODE	P3242	3242	U.S. Standard Industrial Classification number
+OKVED_1_1_CODE_OF_THE_ECONOMIC_ACTIVITY	P3243	3243	economic activity code according to Russian classification ОК 029-2007
+OKPD_CODE_OF_THE_GOOD_OR_SERVICE	P3245	3245	product code in the Russian classification "OKPD" ОК 034-2007 (КПЕС 2002)
+OKVED_2_CODE_OF_THE_ECONOMIC_ACTIVITY	P3246	3246	economic activity code according to Russian classification ОК 029-2014
+OKP_ID_OF_THE_GOOD_OR_SERVICE	P3248	3248	numeric ID of this group or kind of goods according to OK 005-93 "Russian classification of products"
+OKPD2_CODE_OF_THE_GOOD_OR_SERVICE	P3250	3250	product code in the Russian classification "OKPD2" ОК 034-2014 (КПЕС 2008)
+CAVE_E_CADASTRE_ID	P3256	3256	ID in the Cave E-Cadastre of Slovenia
+QUEENSLAND_PLACE_ID	P3257	3257	identifier of place, in the official Queensland Government gazetteer
+LIVEJOURNAL_ID	P3258	3258	username of a person or organisation, on LiveJournal
+INTANGIBLE_CULTURAL_HERITAGE_STATUS	P3259	3259	status of an item that is designated as intangible heritage
+MYSPACE_ID	P3265	3265	identifier for a person or organisation, at MySpace
+LOCFDD_ID	P3266	3266	Library of Congress Format Description Document ID
+FLICKR_USER_ID	P3267	3267	identifier for a person or organisation, with an account at Flickr
+FOTOGRAFEN_NL_ID	P3269	3269	Identifier for a photographer, in the Dutch fotografen.nl database
+ZERI_IMAGE_ID	P3272	3272	number in the Zeriimages database
+ACTORENREGISTER_ID	P3273	3273	unique identifier in the Dutch Actorenregister database
+ANGEL_LIST_ID	P3276	3276	profile of a person or organisation on Angel List
+KANTL_MEMBER_ID	P3277	3277	identifier for a member of the Royal Academy of Dutch language and literature
+BANQ_AUTHOR_ID	P3280	3280	identifier for an author in the Bibilothèque et Archives du Québec (BanQ)
+FRENCH_NATIONAL_ASSEMBLY_LOBBYIST_ID	P3281	3281	identifier of an individual lobbyist or lobbying organisation, at the French National Assembly
+BANDCAMP_ARTIST_ID	P3283	3283	identifier for an artist (person or group) or record label, in the Bandcamp database
+YAHOO__JAPAN_TALENT_DATABASE_ID	P3284	3284	Identifier of person in Yahoo! Japan Talent database
+MATHEMATICS_SUBJECT_CLASSIFICATION_ID	P3285	3285	identifier of the same topic in the Mathematics Subject Classification
+SQUASH_INFO_ID	P3286	3286	identifier on the website squashinfo.com
+WORLD_SPIDER_CATALOG_ID	P3288	3288	identifier of a taxon in the World Spider Catalog
+CELLOSAURUS_ID	P3289	3289	Cellosaurus cell line identifier
+BIOGRAPHY_AT_THE_LANDTAG_OF_MECKLENBURG_VORPOMMERN	P3290	3290	link to the biography pages at the Landtag of Mecklenburg-Vorpommern
+BALAT_IMAGE_ID	P3293	3293	identifier for images in the Photo Library database of BALaT (Belgian Art Links & Tools), maintained by KIK-IRPA, Belgium's Royal Institute for Cultural Heritage.
+FLEMISH_PARLIAMENT_PERSON_ID	P3297	3297	identifier for a person on the website of the Flemish Parliament
+BELGIAN_SENATE_PERSON_ID	P3298	3298	identifier for a person on the website of the Belgian Senate
+STUDENT_REGISTER_OF_THE_UNIVERSITY_OF_HELSINKI_ID__1640_1852_	P3299	3299	ID in the online student register of the University of Helsinki 1640–1852. Format: numbers below ca. 20000, see P3325 for higher numbers
+OPEN_MEDIA_DATABASE_FILM_ID	P3302	3302	Identifier for a movie at the Open Movie Database
+NGS_PUMPING_STATION_ID	P3304	3304	identifier for a pumping station described on the website of the Nederlandse Gemalen Stichting
+KINENOTE_PERSON_ID	P3305	3305	identifier of a person, in the KINENOTE movie database
+GALICIANA_AUTHOR_ID	P3307	3307	identifier of an author in Galiciana
+LIB_REVIEWS_ID	P3308	3308	ID for 'Things' (review subjects) on lib.reviews
+SUMMITPOST_MOUNTAIN_ID	P3309	3309	identifer of a mountain on SummitPost
+365CHESS_PLAYER_ID	P3314	3314	identifier for players at 365chess.com
+CHESSTEMPO_ID	P3315	3315	identifier a chess player, at chesstempo.com
+ICCF_PLAYER_ID	P3316	3316	identifier for a chess player, at iccf.com
+PATRIMONIO_INMUEBLE_DE_ANDALUCIA_ID	P3318	3318	identifier for a cultural heritage item in the  Patrimonio Inmueble de Andalucía database (BDI)
+VLINDERNET_ID	P3322	3322	identifier for lepidoptera species in the vlindernet database
+PETIT_PATRIMOINE_COM_ID	P3324	3324	N/A
+STUDENT_REGISTER_OF_THE_UNIVERSITY_OF_HELSINKI_ID__1853_1899_	P3325	3325	ID in the online student register of the University of Helsinki 1853–1899. Format: numbers above ca. 20000, see P3299 for lower numbers
+WORLD_WATERFALL_DATABASE_ID	P3326	3326	Waterfall ID in the World Waterfall Database
+RESERVES_NATURELLES_DE_FRANCE_ID	P3327	3327	N/A
+WURVOC_ORG_MEASURE_ID	P3328	3328	concept in the Ontology of units of Measure and related concepts (OM) 1.8 of wurvoc.org
+CIVIC_VARIANT_ID	P3329	3329	Identifier used in the CIViC database to identify specific variant
+SUPERMODELS_NL_ID	P3330	3330	ID of a fashion model on the Supermodels.nl website
+ACM_DIGITAL_LIBRARY_CITATION_ID	P3332	3332	unique identifier for a bibliographic record in the Association for Computing Machinery (ACM) Digital Library
+ACM_DIGITAL_LIBRARY_EVENT_ID	P3333	3333	unique identifier of an event or conference series of the Association for Computing Machinery (ACM)
+WORLD_SURF_LEAGUE_ID	P3339	3339	identifier for a surfer on the World Surf League website
+KVIKMYNDIR_FILM_ID	P3340	3340	identifier of a film (movie) in the Icelandic film database kvikmyndir.is
+KVIKMYNDIR_PERSON_ID	P3341	3341	identifier of a person in the Icelandic film database kvikmyndir.is
+LEGISLATION_GOV_UK_ID	P3343	3343	Identifier of this legislation on the legislation.gov.uk website
+VOTE_SMART_ID	P3344	3344	identifies candidates in US elections for national and state government within Project Vote Smart's database
+HKMDB_PERSON_ID	P3346	3346	identifier for a person, in the Hong Kong Movie Database
+PERMID	P3347	3347	identifier for an entity or concept, in Thomson Reuter's Open PermID
+NATIONAL_LIBRARY_OF_GREECE_ID	P3348	3348	Authority ID from the National Library of Greece Authority Records
+WHO_INTERNATIONAL_NON_PROPRIETARY_NAMES_ID	P3350	3350	a numeric ID for the WHO international non-proprietary drug names collection
+ADULT_FILM_DATABASE_PERSON_ID	P3351	3351	ID for a person in the Adult Film Database
+MUSIPEDIA_TUNE_ID	P3352	3352	identification of tune in musipedia database
+NATIONAL_RECREATION_TRAILS_DATABASE_ID	P3353	3353	indentifier for a trail in the United States' National Recreation Trails Database
+NOBEL_PRIZE_PEOPLE_NOMINATION_ID	P3360	3360	identifier for a person who nominated someone, or who was nominated, for a Nobel Prize
+PICTORIGHT_ID_CODE	P3361	3361	code to identify members of the Dutch collective rights management organisation PictoRight and sister organisations worldwide
+TENNIS_HOF_PLAYER_ID	P3363	3363	International Tennis Hall of Fame
+ENCICLOPEDIA_TRECCANI_ID	P3365	3365	identifier for the Enciclopedia Treccani website
+GECD_PERSON_ID	P3366	3366	identifier of a person in the German Early Cinema Database
+GECD_FILM_ID	P3367	3367	identifier of a film (movie) in the German Early Cinema Database
+GEOPATRONYME_ID	P3370	3370	identifier of a family name in the Géopatronyme database
+OBSERVATOIRE_DU_PATRIMOINE_RELIGIEUX_ID	P3371	3371	ID for religious buildings on the OPR website
+AUCKLAND_ART_GALLERY_ARTIST_ID	P3372	3372	identifier assigned to an artist by the Auckland Art Gallery in New Zealand
+GECD_FIRMEN_ID	P3375	3375	identifier of a film company in the German Early Cinema Database
+BELGIAN_ENTERPRISE_NUMBER	P3376	3376	Identifier from Crossroads Bank for Belgian Enterprises
+BLOOMBERG_PRIVATE_COMPANY_ID	P3377	3377	identifier for a company, in the Bloomberg database
+MERCK_INDEX_REACTION_ID	P3378	3378	identifier for a chemical reaction, in the Merck Index
+MODEL_MANUAL_ID	P3379	3379	identifier for a fashion model in the 'New York' magazine database
+FILE_FORMAT_WIKI_PAGE_ID	P3381	3381	identifier on the "Just Solve the File Format Problem"/File Format(s) wiki
+GENEDB_ID	P3382	3382	gene identifier in GeneDB
+JAPAN_SUMO_ASSOCIATION_ID	P3385	3385	identifier of a person in the Japan Sumo Association database
+LITTLESIS_PEOPLE_ID	P3388	3388	entry in the LittleSis who-knows-who of government and business database
+ROYAL_SWEDISH_ACADEMY_OF_LETTERS_MEMBER_ID	P3389	3389	identifier in the list of members of the Royal Swedish Academy of Letters, History and Antiquities
+CONSOLIDATED_CODE_OF_THE_ELECTRONIC_CATALOG_OF_LIBRARIES_OF_BELARUS	P3390	3390	Belarus library catalog code
+VERKHOVNA_RADA_MP_ID	P3391	3391	identifier for a member of Verkhovna Rada (Parliament of Ukraine) on the official website
+SURMAN_ID	P3392	3392	identifier of a record, in the Surman Index of British nonconformist ministers
+LITTLESIS_ORGANISATION_ID	P3393	3393	organisation in the LittleSis who-knows-who of government and business database
+FINNISH_LAKE_ID	P3394	3394	ID for a lake in the Järviwiki database of Finnish lakes over 1 ha in extent.
+FRENCH_CATHOLIC_CHURCH_STRUCTURE_ID	P3396	3396	identifier of a structure in the guide of the French Catholic Church, edited by the Bishops' Conference of France
+GUIDE_OF_THE_FRENCH_CHURCH_PERSON_ID	P3397	3397	identifier of a person in the guide of the French Catholic Church, edited by the Bishops' Conference of France
+BUTTERFLIES_AND_MOTHS_OF_NORTH_AMERICA_ID	P3398	3398	identifier for taxa in the "Butterflies and Moths of North America" database
+JTWC_TROPICAL_CYCLONE_ID	P3399	3399	identifier for a tropical cyclone, issued by the Joint Typhoon Warning Center
+CORDIS_PROJECT_ID	P3400	3400	unique identifier for research projects funded by the European Commission, in the CORDIS database.
+WILDERNESS_NET_ID	P3401	3401	identifier for an American wilderness area in the Wilderness.net database
+THE_VOGUE_LIST_ID	P3404	3404	identifier for an actor of the fashion scene in the database maintained by Vogue Paris
+KLOSTERDATENBANK_ID	P3407	3407	entry in the Germania Sacra Klosterdatenbank
+FINA_ATHLETE_ID	P3408	3408	identifier for swimmers from the International Swimming Federation
+CATALOGUS_PROFESSORUM_LIPSIENSIS_ID	P3409	3409	biographical entry in the University of Leipzig catalog of professors
+CLERGY_OF_THE_CHURCH_OF_ENGLAND_DATABASE_ID	P3410	3410	identifier for people in the Church of England database, covering English clergy from 1540–1835
+SAXON_ACADEMY_OF_SCIENCES_MEMBER_ID	P3411	3411	identifier in the members' database of the Saxon Academy of Sciences
+CANADIAN_ENVIRONMENTAL_SUSTAINABILITY_INDICATORS_ID__PROTECTED_AREAS_	P3412	3412	identifier of a protected area of Canada used by the Canadian Environmental Sustainability Indicators
+LEOPOLDINA_MEMBER_ID	P3413	3413	identifier in the members' database of the Leopoldina – German Academy of Sciences
+QUORA_TOPIC_ID	P3417	3417	identifier for a topic on Quora (English language version)
+BASIC_UNIT_OF_SETTLEMENT_CODE__CZECH_SLOVAK_	P3419	3419	code given to each basic unit of settlement (smallest administrative entity, below municipality) in the Czech Republic or Slovakia
+CALFLORA_ID	P3420	3420	item number for taxa in Calflora
+BELVEDERE_ARTIST_ID	P3421	3421	identifier assigned to an artist by the Österreichische Galerie Belvedere in Vienna
+INSEE_COUNTRIES_AND_FOREIGN_TERRITORIES_CODE	P3422	3422	French identifier for countries and foreign territories
+INSEE_ARRONDISSEMENT_CODE	P3423	3423	number sequence for identification of arrondissement in France
+POLISH_CULTURAL_HERITAGE_REGISTER_NUMBER	P3424	3424	ID in Polish cultural heritage register
+NATURA_2000_SITE_ID	P3425	3425	identifier for protected areas within the Natura 2000 network of the European Union
+ARBETSAM_ID	P3426	3426	identifier in Working Life Museums Co-operation Council's database of working-life museums in Sweden (Arbetslivsmuseer)
+AS_COM_ATHLETE_ID	P3427	3427	identifier for an athlete on as.com
+ELECTRONIC_ENLIGHTENMENT_ID	P3429	3429	identifier in the Electronic Enlightenment database
+SOCIAL_NETWORKS_AND_ARCHIVAL_CONTEXT_ID	P3430	3430	identifier for items in the Social Networks and Archival Context system
+ERIH_PLUS_ID	P3434	3434	identifier of a journal in ERIH PLUS
+VGMDB_ARTIST_ID	P3435	3435	identifier for a musician or group in the Video Game Music database
+AELG_ID	P3436	3436	identifier for a writer in the Galician Writers Association website
+FIFA_COUNTRY_CODE	P3441	3441	three-letter country code assigned by FIFA
+VICTORIAN_HERITAGE_DATABASE_ID	P3443	3443	identifier for a heritage location, in Australia's Victorian Heritage Database
+CINEMA_OF_ISRAEL_ID	P3445	3445	Identifier number in "Cinema of Israel" website
+FIDAL_ID	P3446	3446	identifier for athletes in the Italian Athletics Federation (FIDAL) database and website
+NSW_HERITAGE_DATABASE_ID	P3449	3449	identifier for a place with recognised heritage value, in Australia's NSW heritage database
+IPI_BASE_CODE	P3453	3453	the international code for a legal entity or artist for copyright administration around Interested Parties Information
+ARCH_PACKAGE	P3454	3454	name of the official Arch package
+CIRCLEID	P3455	3455	unique ID to an internet engineer's articles
+ATP_TENNIS_TOURNAMENT_ID	P3456	3456	N/A
+CNC_AUTHORIZATION_NUMBER	P3458	3458	authorization number to operate a movie theater in France
+EURING_NUMBER	P3459	3459	number used to identify a species or subspecies, in the Euring database
+FAMA_WORK_ID	P3462	3462	Identifier for written work in medieval Latin
+FEDORA_PACKAGE	P3463	3463	name of the official Fedora package
+ISRAELI_CBS_MUNICIPAL_ID	P3466	3466	The Israeli municipal code (Hebrew סמל) is an outline encoding used by the Israel Central Bureau of Statistics to finely fine-tune their statistics. It's a unique identifier given to each municipality in Israel.
+INVENTARIO_SCULTURE___POLO_MUSEALE_FIORENTINO	P3467	3467	identifier of an artwork in the inventory of sculptures of Florentine museums
+NATIONAL_INVENTORS_HALL_OF_FAME_ID	P3468	3468	identifier for an inductee in the United States National Inventors Hall of Fame
+WTA_TENNIS_TOURNAMENT_ID	P3469	3469	N/A
+WOODLAND_TRUST_WOOD_ID	P3470	3470	identifier for a wood recorded by the Woodland Trust
+WIKISKRIPTA_ID	P3471	3471	identificator for articles on wikiskripta.eu
+VICNAMES_PLACE_ID	P3472	3472	identifier for a place in Victoria, Australia, in the VICNAMES database
+UBUNTU_16_10_PACKAGE	P3473	3473	name of the official Ubuntu package, for Ubuntu version 16.10
+SANU_MEMBER_ID	P3475	3475	Identifier for a member of the Serbian Academy of Sciences and Arts
+PSA_WORLDTOUR_ID	P3476	3476	PSA worldtour squash player identifier
+NIHON_TARENTO_MEIKAN_ID	P3477	3477	identifier of person in Nihon Tarento Meikan
+SONGKICK_ARTIST_ID	P3478	3478	identifier for an artist on Songkick
+OMNI_TOPIC_ID	P3479	3479	identifier for a topic, used by Omni and Aftonbladet
+BASE_MEMOIRE_REFERENCE	P3480	3480	reference in the base Mémoire for a French iconographic heritage element
+PARKS___GARDENS_UK_RECORD_ID	P3481	3481	identifier for an open space, in the Parks & Gardens UK database.
+EUROPEANA_FASHION_CREATOR_ID	P3482	3482	identifier for a creator on Europeana Fashion
+VGMDB_ALBUM_ID	P3483	3483	identifier for a single or album in the Video Game Music database
+FILMPOLSKI_PL_ID	P3495	3495	identifier for person, film (movie), or TV series, in the filmpolski.pl database
+ZNIEFF_ID	P3498	3498	identifier for a 'Zone naturelle d'intérêt écologique' on the Muséum national d'histoire naturelle's official website
+RINGGOLD_IDENTIFIER	P3500	3500	unique identifier for organisations in the publishing industry supply chain
+AMEBLO_USERNAME	P3502	3502	this item's username on Ameblo
+LOMBARDIABENICULTURALI_BUILDING_ID	P3503	3503	identifier of a historical building in the cultural heritage database of the Lombardy Region of Italy
+BIVOUAC_COM_MOUNTAIN_ID	P3507	3507	identifier of a North American mountain, at Bivouac.com
+DAGENS_NYHETER_TOPIC_ID	P3509	3509	identifier for a topic, used by the Swedish daily newspaper Dagens Nyheter
+VGMDB_LABEL_ID	P3511	3511	identifier for a record label or an organization in the Video Game Music database
+PEAKWARE_MOUNTAIN_ID	P3513	3513	identifier for a mountain at Peakware.com
+U_S__NATIONAL_GEODETIC_SURVEY_ID	P3514	3514	Identifier for a place by the U.S. National Geodetic Survey
+NPCA_ID	P3515	3515	identifier for a protected area on the US National Parks Conservation Association's website
+NATIONAL_PARK_FOUNDATION_ID	P3516	3516	identifier for a protected area on the US National Park Foundation's website
+GEOGRAPHICAL_NAMES_BOARD_OF_NEW_SOUTH_WALES_ID	P3517	3517	Identifier on the Geographical Names Board of New South Wales website. Do not use the reference number
+SMITHSONIAN_TRINOMIAL	P3518	3518	unique identifier assigned to an archaeological site in one of many states in the United States
+PFAM_ID	P3519	3519	identifier in the Pfam database of protein families
+DATABASEOLYMPICS_COM_ID	P3520	3520	ID for a person in databaseOlympics.com
+EUROTOUR_GOLF_PLAYER_ID	P3521	3521	identifier for a golf player, in the EuroTour database
+NHL_COM_ID	P3522	3522	identifier for an ice hockey player at NHL.com
+LUDING_GAME_ID	P3528	3528	identifier for a game at the Luding database
+AUSTRALIAN_GOVERNMENT_ORGANISATIONS_REGISTER_ID	P3534	3534	identifier of an Australian government organisation within the Australian Government Organisations Register
+JAPANTOUR_GOLF_PLAYER_ID	P3535	3535	identifier for a golf player, in the JapanTour database
+FOOTBALLDATABASE_EU_ID	P3537	3537	identifier for a soccer player at FootballDatabase.eu
+MLB_ID	P3541	3541	identifier for a baseball player in mlb.com
+FIBA_PLAYER_ID	P3542	3542	identifier for a basketball player at fiba.com
+TE_PAPA_ARTIST_ID	P3544	3544	identifier assigned to an artist by the Museum of New Zealand Te Papa Tongarewa
+THEOI_PROJECT_ID	P3545	3545	identifier for an entity in Greek mythology, at the Theoi Project
+AFL_TABLES_ID	P3547	3547	ID for a Australian rules footballer in afltables.com
+AUSTRALIAN_BUSINESS_NUMBER	P3548	3548	unique identifier for a business entity registered in Australia
+AUSTRALIAN_COMPANY_NUMBER	P3549	3549	unique identifier for a company registered in Australia
+AUSTRALIAN_REGISTER_OF_THERAPEUTIC_GOODS_ID	P3550	3550	identifier of a medicine or medical device listed in the Australian Register of Therapeutic Goods
+AUSTRALIAN_REGISTERED_BODY_NUMBER	P3551	3551	unique identifier for an organisation body (often a foreign business enterprise) registered in Australia
+AUSTRALIAN_REGISTERED_SCHEME_NUMBER	P3552	3552	unique identifier for a managed investment scheme registered in Australia
+ZHIHU_TOPIC_ID	P3553	3553	number of a topic of Zhihu, a Chinese question-and-answer website
+WORLD_SERIES_OF_POKER_ID	P3554	3554	ID of a poker player in World Series of Poker
+WORLD_GUIDE_TO_COVERED_BRIDGES_ID	P3555	3555	identifier for a covered bridge, in the World Guide to Covered Bridges
+WORLD_CURLING_TOUR_ID	P3556	3556	ID on the World Curling Tour database
+WORLD_CURLING_FEDERATION_ID	P3557	3557	ID for a person in the World Curling Federation database
+USCF_ID	P3558	3558	identifier for a chess player issued by the US Chess Federation
+COLLEGE_FOOTBALL_DATA_WAREHOUSE_ID	P3560	3560	ID at College Football Data Warehouse
+PRO_FOOTBALL_REFERENCE_ID	P3561	3561	identifier for American football players at Pro-Football-Reference.com
+ADMIRALTY_NUMBER	P3562	3562	identifier of lighthouses by United Kingdom Hydrographic Office
+NGA_LIGHTHOUSE_ID	P3563	3563	identifier of a lighthouse in the USA's National Geospatial-Intelligence Agency database
+GLOBAL_POKER_INDEX_ID	P3564	3564	ID for a poker player in Global Poker Index
+J_LEAGUE_PLAYER_ID	P3565	3565	ID for an association football (soccer) player at the J.League (Japan Professional Football League) data site
+JUST_SPORTS_STATS_ID	P3566	3566	ID for American football player in www.justsportsstats.com
+LEGENDS_OF_HOCKEY_ID	P3567	3567	identifier of an ice hockey player in Legends of Hockey
+OWGR_ID	P3568	3568	identifier for a golf player, in the Official World Golf Ranking database
+CULTUREEL_WOORDENBOEK_IDENTIFIER	P3569	3569	identifier for a concept in the Dutch Cultureel Woordenboek ('Cultural Dictionary')
+EUROPEAN_CASE_LAW_IDENTIFIER	P3570	3570	identifier for case law in Europe
+ESPN_MLB_PLAYER_ID	P3571	3571	ID for a baseball player at espn.com
+ESPNCRICINFO_PLAYING_GROUND_ID	P3572	3572	ID of cricket ground at ESPNcricinfo
+EUROPEAN_HANDBALL_FEDERATION_ID	P3573	3573	id for players in the European Handball Federation
+FANGRAPHS_ID	P3574	3574	ID for a baseball player in www.fangraphs.com
+TLG_AUTHOR_ID	P3576	3576	author identifier in the Thesaurus Linguae Graecae canon
+CROATIAN_FOOTBALL_FEDERATION_PLAYER_ID	P3577	3577	ID of player at Croatian Football Federation website
+SINA_WEIBO_ID	P3579	3579	Sina Weibo ID
+SIPCA_CODE	P3580	3580	identifier of an item in Sistema de Información del Patrimonio Cultural Aragonés (SIPCA)
+PRO_FOOTBALL_HALL_OF_FAME_ID	P3581	3581	identifier of a person in the Pro Football Hall of Fame
+SUNSHINETOUR_ID	P3582	3582	identifier for a golf player, in the SunshineTour database
+SURFLINE_ID	P3583	3583	identifier of a topic at surfline.com
+ITRA_RUNNER_ID	P3584	3584	identifier for a runner on the International Trail-Running Association's website
+ULTRASIGNUP_RUNNER_ID	P3585	3585	identifier for a runner on UltraSignup's website
+CRICKETARCHIVE_PLAYING_GROUND_ID	P3586	3586	identifier of a cricket ground at CricketArchive
+WNBA_PLAYER_ID	P3588	3588	identifier for a player on the Women's National Basketball Association's website
+GCD_SERIES_ID	P3589	3589	identifier of a comic book series in the Grand Comics Database (GCD)
+WORLD_CHECKLIST_OF_SELECTED_PLANT_FAMILIES_ID	P3591	3591	identifier of a plant taxon, in the World Checklist of Selected Plant Families
+AFI_CATALOG_OF_FEATURE_FILMS_ID	P3593	3593	identifier of a film (movie) in the American Film Institute Catalog of Feature Film
+ARANEAE_SPIDER_ID	P3594	3594	id of page in araneae.unibe.ch
+BLF_ARTICLE_ID	P3595	3595	identifier in the Biografiskt Lexikon för Finland released by Svenska litteratursällskapet i Finland
+DANISH_ANCIENT_MONUMENT_ID	P3596	3596	identifier for protected ancient monument site in Denmark, assigned by Heritage Agency of Denmark
+HOCKEY_REFERENCE_PLAYER_ID	P3598	3598	Identifier for ice hockey players at Hockey-Reference.com
+ARCHIVES_NATIONALES_PRODUCER_RECORD	P3599	3599	identifier for a "producer record" of the Archives Nationales (French National Archives)
+PROTECTED_HERITAGE_SITE_IN_BRUSSELS_ID	P3600	3600	identifier of a protected heritage site in Brussels, Belgium
+MARINETRAFFIC_LIGHTHOUSE_ID	P3601	3601	identifier of a lighthouse or light beacon in the MarineTraffic database
+ITU_TRIATHLETE_ID	P3604	3604	identifier for a triathlete on the International Triathlon Union's website
+90MINUT_PLAYER_ID	P3605	3605	ID in the 90minut website for a football/soccer player
+BOOKING_COM_HOTEL_ID	P3607	3607	identifier for a hotel on the Booking.com website
+RECREATION_GOV_AREA_ID	P3609	3609	identifier for a recreation area on the Recreation.gov website
+BORDEN_CODE	P3611	3611	unique identifier of a archeological site in Canada
+LE_MONDE_DIPLOMATIQUE_SUBJECT_ID	P3612	3612	identifier for a topic in the French newspaper Le Monde diplomatique
+NATURVARDSREGISTRET_ID	P3613	3613	identifier for an area protected under the Environmental Code of Sweden
+DIGDAG_ID	P3614	3614	identifier of a place, in the Digital Atlas of Denmark's historical-administrative geography
+VISION_OF_BRITAIN_UNIT_ID	P3615	3615	identifier of an administrative unit in the University of Portsmouth's Vision of Britain database
+VISION_OF_BRITAIN_PLACE_ID	P3616	3616	identifier of a place in the University of Portsmouth's Vision of Britain database
+SKI_DB_COM_SKIER_ID	P3619	3619	ID for a ski racer at www.ski-db.com
+BWFBADMINTON_COM_PLAYER_ID	P3620	3620	identifier of a player by Badminton World Federation, at bwfbadminton.com
+DARTS_DATABASE_PLAYER_ID	P3621	3621	identifier of a player at Darts Database
+RUSBANDY_PLAYER_ID	P3622	3622	identifier of a bandy player at rusbandy.ru
+BADMINTONLINK_PLAYER_ID	P3623	3623	identifier of a badminton player at BadmintonLink.com
+AUSTRALIAN_ANTARCTIC_GAZETTEER_ID	P3626	3626	identifier of a place, in the Australian Antarctic Gazetteer
+BABELIO_AUTHOR_ID	P3630	3630	identifier for an author on the literature website Babelio
+BABELIO_WORK_ID	P3631	3631	identifier for a book on the literature website Babelio
+BRITISH_MUSEUM_THESAURUS_ID	P3632	3632	identifier in the British Museum thesaurus
+BRITISH_MUSEUM_PLACE_ID	P3633	3633	identifier for a place, in the British Museum thesaurus
+THE_MET_OBJECT_ID	P3634	3634	object id for artworks at Metropolitan Museum of Art
+PEAKBAGGER_AREA_ID	P3635	3635	identifier for a mountain range or an area, on the peakbagger.com website
+OORLOGSMONUMENT_ID	P3638	3638	identifier for a war memorial in the database maintained by the Dutch Nationaal Comité 4 en 5 mei
+KEPN_ID	P3639	3639	identifier for a place on the KEPN site
+ARCHON_CODE	P3642	3642	A unique number used to identify archival collection locations within the UK and key global repositories holding collections relating to British history.
+FFR_PLAYER_ID	P3644	3644	identifier for a rugby player on the French Rugby Federation website
+ALL_BLACKS_PLAYER_ID	P3645	3645	identifier for a rugby player on the New Zealand Rugby Union website
+BASKETBALL_HALL_OF_FAME_ID	P3646	3646	identifier on the Naismith Memorial Basketball Hall of Fame website
+NBA_PLAYER_ID	P3647	3647	identifier for a basketball player on the National Basketball Association's website
+AMERICAN_HOCKEY_LEAGUE_PLAYER_ID	P3651	3651	ID of a player at TheAHL.com
+KONTINENTAL_HOCKEY_LEAGUE_PLAYER_ID	P3652	3652	ID of a player at KHL.ru
+ARRS_RUNNER_ID	P3653	3653	ID of player by ARRS (Association of Road Racing Statisticians)
+CHESS_COM_PLAYER_ID	P3654	3654	ID of a player at Chess.com
+BDFUTBOL_PLAYER_ID	P3655	3655	ID of a football player at BDFutbol
+CROSS_TABLES_COM_SCRABBLE_PLAYER_ID	P3656	3656	ID of a Scrabble player at cross-tables.com
+CROATIAN_FOOTBALL_STATISTICS_ID	P3657	3657	ID of an association football (soccer) player at hrnogomet.com, the Croatian Football Statistics (Statistike hrvatskog nogometa) website
+DZFOOT_COM_PLAYER_ID	P3658	3658	ID of a football player at DZFoot.com
+ESTONIAN_FOOTBALL_ASSOCIATION_PLAYER_ID	P3659	3659	ID of a player by Estonian Football Association
+FOOTBALLFACTS_RU_PLAYER_ID	P3660	3660	ID for a football player at FootballFacts.ru
+FORADEJOGO_MANAGER_ID	P3661	3661	ForaDeJogo.net identifier for an association football (soccer) manager
+FOOTBALL_FEDERATION_OF_UKRAINE_PLAYER_ID	P3662	3662	ID of a player by Football Federation of Ukraine
+FOTBAL_DNES_PLAYER_ID	P3663	3663	ID for a football player at Fotbal DNES
+FUTSAL_PLANET_PLAYER_ID	P3664	3664	ID for a football player at Futsal Planet
+L_EQUIPE_FOOTBALL_PLAYER_ID	P3665	3665	ID of a football player by L'Équipe
+EPCR_PLAYER_ID	P3666	3666	identifier for a rugby player on the European Professional Club Rugby website
+INTERNATIONAL_WEIGHTLIFTING_FEDERATION_ID	P3667	3667	ID of a player by International Weightlifting Federation
+SAMBAFOOT_PLAYER_ID	P3668	3668	ID of a football player at Sambafoot
+SWIMMING_AUSTRALIA_SWIMMER_ID	P3669	3669	ID of a swimmer at Swimming Australia
+TENNIS_ARCHIVES_PLAYER_ID	P3670	3670	ID of a tennis player at the Tennis Archives
+USA_GYMNASTICS_ATHLETE_ID	P3671	3671	ID for an athlete at USA Gymnastics
+INTERNATIONAL_ORIENTEERING_FEDERATION_ATHLETE_ID	P3672	3672	Identifier for an athlete by the International Orienteering Federation
+FILM_DOCUMENTAIRE_FR_FILM_ID	P3673	3673	identifier of a film (movie) in the French database film-documentaire.fr
+MUTOPIA_COMPOSER_ID	P3674	3674	ID of a composer at Mutopia Project
+HANS_CHRISTIAN_ANDERSEN_CENTRE_WORK_ID	P3675	3675	Identifier for a work by Hans Christian Andersen in the Digterens danske Værker catalogue
+WERELD_VAN_ORANJE_PLAYER_ID	P3677	3677	ID of a football player at Wereld van Oranje
+SA_RUGBY_PLAYER_ID	P3678	3678	identifier for a rugby player on the South African Rugby Union website
+ESPN_FC_PLAYER_ID	P3681	3681	identifier for a football/soccer player on ESPN FC's website
+AOC_ATHLETE_ID	P3682	3682	identifier for a sportsperson on the Australian Olympic Committee website
+LFP_FR_PLAYER_ID	P3683	3683	identifier for a football player on the Ligue de Football Professionnel website
+DRIVERDB_DRIVER_ID	P3684	3684	identifier for a driver in the Driver Database
+ESPN_NBA_PLAYER_ID	P3685	3685	identifier for a NBA basketball player on ESPN's website
+ESPN_NFL_PLAYER_ID	P3686	3686	identifier for a NFL football player on ESPN's website
+ESPN_NHL_PLAYER_ID	P3687	3687	identifier for a NHL ice hockey player on ESPN's website
+ICF_SPRINT_CANOER_ID	P3688	3688	identifier for a sprint canoer on the International Canoe Federation website
+ICF_SLALOM_CANOER_ID	P3689	3689	identifier for a slalom canoer on the International Canoe Federation website
+IFSC_CLIMBER_ID	P3690	3690	identifier for a climber on the International Federation of Sport Climbing website
+ISHOF_SWIMMER_ID	P3691	3691	identifier for a swimmer on the International Swimming Hall of Fame website
+NCAA_SPORTS_TEAM_ID	P3692	3692	identifier for an American college sports team on the National Collegiate Athletic Association's website
+SHORTTRACKONLINE_SPEED_SKATER_ID	P3693	3693	identifier for a short track speed skater on the ShorttrackOnLine.info website
+SPEEDSKATINGNEWS_INFO_SPEED_SKATER_ID	P3694	3694	identifier for a speed skater on the SpeedSkatingNews.info website
+SPEEDSKATINGSTATS_SPEED_SKATER_ID	P3695	3695	identifier for a speed skater on the SpeedSkatingStats.com website
+SRCBB_PLAYER_ID	P3696	3696	identifier for a college basketball player on the SRCBB website
+SRCFB_PLAYER_ID	P3697	3697	identifier for a college football player on the SRCFB website
+TENNIS_AUSTRALIA_PLAYER_ID	P3698	3698	identifier for a player on the Tennis Australia website
+TRANSFERMARKT_REFEREE_ID	P3699	3699	N/A
+NHF_PLAYER_ID	P3700	3700	identifier for a player on the Norwegian Handball Federation website
+CATALOGUE_OF_ILLUMINATED_MANUSCRIPTS_ID	P3702	3702	manuscript identifier in the British Library Catalogue of Illuminated Manuscripts
+JMDB_PERSON_OR_COMPANY_ID	P3703	3703	ID of an actor or a company at Japanese Movie Database
+KMDB_FILM_ID	P3704	3704	ID of a film at Korean Movie Database
+RITVA_PROGRAM_ID	P3705	3705	Radio and Television Archive Program ID of The National Audiovisual Institute of Finland
+RITVA_PERSON_ID	P3706	3706	Radio and Television Archive Person ID of The National Audiovisual Institut of Finland
+PHDTREE_PERSON_ID	P3708	3708	ID of a person at PhDTree
+JEWISH_ENCYCLOPEDIA_DAAT_ID	P3710	3710	identifier for an entry at Jewish Encyclopedia Daat
+VANDERKROGT_NET_STATUES_ID	P3711	3711	identifier for a public sculpture in the Vanderkrogt.net Statues - Hither & Thither online database
+RECREATION_GOV_FACILITY_ID	P3714	3714	identifier for a facility in an American recreation area on the Recreation.gov website
+NCMEC_PERSON_ID	P3718	3718	identifier of a missing or unidentified person at the United States' National Center for Missing & Exploited Children
+GPNOTEBOOK_ID	P3720	3720	ID of a topic, in the British medical database GPnotebook
+USCG_LIGHTHOUSE_ID	P3723	3723	Identifier for lighthouses in the USA by the US Coast Guard
+USHMM_HOLOCAUST_ENCYCLOPEDIA_ID	P3724	3724	Identifier in the Holocaust Encyclopedia of the United States Holocaust Memorial Museum
+CEV_PLAYER_ID	P3725	3725	identifier for a player on the European Volleyball Confederation's website
+EU_FOOTBALL_INFO_PLAYER_ID	P3726	3726	identifier for a football/soccer player on the Eu-football.info website
+SERBIA_MUNICIPALITY_ID	P3727	3727	identifier of municipalities of Serbia
+NEW_ZEALAND_HERITAGE_LIST_NUMBER	P3728	3728	list number in the New Zealand Heritage List, issued by the Heritage New Zealand Pouhere Taonga
+SERBIA_CADASTRAL_MUNICIPALITY_ID	P3731	3731	Identifier of cadastral municipalities of Serbia
+PHILPAPERS_RECORD	P3732	3732	identifier for papers on PhilPapers
+MOOMA_ARTIST_ID	P3733	3733	ID of an artist at the Israeli music website MOOMA
+GHETTO_ENCYCLOPEDIA_ID	P3735	3735	identifier of a ghetto, or a place containing a ghetto, in Yad Vashem's Ghetto Encyclopedia (also European Holocaust Research Infrastructure (EHRI) project's database)
+EUROVISION_SONG_CONTEST_SONG_ID	P3736	3736	identifier for a song in the Eurovision Song Contest
+FIH_PLAYER_ID	P3742	3742	identifier for a field hockey player on the International Hockey Federation website
+ITU_ISO_IEC_OBJECT_IDENTIFIER	P3743	3743	unique global identifier standardized by the ITU and ISO/IEC for naming any object, concept, or thing
+WORLD_RUGBY_SEVENS_SERIES_ID	P3745	3745	identifier for a rugby sevens player on the World Rugby Sevens Series website
+SSRN_AUTHOR_ID	P3747	3747	identifier for an author at the Social Science Research Network
+ISRAEL_FOOTBALL_ASSOCIATION_PLAYER_ID	P3748	3748	identifier for a player on the Israel Football Association website
+GOOGLE_MAPS_CID	P3749	3749	Customer ID (identifier) for a place, in Google Maps
+KMDB_DOCUMENTARY_ID	P3750	3750	ID of a documentary at Korean Movie Database
+DOCOMOMO_IBERICO_ID	P3758	3758	identifier of a building, structure or group of buildings in Registros del Movimiento Moderno database, DOCOMOMO Ibérico
+SAHRA_HERITAGE_SITE_ID	P3759	3759	identifier of heritage sites in South Africa, assigned by the South African Heritage Resources Agency.
+IDITAROD_MUSHER_ID	P3760	3760	identifier for a musher on the Iditarod Trail Sled Dog Race website
+OPENMLOL_AUTHOR_ID	P3762	3762	identifier of an author in the openMLOL digital library of cultural resources
+MIMO_INSTRUMENT_ID	P3763	3763	identifier for a musical instrument, on the instrument keyword thesaurus from Musical Instruments Museums Online
+ALL_ATHLETICS_COM_ID	P3765	3765	identifier for an athlete on the All-Athletics.com website
+EUROPEAN_ATHLETICS_ID	P3766	3766	identifier for an athlete on the European Athletic Association website
+FFA_ID	P3767	3767	identifier for an athlete on the French Athletics Federation website
+MEDIEVAL_LIBRARIES_OF_GREAT_BRITAIN_BOOK_ID	P3768	3768	identifier for volumes known to have been in British libraries during the Middle Ages
+IT_S_RUGBY_ID	P3769	3769	identifier for a rugby player on the It's Rugby website
+PEAKFINDER_ID	P3770	3770	identifier for a mountain peak on the PeakFinder website
+ARTNET_ARTIST_ID	P3782	3782	identifier of an artist, in the Artnet database of art auction results
+CHRISTIE_S_WORK_ID	P3783	3783	identifier for an object offered for sale by Christies
+CITESEERX_ARTICLE_ID	P3784	3784	identifier string for a scientific article available from CiteSeer
+DANSKEFILM_FILM_ID	P3785	3785	identifier for a film in danskefilm.dk
+DANSKEFILM_PERSON_ID	P3786	3786	identifier for a person in danskefilm.dk
+DANSKEFILM_SILENT_FILM_ID	P3787	3787	identifier for a silent film in danskefilm.dk
+BNA_AUTHOR_ID	P3788	3788	authority control identifier used at the National Library of Argentina
+TELEGRAM_USERNAME	P3789	3789	this item's username on Telegram
+ART_RENEWAL_CENTER_ID	P3791	3791	ID of somebody by Art Renewal Center
+STAR_WARS_DATABANK_ID	P3798	3798	identifier of a fictional character at Star Wars Databank
+SAFSAL_PLAYER_ID	P3799	3799	basketball player Id in Safsal website
+SAFSAL_COACH_ID	P3800	3800	basketball coach Id in Safsal website
+INEGI_MUNICIPALITY_ID	P3801	3801	identifier for a municipality in Mexico published by INEGI
+LAUNCHPAD_NET_PROJECT_ID	P3802	3802	identifier for an official Launchpad repository ("project") for a software application
+TV_GUIDE_SHOW_ID	P3804	3804	ID of a television program at TV Guide
+TAX_EXEMPT_HERITAGE_ASSET_ID	P3805	3805	identifier of an artwork, in the UK government's HMRC database of tax-exempt heritage assets
+MAPA_PLACE_ID	P3806	3806	identifier for a place, in the Mapa database of places in Israel
+S2A3_BIOGRAPHICAL_DATABASE_ID	P3807	3807	ID of a person by Southern Africa Association for the Advancement of Science, at S2A3 Biographical Database of Southern African Science
+THE_NUMBERS_MOVIE_ID	P3808	3808	ID of an movie at The Numbers
+YERELNET_DISTRICT_ID	P3809	3809	identifier for a district of Turkey, in the YerleNET database
+PARKS_IT_ID	P3810	3810	identifier for an Italian protected area on the Parks.it website
+ELLE_FR_PERSON_ID	P3812	3812	identifier for a person on the Elle.fr website
+BIVOUAC_COM_PASS_ID	P3813	3813	identifier of a North American mountain pass, at Bivouac.com
+BOF_PERSON_ID	P3814	3814	identifier for a person on the Business of Fashion website
+BANGLA_MOVIE_DATABASE_ID	P3821	3821	ID of actors or movies at Bangla Movie Database
+WELSH_RUGBY_UNION_PLAYER_ID	P3826	3826	identifier for a rugby union player selected with the Wales national team on the Welsh Rugby Union website
+JSTOR_TOPIC_ID	P3827	3827	identifier for a topic at JSTOR
+PUBLONS_AUTHOR_ID	P3829	3829	identifier of an author or reviewer, in Publons
+CUETRACKER_PLAYER_ID	P3830	3830	ID about a specific snooker player at the CueTracker.net database
+EUROPEANA_FASHION_VOCABULARY_ID	P3832	3832	Identifier for clothing and fashion items
+MENDELEY_PERSON_ID	P3835	3835	identifier for an author of scholarly works, at mendeley.com
+PINTEREST_USERNAME	P3836	3836	username of the Pinterest account of a person or an organization
+TAB4U_SONG_ID	P3838	3838	ID in the israeli song database "Tab4u"
+TAB4U_ARTIST_ID	P3839	3839	ID in the israeli artist database "Tab4u"
+DLV_ATHLETE_ID	P3843	3843	identifier for an athlete on the German Athletics Association website
+DEUTSCHE_SYNCHRONKARTEI_FILM_ID	P3844	3844	Identifier for films in the synchronisation database Deutsche Synchronkartei
+TV_GUIDE_PERSON_ID	P3845	3845	ID of an actor at TVGuide.com

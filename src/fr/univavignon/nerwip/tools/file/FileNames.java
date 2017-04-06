@@ -127,6 +127,8 @@ public class FileNames
 	public final static String FI_ENTITY_SCHEMA = "entities" + FileNames.EX_SCHEMA;
 	/** XML schema file used to store keys */
 	public final static String FI_KEY_SCHEMA = "keys" + FileNames.EX_SCHEMA;
+	/** XML file used to store keys */
+	public final static String FI_KB_NAMES = "kb_names" + FileNames.EX_TEXT;
 	/** XML schema file used to record article properties  */
 	public final static String FI_PROPERTY_SCHEMA = "properties" + FileNames.EX_SCHEMA;
 	/** File containing the properties of the article */

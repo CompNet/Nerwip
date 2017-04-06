@@ -163,7 +163,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	// EXTERNAL IDS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Internal ids of this entity */
-	protected Map<KnowledgeBase,String> externalIds = new HashMap<KnowledgeBase,String>();
+	protected Map<String,String> externalIds = new HashMap<String,String>();
 	
 	/**
 	 * Returns the requested external id of this entity, or {@code null}
@@ -174,7 +174,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	 * @return
 	 * 		External id of this entity in the knowledge base. 
 	 */
-	public String getExternalId(KnowledgeBase knowledgeBase)
+	public String getExternalId(String knowledgeBase)
 	{	return externalIds.get(knowledgeBase);
 	}
 	
@@ -184,7 +184,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	 * @return
 	 * 		External ids of this entity in the knowledge bases. 
 	 */
-	public Map<KnowledgeBase,String> getExternalIds()
+	public Map<String,String> getExternalIds()
 	{	return externalIds;
 	}
 	
@@ -197,8 +197,11 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	 * @param externalId
 	 * 		External id of this entity in the knowledge base.
 	 */
-	public void setExternalId(KnowledgeBase knowledgeBase, String externalId)
-	{	externalIds.put(knowledgeBase,externalId);
+	public void setExternalId(String knowledgeBase, String externalId)
+	{	if(!KnowledgeBase.isRegistered(knowledgeBase))
+			throw new IllegalArgumentException("String \""+knowledgeBase+"\" is not registered as a knowledge base name");
+		else
+			externalIds.put(knowledgeBase,externalId);
 	}
 	
 	/**
@@ -214,10 +217,10 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	public boolean doExternalIdsIntersect(AbstractNamedEntity entity)
 	{	boolean result = false;
 		
-		Iterator<Entry<KnowledgeBase,String>> it = externalIds.entrySet().iterator(); 
+		Iterator<Entry<String,String>> it = externalIds.entrySet().iterator(); 
 		while(it.hasNext() && !result)
-		{	Entry<KnowledgeBase,String> entry = it.next();
-			KnowledgeBase key = entry.getKey();
+		{	Entry<String,String> entry = it.next();
+			String key = entry.getKey();
 			String value1 = entry.getValue();
 			String value2 = entity.getExternalId(key);
 			result = value2!=null && value1.equals(value2);
@@ -255,15 +258,15 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		}
 		// external ids
 		{	Element externalIdsElt = new Element(XmlNames.ELT_EXTERNAL_IDS);
-			for(Entry<KnowledgeBase,String> entry: externalIds.entrySet())
+			for(Entry<String,String> entry: externalIds.entrySet())
 			{	// retrieve the data
-				KnowledgeBase kb = entry.getKey();
+				String kb = entry.getKey();
 				String externalId = entry.getValue();
 				// set up id element
 				Element externalIdElt = new Element(XmlNames.ELT_EXTERNAL_ID);
 				externalIdElt.setText(externalId);
 				// set up knowledge base attribute
-				Attribute kbAttr = new Attribute(XmlNames.ATT_KNOWLEDGE_BASE, kb.toString());
+				Attribute kbAttr = new Attribute(XmlNames.ATT_KNOWLEDGE_BASE, kb);
 				externalIdElt.setAttribute(kbAttr);
 				// add to result
 				externalIdsElt.addContent(externalIdElt);
@@ -309,8 +312,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 			{	// external id
 				String externalId = externalIdElt.getText();
 				// knowledge base name
-				String kbStr = element.getAttributeValue(XmlNames.ATT_KNOWLEDGE_BASE);
-				KnowledgeBase kb = KnowledgeBase.valueOf(kbStr);
+				String kb = element.getAttributeValue(XmlNames.ATT_KNOWLEDGE_BASE);
 				// add to result
 				result.setExternalId(kb,externalId);
 			}
@@ -339,8 +341,8 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		surfaceForms.addAll(entity.surfaceForms);
 		
 		// complete the external ids
-		for(Entry<KnowledgeBase,String> entry: entity.externalIds.entrySet())
-		{	KnowledgeBase kb = entry.getKey();
+		for(Entry<String,String> entry: entity.externalIds.entrySet())
+		{	String kb = entry.getKey();
 			String extId1 = externalIds.get(kb);
 			String extId2 = entry.getValue();
 			if(extId1==null)
@@ -359,10 +361,10 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		result = result + "ID=" + internalId + "";
 		result = result + ", NAME=\"" + name +"\"";
 		if(!externalIds.isEmpty())
-		{	Entry<KnowledgeBase,String> entry = externalIds.entrySet().iterator().next();
-			KnowledgeBase kb = entry.getKey();
+		{	Entry<String,String> entry = externalIds.entrySet().iterator().next();
+			String kb = entry.getKey();
 			String id = entry.getValue();
-			result = result + ", " + kb.toString() + "=\"" + id +"\"";
+			result = result + ", " + kb + "=\"" + id +"\"";
 		}
 		result = result + ")";
 		return result;
