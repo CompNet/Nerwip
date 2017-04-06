@@ -44,6 +44,15 @@ public enum KnowledgeBase
 	/** Archives du Spectacle */
 	ARCH_SPECT,
 	
+	/** Artsy artist */
+	ARTSY_ARTIST,
+	
+	/** Australian Dictionary of Biography */
+	AU_DICT_BIO,
+	
+	/** Auckland Art Gallery artist */
+	AUCK_ART_GALL_ART,
+	
 	/** Babelio author */
 	BABELIO_AUTH,
 	
@@ -59,8 +68,14 @@ public enum KnowledgeBase
 	/** BBC Things */
 	BBC_THINGS,
 	
+	/** Place code used by Belgium Statistics edit */
+	BE_NIS_INS,
+	
 	/** Belgian ODIS database */
 	BE_ODIS,
+	
+	/** Belvedere artist */
+	BELVEDERE_ART,
 	
 	/** Benezit Dictionary of Artists */
 	BENEZIT,
@@ -84,14 +99,26 @@ public enum KnowledgeBase
 	/** Biblioteca Virtual Miguel de Cervantes */
 	BVMC_PERS,
 	
+	/** CALIS (China Academic Library & Information System) edit */
+	CALIS,
+	
 	/** National Library of Catalonia - BNC */
 	CANTIC,
+	
+	/** Catholic Encyclopedia */
+	CATHO_ENCYC,
 	
 	/** CBS municipality code */
 	CBS_MUNI,
 	
 	/** Consortium of European Research Libraries thesaurus */
 	CERL,
+	
+	/** Person in the CESAR database of French theatre of the seventeenth and eighteenth centuries */
+	CESAR_PERS,
+	
+	/** Identifier for cultural properties in Switzerland */
+	CH_PCP,
 	
 	/** Chemins de mémoire - Locations */
 	CHEM_MEM_LOC,
@@ -111,11 +138,17 @@ public enum KnowledgeBase
 	/** Czech film database ČSFD */
 	CSFD,
 	
+	/** C-SPAN person */
+	CSPAN_PERS,
+	
 	/** Annuaire de la France savante XVIIe-XXe du CTHS */
 	CTHS_PERS,
 	
 	/** Cultureel Woordenboek (Dutch ENcyclopedia) */
 	CULT_WOORD,
+	
+	/** Cycling Archives ID (cyclist) */
+	CYCL_ARCHIV,
 	
 	/** data.gouv.fr */
 	DATA_GOUV_FR,
@@ -128,6 +161,9 @@ public enum KnowledgeBase
 	
 	/** Dewey Decimal Classification */
 	DEWEY,
+	
+	/** Dialnet author */
+	DIALNET_AUTH,
 	
 	/** Dictionary of Art Historians */
 	DICO_ART_HIST,
@@ -158,6 +194,9 @@ public enum KnowledgeBase
 	
 	/** Elonet person ID */
 	ELONET_PERS,
+	
+	/** ELSTAT geographical code */
+	ELSTAT,
 	
 	/** EMLO - Early Modern Letters Online project run by the Bodleian Library */
 	EMLO,
@@ -209,6 +248,9 @@ public enum KnowledgeBase
 	/** French diocesan architects */
 	FR_DIOC_ARCHI,
 	
+	/** French Sculpture Census artist ID */
+	FR_SCULPT_ART,
+	
 	/** Freebase database */
 	FREEBASE,
 	
@@ -217,6 +259,9 @@ public enum KnowledgeBase
 	
 	/** genealogics.org person */
 	GENEA_ORG_PERS,
+	
+	/** Geni.com profile */
+	GENI_COM_USER,
 	
 	/** GeoNames database */
 	GEONAMES,
@@ -227,6 +272,8 @@ public enum KnowledgeBase
 	/** German regional key */
 	GER_REGI_KEY,
 	
+	/** Getty - Art & Architecture Thesaurus by the Getty Research Institute */
+	GETTY_AAT,
 	/** Getty Thesaurus of Geographic Names */
 	GETTY_GEO,
 	
@@ -247,6 +294,9 @@ public enum KnowledgeBase
 	
 	/** Institutional identifier from the GRID.ac global research identifier database */
 	GRID_AC,
+	
+	/** GS1 Prefix, the first three digits, usually identifying the national GS1 Member Organization to which the manufacturer is registered */
+	GS1_COUNTRY,
 	
 	/** Nine-character UK Government Statistical Service code */
 	GSS,
@@ -269,18 +319,26 @@ public enum KnowledgeBase
 	/** International Music Score Library Project */
 	IMSLP,
 	
+	/** INE municipality code */
+	INE_MUNI,
+	
 	/** INSEE countries and foreign territories code */
 	INSEE_COUNTRY,
 	/** INSEE department code */
 	INSEE_DEPT,
 	/** INSEE municipality code */
 	INSEE_MUNICIP,
+	/** INSEE region code */
+	INSEE_REGION,
 	
 	/** Instagram username */
 	INSTRAGRAM,
 	
 	/** Internet Broadway Database person */
 	INT_BROAD_DB_PERS,
+	
+	/** Internet Speculative Fiction Database - Author */
+	ISFDB_AUTH,
 	
 	/** International Securities Identification Number */
 	ISIN,
@@ -299,8 +357,15 @@ public enum KnowledgeBase
 	/**  International Organization for Standardization - country name that has been deleted from ISO 3166-1 since its first publication in 1974 */
 	ISO_3166_3,
 	
+	/** ISTAT */
+	ISTAT,
+	
 	/** Italian Chamber of Deputies */
 	IT_CHAMB_DEP,
+	/** Italian cadastre code */
+	IT_CAD_CODE,
+	/** Italian Senate of the Republic */
+	IT_SEN_REP,
 	
 	/** Jewish Encyclopedia ID (Russian) */
 	JEW_ENCYC_RUSS,
@@ -328,6 +393,9 @@ public enum KnowledgeBase
 	/** KulturNav-id */
 	KULTURNAV,
 	
+	/** Kunstindeks Danmark Artist */
+	KUNST_DAN_ART,
+	
 	/** Library and Archives Canada */
 	LAC,
 	
@@ -354,6 +422,9 @@ public enum KnowledgeBase
 	
 	/** Mobile country code */
 	MOBILE_COUNTRY_CODE,
+	
+	/** MoMA artist */
+	MOMA_ART,
 	
 	/** Sujet du Monde diplomatique */
 	MONDE_DIPLO,
@@ -452,6 +523,9 @@ public enum KnowledgeBase
 	/** Classification on Objects territory of municipal formations (Russia) */
 	OKTMO,
 	
+	/** OmegaWiki Defined Meaning */
+	OMEGA_WIKI_MEANING,
+	
 	/** Omni topic */
 	OMNI_TOPIC,
 	
@@ -470,14 +544,26 @@ public enum KnowledgeBase
 	/** OpenPlaques subject */
 	OPEN_PLAQUE,
 	
+	/** Openpolis */
+	OPEN_POLIS,
+	
 	/** Oxford Biography Index */
 	OX_BIO_IDX,
 	
 	/** Member of the Parliamentary Assembly of the Council of Europe */
 	PACE,
 	
+	/** Parlement & Politiek */
+	PARL_POLIT,
+	
+	/** Person in the Prosopography of Anglo-Saxon England edit */
+	PASE,
+	
 	/** Patrimonio Inmueble de Andalucía */
 	PATR_INM_AND,
+	
+	/** J. Paul Getty Museum artist */
+	PAUL_GETTY_ART,
 	
 	/** People Australia */
 	PEOPLE_AUSTR,
@@ -518,6 +604,9 @@ public enum KnowledgeBase
 	/** rodovid.org -- Family tree */
 	RODOVID,
 	
+	/** Runeberg author */
+	RUNEBERG_AUTH,
+	
 	/** Web-based edition of Joachim von Sandrart’s "Teutscher Academie der Edlen Bau, Bild- und Mahlerey-Künste" */
 	SANDRART_PER,
 	
@@ -527,6 +616,9 @@ public enum KnowledgeBase
 	/** Scope.dk person */
 	SCOPE_DK_PERS,
 	
+	/** Association football (soccer) player, manager or referee at the Scoresway website */
+	SCORESWAY_PERS,
+	
 	/** National Library of Sweden Libris library catalog */
 	SELIBR,
 	
@@ -535,6 +627,12 @@ public enum KnowledgeBase
 	
 	/** Swedish Film Database (SFDb) */
 	SFDB,
+	
+	/** Smithsonian American Art Museum: person/institution */
+	SMITH_AM_ART,
+	
+	/** Soccerway player ID */
+	SOCCERWAY_PLYR,
 	
 	/** Songkick artist */
 	SONGKICK_ART,
@@ -554,10 +652,16 @@ public enum KnowledgeBase
 	/** Sycomore database (French MPs) */
 	SYCOMORE,
 	
+	/** Tate artist */
+	TATE_ART,
+	
 	/** TED speaker */
 	TED_SPEAKER,
 	/** TED topic */
 	TED_TOPIC,
+	
+	/** Te Papa artist */
+	TE_PAPA_ART,
 	
 	/** Teuchos */
 	TEUCHOS,
@@ -565,11 +669,17 @@ public enum KnowledgeBase
 	/** Theatricalia person */
 	THEATR_PERS,
 	
+	/** Thyssen-Bornemisza artist */
+	THYSSEN_BORN_ART,
+	
 	/** TheFinalBall player ID */
 	TFB_PLYR,
 	
 	/** TOID - TOpographic IDentifier assigned by the Ordnance Survey to identify a feature in Great Britain */
 	TOID,
+	
+	/** Transfermarkt player ID */
+	TRANSFERMARKT_PLYR,
 	
 	/** Enciclopedia Treccani */
 	TRECCANI,
@@ -582,6 +692,11 @@ public enum KnowledgeBase
 	
 	/** Twitter username */
 	TWITTER_USER,
+	
+	/** Art UK artist */
+	UK_ART,
+	/** UK National Archives */
+	UK_NAT_ARCHIV,
 	
 	/** Getty Union List of Artist Names */
 	ULAN,
@@ -608,6 +723,9 @@ public enum KnowledgeBase
 	
 	/** The Vogue List */
 	VOGUE_LIST,
+	
+	/** Web Gallery of Art */
+	WEB_GALL_ART,
 	
 	/** Where On Earth IDentifier */
 	WOEID,

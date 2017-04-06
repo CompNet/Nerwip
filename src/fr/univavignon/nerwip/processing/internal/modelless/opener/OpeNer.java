@@ -45,7 +45,7 @@ import fr.univavignon.nerwip.processing.ProcessorName;
  * referring to the same entity, and to resolve coreferences. The 
  * tool also seems to be able to do entity linking (vs. a knowledge base).
  * <br/>
- * TODO OpeNer is available as a set of Java libraries. We could directly 
+ * TODO OpeNer is available as a set of Java libraries. We should directly 
  * integrate them in Nerwip.
  * 
  * @author Sabrine Ayachi

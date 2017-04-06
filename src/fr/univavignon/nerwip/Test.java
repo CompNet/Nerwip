@@ -1639,7 +1639,7 @@ File folder = folders.get(0);
 		logger.increaseOffset();
 	
 		ArticleRetriever retriever = new ArticleRetriever();
-		Article article = retriever.process(name);
+//		Article article = retriever.process(name);
 		boolean parenSplit = true;
 		boolean ignorePronouns = true;
 		boolean exclusionOn = true;

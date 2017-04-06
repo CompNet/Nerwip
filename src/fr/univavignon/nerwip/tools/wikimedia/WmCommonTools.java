@@ -256,6 +256,7 @@ public class WmCommonTools
 		"phone number",
 		"Roller Coaster Database ID",
 		"SANDRE ID", // rivers and stuff
+		"Smithsonian volcano ID",
 		"Social Networks and Archival Context ID",
 		"SummitPost mountain ID", //mountains
 		"trunk prefix"
@@ -269,12 +270,17 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1728", KnowledgeBase.ALL_MUSIC_ARTIST);
 		MAP_ID_TO_KB.put("P1266", KnowledgeBase.ALLO_CINE_PERS);
 		MAP_ID_TO_KB.put("P1977", KnowledgeBase.ARCH_SPECT);
+		MAP_ID_TO_KB.put("P2042", KnowledgeBase.ARTSY_ARTIST);
+		MAP_ID_TO_KB.put("P1907", KnowledgeBase.AU_DICT_BIO);
+		MAP_ID_TO_KB.put("P3372", KnowledgeBase.AUCK_ART_GALL_ART);
 		MAP_ID_TO_KB.put("P3630", KnowledgeBase.BABELIO_AUTH);
 		MAP_ID_TO_KB.put("P3280", KnowledgeBase.BAN_Q_AUTH);
 		MAP_ID_TO_KB.put("P2100", KnowledgeBase.BANQ_LIEUX_QUEBEC);
 		MAP_ID_TO_KB.put("P865",  KnowledgeBase.BAYER_MUSIK_LEX);
 		MAP_ID_TO_KB.put("P1617", KnowledgeBase.BBC_THINGS);
+		MAP_ID_TO_KB.put("P1567", KnowledgeBase.BE_NIS_INS);
 		MAP_ID_TO_KB.put("P2372", KnowledgeBase.BE_ODIS);
+		MAP_ID_TO_KB.put("P3421", KnowledgeBase.BELVEDERE_ART);
 		MAP_ID_TO_KB.put("P2843", KnowledgeBase.BENEZIT);
 		MAP_ID_TO_KB.put("P2188", KnowledgeBase.BIBLIONET_AUTHOR);
 		MAP_ID_TO_KB.put("P1585", KnowledgeBase.BR_MUNI);
@@ -283,21 +289,28 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P3632", KnowledgeBase.BRIT_MUS_THES);
 		MAP_ID_TO_KB.put("P1794", KnowledgeBase.BUR_PAT_SSD);
 		MAP_ID_TO_KB.put("P2799", KnowledgeBase.BVMC_PERS);
+		MAP_ID_TO_KB.put("P270",  KnowledgeBase.CALIS);
 		MAP_ID_TO_KB.put("P1273", KnowledgeBase.CANTIC);
+		MAP_ID_TO_KB.put("P3241", KnowledgeBase.CATHO_ENCYC);
 		MAP_ID_TO_KB.put("P382",  KnowledgeBase.CBS_MUNI);
 		MAP_ID_TO_KB.put("P1871", KnowledgeBase.CERL);
+		MAP_ID_TO_KB.put("P2340", KnowledgeBase.CESAR_PERS);
+		MAP_ID_TO_KB.put("P381",  KnowledgeBase.CH_PCP);
 		MAP_ID_TO_KB.put("P2382", KnowledgeBase.CHEM_MEM_LOC);
 		MAP_ID_TO_KB.put("P271",  KnowledgeBase.CINII);
 		MAP_ID_TO_KB.put("P1669", KnowledgeBase.CONA);
 		MAP_ID_TO_KB.put("P1280", KnowledgeBase.CONOR_SI);
 		MAP_ID_TO_KB.put("P474",  KnowledgeBase.COUNTRY_CC);
 		MAP_ID_TO_KB.put("P2605", KnowledgeBase.CSFD);
+		MAP_ID_TO_KB.put("P2190", KnowledgeBase.CSPAN_PERS);
 		MAP_ID_TO_KB.put("P2383", KnowledgeBase.CTHS_PERS);
 		MAP_ID_TO_KB.put("P3569", KnowledgeBase.CULT_WOORD);
+		MAP_ID_TO_KB.put("P1409", KnowledgeBase.CYCL_ARCHIV);
 		MAP_ID_TO_KB.put("P3206", KnowledgeBase.DATA_GOUV_FR);
 		MAP_ID_TO_KB.put("P723",  KnowledgeBase.DBNL);
 		MAP_ID_TO_KB.put("P1036", KnowledgeBase.DEWEY);
 		MAP_ID_TO_KB.put("P2332", KnowledgeBase.DICO_ART_HIST);
+		MAP_ID_TO_KB.put("P1607", KnowledgeBase.DIALNET_AUTH);
 		MAP_ID_TO_KB.put("P1953", KnowledgeBase.DISCOG_ARTIST);
 		MAP_ID_TO_KB.put("P1986", KnowledgeBase.DIZIO_BIO_IT);
 		MAP_ID_TO_KB.put("P2626", KnowledgeBase.DNF);
@@ -307,6 +320,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1309", KnowledgeBase.EGAXA);
 		MAP_ID_TO_KB.put("P3136", KnowledgeBase.EL_CINE_PERS);
 		MAP_ID_TO_KB.put("P2387", KnowledgeBase.ELONET_PERS);
+		MAP_ID_TO_KB.put("P1116", KnowledgeBase.ELSTAT);
 		MAP_ID_TO_KB.put("P1802", KnowledgeBase.EMLO);
 		MAP_ID_TO_KB.put("P1417", KnowledgeBase.ENCYC_BRIT);
 		MAP_ID_TO_KB.put("P920",  KnowledgeBase.ES_LEM);
@@ -324,12 +338,15 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P380",  KnowledgeBase.FR_MERIMEE);
 		MAP_ID_TO_KB.put("P3599", KnowledgeBase.FR_NAT_ARCHIV_PROD);
 		MAP_ID_TO_KB.put("P3281", KnowledgeBase.FR_NAT_ASS_LOBBY);
+		MAP_ID_TO_KB.put("P2380", KnowledgeBase.FR_SCULPT_ART);
 		MAP_ID_TO_KB.put("P646",  KnowledgeBase.FREEBASE);
 		MAP_ID_TO_KB.put("P1842", KnowledgeBase.GAMEO);
 		MAP_ID_TO_KB.put("P1819", KnowledgeBase.GENEA_ORG_PERS);
+		MAP_ID_TO_KB.put("P2600", KnowledgeBase.GENI_COM_USER);
 		MAP_ID_TO_KB.put("P1566", KnowledgeBase.GEONAMES);
 		MAP_ID_TO_KB.put("P439",  KnowledgeBase.GER_MUNI_KEY);
 		MAP_ID_TO_KB.put("P1388", KnowledgeBase.GER_REGI_KEY);
+		MAP_ID_TO_KB.put("P1014", KnowledgeBase.GETTY_AAT);
 		MAP_ID_TO_KB.put("P1667", KnowledgeBase.GETTY_GEO);
 		MAP_ID_TO_KB.put("P227",  KnowledgeBase.GND);
 		MAP_ID_TO_KB.put("P590",  KnowledgeBase.GNIS);
@@ -337,6 +354,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1807", KnowledgeBase.GREAT_ARAG_ENCYC);
 		MAP_ID_TO_KB.put("P2924", KnowledgeBase.GREAT_RUSS_ENCYC);
 		MAP_ID_TO_KB.put("P2427", KnowledgeBase.GRID_AC);
+		MAP_ID_TO_KB.put("P3067", KnowledgeBase.GS1_COUNTRY);
 		MAP_ID_TO_KB.put("P836",  KnowledgeBase.GSS);
 		MAP_ID_TO_KB.put("P1741", KnowledgeBase.GTAA);
 		MAP_ID_TO_KB.put("P3106", KnowledgeBase.GUARDIAN_TOPIC);
@@ -344,19 +362,25 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P238",  KnowledgeBase.IATA);
 		MAP_ID_TO_KB.put("P345",  KnowledgeBase.IMDB);
 		MAP_ID_TO_KB.put("P839",  KnowledgeBase.IMSLP);
+		MAP_ID_TO_KB.put("P772",  KnowledgeBase.INE_MUNI);
 		MAP_ID_TO_KB.put("P946",  KnowledgeBase.ISNI);
 		MAP_ID_TO_KB.put("P3422", KnowledgeBase.INSEE_COUNTRY);
 		MAP_ID_TO_KB.put("P2586", KnowledgeBase.INSEE_DEPT);
 		MAP_ID_TO_KB.put("P374",  KnowledgeBase.INSEE_MUNICIP);
+		MAP_ID_TO_KB.put("P2585", KnowledgeBase.INSEE_REGION);
 		MAP_ID_TO_KB.put("P2003", KnowledgeBase.INSTRAGRAM);
 		MAP_ID_TO_KB.put("P1220", KnowledgeBase.INT_BROAD_DB_PERS);
+		MAP_ID_TO_KB.put("P1233", KnowledgeBase.ISFDB_AUTH);
 		MAP_ID_TO_KB.put("P213",  KnowledgeBase.ISNI);
 		MAP_ID_TO_KB.put("P297",  KnowledgeBase.ISO_3166_1_ALPHA2);
 		MAP_ID_TO_KB.put("P298",  KnowledgeBase.ISO_3166_1_ALPHA3);
 		MAP_ID_TO_KB.put("P299",  KnowledgeBase.ISO_3166_1_NUM);
 		MAP_ID_TO_KB.put("P300",  KnowledgeBase.ISO_3166_2);
 		MAP_ID_TO_KB.put("P773",  KnowledgeBase.ISO_3166_3);
+		MAP_ID_TO_KB.put("P635",  KnowledgeBase.ISTAT);
 		MAP_ID_TO_KB.put("P1341", KnowledgeBase.IT_CHAMB_DEP);
+		MAP_ID_TO_KB.put("P806",  KnowledgeBase.IT_CAD_CODE);
+		MAP_ID_TO_KB.put("P2549", KnowledgeBase.IT_SEN_REP);
 		MAP_ID_TO_KB.put("P1438", KnowledgeBase.JEW_ENCYC_RUSS);
 		MAP_ID_TO_KB.put("P2180", KnowledgeBase.KANSAL_BIO);
 		MAP_ID_TO_KB.put("P3639", KnowledgeBase.KEPN);
@@ -366,6 +390,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1287", KnowledgeBase.KOMP_GEG);
 		MAP_ID_TO_KB.put("P1284", KnowledgeBase.KOMP_GEG_IBA);
 		MAP_ID_TO_KB.put("P1248", KnowledgeBase.KULTURNAV);
+		MAP_ID_TO_KB.put("P1138", KnowledgeBase.KUNST_DAN_ART);
 		MAP_ID_TO_KB.put("P1670", KnowledgeBase.LAC);
 		MAP_ID_TO_KB.put("P1278", KnowledgeBase.LEGAL_ENT);
 		MAP_ID_TO_KB.put("P640",  KnowledgeBase.LEONORE);
@@ -375,6 +400,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1186", KnowledgeBase.MEP_DIR);
 		MAP_ID_TO_KB.put("P486",  KnowledgeBase.MESH);
 		MAP_ID_TO_KB.put("P2258", KnowledgeBase.MOBILE_COUNTRY_CODE);
+		MAP_ID_TO_KB.put("P2174", KnowledgeBase.MOMA_ART);
 		MAP_ID_TO_KB.put("P3612", KnowledgeBase.MONDE_DIPLO);
 		MAP_ID_TO_KB.put("P1969", KnowledgeBase.MOVIE_METER_DIR);
 		MAP_ID_TO_KB.put("P2268", KnowledgeBase.MUSEE_ORSAY_ART);
@@ -412,15 +438,20 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P605",  KnowledgeBase.NUTS_CODE);
 		MAP_ID_TO_KB.put("P3221", KnowledgeBase.NYT);
 		MAP_ID_TO_KB.put("P764",  KnowledgeBase.OKTMO);
+		MAP_ID_TO_KB.put("P1245", KnowledgeBase.OMEGA_WIKI_MEANING);
 		MAP_ID_TO_KB.put("P3479", KnowledgeBase.OMNI_TOPIC);
 		MAP_ID_TO_KB.put("P1320", KnowledgeBase.OPEN_CORP);
 		MAP_ID_TO_KB.put("P3118", KnowledgeBase.OPEN_DOME);
 		MAP_ID_TO_KB.put("P648",  KnowledgeBase.OPEN_LIB);
 		MAP_ID_TO_KB.put("P3762", KnowledgeBase.OPEN_MLOL);
 		MAP_ID_TO_KB.put("P1430", KnowledgeBase.OPEN_PLAQUE);
+		MAP_ID_TO_KB.put("P1229", KnowledgeBase.OPEN_POLIS);
 		MAP_ID_TO_KB.put("P1415", KnowledgeBase.OX_BIO_IDX);
 		MAP_ID_TO_KB.put("P1331", KnowledgeBase.PACE);
+		MAP_ID_TO_KB.put("P1749", KnowledgeBase.PARL_POLIT);
+		MAP_ID_TO_KB.put("P2625", KnowledgeBase.PASE);
 		MAP_ID_TO_KB.put("P3318", KnowledgeBase.PATR_INM_AND);
+		MAP_ID_TO_KB.put("P2432", KnowledgeBase.PAUL_GETTY_ART);
 		MAP_ID_TO_KB.put("P1315", KnowledgeBase.PEOPLE_AUSTR);
 		MAP_ID_TO_KB.put("P866",  KnowledgeBase.PERLENTAUCHER);
 		MAP_ID_TO_KB.put("P2732", KnowledgeBase.PERSEE);
@@ -434,28 +465,38 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P650",  KnowledgeBase.RKD_ART);
 		MAP_ID_TO_KB.put("P3500", KnowledgeBase.RINGGOLD);
 		MAP_ID_TO_KB.put("P1185", KnowledgeBase.RODOVID);
+		MAP_ID_TO_KB.put("P3154", KnowledgeBase.RUNEBERG_AUTH);
 		MAP_ID_TO_KB.put("P1422", KnowledgeBase.SANDRART_PER);
 		MAP_ID_TO_KB.put("P3475", KnowledgeBase.SANU);
 		MAP_ID_TO_KB.put("P2519", KnowledgeBase.SCOPE_DK_PERS);
+		MAP_ID_TO_KB.put("P3043", KnowledgeBase.SCORESWAY_PERS);
 		MAP_ID_TO_KB.put("P906",  KnowledgeBase.SELIBR);
 		MAP_ID_TO_KB.put("P1808", KnowledgeBase.SENAT_FR);
 		MAP_ID_TO_KB.put("P2168", KnowledgeBase.SFDB);
+		MAP_ID_TO_KB.put("P1795", KnowledgeBase.SMITH_AM_ART);
+		MAP_ID_TO_KB.put("P2369", KnowledgeBase.SOCCERWAY_PLYR);
 		MAP_ID_TO_KB.put("P3478", KnowledgeBase.SONGKICK_ART);
 		MAP_ID_TO_KB.put("P3123", KnowledgeBase.STAN_ENC_PHIL);
 		MAP_ID_TO_KB.put("P454",  KnowledgeBase.STRUCTURAE);
 		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
 		MAP_ID_TO_KB.put("P771",  KnowledgeBase.SWISS_MUNI);
 		MAP_ID_TO_KB.put("P1045", KnowledgeBase.SYCOMORE);
+		MAP_ID_TO_KB.put("P2741", KnowledgeBase.TATE_ART);
+		MAP_ID_TO_KB.put("P3544", KnowledgeBase.TE_PAPA_ART);
 		MAP_ID_TO_KB.put("P2611", KnowledgeBase.TED_SPEAKER);
 		MAP_ID_TO_KB.put("P2612", KnowledgeBase.TED_TOPIC);
 		MAP_ID_TO_KB.put("P2018", KnowledgeBase.TEUCHOS);
 		MAP_ID_TO_KB.put("P3047", KnowledgeBase.TFB_PLYR);
 		MAP_ID_TO_KB.put("P2469", KnowledgeBase.THEATR_PERS);
+		MAP_ID_TO_KB.put("P2431", KnowledgeBase.THYSSEN_BORN_ART);
 		MAP_ID_TO_KB.put("P3120", KnowledgeBase.TOID);
+		MAP_ID_TO_KB.put("P2446", KnowledgeBase.TRANSFERMARKT_PLYR);
 		MAP_ID_TO_KB.put("P3365", KnowledgeBase.TRECCANI);
 		MAP_ID_TO_KB.put("P3134", KnowledgeBase.TRIPADVISOR_PLACE);
 		MAP_ID_TO_KB.put("P1958", KnowledgeBase.TRISMEGISTOS_GEO);
 		MAP_ID_TO_KB.put("P2002", KnowledgeBase.TWITTER_USER);
+		MAP_ID_TO_KB.put("P1367", KnowledgeBase.UK_ART);
+		MAP_ID_TO_KB.put("P3029", KnowledgeBase.UK_NAT_ARCHIV);
 		MAP_ID_TO_KB.put("P245",  KnowledgeBase.ULAN);
 		MAP_ID_TO_KB.put("P2082", KnowledgeBase.UN_M49);
 		MAP_ID_TO_KB.put("P2983", KnowledgeBase.UNDP_COUNTRY);
@@ -463,6 +504,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P214",  KnowledgeBase.VIAF);
 		MAP_ID_TO_KB.put("P3616", KnowledgeBase.VISION_PORT);
 		MAP_ID_TO_KB.put("P3404", KnowledgeBase.VOGUE_LIST);
+		MAP_ID_TO_KB.put("P1882", KnowledgeBase.WEB_GALL_ART);
 		MAP_ID_TO_KB.put("P2949", KnowledgeBase.WIKI_TREE);
 		MAP_ID_TO_KB.put("P1281", KnowledgeBase.WOEID);
 		MAP_ID_TO_KB.put("P2533", KnowledgeBase.WOM_WRIT);
@@ -620,7 +662,7 @@ public class WmCommonTools
 				if(lang.equalsIgnoreCase(language.toString()))
 				{	// if it is a disambiguation page, we must retrieve the entities it contains
 					if(description!=null && description.toLowerCase().contains(VAL_DISAMB))
-					{	logger.log("It is a description page");
+					{	logger.log("It is a disambiguation page");
 						Map<String,String> tmpMap = retrieveIdsFromDisambiguation(language,label);
 						for(Entry<String,String> tmpEntry: tmpMap.entrySet())
 						{	String tmpKey = tmpEntry.getKey();
@@ -709,15 +751,19 @@ public class WmCommonTools
 		
 		// extract the ids from the XML document
 		Element queryElt = root.getChild(ELT_QUERY);
-		Element pagesElt = queryElt.getChild(ELT_PAGES);
-		List<Element> pageElts = pagesElt.getChildren(ELT_PAGE);
-		for(Element pageElt: pageElts)
-		{	Element propsElt = pageElt.getChild(ELT_PAGEPROPS);
-			if(propsElt!=null)
-			{	String id = propsElt.getAttributeValue(ATT_WIKIBASE_ITEM);
-				String title = pageElt.getAttributeValue(ATT_TITLE);
-				result.put(id,title);
-				logger.log("Found a possible entity, title="+title+" id="+id);
+		if(queryElt==null)
+			logger.log("The page does not seem to exist for this language");
+		else
+		{	Element pagesElt = queryElt.getChild(ELT_PAGES);
+			List<Element> pageElts = pagesElt.getChildren(ELT_PAGE);
+			for(Element pageElt: pageElts)
+			{	Element propsElt = pageElt.getChild(ELT_PAGEPROPS);
+				if(propsElt!=null)
+				{	String id = propsElt.getAttributeValue(ATT_WIKIBASE_ITEM);
+					String title = pageElt.getAttributeValue(ATT_TITLE);
+					result.put(id,title);
+					logger.log("Found a possible entity, title="+title+" id="+id);
+				}
 			}
 		}
 		
