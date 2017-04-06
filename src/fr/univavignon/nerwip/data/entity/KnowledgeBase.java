@@ -67,12 +67,15 @@ public enum KnowledgeBase
 	
 	/** BBC Things */
 	BBC_THINGS,
-	
+
+	/** Flemish Parliament person */
+	BE_FLEM_PARL_PERS,
 	/** Place code used by Belgium Statistics edit */
 	BE_NIS_INS,
-	
 	/** Belgian ODIS database */
 	BE_ODIS,
+	/** Belgian Senate person */
+	BE_SEN_PERS,
 	
 	/** Belvedere artist */
 	BELVEDERE_ART,
@@ -159,6 +162,9 @@ public enum KnowledgeBase
 	/** DBpedia database */
 	DBPEDIA,
 	
+	/** Biography at the Bundestag of Germany */
+	DE_BUNDES_BIO,
+	
 	/** Dewey Decimal Classification */
 	DEWEY,
 	
@@ -224,12 +230,16 @@ public enum KnowledgeBase
 	
 	/** Finnish municipality number */
 	FI_MUNI,
+	/** Finnish Ministers database */
+	FI_MIN_DB,
 	
 	/** identifier of the German Filmportal.de */
 	FILM_PORT,
 	
 	/** US country codes */
 	FIPS_10_4,
+	/** FIPS 5-2 (code for US states) */
+	FIPS_5_2,
 	/** FIPS 55-3 (locations in the US) */
 	FIPS_55_3,
 	
@@ -307,6 +317,9 @@ public enum KnowledgeBase
 	/** Guardian topic */
 	GUARDIAN_TOPIC,
 	
+	/** Person in the Hansard 1803-2005 database, indexing speeches in the British parliament */
+	HANSARD_PERS,
+	
 	/** HDS/HLS/DHS/DSS: Historical Dictionary of Switzerland */
 	HDS,
 	
@@ -330,6 +343,9 @@ public enum KnowledgeBase
 	INSEE_MUNICIP,
 	/** INSEE region code */
 	INSEE_REGION,
+	
+	/** Authors in INSPIRE-HEP, a major database for high energy physics */
+	INSPIRE_HEP_AUTH,
 	
 	/** Instagram username */
 	INSTRAGRAM,
@@ -405,11 +421,17 @@ public enum KnowledgeBase
 	/** Base Léonore des membres de l'ordre de la Légion d'honneur */
 	LEONORE,
 	
+	/** Leopoldina – German Academy of Sciences */
+	LEOPOLDINA,
+	
 	/** Librivox author */
 	LIBRIVOX_AUTH,
 	
 	/** Library of Congress */
 	LIB_CONGR,
+	
+	/** Mathematics Genealogy Project */
+	MATH_GEN_PROJ,
 	
 	/** Mémoire des hommes - French govermnment database indexing all french soldier war casualties */
 	MEM_HOM,
@@ -493,6 +515,9 @@ public enum KnowledgeBase
 	/** National Thesaurus for Author Names */
 	NAT_THES_AUTH,
 	
+	/** Identifier at Biografisch Portaal van Nederland */
+	NE_BIO_PORT,
+	
 	/** NGA artist - National Gallery of Art in Washington DC */
 	NGA_ART,
 	
@@ -504,6 +529,9 @@ public enum KnowledgeBase
 	
 	/** Notable Names Database */
 	NNDB,
+	
+	/** Norwegian municipality number */
+	NO_MUNI,
 	
 	/** Nobel prize */
 	NOBEL_PRIZE,
@@ -580,17 +608,20 @@ public enum KnowledgeBase
 	/** Localisation géographique historique - identifiant de la base Pleiades.stoa.org */
 	PLEIADES,
 	
+	/** Politifact Personality */
+	POLITIFACT_PERS,
+	
 	/** PORT-network film database: identifier for a person */
 	PORT_PERS,
+	
+	/** Postal code */
+	POSTAL_CODE,
 	
 	/** Project Gutenberg author */
 	PROJ_GUT_AUTHOR,
 	
 	/** Portuguese National Library */
 	PTBNP,
-	
-	/** Postal code */
-	POSTAL_CODE,
 	
 	/** Quora topic ID */
 	QUORA_TOPIC,
@@ -601,8 +632,14 @@ public enum KnowledgeBase
 	/** Unique identifier for organisations in the publishing industry supply chain */
 	RINGGOLD,
 	
+	/** Area of Romania per National Institute of Statistics */
+	RO_SIRUTA,
+	
 	/** rodovid.org -- Family tree */
 	RODOVID,
+	
+	/** Rotten Tomatoes */
+	ROTTEN_TOMATOES,
 	
 	/** Runeberg author */
 	RUNEBERG_AUTH,
@@ -636,6 +673,9 @@ public enum KnowledgeBase
 	
 	/** Songkick artist */
 	SONGKICK_ART,
+	
+	/** Sports Reference */
+	SPORTS_REF,
 	
 	/** Stanford Encyclopedia of Philosophy */
 	STAN_ENC_PHIL,
@@ -710,6 +750,14 @@ public enum KnowledgeBase
 	/** Geographic location code mantained by UN-ECE */
 	UNECE_LOCODE,
 	
+	/** Professor at the Ghent University */
+	UNIV_GHENT_PROF,
+	
+	/** US Federal Election Commission */
+	US_FEC,
+	/** National Register of Historic Places assigned by the National Park Service of the USA */
+	US_NRHP,
+	
 	/** Virtual International Authority File */
 	VIAF,
 	
@@ -741,6 +789,9 @@ public enum KnowledgeBase
 	
 	/** World Heritage Site */
 	WORLD_HER_SITE,
+	
+	/** identifier for a topic, at the Wall Street Journal website */
+	WSJ_TOPIC,
 	
 	/** YouTube channel */
 	YOUTUBE_USER;

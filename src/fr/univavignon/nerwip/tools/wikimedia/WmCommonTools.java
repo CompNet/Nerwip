@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.tools.wikimedia;
 
+import java.io.File;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -22,6 +24,7 @@ package fr.univavignon.nerwip.tools.wikimedia;
  */
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -51,6 +54,7 @@ import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.KnowledgeBase;
 import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.web.WebTools;
@@ -278,8 +282,10 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P2100", KnowledgeBase.BANQ_LIEUX_QUEBEC);
 		MAP_ID_TO_KB.put("P865",  KnowledgeBase.BAYER_MUSIK_LEX);
 		MAP_ID_TO_KB.put("P1617", KnowledgeBase.BBC_THINGS);
+		MAP_ID_TO_KB.put("P3297", KnowledgeBase.BE_FLEM_PARL_PERS);
 		MAP_ID_TO_KB.put("P1567", KnowledgeBase.BE_NIS_INS);
 		MAP_ID_TO_KB.put("P2372", KnowledgeBase.BE_ODIS);
+		MAP_ID_TO_KB.put("P3298", KnowledgeBase.BE_SEN_PERS);
 		MAP_ID_TO_KB.put("P3421", KnowledgeBase.BELVEDERE_ART);
 		MAP_ID_TO_KB.put("P2843", KnowledgeBase.BENEZIT);
 		MAP_ID_TO_KB.put("P2188", KnowledgeBase.BIBLIONET_AUTHOR);
@@ -308,6 +314,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1409", KnowledgeBase.CYCL_ARCHIV);
 		MAP_ID_TO_KB.put("P3206", KnowledgeBase.DATA_GOUV_FR);
 		MAP_ID_TO_KB.put("P723",  KnowledgeBase.DBNL);
+		MAP_ID_TO_KB.put("P1713", KnowledgeBase.DE_BUNDES_BIO);
 		MAP_ID_TO_KB.put("P1036", KnowledgeBase.DEWEY);
 		MAP_ID_TO_KB.put("P2332", KnowledgeBase.DICO_ART_HIST);
 		MAP_ID_TO_KB.put("P1607", KnowledgeBase.DIALNET_AUTH);
@@ -330,8 +337,10 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P2013", KnowledgeBase.FACEBOOK_USER);
 		MAP_ID_TO_KB.put("P2163", KnowledgeBase.FAST_ID);
 		MAP_ID_TO_KB.put("P1203", KnowledgeBase.FI_MUNI);
+		MAP_ID_TO_KB.put("P2182", KnowledgeBase.FI_MIN_DB);
 		MAP_ID_TO_KB.put("P2639", KnowledgeBase.FILM_PORT);
 		MAP_ID_TO_KB.put("P901",  KnowledgeBase.FIPS_10_4);
+		MAP_ID_TO_KB.put("P883",  KnowledgeBase.FIPS_5_2);
 		MAP_ID_TO_KB.put("P774",  KnowledgeBase.FIPS_55_3);
 		MAP_ID_TO_KB.put("P3537", KnowledgeBase.FOOT_DB);
 		MAP_ID_TO_KB.put("P2385", KnowledgeBase.FR_DIOC_ARCHI);
@@ -358,6 +367,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P836",  KnowledgeBase.GSS);
 		MAP_ID_TO_KB.put("P1741", KnowledgeBase.GTAA);
 		MAP_ID_TO_KB.put("P3106", KnowledgeBase.GUARDIAN_TOPIC);
+		MAP_ID_TO_KB.put("P2015", KnowledgeBase.HANSARD_PERS);
 		MAP_ID_TO_KB.put("P902",  KnowledgeBase.HDS);
 		MAP_ID_TO_KB.put("P238",  KnowledgeBase.IATA);
 		MAP_ID_TO_KB.put("P345",  KnowledgeBase.IMDB);
@@ -368,6 +378,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P2586", KnowledgeBase.INSEE_DEPT);
 		MAP_ID_TO_KB.put("P374",  KnowledgeBase.INSEE_MUNICIP);
 		MAP_ID_TO_KB.put("P2585", KnowledgeBase.INSEE_REGION);
+		MAP_ID_TO_KB.put("P2930", KnowledgeBase.INSPIRE_HEP_AUTH);
 		MAP_ID_TO_KB.put("P2003", KnowledgeBase.INSTRAGRAM);
 		MAP_ID_TO_KB.put("P1220", KnowledgeBase.INT_BROAD_DB_PERS);
 		MAP_ID_TO_KB.put("P1233", KnowledgeBase.ISFDB_AUTH);
@@ -394,8 +405,10 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1670", KnowledgeBase.LAC);
 		MAP_ID_TO_KB.put("P1278", KnowledgeBase.LEGAL_ENT);
 		MAP_ID_TO_KB.put("P640",  KnowledgeBase.LEONORE);
+		MAP_ID_TO_KB.put("P3413", KnowledgeBase.LEOPOLDINA);
 		MAP_ID_TO_KB.put("P1899", KnowledgeBase.LIBRIVOX_AUTH);
 		MAP_ID_TO_KB.put("P244",  KnowledgeBase.LIB_CONGR);
+		MAP_ID_TO_KB.put("P549",  KnowledgeBase.MATH_GEN_PROJ);
 		MAP_ID_TO_KB.put("P2071", KnowledgeBase.MEM_HOM);
 		MAP_ID_TO_KB.put("P1186", KnowledgeBase.MEP_DIR);
 		MAP_ID_TO_KB.put("P486",  KnowledgeBase.MESH);
@@ -428,10 +441,12 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P2538", KnowledgeBase.NAT_MUS_SE_ART);
 		MAP_ID_TO_KB.put("P1816", KnowledgeBase.NAT_PORT_GALL_PERS);
 		MAP_ID_TO_KB.put("P1006", KnowledgeBase.NAT_THES_AUTH);
+		MAP_ID_TO_KB.put("P651",  KnowledgeBase.NE_BIO_PORT);
 		MAP_ID_TO_KB.put("P2252", KnowledgeBase.NGA_ART);
 		MAP_ID_TO_KB.put("P2191", KnowledgeBase.NILF_AUTH);
 		MAP_ID_TO_KB.put("P691",  KnowledgeBase.NKCR_AUT);
 		MAP_ID_TO_KB.put("P1263", KnowledgeBase.NNDB);
+		MAP_ID_TO_KB.put("P2504", KnowledgeBase.NO_MUNI);
 		MAP_ID_TO_KB.put("P3188", KnowledgeBase.NOBEL_PRIZE);
 		MAP_ID_TO_KB.put("P1375", KnowledgeBase.NSK);
 		MAP_ID_TO_KB.put("P1207", KnowledgeBase.NUKAT);
@@ -458,13 +473,16 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P3836", KnowledgeBase.PINTEREST_USER);
 		MAP_ID_TO_KB.put("P1584", KnowledgeBase.PLEIADES);
 		MAP_ID_TO_KB.put("P2435", KnowledgeBase.PORT_PERS);
+		MAP_ID_TO_KB.put("P281",  KnowledgeBase.POSTAL_CODE);
 		MAP_ID_TO_KB.put("P1938", KnowledgeBase.PROJ_GUT_AUTHOR);
 		MAP_ID_TO_KB.put("P1005", KnowledgeBase.PTBNP);
-		MAP_ID_TO_KB.put("P281",  KnowledgeBase.POSTAL_CODE);
+		MAP_ID_TO_KB.put("P2267", KnowledgeBase.POLITIFACT_PERS);
 		MAP_ID_TO_KB.put("P3417", KnowledgeBase.QUORA_TOPIC);
 		MAP_ID_TO_KB.put("P650",  KnowledgeBase.RKD_ART);
 		MAP_ID_TO_KB.put("P3500", KnowledgeBase.RINGGOLD);
+		MAP_ID_TO_KB.put("P843",  KnowledgeBase.RO_SIRUTA);
 		MAP_ID_TO_KB.put("P1185", KnowledgeBase.RODOVID);
+		MAP_ID_TO_KB.put("P1258", KnowledgeBase.ROTTEN_TOMATOES);
 		MAP_ID_TO_KB.put("P3154", KnowledgeBase.RUNEBERG_AUTH);
 		MAP_ID_TO_KB.put("P1422", KnowledgeBase.SANDRART_PER);
 		MAP_ID_TO_KB.put("P3475", KnowledgeBase.SANU);
@@ -476,6 +494,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P1795", KnowledgeBase.SMITH_AM_ART);
 		MAP_ID_TO_KB.put("P2369", KnowledgeBase.SOCCERWAY_PLYR);
 		MAP_ID_TO_KB.put("P3478", KnowledgeBase.SONGKICK_ART);
+		MAP_ID_TO_KB.put("P1447", KnowledgeBase.SPORTS_REF);
 		MAP_ID_TO_KB.put("P3123", KnowledgeBase.STAN_ENC_PHIL);
 		MAP_ID_TO_KB.put("P454",  KnowledgeBase.STRUCTURAE);
 		MAP_ID_TO_KB.put("P269",  KnowledgeBase.SUDOC);
@@ -501,6 +520,9 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P2082", KnowledgeBase.UN_M49);
 		MAP_ID_TO_KB.put("P2983", KnowledgeBase.UNDP_COUNTRY);
 		MAP_ID_TO_KB.put("P1937", KnowledgeBase.UNECE_LOCODE);
+		MAP_ID_TO_KB.put("P3159", KnowledgeBase.UNIV_GHENT_PROF);
+		MAP_ID_TO_KB.put("P1839", KnowledgeBase.US_FEC);
+		MAP_ID_TO_KB.put("P649",  KnowledgeBase.US_NRHP);
 		MAP_ID_TO_KB.put("P214",  KnowledgeBase.VIAF);
 		MAP_ID_TO_KB.put("P3616", KnowledgeBase.VISION_PORT);
 		MAP_ID_TO_KB.put("P3404", KnowledgeBase.VOGUE_LIST);
@@ -511,6 +533,7 @@ public class WmCommonTools
 		MAP_ID_TO_KB.put("P2020", KnowledgeBase.WORLD_FOOT);
 		MAP_ID_TO_KB.put("P2614", KnowledgeBase.WORLD_HER_CRIT);
 		MAP_ID_TO_KB.put("P757",  KnowledgeBase.WORLD_HER_SITE);
+		MAP_ID_TO_KB.put("P3183", KnowledgeBase.WSJ_TOPIC);
 		MAP_ID_TO_KB.put("P2397", KnowledgeBase.YOUTUBE_USER);
 	}
 	
@@ -1154,9 +1177,77 @@ public class WmCommonTools
 		return result;
 	}
 	
-//	/////////////////////////////////////////////////////////////////
-//	// TESTS		 		/////////////////////////////////////////
-//	/////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	// TESTS		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Retrieves the list of Knowledge bases from WikiData.
+	 * 
+	 * @throws ClientProtocolException
+	 * 		Problem while accessing Wikidata.
+	 * @throws IOException
+	 * 		Problem while accessing Wikidata or the output file.
+	 * @throws JDOMException
+	 * 		Problem while accessing Wikidata.
+	 */
+	protected static void extractKbList() throws ClientProtocolException, IOException, JDOMException
+	{	// get the list of all KB
+		String query = URLEncoder.encode("SELECT DISTINCT ?prop ?propLabel ?propDescription WHERE{	?prop wdt:P31/wdt:P279*/wdt:P1269 wd:Q6545185. SERVICE wikibase:label{	bd:serviceParam wikibase:language \"en\" .}}", "UTF-8");
+		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
+//		System.out.println(url);
+
+		// query the server	
+		HttpClient httpclient = new DefaultHttpClient();   
+		HttpGet request = new HttpGet(url);
+		HttpResponse response = httpclient.execute(request);
+		// parse the answer to get an XML document
+		String answer = WebTools.readAnswer(response);
+				
+		// build the XML DOM
+		SAXBuilder sb = new SAXBuilder();
+		Document doc = sb.build(new StringReader(answer));
+		Element root = doc.getRootElement();
+		Namespace ns = Namespace.getNamespace(NS_SPARQL_API);
+		
+		// open output file
+		String file = FileNames.FO_OUTPUT + File.separator + "KB_LIST.txt";
+		PrintWriter pw = FileTools.openTextFileWrite(file, "UTF-8");
+		
+		// extract the type(s) from the XML doc
+		Element resultsElt = root.getChild(ELT_RESULTS,ns);
+		List<Element> resultElts = resultsElt.getChildren(ELT_RESULT,ns);
+		for(Element resultElt: resultElts)
+		{	List<Element> bindingElts = resultElt.getChildren(ELT_BINDING,ns);
+			Iterator<Element> it = bindingElts.iterator();
+			
+			// URI
+			Element bindingPropElt = it.next();
+			Element uriElt = bindingPropElt.getChild(ELT_URI,ns);
+			String uri = uriElt.getText().trim();
+			int pos = uri.lastIndexOf('/');
+			String id = uri.substring(pos+1);
+			String id0 = id.substring(1);
+			// label
+			Element bindingLabelElt = it.next();
+			Element labelElt = bindingLabelElt.getChild(ELT_LITERAL,ns);
+			String label = labelElt.getText().trim();
+			// description
+			String description = "N/A";
+			if(it.hasNext())
+			{	Element bindingDescElt = it.next();
+				Element descElt = bindingDescElt.getChild(ELT_LITERAL,ns);
+				description = descElt.getText().trim();
+			}
+
+			// display and write
+			String line = id0+"\t"+id+"\t"+label.toUpperCase()+"\t"+description;
+			System.out.println(line);
+			pw.println(line);
+		}
+		
+		pw.close();
+	}
+	
 //    public static void main(String[] args) throws Exception
 //    {	// possible names
 ////    	System.out.println(getPossibleNames("Lastname")+"\n\n");
@@ -1175,11 +1266,13 @@ public class WmCommonTools
 ////    	System.out.println(res);
 //    	
 //    	// general lookup method
-//    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
-////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Achille Eugène Fèvre", EntityType.PERSON);
-//    	lookupNamedEntity(entity, ArticleLanguage.FR);
-//    	System.out.println(entity);
-//    	Map<KnowledgeBase, String> extIds = entity.getExternalIds();
-//    	System.out.println(extIds);
+////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
+//////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Achille Eugène Fèvre", EntityType.PERSON);
+////    	lookupNamedEntity(entity, ArticleLanguage.FR);
+////    	System.out.println(entity);
+////    	Map<KnowledgeBase, String> extIds = entity.getExternalIds();
+////    	System.out.println(extIds);
+//    	
+//    	extractKbList();
 //	}
 }
