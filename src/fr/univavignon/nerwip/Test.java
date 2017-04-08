@@ -56,10 +56,6 @@ import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 import fr.univavignon.extractor.data.event.Event;
 import fr.univavignon.extractor.temp.eventcomparison.EventComparison;
 import fr.univavignon.extractor.temp.eventextraction.EventExtraction;
-import fr.univavignon.extractor.temp.tools.dbpedia.DbIdTools;
-import fr.univavignon.extractor.temp.tools.dbpedia.DbTypeTools;
-import fr.univavignon.extractor.temp.tools.dbspotlight.SpotlightTools;
-import fr.univavignon.extractor.temp.tools.mediawiki.WikiIdTools;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.article.ArticleList;
@@ -115,6 +111,8 @@ import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.Wikipe
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
+import fr.univavignon.nerwip.tools.dbpedia.DbIdTools;
+import fr.univavignon.nerwip.tools.dbpedia.DbTypeTools;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.freebase.FbIdTools;
@@ -153,7 +151,7 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Fleur_Pellerin");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
-//		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
+		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 
 //		String name = "Émilien_Brigault";
 //		String name = "Aimé Piton";
@@ -175,7 +173,6 @@ public class Test
 //		testTypeRetriever();
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
-//		testWikiIdRetriever();
 //		testWikiTypeRetriever();
 		
 //		testTreeTagger();
@@ -189,9 +186,6 @@ public class Test
 //     	testNLDistance(S, T);
 //		testEventsExtraction();
 //		testEventComparison();
-//		testFunction();
-//		test2();
-//		testSpotlightAllCorpus();
 //		testEventExtraction();
 
 //		testTagEnRaw();
@@ -333,24 +327,6 @@ public class Test
 		logger.log("Start retrieving types");
 		logger.increaseOffset();
 		DbTypeTools.getAllTypes("Barack_Obama");
-		logger.decreaseOffset();
-	}
-	
-	/**
-	 * Tests the feature allowing to automatically
-	 * retrieve Wikidata ids of entities.
-	 * 
-	 * @throws Exception
-	 * 		Something went wrong...
-	 */
-	private static void testWikiIdRetriever() throws Exception
-	{	logger.setName("Test-WikiIdRetriever");
-		logger.log("Start retrieving ids");
-		logger.increaseOffset();
-		
-		
-		WikiIdTools.getId("Barack%20Obama");
-		
 		logger.decreaseOffset();
 	}
 	
@@ -498,9 +474,9 @@ public class Test
 	    
 		   //event comparison
 		List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
-		String xmlText = SpotlightTools.process(mentions, article);
+		String xmlText = null;//SpotlightTools.process(mentions, article);
 		logger.log("xmltext = " + xmlText);
-		String answer = SpotlightTools.disambiguate(xmlText);
+		String answer = null;//SpotlightTools.disambiguate(xmlText);
 		logger.log("answer = " + answer);
 		
 		int size = extractedEvents.size();
@@ -516,50 +492,6 @@ public class Test
 		
 		}
 				
-	}
-	
-	/**
-	 * Tests the feature allowing to automatically
-	 * retrieve DBpediaSpotlight ids and types of entities.
-	 * 
-	 * @throws Exception
-	 * 		Something went wrong...
-	 */
-	private static void testSpotlight() throws Exception
-	{	logger.setName("Test-Spotlight");
-		logger.log("Start testing Spotlight");
-		logger.increaseOffset();
-	    
-		Article article;
-		Mentions mentions;
-		
-		ArticleList folders = ArticleLists.getArticleList();
-		int i = 0;
-//		for(File folder: folders)
-File folder = folders.get(0);		
-		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-			logger.increaseOffset();
-			// get the article texts
-			logger.log("Retrieve the article");
-			String name = folder.getName();
-			InterfaceRecognizer recognizer = new StraightCombiner();
-			ArticleRetriever retriever = new ArticleRetriever();
-			article = retriever.process(name);
-			String rawText = article.getRawText();
-			// retrieve the entities
-			logger.log("Retrieve the entities");
-			mentions = recognizer.recognize(article);
-			logger.log("start applying Spotlight to " + name);
-			String xmlText = SpotlightTools.process(mentions, article);
-			//logger.log("xmltext = " + xmlText);
-			String answer = SpotlightTools.disambiguate(xmlText);
-			logger.log("answer = " + answer);
-
-			//SpotlightTools.getEntitySpotlight(answer);
-			//SpotlightTools.getIdSpotlight(answer);
-			//SpotlightTools.getTypeSpotlight(answer);
-			logger.decreaseOffset();
-		}
 	}
 	
 	/**
@@ -2371,16 +2303,6 @@ File folder = folders.get(0);
 
 /* TODO
  * 
- * - Date detection/representation
- *   1) Design a common tool receiving a date string and returning a date object
- *     - will be language-dependent
- *   2) Update RESOLVERS supporting dates, based on the common tool
- *   
- * - Untested:
- *   - we now vote for value in the combiners (also test the related methods).
- *     - StraightCombiner, VoteCombiner (there's only one date tool, so there should be no pb there, as there's no value combination)
- * 
- * 
  * - Check if the already configured tools are able to return periods, in which case it should
  *   be stored in the mention.
  * 
@@ -2400,13 +2322,13 @@ File folder = folders.get(0);
  * - When linking, set the surface forms returned by the linking tool as the official name of the entity
  *   (keep the previous one as a possible surface form. it should already be in the list, anyway)
  *  
- * - Check for French models in already working recognizers
+ * - Check for (new) French models in already working recognizers
  * 
  * - Freebase has been discontinued: remove all Freebase-related classes, possibly replace them
- *   using Wikimedia Foundation products.
+ *   using Wikimedia Foundation services.
  *   
  * - Once the entities have correctly been identified, we may want to switch to a more DB-oriented representation,
- *   in which we retrive a bunch of info describing each entity. This would make it easier comparing entities like
+ *   in which we retrive a bunch of info describing each entity. This would make it easier to compare entities like
  *   places, when infering event similarity. 
  */
 

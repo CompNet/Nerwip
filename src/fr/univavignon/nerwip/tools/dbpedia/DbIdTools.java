@@ -1,4 +1,4 @@
-package fr.univavignon.extractor.temp.tools.dbpedia;
+package fr.univavignon.nerwip.tools.dbpedia;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages

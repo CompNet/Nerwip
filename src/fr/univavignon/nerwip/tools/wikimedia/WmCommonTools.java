@@ -713,6 +713,9 @@ public class WmCommonTools
 	{	logger.log("Using ids retrieved from WikiData to complete entity "+entity+" ("+id+")");
 		logger.increaseOffset();
 		
+		// add the WikiData id to the entity
+		entity.setExternalId(KnowledgeBase.WIKIDATA_ID, id);
+		
 		// request the server
 		String query = URLEncoder.encode(WIKIMEDIA_QUERY_EXTIDS_PREFIX + id + WIKIMEDIA_QUERY_EXTIDS_SUFFIX, "UTF-8");
 		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;

@@ -250,6 +250,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		}
 		// set surface forms
 		{	Element surfaceFormsElt = new Element(XmlNames.ELT_SURFACE_FORMS);
+			result.addContent(surfaceFormsElt);
 			for(String surfaceForm: surfaceForms)
 			{	Element surfaceFormElt = new Element(XmlNames.ELT_SURFACE_FORM);
 				surfaceFormElt.setText(surfaceForm);
@@ -258,6 +259,7 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		}
 		// external ids
 		{	Element externalIdsElt = new Element(XmlNames.ELT_EXTERNAL_IDS);
+			result.addContent(externalIdsElt);
 			for(Entry<String,String> entry: externalIds.entrySet())
 			{	// retrieve the data
 				String kb = entry.getKey();
