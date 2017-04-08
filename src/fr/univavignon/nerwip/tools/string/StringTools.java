@@ -379,67 +379,98 @@ public class StringTools
 	 */
 	public static List<String> splitText(String text, int maxSize)
 	{	List<String> result = new ArrayList<String>();
+		//System.out.println(text); // debug
 		
 		// identify the sentences
 		Matcher matcher = SENTENCE_PATTERN.matcher(text);
 		
-		// build the chunks
+		// init
 		int start = 0;
 		int prevEnd = 0;
-		while(matcher.find())
-		{	// for debug
-			String sentence = matcher.group();
-//			System.out.println(sentence);
+		//String sentence;
+		int curEnd;
+		boolean goOn = true;
+		if(matcher.find())
+		{	//sentence = matcher.group();
+			curEnd = matcher.end();
+		}
+		else
+		{	//sentence = text;
+			curEnd = text.length();
+		}
+		
+		// build the chunks
+		do
+		{	//System.out.println("Sentence: "+sentence); // debug
+			int length = curEnd - start;
 			
-			int curEnd = matcher.end();
-			if(curEnd-start > maxSize)
-			{	// sentence too long for maxSize
+			// sentence too long for maxSize
+			if(length > maxSize)
+			{	// if only one sentence: must split
 				if(start==prevEnd)
 				{	// we look for semicolons
 					int from = start;
-					List<Integer> idxs = new ArrayList<Integer>();
 					do
-					{	int idx = sentence.indexOf(';', from+1);
-						from = idx;
-						if(idx!=-1)
-							idxs.add(idx);
+					{	from = text.indexOf(';', from+1);
+						if(from!=-1 && (from-start)<maxSize)
+							prevEnd = from;
 					}
-					while(from!=-1 && from<sentence.length());
-					if(idxs.isEmpty())
-					{	// TODO we could force-split between words, it's better than nothing
-						throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+sentence.length()+" chars) is too long to be split using maxSize="+maxSize);
+					while(from!=-1 && (from-start)<maxSize);
+					// if none found
+					if(start==prevEnd)
+					{	// we look for colons
+						from = start;
+						do
+						{	from = text.indexOf(',', from+1);
+							if(from!=-1 && (from-start)<maxSize)
+								prevEnd = from;
+						}
+						while(from!=-1 && (from-start)<maxSize);
+						// if none found, exception
+						if(start==prevEnd)
+						{	// TODO we could force-split between words, it's better than nothing
+							throw new IllegalArgumentException("The sentence \""+text.substring(start,curEnd)+"\" ("+(curEnd-start)+" chars) is too long and cannot be split for maxSize="+maxSize);
+						}
+						else
+							prevEnd ++;
 					}
 					else
-					{	int idx = idxs.get(idxs.size()/2) + 1; // we take the midle ';'
-						if(sentence.charAt(idx)==' ')
-							idx++;
-						prevEnd = start + idx;
-					}
+						prevEnd ++;
 				}
 				
 				// force the inclusion of a possible ending space
 				char c = text.charAt(prevEnd);
-				while(c==' ' || c=='\n' || c=='\t')
+				while(Character.isWhitespace(c))
 				{	prevEnd++;
 					c = text.charAt(prevEnd);
 				}
+				
 				// add the part of text to the result list
 				String part = text.substring(start, prevEnd);
 				result.add(part);
 				start = prevEnd;
+				//sentence = text.substring(prevEnd,curEnd);
 			}
 			
-			prevEnd = curEnd;
+			// get the next sentence
+			else
+			{	goOn = matcher.find();
+				if(goOn)
+				{	prevEnd = curEnd;
+					//sentence = matcher.group();
+					curEnd = matcher.end();
+				}
+			}
 		}
+		while(goOn);
 		
 		if(start<text.length())
 		{	String part = text.substring(start);
 			result.add(part);
 		}
 		
-		// for debug
-//		System.out.println("result:\n"+result);
-		
+		//for(String str: result) // debug
+		//	System.out.print(str);
 		return result;
 	}
 	

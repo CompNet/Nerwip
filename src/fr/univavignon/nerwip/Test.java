@@ -1680,10 +1680,14 @@ File folder = folders.get(0);
 	{	logger.log("Process each article individually");
 		logger.increaseOffset();
 		
+		//start = 10000;
+		
 		ArticleList folders = ArticleLists.getArticleList();
 		int i = 0;
 		for(File folder: folders)
-		{	if(i>=start)
+		{	//if(folder.getName().equalsIgnoreCase("Helmut_Jahn"))
+			//	start = 0;
+			if(i>=start)
 			{	// get the results
 				logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
 				logger.increaseOffset();
