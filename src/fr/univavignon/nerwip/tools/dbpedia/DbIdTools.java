@@ -48,6 +48,8 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
  * This class handles DBpedia ids, and more particularly
  * the mapping between named entities and their DBpedia
  * ids.
+ * <br/>
+ * TODO to be properly integrated in {@link DbpCommonTools}.
  * 
  * @author Sabrine Ayachi
  */
@@ -76,7 +78,7 @@ public class DbIdTools
 	* @return
 	* 		A String describing the DBpedia id.
 	*/
-	public static String getId(String entity) 
+	public static String getId(String entity)
 	{	logger.increaseOffset();
 		String ID = null;
 

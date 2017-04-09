@@ -27,6 +27,10 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 /**
  * This class contains methods implementing 
  * some processing related to DBpedia.
+ * <br/>
+ * TODO apparently, we don't need these, due to Spotlight doing
+ * all this work already. So I haven't integrated Sabrine's work
+ * ({@link DbIdTools} & {@link DbTypeTools}).
  * 
  * @author Vincent Labatut
  * @author Sabrine Ayachi
@@ -60,8 +64,25 @@ public class DbpCommonTools
 	/////////////////////////////////////////////////////////////////
 	// URL			 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/* TODO the lookup service works only for english,as of april 2017 
+	 * manual: https://github.com/dbpedia/lookup
+	 */
+//	/** URL to access the DBpedia lookup service: prefix */
+//	private final static String URL_LOOKUP_PRE = "http://lookup.dbpedia.org/api/search/KeywordSearch?MaxHits=20&QueryClass=";
+//	/** URL to access the DBpedia lookup service: query parameter */
+//	private final static String URL_LOOKUP_QUERY = "&QueryString=";
+	
+//	private final static String URL_SPARQL = "http://dbpedia.org/sparql";
 	
 	/////////////////////////////////////////////////////////////////
 	// XML			 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+
+	/////////////////////////////////////////////////////////////////
+	// PROCESS		 		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	
+	/////////////////////////////////////////////////////////////////
+	// TESTS		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 }

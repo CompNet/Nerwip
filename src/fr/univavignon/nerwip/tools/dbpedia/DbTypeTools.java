@@ -49,6 +49,8 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 /**
  * This class contains methods used to retrieve the DBpedia
  * types associated to entities. 
+ * <br/>
+ * TODO to be properly integrated in {@link DbpCommonTools}.
  * 
  * @author Sabrine Ayachi
  */

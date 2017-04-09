@@ -2303,6 +2303,8 @@ public class Test
 
 /* TODO
  * 
+ * - Make it possible to use the reference annotations instead of estimated ones, before applying resolution or linking
+ * 
  * - Check if the already configured tools are able to return periods, in which case it should
  *   be stored in the mention.
  * 
@@ -2329,7 +2331,9 @@ public class Test
  *   
  * - Once the entities have correctly been identified, we may want to switch to a more DB-oriented representation,
  *   in which we retrive a bunch of info describing each entity. This would make it easier to compare entities like
- *   places, when infering event similarity. 
+ *   places, when infering event similarity.
+ *   
+ *   - what about applying several resolution tools in sequence? e.g. anaphora detection + coreference resolution
  */
 
 /*

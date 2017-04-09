@@ -55,7 +55,7 @@ public class FileNames
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
 //	public final static String FO_OUTPUT = "C:/Users/Vincent/Downloads/Data";
-	public final static String FO_OUTPUT = "D:/Users/Vincent/Downloads/Web/_ner/en";
+	public final static String FO_OUTPUT = "D:/Users/Vincent/Downloads/Web/_ner/fr";
 	
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
