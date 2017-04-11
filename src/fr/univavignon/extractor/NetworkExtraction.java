@@ -39,11 +39,16 @@ import fr.univavignon.extractor.data.graph.Link;
 import fr.univavignon.extractor.data.graph.Node;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleList;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.MentionDate;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.nerwip.processing.InterfaceLinker;
+import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
+import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
@@ -87,12 +92,21 @@ public class NetworkExtraction
 	/////////////////////////////////////////////////////////////////
 	// PROCESS		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Graph name */
+	private final static String GRAPH_NAME = "Mention co-occurrence graph";
+	/** Node property for mention frequence */
+	private final static String PROP_FREQ = "frequence";
+	/** Node property for mention type */
+	private final static String PROP_TYPE = "type";
+	/** Link property for weight */
+	private final static String PROP_WEIGHT = "weight";
+	
 	/**
-	 * Extract a co-occurrence network from a corpus of biographic texts
+	 * Extract a co-occurrence network from a corpus of biographical texts
 	 * and the named entities detected in this same corpus.
 	 * 
-	 * @param recognizer
-	 * 		The recognizer to apply (or previously applied).
+	 * @param processor
+	 * 		The processor to apply (or previously applied).
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while retrieving the detected entities.
@@ -105,14 +119,15 @@ public class NetworkExtraction
 	 * @throws ReaderException
 	 * 		Problem while accessing a file.
 	 */
-	private static void extractNetwork(InterfaceRecognizer recognizer) throws ProcessorException, ParseException, SAXException, IOException, ReaderException
+	private static void extractNetwork(InterfaceProcessor processor) throws ProcessorException, ParseException, SAXException, IOException, ReaderException
 	{	logger.log("Extract entity network");
+		logger.increaseOffset();
 		
 		// init graph
-		Graph graph = new Graph("All Mentions", false);
-		graph.addNodeProperty("Occurrences","xsd:integer");
-		graph.addNodeProperty("Type","xsd:string");
-		graph.addLinkProperty("Weight","xsd:integer");
+		Graph graph = new Graph(GRAPH_NAME, false);
+		graph.addNodeProperty(PROP_FREQ,"xsd:integer");
+		graph.addNodeProperty(PROP_TYPE,"xsd:string");
+		graph.addLinkProperty(PROP_WEIGHT,"xsd:integer");
 		
 		logger.log("Read all article entities");
 		logger.increaseOffset();
@@ -130,9 +145,31 @@ public class NetworkExtraction
 			Article article = retriever.process(name);
 			String rawText = article.getRawText();
 			
-			// retrieve the mentions
+			// retrieve the mentions and possibly the corresponding entities
 			logger.log("Retrieve the mentions");
-			Mentions mentions = recognizer.recognize(article);
+			logger.increaseOffset();
+			Entities entities = null;;
+			Mentions mentions = null;
+			if(processor.isLinker())
+			{	logger.log("Linker detected");
+				InterfaceLinker linker = (InterfaceLinker)processor;
+				MentionsEntities me = linker.link(article);
+				mentions = me.mentions;
+				entities = me.entities;
+			}
+			else if(processor.isRecognizer())
+			{	logger.log("Recognizer detected");
+				InterfaceRecognizer recognizer = (InterfaceRecognizer)processor;
+				mentions = recognizer.recognize(article);
+			}
+			else if(processor.isResolver())
+			{	logger.log("Resolver detected");
+				InterfaceResolver resolver = (InterfaceResolver)processor;
+				MentionsEntities me = resolver.resolve(article);
+				mentions = me.mentions;
+				entities = me.entities;
+			}
+			logger.decreaseOffset();
 			
 			// process each sentence
 			logger.log("Process each sentence");
@@ -172,7 +209,7 @@ public class NetworkExtraction
 						String entName = connectedEntities.get(j);
 						Node node = graph.retrieveNode(entName);
 						// occurrences
-						node.incrementIntProperty("Occurrences");
+						node.incrementIntProperty(PROP_FREQ);
 					}
 					
 					// insert the links into the graph
@@ -182,7 +219,7 @@ public class NetworkExtraction
 						for(int k=j+1;k<connectedEntities.size();k++)
 						{	String target = connectedEntities.get(k);
 							Link link = graph.retrieveLink(source, target);
-							link.incrementIntProperty("Weight");
+							link.incrementIntProperty(PROP_WEIGHT);
 						}
 					}
 				}
@@ -193,13 +230,14 @@ public class NetworkExtraction
 			logger.decreaseOffset();
 			i++;
 		}
+		logger.decreaseOffset();
 		
 		// setup majority entity types
 		for(Node node: graph.getAllNodes())
 		{	String name = node.getName();
 			Map<EntityType,Integer> map = mainTypes.get(name);
 			EntityType type = getMaxKey(map);
-			node.setProperty("Type",type.toString());
+			node.setProperty(PROP_TYPE,type.toString());
 		}
 		
 		logger.log("Article processing complete.");
@@ -209,7 +247,6 @@ public class NetworkExtraction
 		logger.log("Total number of links in the graph: "+m);
 		float d = m / (n*(n-1f)/2);
 		logger.log("Graph density: "+d);	
-		logger.decreaseOffset();
 		
 		logger.log("Export graph as XML");
 		String netPath = FileNames.FO_OUTPUT + File.separator + "all-entities.graphml";

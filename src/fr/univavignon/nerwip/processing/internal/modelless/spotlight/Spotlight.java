@@ -139,6 +139,12 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	protected SpotlightDelegateRecognizer delegateRecognizer;
 	
 	@Override
+	public boolean isRecognizer()
+	{	boolean result = recognizer==null;
+		return result;
+	}
+	
+	@Override
 	public InterfaceRecognizer getRecognizer()
 	{	return recognizer;
 	}
@@ -168,7 +174,12 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	protected InterfaceResolver resolver = null;	//TODO this must be removed in the case of spotlight (keep for now for latter copy to another tool class)
 	/** Delegate in charge of recognizing entity mentions */
 	protected SpotlightDelegateResolver delegateResolver;
-
+	
+	@Override
+	public boolean isResolver()
+	{	return true;
+	}
+	
 	@Override
 	public InterfaceResolver getResolver()
 	{	return resolver;
@@ -197,6 +208,11 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	/////////////////////////////////////////////////////////////////
 	/** Delegate in charge of recognizing entity mentions */
 	protected SpotlightDelegateLinker delegateLinker;
+	
+	@Override
+	public boolean isLinker()
+	{	return true;
+	}
 	
 	@Override
 	public List<EntityType> getLinkedEntityTypes()

@@ -122,6 +122,11 @@ public class VoteCombiner extends AbstractProcessor implements InterfaceRecogniz
 	/** Delegate in charge of recognizing entity mentions */
 	private VoteCombinerDelegateRecognizer delegateRecognizer;
 	
+	@Override
+	public boolean isRecognizer()
+	{	return true;
+	}
+	
 	/**
 	 * Access to the delegate recognizer is required when training.
 	 * 
@@ -148,5 +153,21 @@ public class VoteCombiner extends AbstractProcessor implements InterfaceRecogniz
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isResolver()
+	{	return false;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LINKER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isLinker()
+	{	return false;
 	}
 }

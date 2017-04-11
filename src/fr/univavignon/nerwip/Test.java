@@ -2303,6 +2303,10 @@ public class Test
 
 /* TODO
  * 
+ * - network extraction
+ * 		- update the co-occurrence class (keep the possibility to compare by string)
+ *   	- update Sabrine's classes
+ * 
  * - Make it possible to use the reference annotations instead of estimated ones, before applying resolution or linking
  * 
  * - Check if the already configured tools are able to return periods, in which case it should

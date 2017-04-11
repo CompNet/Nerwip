@@ -96,6 +96,11 @@ public class NaiveResolver extends AbstractProcessor implements InterfaceResolve
 	protected NaiveResolverDelegateResolver delegateResolver;
 	
 	@Override
+	public boolean isRecognizer()
+	{	return true;
+	}
+	
+	@Override
 	public List<EntityType> getResolvedEntityTypes()
 	{	List<EntityType> result = delegateResolver.getHandledEntityTypes();
 		return result;
@@ -111,5 +116,21 @@ public class NaiveResolver extends AbstractProcessor implements InterfaceResolve
 	public MentionsEntities resolve(Article article) throws ProcessorException
 	{	MentionsEntities result = delegateResolver.delegateResolve(article);
 		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isResolver()
+	{	return false;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LINKER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isLinker()
+	{	return false;
 	}
 }

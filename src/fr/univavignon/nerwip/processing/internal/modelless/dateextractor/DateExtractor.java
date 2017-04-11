@@ -80,6 +80,11 @@ public class DateExtractor extends AbstractProcessor implements InterfaceRecogni
 	private DateExtractorDelegateRecognizer delegateRecognizer;
 	
 	@Override
+	public boolean isRecognizer()
+	{	return true;
+	}
+	
+	@Override
 	public List<EntityType> getRecognizedEntityTypes()
 	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
 		return result;
@@ -95,5 +100,21 @@ public class DateExtractor extends AbstractProcessor implements InterfaceRecogni
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isResolver()
+	{	return false;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LINKER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isLinker()
+	{	return false;
 	}
 }

@@ -119,7 +119,12 @@ public class SvmCombiner extends AbstractProcessor implements InterfaceRecognize
 	/////////////////////////////////////////////////////////////////
 	/** Delegate in charge of recognizing entity mentions */
 	private SvmCombinerDelegateRecognizer delegateRecognizer;
-
+	
+	@Override
+	public boolean isRecognizer()
+	{	return true;
+	}
+	
 	/**
 	 * Access to the delegate recognizer is required when training.
 	 * 
@@ -146,5 +151,21 @@ public class SvmCombiner extends AbstractProcessor implements InterfaceRecognize
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isResolver()
+	{	return false;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LINKER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isLinker()
+	{	return false;
 	}
 }

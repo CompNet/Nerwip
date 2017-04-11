@@ -91,8 +91,21 @@ public class WikiDataLinker extends AbstractProcessor implements InterfaceLinker
 	protected InterfaceResolver resolver = null;
 	
 	@Override
+	public boolean isRecognizer()
+	{	return false;
+	}
+	
+	@Override
 	public InterfaceResolver getResolver()
 	{	return resolver;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isResolver()
+	{	return false;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -100,6 +113,11 @@ public class WikiDataLinker extends AbstractProcessor implements InterfaceLinker
 	/////////////////////////////////////////////////////////////////
 	/** Delegate in charge of recognizing entity mentions */
 	protected WikiDataLinkerDelegateLinker delegateLinker;
+	
+	@Override
+	public boolean isLinker()
+	{	return true;
+	}
 	
 	@Override
 	public List<EntityType> getLinkedEntityTypes()

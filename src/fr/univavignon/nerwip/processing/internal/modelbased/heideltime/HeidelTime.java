@@ -64,7 +64,7 @@ public class HeidelTime extends AbstractProcessor implements InterfaceRecognizer
 	public HeidelTime(HeidelTimeModelName modelName, boolean loadModelOnDemand, boolean doIntervalTagging) throws ProcessorException
 	{	delegateRecognizer = new HeidelTimeDelegateRecognizer(this, modelName, loadModelOnDemand, doIntervalTagging);
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ public class HeidelTime extends AbstractProcessor implements InterfaceRecognizer
 	public ProcessorName getName()
 	{	return ProcessorName.HEIDELTIME;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// FOLDER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -89,11 +89,16 @@ public class HeidelTime extends AbstractProcessor implements InterfaceRecognizer
 	private HeidelTimeDelegateRecognizer delegateRecognizer;
 	
 	@Override
+	public boolean isRecognizer()
+	{	return true;
+	}
+	
+	@Override
 	public List<EntityType> getRecognizedEntityTypes()
 	{	List<EntityType> result = delegateRecognizer.getHandledEntityTypes();
 		return result;
 	}
-
+	
 	@Override
 	public boolean canRecognizeLanguage(ArticleLanguage language) 
 	{	boolean result = delegateRecognizer.canHandleLanguage(language);
@@ -104,5 +109,21 @@ public class HeidelTime extends AbstractProcessor implements InterfaceRecognizer
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// RESOLVER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isResolver()
+	{	return false;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LINKER			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public boolean isLinker()
+	{	return false;
 	}
 }
