@@ -24,14 +24,13 @@ package fr.univavignon.extractor.data.event;
 import java.util.Set;
 import java.util.TreeSet;
 
-import fr.univavignon.nerwip.data.entity.mention.MentionDate;
-import fr.univavignon.nerwip.data.entity.mention.MentionFunction;
-import fr.univavignon.nerwip.data.entity.mention.MentionLocation;
-import fr.univavignon.nerwip.data.entity.mention.MentionMeeting;
-import fr.univavignon.nerwip.data.entity.mention.MentionOrganization;
-import fr.univavignon.nerwip.data.entity.mention.MentionPerson;
-import fr.univavignon.nerwip.data.entity.mention.MentionProduction;
-
+import fr.univavignon.nerwip.data.entity.EntityDate;
+import fr.univavignon.nerwip.data.entity.EntityFunction;
+import fr.univavignon.nerwip.data.entity.EntityLocation;
+import fr.univavignon.nerwip.data.entity.EntityMeeting;
+import fr.univavignon.nerwip.data.entity.EntityOrganization;
+import fr.univavignon.nerwip.data.entity.EntityPerson;
+import fr.univavignon.nerwip.data.entity.EntityProduction;
 
 /**
  * This class represents an event, i.e. a set of related entities.
@@ -42,7 +41,7 @@ import fr.univavignon.nerwip.data.entity.mention.MentionProduction;
 public class Event
 {	
 	/**
-	* Constructor for an event.
+	* Builds an empty event.
 	*/
 	public Event() 
 	{	
@@ -52,300 +51,241 @@ public class Event
 	/////////////////////////////////////////////////////////////////
     // PERSONS			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
-	/** Person type entity */
-	private MentionPerson person;
+	/** Person type entities */
+	private Set<EntityPerson> persons = new TreeSet<EntityPerson>();
 
+	/**
+	 * Add a person entity to this event.
+	 * If it is already present, it will not be
+	 * added another time.
+	 * 
+	 * @param person
+	 * 		The new person entity.
+	 */
+	public void addPerson(EntityPerson person)
+	{	persons.add(person);
+	}
+	
+	/**
+	 * Returns the set of person entities for this event..
+	 * 
+	 * @return
+	 * 		The set of person entities for this event, 
+	 * 		possibly an empty one.
+	 */
+	public Set<EntityPerson> getPersons()
+	{	return persons;
+	}
+	
 	/////////////////////////////////////////////////////////////////
     // LOCATIONS		/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
-	/** Location type entity */
-	private MentionLocation location;
+	/** Location type entities */
+	private Set<EntityLocation> locations = new TreeSet<EntityLocation>();
+
+	/**
+	 * Add a location entity to this event.
+	 * If it is already present, it will not be
+	 * added another time.
+	 * 
+	 * @param location
+	 * 		The new location entity.
+	 */
+	public void addLocation(EntityLocation location)
+	{	locations.add(location);
+	}
+	
+	/**
+	 * Returns the set of location entities for this event..
+	 * 
+	 * @return
+	 * 		The set of location entities for this event, 
+	 * 		possibly an empty one.
+	 */
+	public Set<EntityLocation> getLocations()
+	{	return locations;
+	}
 
 	/////////////////////////////////////////////////////////////////
     // ORGANIZATIONS	/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
-	/** Organization type entity */
-	private MentionOrganization organization;
+	/** Organization type entities */
+	private Set<EntityOrganization> organizations = new TreeSet<EntityOrganization>();
+
+	/**
+	 * Add an organization entity to this event.
+	 * If it is already present, it will not be
+	 * added another time.
+	 * 
+	 * @param organization
+	 * 		The new organization entity.
+	 */
+	public void addOrganization(EntityOrganization organization)
+	{	organizations.add(organization);
+	}
+	
+	/**
+	 * Returns the set of organization entities for this event..
+	 * 
+	 * @return
+	 * 		The set of organization entities for this event, 
+	 * 		possibly an empty one.
+	 */
+	public Set<EntityOrganization> getOrganizations()
+	{	return organizations;
+	}
 
 	/////////////////////////////////////////////////////////////////
     // FUNCTIONS		/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
-	/** Function type entity */
-	private MentionFunction function;
+	/** Function type entities */
+	private Set<EntityFunction> functions = new TreeSet<EntityFunction>();
+
+	/**
+	 * Add a function entity to this event.
+	 * If it is already present, it will not be
+	 * added another time.
+	 * 
+	 * @param function
+	 * 		The new function entity.
+	 */
+	public void addFunction(EntityFunction function)
+	{	functions.add(function);
+	}
+	
+	/**
+	 * Returns the set of function entities for this event..
+	 * 
+	 * @return
+	 * 		The set of function entities for this event, 
+	 * 		possibly an empty one.
+	 */
+	public Set<EntityFunction> getFunctions()
+	{	return functions;
+	}
 
 	/////////////////////////////////////////////////////////////////
     // PRODUCTIONS		/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
-	/** Production type entity */
-	private MentionProduction production;
+	/** Production type entities */
+	private Set<EntityProduction> productions = new TreeSet<EntityProduction>();
+
+	/**
+	 * Add a production entity to this event.
+	 * If it is already present, it will not be
+	 * added another time.
+	 * 
+	 * @param production
+	 * 		The new production entity.
+	 */
+	public void addProduction(EntityProduction production)
+	{	productions.add(production);
+	}
+	
+	/**
+	 * Returns the set of production entities for this event..
+	 * 
+	 * @return
+	 * 		The set of production entities for this event, 
+	 * 		possibly an empty one.
+	 */
+	public Set<EntityProduction> getProductions()
+	{	return productions;
+	}
 
 	/////////////////////////////////////////////////////////////////
     // MEETINGS			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
-	/** Meeting type entity */
-	private MentionMeeting meeting;
+	/** Meeting type entities */
+	private Set<EntityMeeting> meetings = new TreeSet<EntityMeeting>();
+
+	/**
+	 * Add a meeting entity to this event.
+	 * If it is already present, it will not be
+	 * added another time.
+	 * 
+	 * @param meeting
+	 * 		The new meeting entity.
+	 */
+	public void addMeeting(EntityMeeting meeting)
+	{	meetings.add(meeting);
+	}
+	
+	/**
+	 * Returns the set of meeting entities for this event..
+	 * 
+	 * @return
+	 * 		The set of meeting entities for this event, 
+	 * 		possibly an empty one.
+	 */
+	public Set<EntityMeeting> getMeetings()
+	{	return meetings;
+	}
 	
 	/////////////////////////////////////////////////////////////////
     // DATES			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
-	/** Date type entity */
-	private MentionDate date;
-	
-	/**
-	 * Add person type to an event.
-	 * 
-	 * @param pers
-	 * 		Person type entity.
-	 */
-	public void addPerson(MentionPerson pers)
-	{ person = pers;
-	}
-	
-	/**
-	 * Add location type to an event.
-	 * 
-	 * @param loc
-	 * 		Location type entity.
-	 */
-	public void addLocation(MentionLocation loc)
-	{ location = loc;
-	}
-	
-	/**
-	 * Add organization type to an event.
-	 * 
-	 * @param org
-	 * 		Organization type entity.
-	 */
-	public void addOrganization(MentionOrganization org)
-	{ organization = org;
-	}
-	
-	/**
-	 * Add function type to an event.
-	 * 
-	 * @param func
-	 * 		Function type entity.
-	 */
-	public void addFunction(MentionFunction func)
-	{ function = func;
-	}
-	
-	/**
-	 * Add production type to an event.
-	 * 
-	 * @param prod
-	 * 		Production type entity.
-	 */
-	public void addProduction(MentionProduction prod)
-	{ production = prod;
-	}
-	
-	/**
-	 * Add meeting type to an event.
-	 * 
-	 * @param m
-	 * 		Meeting type entity.
-	 */
-	public void addMeeting(MentionMeeting m)
-	{ meeting = m;
-	}
-	
-	/**
-	 * Add date type to an event.
-	 * 
-	 * @param d
-	 * 		Date type entity.
-	 */
-	public void addDate(MentionDate d)
-	{ date = d;
-	}
-	
-	
-	
+	/** Date type entities */
+	private Set<EntityDate> dates = new TreeSet<EntityDate>();
 
 	/**
-	 * Returns the person type of an
-	 * event.
+	 * Add a date entity to this event.
+	 * If it is already present, it will not be
+	 * added another time.
+	 * 
+	 * @param date
+	 * 		The new date entity.
+	 */
+	public void addDate(EntityDate date)
+	{	dates.add(date);
+	}
+	
+	/**
+	 * Returns the set of date entities for this event..
 	 * 
 	 * @return
-	 * 		Person Type of the event.
+	 * 		The set of date entities for this event, 
+	 * 		possibly an empty one.
 	 */
-	public MentionPerson getPerson()
-	{	return person;
+	public Set<EntityDate> getDates()
+	{	return dates;
 	}
 	
-	/**
-	 * Returns the person type of an
-	 * event.
-	 * 
-	  * @param person
-	 * 		New person type of the event.
-	 */
-	public void setPerson(MentionPerson person)
-	{	this.person = person;
-	}
-	
-	
-	/**
-	 * Returns the location type of an
-	 * event.
-	 * 
-	 * @return
-	 * 		Location Type of the event.
-	 */
-	public MentionLocation getLocation()
-	{	return location;
-	}
-	
-	/**
-	 * Returns the location type of an
-	 * event.
-	 * 
-	  * @param location
-	 * 		New location type of the event.
-	 */
-	public void setLocation(MentionLocation location)
-	{	this.location = location;
-	}
-	
-	
-	/**
-	 * Returns the production type of an
-	 * event.
-	 * 
-	 * @return
-	 * 		Production Type of the event.
-	 */
-	public MentionProduction getProduction()
-	{	return production;
-	}
-	
-	/**
-	 * Returns the production type of an
-	 * event.
-	 * 
-	  * @param production
-	 * 		New production type of the event.
-	 */
-	public void setProduction(MentionProduction production)
-	{	this.production = production;
-	}
-	
-	/**
-	 * Returns the function type of an
-	 * event.
-	 * 
-	 * @return
-	 * 		Function Type of the event.
-	 */
-	public MentionFunction getFunction()
-	{	return function;
-	}
-	
-	/**
-	 * Returns the function type of an
-	 * event.
-	 * 
-	  * @param function
-	 * 		New function type of the event.
-	 */
-	public void setFunction(MentionFunction function)
-	{	this.function = function;
-	}
-	
-	/**
-	 * Returns the organization type of an
-	 * event.
-	 * 
-	 * @return
-	 * 		Organization Type of the event.
-	 */
-	public MentionOrganization getOrganization()
-	{	return organization;
-	}
-	
-	/**
-	 * Returns the organization type of an
-	 * event.
-	 * 
-	  * @param organization
-	 * 		New organization type of the event.
-	 */
-	public void setOrganization(MentionOrganization organization)
-	{	this.organization = organization;
-	}
-	
-	/**
-	 * Returns the meeting type of an
-	 * event.
-	 * 
-	 * @return
-	 * 		Meeting Type of the event.
-	 */
-	public MentionMeeting getMeeting()
-	{	return meeting;
-	}
-	
-	/**
-	 * Returns the meeting type of an
-	 * event.
-	 * 
-	  * @param m
-	 * 		New meeting type of the event.
-	 */
-	public void setMeeting(MentionMeeting m)
-	{	this.meeting = m;
-	}
-	
-	/**
-	 * Returns the date type of an
-	 * event.
-	 * 
-	 * @return
-	 * 		Date Type of the event.
-	 */
-	public MentionDate getDate()
-	{	return date;
-	}
-	
-	/**
-	 * Returns the date type of an
-	 * event.
-	 * 
-	  * @param date
-	 * 		New date type of the event.
-	 */
-	public void setSate(MentionDate date)
-	{	this.date = date;
-	}
-	
+	/////////////////////////////////////////////////////////////////
+    // TEXT				/////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
 	{	String result = "EVENT(";
-		result = result + "PERSON=" + getPerson();
-		result = result + ", LOCATION=" + getLocation();
-		result = result + ", ORGANIZATION=" + getOrganization();
-		result = result + ", FUNCTION=" + getFunction();
-		result = result + ", PRODUCTION=" + getProduction();
-		result = result + ", Meeting=" + getMeeting();
-		result = result + ", DATE=" + getDate();
-
+		String sep = "";
+		if(!persons.isEmpty())
+		{	result = result + "PERSONS=" + persons;
+			sep = ", ";
+		}
+		if(!locations.isEmpty())
+		{	result = result + sep + "LOCATIONS=" + locations;
+			sep = ", ";
+		}
+		if(!organizations.isEmpty())
+		{	result = result + sep + "ORGANIZATIONS=" + organizations;
+			sep = ", ";
+		}
+		if(!functions.isEmpty())
+		{	result = result + sep + "FUNCTIONS=" + functions;
+			sep = ", ";
+		}
+		if(!productions.isEmpty())
+		{	result = result + sep + "PRODUCTIONS=" + productions;
+			sep = ", ";
+		}
+		if(!meetings.isEmpty())
+		{	result = result + sep + "MEETINGS=" + meetings;
+			sep = ", ";
+		}
+		if(!dates.isEmpty())
+		{	result = result + sep + "DATES=" + dates;
+		}
+		result = result + ")";
 		return result;
 	}
-	
-	
-
-	
-	}
-		
-		
-	
-	
-	
-	
-	
-	
-	
-
-
+}

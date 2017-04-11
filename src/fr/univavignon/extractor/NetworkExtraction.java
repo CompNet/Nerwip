@@ -342,7 +342,10 @@ public class NetworkExtraction
 	 * 		Mentions referring to the new entities, to be updated.
 	 */
 	private static void unifyEntities(Entities entities, Entities newEntities, Mentions mentions)
-	{	// init entity conversion map (new > old)
+	{	logger.increaseOffset();
+		
+		// init entity conversion map (new > old)
+		logger.log("Merging new entities into the existing collection");
 		Map<AbstractNamedEntity,AbstractNamedEntity> map = new HashMap<AbstractNamedEntity,AbstractNamedEntity>();
 		for(AbstractEntity newEntity: newEntities.getEntities())
 		{	// only process named entities (ignore dates)
@@ -366,6 +369,7 @@ public class NetworkExtraction
 		}
 		
 		// use the map to update the mentions with the substitution entities
+		logger.log("Updating the article mentions");
 		for(AbstractMention<?> mention: mentions.getMentions())
 		{	AbstractEntity entity = mention.getEntity();
 			// only focus on the named entities
@@ -376,5 +380,7 @@ public class NetworkExtraction
 					mention.setEntity(oldEntity);
 			}
 		}
+		
+		logger.decreaseOffset();
 	}
 }
