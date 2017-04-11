@@ -39,6 +39,8 @@ import fr.univavignon.extractor.data.graph.Link;
 import fr.univavignon.extractor.data.graph.Node;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleList;
+import fr.univavignon.nerwip.data.entity.AbstractEntity;
+import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
@@ -98,12 +100,18 @@ public class NetworkExtraction
 	private final static String PROP_FREQ = "frequence";
 	/** Node property for mention type */
 	private final static String PROP_TYPE = "type";
+	/** Node property for full name */
+	private final static String PROP_NAME = "fullname";
 	/** Link property for weight */
 	private final static String PROP_WEIGHT = "weight";
 	
 	/**
 	 * Extract a co-occurrence network from a corpus of biographical texts
-	 * and the named entities detected in this same corpus.
+	 * and the named entities detected in this same corpus. 
+	 * <br/>
+	 * If the specified processor is simply a recognizer, we compare mention
+	 * names. Otherwise, we compare entities, which can help detecting different
+	 * surface forms corresponding to the same entity. 
 	 * 
 	 * @param processor
 	 * 		The processor to apply (or previously applied).
@@ -127,6 +135,7 @@ public class NetworkExtraction
 		Graph graph = new Graph(GRAPH_NAME, false);
 		graph.addNodeProperty(PROP_FREQ,"xsd:integer");
 		graph.addNodeProperty(PROP_TYPE,"xsd:string");
+		graph.addNodeProperty(PROP_NAME,"xsd:string");
 		graph.addLinkProperty(PROP_WEIGHT,"xsd:integer");
 		
 		logger.log("Read all article entities");
@@ -134,6 +143,7 @@ public class NetworkExtraction
 		ArticleList folders = ArticleLists.getArticleList();
 		Map<String,Map<EntityType,Integer>> mainTypes = new HashMap<String, Map<EntityType,Integer>>();
 		int i = 0;
+		Entities entities = null;
 		for(File folder: folders)
 		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
 			logger.increaseOffset();
@@ -148,14 +158,14 @@ public class NetworkExtraction
 			// retrieve the mentions and possibly the corresponding entities
 			logger.log("Retrieve the mentions");
 			logger.increaseOffset();
-			Entities entities = null;;
 			Mentions mentions = null;
+			Entities tmpEntities = null;
 			if(processor.isLinker())
 			{	logger.log("Linker detected");
 				InterfaceLinker linker = (InterfaceLinker)processor;
 				MentionsEntities me = linker.link(article);
 				mentions = me.mentions;
-				entities = me.entities;
+				tmpEntities = me.entities;
 			}
 			else if(processor.isRecognizer())
 			{	logger.log("Recognizer detected");
@@ -167,9 +177,15 @@ public class NetworkExtraction
 				InterfaceResolver resolver = (InterfaceResolver)processor;
 				MentionsEntities me = resolver.resolve(article);
 				mentions = me.mentions;
-				entities = me.entities;
+				tmpEntities = me.entities;
 			}
-			logger.decreaseOffset();
+			if(tmpEntities!=null)
+			{	if(entities==null)
+					entities = tmpEntities;
+				else
+					unifyEntities(entities, tmpEntities, mentions);
+			}
+			logger.decreaseOffset();//TODO record the unified entities
 			
 			// process each sentence
 			logger.log("Process each sentence");
@@ -180,13 +196,20 @@ public class NetworkExtraction
 			{	if(sp>=0)
 				{	Set<String> conMentions = new TreeSet<String>();
 					List<AbstractMention<?>> list = mentions.getMentionsIn(sp, ep);
-					for(AbstractMention<?> entity: list)
-					{	if(!(entity instanceof MentionDate)) // we don't need the dates
-						{	// entity name
-							String str = entity.getStringValue(); // TODO ideally, this would rather be a unique id (after DBpedia is integrated, maybe?)
+					for(AbstractMention<?> mention: list)
+					{	if(!(mention instanceof MentionDate)) // we don't need the dates
+						{	// mention name
+							String str;
+							if(entities==null)
+								str = mention.getStringValue();
+							else
+							{	AbstractEntity entity = mention.getEntity();
+								long id = entity.getInternalId();
+								str = Long.toString(id);
+							}
 							conMentions.add(str);
 							// entity type
-							EntityType type = entity.getType();
+							EntityType type = mention.getType();
 							Map<EntityType,Integer> map = mainTypes.get(str);
 							if(map==null)
 							{	map = new HashMap<EntityType, Integer>();
@@ -232,12 +255,25 @@ public class NetworkExtraction
 		}
 		logger.decreaseOffset();
 		
-		// setup majority entity types
+		// update the nodes
 		for(Node node: graph.getAllNodes())
 		{	String name = node.getName();
+			
+			// setup majority entity types (for mentions, not entities)
 			Map<EntityType,Integer> map = mainTypes.get(name);
 			EntityType type = getMaxKey(map);
 			node.setProperty(PROP_TYPE,type.toString());
+			
+			// possibly setup the node name
+			if(entities!=null)
+			{	long id = Long.parseLong(name);
+				AbstractEntity entity = entities.getEntityById(id);
+				if(entity instanceof AbstractNamedEntity)
+				{	AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+					String fullname = namedEntity.getName();
+					node.setProperty(PROP_NAME, fullname);
+				}
+			}
 		}
 		
 		logger.log("Article processing complete.");
@@ -252,7 +288,14 @@ public class NetworkExtraction
 		String netPath = FileNames.FO_OUTPUT + File.separator + "all-entities.graphml";
 		File netFile = new File(netPath);
 		graph.writeToXml(netFile);
-			
+		
+		if(entities!=null)
+		{	logger.log("Export the unified entity set (to the corpus root)");
+			String path = FileNames.FO_OUTPUT + File.separator + FileNames.FI_ENTITY_LIST;
+			File entFile = new File(path);
+			entities.writeToXml(entFile);
+		}
+		
 		logger.decreaseOffset();
 	}
 	
@@ -284,5 +327,54 @@ public class NetworkExtraction
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Adds the new entities to the existing collection, merging
+	 * the new ones with the existing ones when they are similar,
+	 * and updating the concerned mentions.
+	 * 
+	 * @param entities
+	 * 		Existing collection of entities.
+	 * @param newEntities
+	 * 		New entities to insert in the existing collection.
+	 * @param mentions
+	 * 		Mentions referring to the new entities, to be updated.
+	 */
+	private static void unifyEntities(Entities entities, Entities newEntities, Mentions mentions)
+	{	// init entity conversion map (new > old)
+		Map<AbstractNamedEntity,AbstractNamedEntity> map = new HashMap<AbstractNamedEntity,AbstractNamedEntity>();
+		for(AbstractEntity newEntity: newEntities.getEntities())
+		{	// only process named entities (ignore dates)
+			if(newEntity instanceof AbstractNamedEntity)
+			{	// get the new entity ids
+				AbstractNamedEntity namedEntity = (AbstractNamedEntity)newEntity;
+				Map<String,String> exIds = namedEntity.getExternalIds();
+				// look for an existing entity with similar ids
+				AbstractNamedEntity oldEntity = entities.getNamedEntityByIds(exIds);
+				// can be used later for substitution (oldEntry possibly null, here)
+				if(oldEntity!=null)
+					map.put(namedEntity, oldEntity);
+				// otherwise, if nothing found, add to existing collection
+				else
+				{	// this allows reseting the internal id to a value consistent with the existing collection
+					newEntity.setInternalId(-1);
+					// insert in the new collection
+					entities.addEntity(newEntity);
+				}
+			}
+		}
+		
+		// use the map to update the mentions with the substitution entities
+		for(AbstractMention<?> mention: mentions.getMentions())
+		{	AbstractEntity entity = mention.getEntity();
+			// only focus on the named entities
+			if(entity instanceof AbstractNamedEntity)
+			{	AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+				AbstractNamedEntity oldEntity = map.get(namedEntity);
+				if(oldEntity!=null)
+					mention.setEntity(oldEntity);
+			}
+		}
 	}
 }

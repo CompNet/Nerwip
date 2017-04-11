@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -338,6 +339,32 @@ public class Entities
 		Map<String,AbstractNamedEntity> map = namedEntitiesByExternalId.get(knowledgeBase);
 		if(map!=null)
 			result = map.get(id);
+		return result;
+	}
+
+	/**
+	 * Returns the first named entity found with at least one 
+	 * of the specified external id.
+	 * 
+	 * @param ids
+	 * 		Map associating knowledge bases and external ids.
+	 * @return
+	 * 		Named entity possessing at least one of the specified external id, 
+	 * 		or {@code null]} if none does.
+	 */
+	public AbstractNamedEntity getNamedEntityByIds(Map<String,String> ids)
+	{	AbstractNamedEntity result = null;
+		
+		Iterator<Entry<String,String>> it = ids.entrySet().iterator();
+		while(result==null)
+		{	Entry<String,String> entry = it.next();
+			String kb = entry.getKey();
+			String id = entry.getValue();
+			Map<String,AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
+			if(map!=null)
+				result = map.get(id);
+		}
+		
 		return result;
 	}
 
