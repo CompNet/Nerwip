@@ -139,6 +139,34 @@ public class Event
 	{	return persons;
 	}
 	
+	/**
+	 * Compare the persons of this event with those of the
+	 * specified one.
+	 * <br/>
+	 * We simply use Jaccard's coefficient (ratio of the 
+	 * cardinalities of the set union to the set intersection).
+	 * 
+	 * @param persons
+	 * 		Persons of the other event.
+	 * @return
+	 * 		A float measuring the similarity between both groups of persons.
+	 */
+	private float processPersonSimilarity(Set<EntityPerson> persons)
+	{	float result = 0;
+		
+		Set<EntityPerson> union = new TreeSet<EntityPerson>(this.persons);
+		union.addAll(persons);
+		float numerator = union.size();
+		
+		Set<EntityPerson> inter = new TreeSet<EntityPerson>(this.persons);
+		union.retainAll(persons);
+		float denominator = inter.size();
+		
+		if(denominator>0)
+			result = numerator / denominator; 
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
     // LOCATIONS		/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
@@ -178,6 +206,34 @@ public class Event
 	 */
 	public Set<EntityLocation> getLocations()
 	{	return locations;
+	}
+	
+	/**
+	 * Compare the persons of this event with those of the
+	 * specified one.
+	 * <br/>
+	 * We simply use Jaccard's coefficient (ratio of the 
+	 * cardinalities of the set union to the set intersection).
+	 * 
+	 * @param locations
+	 * 		Persons of the other event.
+	 * @return
+	 * 		A float measuring the similarity between both groups of persons.
+	 */
+	private float processLocationSimilarity(Set<EntityLocation> locations)
+	{	float result = 0;
+		
+		Set<EntityLocation> union = new TreeSet<EntityLocation>(this.locations);
+		union.addAll(locations);
+		float numerator = union.size();
+		
+		Set<EntityLocation> inter = new TreeSet<EntityLocation>(this.locations);
+		union.retainAll(locations);
+		float denominator = inter.size();
+		
+		if(denominator>0)
+			result = numerator / denominator; 
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -220,7 +276,35 @@ public class Event
 	public Set<EntityOrganization> getOrganizations()
 	{	return organizations;
 	}
-
+	
+	/**
+	 * Compare the organizations of this event with those of the
+	 * specified one.
+	 * <br/>
+	 * We simply use Jaccard's coefficient (ratio of the 
+	 * cardinalities of the set union to the set intersection).
+	 * 
+	 * @param organizations
+	 * 		Organizations of the other event.
+	 * @return
+	 * 		A float measuring the similarity between both groups of organizations.
+	 */
+	private float processOrganizationSimilarity(Set<EntityOrganization> organizations)
+	{	float result = 0;
+		
+		Set<EntityOrganization> union = new TreeSet<EntityOrganization>(this.organizations);
+		union.addAll(organizations);
+		float numerator = union.size();
+		
+		Set<EntityOrganization> inter = new TreeSet<EntityOrganization>(this.organizations);
+		union.retainAll(organizations);
+		float denominator = inter.size();
+		
+		if(denominator>0)
+			result = numerator / denominator; 
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
     // FUNCTIONS		/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
@@ -260,6 +344,34 @@ public class Event
 	 */
 	public Set<EntityFunction> getFunctions()
 	{	return functions;
+	}
+	
+	/**
+	 * Compare the functions of this event with those of the
+	 * specified one.
+	 * <br/>
+	 * We simply use Jaccard's coefficient (ratio of the 
+	 * cardinalities of the set union to the set intersection).
+	 * 
+	 * @param functions
+	 * 		Functions of the other event.
+	 * @return
+	 * 		A float measuring the similarity between both groups of functions.
+	 */
+	private float processFunctionSimilarity(Set<EntityFunction> functions)
+	{	float result = 0;
+		
+		Set<EntityFunction> union = new TreeSet<EntityFunction>(this.functions);
+		union.addAll(functions);
+		float numerator = union.size();
+		
+		Set<EntityFunction> inter = new TreeSet<EntityFunction>(this.functions);
+		union.retainAll(functions);
+		float denominator = inter.size();
+		
+		if(denominator>0)
+			result = numerator / denominator; 
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -301,6 +413,34 @@ public class Event
 	 */
 	public Set<EntityProduction> getProductions()
 	{	return productions;
+	}
+	
+	/**
+	 * Compare the productions of this event with those of the
+	 * specified one.
+	 * <br/>
+	 * We simply use Jaccard's coefficient (ratio of the 
+	 * cardinalities of the set union to the set intersection).
+	 * 
+	 * @param productions
+	 * 		Productions of the other event.
+	 * @return
+	 * 		A float measuring the similarity between both groups of productions.
+	 */
+	private float processProductionSimilarity(Set<EntityProduction> productions)
+	{	float result = 0;
+		
+		Set<EntityProduction> union = new TreeSet<EntityProduction>(this.productions);
+		union.addAll(productions);
+		float numerator = union.size();
+		
+		Set<EntityProduction> inter = new TreeSet<EntityProduction>(this.productions);
+		union.retainAll(productions);
+		float denominator = inter.size();
+		
+		if(denominator>0)
+			result = numerator / denominator; 
+		return result;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -344,6 +484,34 @@ public class Event
 	{	return meetings;
 	}
 	
+	/**
+	 * Compare the organizations of this event with those of the
+	 * specified one.
+	 * <br/>
+	 * We simply use Jaccard's coefficient (ratio of the 
+	 * cardinalities of the set union to the set intersection).
+	 * 
+	 * @param meetings
+	 * 		Organizations of the other event.
+	 * @return
+	 * 		A float measuring the similarity between both groups of organizations.
+	 */
+	private float processMeetingSimilarity(Set<EntityMeeting> meetings)
+	{	float result = 0;
+		
+		Set<EntityMeeting> union = new TreeSet<EntityMeeting>(this.meetings);
+		union.addAll(meetings);
+		float numerator = union.size();
+		
+		Set<EntityMeeting> inter = new TreeSet<EntityMeeting>(this.meetings);
+		union.retainAll(meetings);
+		float denominator = inter.size();
+		
+		if(denominator>0)
+			result = numerator / denominator; 
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
     // DATES			/////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
@@ -383,6 +551,74 @@ public class Event
 	 */
 	public Set<EntityDate> getDates()
 	{	return dates;
+	}
+	
+	/**
+	 * Processes a value between 0 and 1 representing the similarity
+	 * between this event and the specified one.
+	 * <br/>
+	 * Each type of entity is processed separately. Only the types for
+	 * which at least one event possesses such entities count.
+	 * 
+	 * @param event
+	 * 		Event of comparison.
+	 * @return
+	 * 		A float representing the inter-event similarity.
+	 */
+	public float processSimilarity(Event event)
+	{	float result = 0;
+		int norm = 0;
+
+		/*
+		 * do that differently:
+		 * - if a production is involved, should be the same
+		 * - functions don't matter if different
+		 * - dates must overlap, or be close
+		 * - at least one common location? but not important if production?
+		 * - meeting: compulsory, since it is more or less an event in itself
+		 * - org must overlap
+		 * - person too?
+		 * maybe just apply the tool and see what the event look like in practice
+		 */
+		
+		if(!dates.isEmpty() || !event.dates.isEmpty())
+		{	float score = processDateSimilarity(event.dates);
+			result = result + score;
+			norm++;
+		}
+		if(!functions.isEmpty() || !event.functions.isEmpty())
+		{	float score = processFunctionSimilarity(event.functions);
+			result = result + score;
+			norm++;
+		}
+		if(!locations.isEmpty() || !event.locations.isEmpty())
+		{	float score = processLocationSimilarity(event.locations);
+			result = result + score;
+			norm++;
+		}
+		if(!meetings.isEmpty() || !event.meetings.isEmpty())
+		{	float score = processMeetingSimilarity(event.meetings);
+			result = result + score;
+			norm++;
+		}
+		if(!organizations.isEmpty() || !event.organizations.isEmpty())
+		{	float score = processOrganizationSimilarity(event.organizations);
+			result = result + score;
+			norm++;
+		}
+		if(!persons.isEmpty() || !event.persons.isEmpty())
+		{	float score = processPersonSimilarity(event.persons);
+			result = result + score;
+			norm++;
+		}
+		if(!productions.isEmpty() || !event.productions.isEmpty())
+		{	float score = processProductionSimilarity(event.productions);
+			result = result + score;
+			norm++;
+		}
+		
+		result = result / norm;
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////

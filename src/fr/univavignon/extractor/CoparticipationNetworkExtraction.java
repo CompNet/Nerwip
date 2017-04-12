@@ -25,11 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -41,25 +38,18 @@ import fr.univavignon.extractor.data.graph.Link;
 import fr.univavignon.extractor.data.graph.Node;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.AbstractEntity;
-import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityPerson;
-import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.MentionDate;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
-import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.CombinerName;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
-import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolver;
-import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolverDelegateResolver;
 import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.retrieval.reader.ReaderException;
@@ -101,7 +91,8 @@ public class CoparticipationNetworkExtraction
 		InterfaceLinker linker = new WikiDataLinker(resolver, revision);
 		
 		// extract network
-		extractNetwork(linker);
+		float minSim = 0.8f;
+		extractNetwork(linker, minSim);
 	}
 		
 	/////////////////////////////////////////////////////////////////
@@ -126,6 +117,9 @@ public class CoparticipationNetworkExtraction
 	 * 
 	 * @param linker
 	 * 		The linker to apply (or previously applied).
+	 * @param minSim
+	 * 		Threshold to consider that two instance of events actually
+	 * 		correspond to the same one. The value must be in in [0;1].
 	 * 
 	 * @throws ProcessorException
 	 * 		Problem while retrieving the detected entities.
@@ -138,7 +132,7 @@ public class CoparticipationNetworkExtraction
 	 * @throws ReaderException
 	 * 		Problem while accessing a file.
 	 */
-	private static void extractNetwork(InterfaceLinker linker) throws ProcessorException, ParseException, SAXException, IOException, ReaderException
+	private static void extractNetwork(InterfaceLinker linker, float minSim) throws ProcessorException, ParseException, SAXException, IOException, ReaderException
 	{	logger.log("Extract entity network");
 		logger.increaseOffset();
 		
@@ -232,19 +226,22 @@ public class CoparticipationNetworkExtraction
 		
 		// process each event and compare it to the others
 		logger.log("Process each event and compare it to the others");
-		for(Event event: events)
-		{	// first, we connect all involved persons
-			List<EntityPerson> pers = new ArrayList<EntityPerson>(event.getPersons());
-			for(int i1=0;i1<pers.size()-1;i1++)
+		for(int e1=0;e1<events.size();e1++)
+		{	Event event1 = events.get(e1);
+			Set<EntityPerson> persons1 = event1.getPersons();
+			
+			// first, we connect all involved persons
+			List<EntityPerson> pers = new ArrayList<EntityPerson>(persons1);
+			for(int p1=0;p1<pers.size()-1;p1++)
 			{	// get the first id
-				EntityPerson person1 = pers.get(i1);
+				EntityPerson person1 = pers.get(p1);
 				long id1 = person1.getInternalId();
 				String idStr1 = Long.toString(id1);
 				
 				// process all other nodes
-				for(int i2=i1+1;i2<pers.size();i2++)
+				for(int p2=p1+1;p2<pers.size();p2++)
 				{	// get the second id
-					EntityPerson person2 = pers.get(i2);
+					EntityPerson person2 = pers.get(p2);
 					long id2 = person2.getInternalId();
 					String idStr2 = Long.toString(id2);
 					// create/increment the link
@@ -254,7 +251,31 @@ public class CoparticipationNetworkExtraction
 			}
 			
 			// then we compare to other events and possibly add some other links
-			
+			if(e1<events.size()-1)
+			for(int e2=e1+1;e2<events.size();e2++)
+			{	// similarity between the events
+				Event event2 = events.get(e2);
+				float sim = event1.processSimilarity(event2);
+				// if enough, create links between the concerned persons
+				if(sim>minSim)
+				{	// process each person in event #1 
+					for(EntityPerson person1: persons1)
+					{	// get the first id
+						long id1 = person1.getInternalId();
+						String idStr1 = Long.toString(id1);
+						// connect to each person in event #2
+						Set<EntityPerson> persons2 = event2.getPersons();
+						for(EntityPerson person2: persons2)
+						{	// get the second id
+							long id2 = person2.getInternalId();
+							String idStr2 = Long.toString(id2);
+							// create/increment the link
+							Link link = graph.retrieveLink(idStr1, idStr2);
+							link.incrementFloatProperty(PROP_WEIGHT, 1f);
+						}
+					}
+				}
+			}
 		}
 		
 		// display summary
