@@ -248,5 +248,7 @@ public class FileNames
 	public final static String EX_XML = ".xml";
 	/** HTML file extension */
 	public final static String EX_HTML = ".html";
+	/** Graphml file extension */
+	public final static String EX_GRAPHML = ".graphml";
 }
 

@@ -83,7 +83,7 @@ public class Link implements Comparable<Link>
 	/////////////////////////////////////////////////////////////////
 	// PROPERTIES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Additionnal properties */
+	/** Additional properties */
 	protected final Map<String,String> properties = new HashMap<String, String>();
 	
 	/**
@@ -122,21 +122,37 @@ public class Link implements Comparable<Link>
 	
 	/**
 	 * Increments the value of the specified property 
-	 * with an incrementation value equal to similarity.
+	 * with an increment value equal to delta.
 	 * The property must already exist.
 	 * 
 	 * @param name
 	 * 		Name of the property.
-	 * @param similarity
-	 *      The incrementation value
+	 * @param delta
+	 *      The increment value
 	 */
-	public void incrementIntProperty(String name, Double similarity)
+	public void incrementIntProperty(String name, int delta)
 	{	String valueStr = properties.get(name);
-		Double value = Integer.parseInt(valueStr) + similarity;
-		valueStr = Double.toString(value);
+		int value = Integer.parseInt(valueStr) + delta;
+		valueStr = Integer.toString(value);
 		properties.put(name, valueStr);
 	}
 	
+	/**
+	 * Increments the value of the specified property 
+	 * with an increment value equal to delta.
+	 * The property must already exist.
+	 * 
+	 * @param name
+	 * 		Name of the property.
+	 * @param delta
+	 *      The increment value
+	 */
+	public void incrementFloatProperty(String name, float delta)
+	{	String valueStr = properties.get(name);
+		float value = Float.parseFloat(valueStr) + delta;
+		valueStr = Float.toString(value);
+		properties.put(name, valueStr);
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// GRAPHML			/////////////////////////////////////////////

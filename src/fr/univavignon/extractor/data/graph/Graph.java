@@ -93,6 +93,16 @@ public class Graph
 	public String getName()
 	{	return name;
 	}
+	
+	/**
+	 * Changes the name of this graph.
+	 * 
+	 * @param name
+	 * 		New name of this graph.
+	 */
+	public void setName(String name)
+	{	this.name = name;
+	}
 
 	/////////////////////////////////////////////////////////////////
 	// PROPERTIES		/////////////////////////////////////////////

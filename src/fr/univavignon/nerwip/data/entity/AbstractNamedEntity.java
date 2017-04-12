@@ -335,7 +335,13 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 	 * 		Entity uses to complete this entity.
 	 */
 	public void completeWith(AbstractNamedEntity entity)
-	{	// possibly update the name
+	{	// check the types
+		EntityType type1 = getType();
+		EntityType type2 = entity.getType();
+		if(type1!=type2)
+			throw new IllegalArgumentException("Trying to merge entities of different types: "+type1+" vs. "+type2);
+		
+		// possibly update the name
 		if(entity.name.length() > name.length())
 			name = entity.name;
 		

@@ -58,7 +58,7 @@ public class NaiveResolverDelegateResolver extends AbstractModellessInternalDele
 {
 	/**
 	 * Builds and sets up an object representing
-	 * the Spotlight recognizer.
+	 * the naive resolver delegate.
 	 * 
 	 * @param naiveResolver
 	 * 		Recognizer in charge of this delegate.

@@ -21,6 +21,8 @@ package fr.univavignon.extractor.data.event;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -31,6 +33,14 @@ import fr.univavignon.nerwip.data.entity.EntityMeeting;
 import fr.univavignon.nerwip.data.entity.EntityOrganization;
 import fr.univavignon.nerwip.data.entity.EntityPerson;
 import fr.univavignon.nerwip.data.entity.EntityProduction;
+import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
+import fr.univavignon.nerwip.data.entity.mention.MentionDate;
+import fr.univavignon.nerwip.data.entity.mention.MentionFunction;
+import fr.univavignon.nerwip.data.entity.mention.MentionLocation;
+import fr.univavignon.nerwip.data.entity.mention.MentionMeeting;
+import fr.univavignon.nerwip.data.entity.mention.MentionOrganization;
+import fr.univavignon.nerwip.data.entity.mention.MentionPerson;
+import fr.univavignon.nerwip.data.entity.mention.MentionProduction;
 
 /**
  * This class represents an event, i.e. a set of related entities.
@@ -46,6 +56,46 @@ public class Event
 	public Event() 
 	{	
 		
+	}
+	
+	/**
+	* Builds an event based on the specified
+	* list of mentions.
+	* 
+	* @param mentions
+	*	Mentions describing the event. 	 
+	*/
+	public Event(List<AbstractMention<?>> mentions) 
+	{	for(AbstractMention<?> mention: mentions)
+		{	if(mention instanceof MentionDate)
+			{	EntityDate date = (EntityDate)mention.getEntity();
+				addDate(date);
+			}
+			else if(mention instanceof MentionFunction)
+			{	EntityFunction function = (EntityFunction)mention.getEntity();
+				addFunction(function);
+			}
+			else if(mention instanceof MentionLocation)
+			{	EntityLocation location = (EntityLocation)mention.getEntity();
+				addLocation(location);
+			}
+			else if(mention instanceof MentionMeeting)
+			{	EntityMeeting meeting = (EntityMeeting)mention.getEntity();
+				addMeeting(meeting);
+			}
+			else if(mention instanceof MentionOrganization)
+			{	EntityOrganization organization = (EntityOrganization)mention.getEntity();
+				addOrganization(organization);
+			}
+			else if(mention instanceof MentionPerson)
+			{	EntityPerson person = (EntityPerson)mention.getEntity();
+				addPerson(person);
+			}
+			else if(mention instanceof MentionProduction)
+			{	EntityProduction production = (EntityProduction)mention.getEntity();
+				addProduction(production);
+			}
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -64,6 +114,18 @@ public class Event
 	 */
 	public void addPerson(EntityPerson person)
 	{	persons.add(person);
+	}
+	
+	/**
+	 * Add several person entities to this event.
+	 * If they are already present, they will not be
+	 * added another time.
+	 * 
+	 * @param persons
+	 * 		The new person entities.
+	 */
+	public void addPersons(Collection<EntityPerson> persons)
+	{	persons.addAll(persons);
 	}
 	
 	/**
@@ -96,6 +158,18 @@ public class Event
 	}
 	
 	/**
+	 * Add several location entities to this event.
+	 * If they are already present, they will not be
+	 * added another time.
+	 * 
+	 * @param locations
+	 * 		The new location entities.
+	 */
+	public void addLocations(Collection<EntityLocation> locations)
+	{	locations.addAll(locations);
+	}
+	
+	/**
 	 * Returns the set of location entities for this event..
 	 * 
 	 * @return
@@ -122,6 +196,18 @@ public class Event
 	 */
 	public void addOrganization(EntityOrganization organization)
 	{	organizations.add(organization);
+	}
+	
+	/**
+	 * Add several organization entities to this event.
+	 * If they are already present, they will not be
+	 * added another time.
+	 * 
+	 * @param organizations
+	 * 		The new organization entities.
+	 */
+	public void addOrganizations(Collection<EntityOrganization> organizations)
+	{	organizations.addAll(organizations);
 	}
 	
 	/**
@@ -154,6 +240,18 @@ public class Event
 	}
 	
 	/**
+	 * Add several function entities to this event.
+	 * If they are already present, they will not be
+	 * added another time.
+	 * 
+	 * @param functions
+	 * 		The new function entities.
+	 */
+	public void addFunctions(Collection<EntityFunction> functions)
+	{	functions.addAll(functions);
+	}
+	
+	/**
 	 * Returns the set of function entities for this event..
 	 * 
 	 * @return
@@ -180,6 +278,18 @@ public class Event
 	 */
 	public void addProduction(EntityProduction production)
 	{	productions.add(production);
+	}
+	
+	/**
+	 * Add several production entities to this event.
+	 * If they are already present, they will not be
+	 * added another time.
+	 * 
+	 * @param productions
+	 * 		The new production entities.
+	 */
+	public void addProductions(Collection<EntityProduction> productions)
+	{	productions.addAll(productions);
 	}
 	
 	/**
@@ -212,6 +322,18 @@ public class Event
 	}
 	
 	/**
+	 * Add several meeting entities to this event.
+	 * If they are already present, they will not be
+	 * added another time.
+	 * 
+	 * @param meetings
+	 * 		The new meeting entities.
+	 */
+	public void addMeetings(Collection<EntityMeeting> meetings)
+	{	meetings.addAll(meetings);
+	}
+	
+	/**
 	 * Returns the set of meeting entities for this event..
 	 * 
 	 * @return
@@ -238,6 +360,18 @@ public class Event
 	 */
 	public void addDate(EntityDate date)
 	{	dates.add(date);
+	}
+	
+	/**
+	 * Add several date entities to this event.
+	 * If they are already present, they will not be
+	 * added another time.
+	 * 
+	 * @param dates
+	 * 		The new date entities.
+	 */
+	public void addDates(Collection<EntityDate> dates)
+	{	dates.addAll(dates);
 	}
 	
 	/**

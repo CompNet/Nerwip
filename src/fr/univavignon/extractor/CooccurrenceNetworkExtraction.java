@@ -70,7 +70,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * 
  * @author Vincent Labatut
  */
-public class NetworkExtraction
+public class CooccurrenceNetworkExtraction
 {	
 	/**
 	 * Launches the extraction process.
@@ -94,8 +94,6 @@ public class NetworkExtraction
 	/////////////////////////////////////////////////////////////////
 	// PROCESS		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Graph name */
-	private final static String GRAPH_NAME = "Mention co-occurrence graph";
 	/** Node property for mention frequence */
 	private final static String PROP_FREQ = "frequence";
 	/** Node property for mention type */
@@ -132,11 +130,12 @@ public class NetworkExtraction
 		logger.increaseOffset();
 		
 		// init graph
-		Graph graph = new Graph(GRAPH_NAME, false);
+		Graph graph = new Graph("Mention co-occurrence graph", false);
 		graph.addNodeProperty(PROP_FREQ,"xsd:integer");
 		graph.addNodeProperty(PROP_TYPE,"xsd:string");
 		graph.addNodeProperty(PROP_NAME,"xsd:string");
 		graph.addLinkProperty(PROP_WEIGHT,"xsd:integer");
+		String filename = "cooccurrence-mentions-all" + FileNames.EX_GRAPHML;
 		
 		logger.log("Read all article entities");
 		logger.increaseOffset();
@@ -181,11 +180,14 @@ public class NetworkExtraction
 			}
 			if(tmpEntities!=null)
 			{	if(entities==null)
-					entities = tmpEntities;
+				{	entities = tmpEntities;
+					graph.setName("Entity co-occurrence graph");
+					filename = "cooccurrence-entities-all" + FileNames.EX_GRAPHML;
+				}
 				else
-					unifyEntities(entities, tmpEntities, mentions);
+					entities.unifyEntities(tmpEntities, mentions);
 			}
-			logger.decreaseOffset();//TODO record the unified entities
+			logger.decreaseOffset();
 			
 			// process each sentence
 			logger.log("Process each sentence");
@@ -285,7 +287,7 @@ public class NetworkExtraction
 		logger.log("Graph density: "+d);	
 		
 		logger.log("Export graph as XML");
-		String netPath = FileNames.FO_OUTPUT + File.separator + "all-entities.graphml";
+		String netPath = FileNames.FO_OUTPUT + File.separator + filename;
 		File netFile = new File(netPath);
 		graph.writeToXml(netFile);
 		
@@ -327,60 +329,5 @@ public class NetworkExtraction
 		}
 		
 		return result;
-	}
-	
-	/**
-	 * Adds the new entities to the existing collection, merging
-	 * the new ones with the existing ones when they are similar,
-	 * and updating the concerned mentions.
-	 * 
-	 * @param entities
-	 * 		Existing collection of entities.
-	 * @param newEntities
-	 * 		New entities to insert in the existing collection.
-	 * @param mentions
-	 * 		Mentions referring to the new entities, to be updated.
-	 */
-	private static void unifyEntities(Entities entities, Entities newEntities, Mentions mentions)
-	{	logger.increaseOffset();
-		
-		// init entity conversion map (new > old)
-		logger.log("Merging new entities into the existing collection");
-		Map<AbstractNamedEntity,AbstractNamedEntity> map = new HashMap<AbstractNamedEntity,AbstractNamedEntity>();
-		for(AbstractEntity newEntity: newEntities.getEntities())
-		{	// only process named entities (ignore dates)
-			if(newEntity instanceof AbstractNamedEntity)
-			{	// get the new entity ids
-				AbstractNamedEntity namedEntity = (AbstractNamedEntity)newEntity;
-				Map<String,String> exIds = namedEntity.getExternalIds();
-				// look for an existing entity with similar ids
-				AbstractNamedEntity oldEntity = entities.getNamedEntityByIds(exIds);
-				// can be used later for substitution (oldEntry possibly null, here)
-				if(oldEntity!=null)
-					map.put(namedEntity, oldEntity);
-				// otherwise, if nothing found, add to existing collection
-				else
-				{	// this allows reseting the internal id to a value consistent with the existing collection
-					newEntity.setInternalId(-1);
-					// insert in the new collection
-					entities.addEntity(newEntity);
-				}
-			}
-		}
-		
-		// use the map to update the mentions with the substitution entities
-		logger.log("Updating the article mentions");
-		for(AbstractMention<?> mention: mentions.getMentions())
-		{	AbstractEntity entity = mention.getEntity();
-			// only focus on the named entities
-			if(entity instanceof AbstractNamedEntity)
-			{	AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
-				AbstractNamedEntity oldEntity = map.get(namedEntity);
-				if(oldEntity!=null)
-					mention.setEntity(oldEntity);
-			}
-		}
-		
-		logger.decreaseOffset();
 	}
 }

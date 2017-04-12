@@ -39,6 +39,8 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
+import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.time.TimeFormatting;
@@ -494,6 +496,57 @@ public class Entities
 		{	AbstractValuedEntity<?> valuedEntity = (AbstractValuedEntity<?>)entity;
 			Comparable<?> value = valuedEntity.getValue();
 			valuedEntitiesByValue.remove(value);
+		}
+	}
+	
+	/**
+	 * Adds the new entities to this existing collection, merging
+	 * the new ones with the existing ones when they are similar,
+	 * and updating the concerned mentions when merge occurs.
+	 * 
+	 * @param newEntities
+	 * 		New entities to insert in the existing collection.
+	 * @param mentions
+	 * 		Mentions referring to the new entities, to be updated.
+	 */
+	public void unifyEntities(Entities newEntities, Mentions mentions)
+	{	// init entity conversion map (new > old)
+		Map<AbstractNamedEntity,AbstractNamedEntity> map = new HashMap<AbstractNamedEntity,AbstractNamedEntity>();
+		for(AbstractEntity newEntity: newEntities.getEntities())
+		{	// only process named entities (ignore dates)
+			if(newEntity instanceof AbstractNamedEntity)
+			{	// get the new entity ids
+				AbstractNamedEntity namedEntity = (AbstractNamedEntity)newEntity;
+				Map<String,String> exIds = namedEntity.getExternalIds();
+				// look for an existing entity with similar ids
+				AbstractNamedEntity oldEntity = getNamedEntityByIds(exIds);
+				// can be used later for substitution (oldEntry possibly null, here)
+				if(oldEntity!=null)
+				{	// possibly complete the old entity with the new one
+					oldEntity.completeWith(namedEntity);
+					// add to the conversion map
+					map.put(namedEntity, oldEntity);
+				}
+				// otherwise, if nothing found, add to existing collection
+				else
+				{	// this allows reseting the internal id to a value consistent with the existing collection
+					newEntity.setInternalId(-1);
+					// insert in the new collection
+					addEntity(newEntity);
+				}
+			}
+		}
+		
+		// use the map to update the mentions with the substitution entities
+		for(AbstractMention<?> mention: mentions.getMentions())
+		{	AbstractEntity entity = mention.getEntity();
+			// only focus on the named entities
+			if(entity instanceof AbstractNamedEntity)
+			{	AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+				AbstractNamedEntity oldEntity = map.get(namedEntity);
+				if(oldEntity!=null)
+					mention.setEntity(oldEntity);
+			}
 		}
 	}
 	

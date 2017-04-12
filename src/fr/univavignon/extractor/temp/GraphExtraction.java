@@ -1,4 +1,4 @@
-package fr.univavignon.extractor.temp.graphextraction;
+package fr.univavignon.extractor.temp;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -32,8 +32,6 @@ import fr.univavignon.extractor.data.event.Event;
 import fr.univavignon.extractor.data.graph.Graph;
 import fr.univavignon.extractor.data.graph.Link;
 import fr.univavignon.extractor.data.graph.Node;
-import fr.univavignon.extractor.temp.eventcomparison.EventComparison;
-import fr.univavignon.extractor.temp.eventextraction.EventExtraction;
 import fr.univavignon.extractor.temp.tools.dbspotlight.SpotlightTools;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleList;

@@ -1,4 +1,4 @@
-package fr.univavignon.extractor.temp.eventextraction;
+package fr.univavignon.extractor.temp;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -56,7 +56,7 @@ public class EventExtraction
     protected static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
     
     /**
-    * This method extract events from   
+    * This method extracts events from   
     * article.
     * 
     * @param article
