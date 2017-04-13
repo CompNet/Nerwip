@@ -54,8 +54,6 @@ import de.unihd.dbs.heideltime.standalone.OutputType;
 import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 import fr.univavignon.extractor.data.event.Event;
-import fr.univavignon.extractor.temp.EventComparison;
-import fr.univavignon.extractor.temp.EventExtraction;
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.article.ArticleList;
@@ -163,9 +161,6 @@ public class Test
 
 //		String name = "Barack_Obama";
      	
-//     	String S = "journaliste";
-//     	String T = "socialiste";
-		
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
 //		testCategoryRetriever();
@@ -183,10 +178,6 @@ public class Test
 //		testOpeNer(name);
 //		testSpotlightRecognizer(name);
 //		testSpotlightResolver(name);
-//     	testNLDistance(S, T);
-//		testEventsExtraction();
-//		testEventComparison();
-//		testEventExtraction();
 
 //		testTagEnRaw();
 
@@ -403,143 +394,6 @@ public class Test
 		
 		logger.log("Type retrieval complete");
 		logger.decreaseOffset();
-	}
-		
-	/////////////////////////////////////////////////////////////////
-	// EVENTS		/////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	private static void testEventExtraction() throws Exception
-	{
-		logger.setName("Test-EventExtraction");
-		logger.log("Start testing EventExtraction");
-		logger.increaseOffset();
-		Article article;
-		Mentions mentions;
-		
-		ArticleList folders = ArticleLists.getArticleList();
-		int i = 0;
-		List<Event> allEventsList = new ArrayList<Event>();
-		for(File folder: folders)
-		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-			logger.increaseOffset();
-			// get the article texts
-			logger.log("Retrieve the article");
-			String name = folder.getName();
-		    InterfaceRecognizer recognizer = new StraightCombiner();
-		    ArticleRetriever retriever = new ArticleRetriever();
-		    article = retriever.process(name);
-		    String rawText = article.getRawText();
-		    // retrieve the mentions
-		   logger.log("Retrieve the mentions");
-		   mentions = recognizer.recognize(article);
-		   
-		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions); 
-		   allEventsList.addAll(extractedEvents);
-		
-		}
-		int size = allEventsList.size();
-		logger.log("size of allEvientslist " + size);
-		for (int k=0; k<= size -1; k++)
-		{ String name = allEventsList.get(k).getPerson().getStringValue();
-		logger.log("name " + k + name);
-		//String date = allEventsList.get(k).getDate().getStringValue();
-		//logger.log("date " + k + date);
-		}
-		
-	}
-	
-	private static void testEventComparison() throws Exception
-	{
-		logger.setName("Test-EventComparison");
-		logger.log("Start testing EventComparison");
-		logger.increaseOffset();
-		Article article;
-		Mentions mentions;
-		
-		ArticleList folders = ArticleLists.getArticleList();
-		int i = 0;
-		for(File folder: folders)
-		{	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-			logger.increaseOffset();
-			// get the article texts
-			logger.log("Retrieve the article");
-			String name = folder.getName();
-		    InterfaceRecognizer recognizer = new StraightCombiner();
-		    ArticleRetriever retriever = new ArticleRetriever();
-		    article = retriever.process(name);
-		    String rawText = article.getRawText();
-		    // retrieve the mentions
-		   logger.log("Retrieve the mentions");
-		   mentions = recognizer.recognize(article);
-	    
-		   //event comparison
-		List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
-		String xmlText = null;//SpotlightTools.process(mentions, article);
-		logger.log("xmltext = " + xmlText);
-		String answer = null;//SpotlightTools.disambiguate(xmlText);
-		logger.log("answer = " + answer);
-		
-		int size = extractedEvents.size();
-		logger.log("size is " + size);
-		
-		
-		if (extractedEvents.size() > 1)
-		{
-			logger.log("starting event comparison");
-			EventComparison.compareAllPairsOfEvents(extractedEvents, answer);
-		}
-		else logger.log("no events found");
-		
-		}
-				
-	}
-	
-	/**
-	 * Tests the normalization of the Levenshtein distance.
-	 * 
-     * @param str1
-     * 		The first string.
-     * @param str2
-     *       The second string.
-	 */
-	private static void testNLDistance(String str1, String str2) 
-	{	logger.setName("Test-NLDistance");
-		logger.increaseOffset();
-		StringTools.getNormalizedLevenshtein(str1, str2);
-		logger.decreaseOffset();
-	}
-	
-	//List<Event> extractEvents(Article article, Mentions entities)
-	private static void testEventsExtraction() throws Exception
-	{   logger.setName("Test-EventComparison");
-	    logger.log("Start testing EventComparison");
-	    logger.increaseOffset();
-	    Article article;
-	    Mentions mentions;
-	
-	    ArticleList folders = ArticleLists.getArticleList();
-	    int i = 0;
-	    for(File folder: folders)
-	    {	logger.log("Process article "+folder.getName()+" ("+(i+1)+"/"+folders.size()+")");
-		    logger.increaseOffset();
-		    // get the article texts
-		    logger.log("Retrieve the article");
-		    String name = folder.getName();
-	        InterfaceRecognizer recognizer = new StraightCombiner();
-	        ArticleRetriever retriever = new ArticleRetriever();
-	        article = retriever.process(name);
-	        String rawText = article.getRawText();
-	        // retrieve the entities
-	       logger.log("Retrieve the entities");
-	       mentions = recognizer.recognize(article);
-	   
-		   
-	
-		   List<Event> extractedEvents = EventExtraction.extractEvents(article, mentions);
-		   int p = extractedEvents.size();
-		   logger.log("size of eventsList " + p);
-		   }
-	    
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -2304,8 +2158,7 @@ public class Test
 /* TODO
  * 
  * - network extraction
- * 		- update the co-occurrence class (keep the possibility to compare by string)
- *   	- update Sabrine's classes
+ *   	- generate the bipartite network persons/events
  * 
  * - Make it possible to use the reference annotations instead of estimated ones, before applying resolution or linking
  * 

@@ -571,7 +571,12 @@ public class Event
 
 		/*
 		 * do that differently:
-		 * - if a production is involved, should be the same
+		 * - Production:
+		 *   - Principle: two persons connected to the same intellectual object (eg book) are very likely to know each other.  
+		 *   - If involved at least once, the production should be similar in both occurrences.
+		 *   - There is no meaning in comparing one event with a production and another one without any production.
+		 *   - Similar production alone is enough to state two events are similar (place, time don't matter).
+		 *   
 		 * - functions don't matter if different
 		 * - dates must overlap, or be close
 		 * - at least one common location? but not important if production?
