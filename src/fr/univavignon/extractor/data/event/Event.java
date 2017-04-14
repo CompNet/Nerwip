@@ -41,6 +41,7 @@ import fr.univavignon.nerwip.data.entity.mention.MentionMeeting;
 import fr.univavignon.nerwip.data.entity.mention.MentionOrganization;
 import fr.univavignon.nerwip.data.entity.mention.MentionPerson;
 import fr.univavignon.nerwip.data.entity.mention.MentionProduction;
+import fr.univavignon.nerwip.tools.time.Period;
 
 /**
  * This class represents an event, i.e. a set of related entities.
@@ -139,33 +140,33 @@ public class Event
 	{	return persons;
 	}
 	
-	/**
-	 * Compare the persons of this event with those of the
-	 * specified one.
-	 * <br/>
-	 * We simply use Jaccard's coefficient (ratio of the 
-	 * cardinalities of the set union to the set intersection).
-	 * 
-	 * @param persons
-	 * 		Persons of the other event.
-	 * @return
-	 * 		A float measuring the similarity between both groups of persons.
-	 */
-	private float processPersonSimilarity(Set<EntityPerson> persons)
-	{	float result = 0;
-		
-		Set<EntityPerson> union = new TreeSet<EntityPerson>(this.persons);
-		union.addAll(persons);
-		float numerator = union.size();
-		
-		Set<EntityPerson> inter = new TreeSet<EntityPerson>(this.persons);
-		union.retainAll(persons);
-		float denominator = inter.size();
-		
-		if(denominator>0)
-			result = numerator / denominator; 
-		return result;
-	}
+//	/**
+//	 * Compare the persons of this event with those of the
+//	 * specified one.
+//	 * <br/>
+//	 * We simply use Jaccard's coefficient (ratio of the 
+//	 * cardinalities of the set union to the set intersection).
+//	 * 
+//	 * @param persons
+//	 * 		Persons of the other event.
+//	 * @return
+//	 * 		A float measuring the similarity between both groups of persons.
+//	 */
+//	private float processPersonSimilarity(Set<EntityPerson> persons)
+//	{	float result = 0;
+//		
+//		Set<EntityPerson> union = new TreeSet<EntityPerson>(this.persons);
+//		union.addAll(persons);
+//		float numerator = union.size();
+//		
+//		Set<EntityPerson> inter = new TreeSet<EntityPerson>(this.persons);
+//		union.retainAll(persons);
+//		float denominator = inter.size();
+//		
+//		if(denominator>0)
+//			result = numerator / denominator; 
+//		return result;
+//	}
 	
 	/////////////////////////////////////////////////////////////////
     // LOCATIONS		/////////////////////////////////////////////
@@ -346,33 +347,33 @@ public class Event
 	{	return functions;
 	}
 	
-	/**
-	 * Compare the functions of this event with those of the
-	 * specified one.
-	 * <br/>
-	 * We simply use Jaccard's coefficient (ratio of the 
-	 * cardinalities of the set union to the set intersection).
-	 * 
-	 * @param functions
-	 * 		Functions of the other event.
-	 * @return
-	 * 		A float measuring the similarity between both groups of functions.
-	 */
-	private float processFunctionSimilarity(Set<EntityFunction> functions)
-	{	float result = 0;
-		
-		Set<EntityFunction> union = new TreeSet<EntityFunction>(this.functions);
-		union.addAll(functions);
-		float numerator = union.size();
-		
-		Set<EntityFunction> inter = new TreeSet<EntityFunction>(this.functions);
-		union.retainAll(functions);
-		float denominator = inter.size();
-		
-		if(denominator>0)
-			result = numerator / denominator; 
-		return result;
-	}
+//	/**
+//	 * Compare the functions of this event with those of the
+//	 * specified one.
+//	 * <br/>
+//	 * We simply use Jaccard's coefficient (ratio of the 
+//	 * cardinalities of the set union to the set intersection).
+//	 * 
+//	 * @param functions
+//	 * 		Functions of the other event.
+//	 * @return
+//	 * 		A float measuring the similarity between both groups of functions.
+//	 */
+//	private float processFunctionSimilarity(Set<EntityFunction> functions)
+//	{	float result = 0;
+//		
+//		Set<EntityFunction> union = new TreeSet<EntityFunction>(this.functions);
+//		union.addAll(functions);
+//		float numerator = union.size();
+//		
+//		Set<EntityFunction> inter = new TreeSet<EntityFunction>(this.functions);
+//		union.retainAll(functions);
+//		float denominator = inter.size();
+//		
+//		if(denominator>0)
+//			result = numerator / denominator; 
+//		return result;
+//	}
 
 	/////////////////////////////////////////////////////////////////
     // PRODUCTIONS		/////////////////////////////////////////////
@@ -415,33 +416,33 @@ public class Event
 	{	return productions;
 	}
 	
-	/**
-	 * Compare the productions of this event with those of the
-	 * specified one.
-	 * <br/>
-	 * We simply use Jaccard's coefficient (ratio of the 
-	 * cardinalities of the set union to the set intersection).
-	 * 
-	 * @param productions
-	 * 		Productions of the other event.
-	 * @return
-	 * 		A float measuring the similarity between both groups of productions.
-	 */
-	private float processProductionSimilarity(Set<EntityProduction> productions)
-	{	float result = 0;
-		
-		Set<EntityProduction> union = new TreeSet<EntityProduction>(this.productions);
-		union.addAll(productions);
-		float numerator = union.size();
-		
-		Set<EntityProduction> inter = new TreeSet<EntityProduction>(this.productions);
-		union.retainAll(productions);
-		float denominator = inter.size();
-		
-		if(denominator>0)
-			result = numerator / denominator; 
-		return result;
-	}
+//	/**
+//	 * Compare the productions of this event with those of the
+//	 * specified one.
+//	 * <br/>
+//	 * We simply use Jaccard's coefficient (ratio of the 
+//	 * cardinalities of the set union to the set intersection).
+//	 * 
+//	 * @param productions
+//	 * 		Productions of the other event.
+//	 * @return
+//	 * 		A float measuring the similarity between both groups of productions.
+//	 */
+//	private float processProductionSimilarity(Set<EntityProduction> productions)
+//	{	float result = 0;
+//		
+//		Set<EntityProduction> union = new TreeSet<EntityProduction>(this.productions);
+//		union.addAll(productions);
+//		float numerator = union.size();
+//		
+//		Set<EntityProduction> inter = new TreeSet<EntityProduction>(this.productions);
+//		union.retainAll(productions);
+//		float denominator = inter.size();
+//		
+//		if(denominator>0)
+//			result = numerator / denominator; 
+//		return result;
+//	}
 
 	/////////////////////////////////////////////////////////////////
     // MEETINGS			/////////////////////////////////////////////
@@ -484,33 +485,33 @@ public class Event
 	{	return meetings;
 	}
 	
-	/**
-	 * Compare the organizations of this event with those of the
-	 * specified one.
-	 * <br/>
-	 * We simply use Jaccard's coefficient (ratio of the 
-	 * cardinalities of the set union to the set intersection).
-	 * 
-	 * @param meetings
-	 * 		Organizations of the other event.
-	 * @return
-	 * 		A float measuring the similarity between both groups of organizations.
-	 */
-	private float processMeetingSimilarity(Set<EntityMeeting> meetings)
-	{	float result = 0;
-		
-		Set<EntityMeeting> union = new TreeSet<EntityMeeting>(this.meetings);
-		union.addAll(meetings);
-		float numerator = union.size();
-		
-		Set<EntityMeeting> inter = new TreeSet<EntityMeeting>(this.meetings);
-		union.retainAll(meetings);
-		float denominator = inter.size();
-		
-		if(denominator>0)
-			result = numerator / denominator; 
-		return result;
-	}
+//	/**
+//	 * Compare the organizations of this event with those of the
+//	 * specified one.
+//	 * <br/>
+//	 * We simply use Jaccard's coefficient (ratio of the 
+//	 * cardinalities of the set union to the set intersection).
+//	 * 
+//	 * @param meetings
+//	 * 		Organizations of the other event.
+//	 * @return
+//	 * 		A float measuring the similarity between both groups of organizations.
+//	 */
+//	private float processMeetingSimilarity(Set<EntityMeeting> meetings)
+//	{	float result = 0;
+//		
+//		Set<EntityMeeting> union = new TreeSet<EntityMeeting>(this.meetings);
+//		union.addAll(meetings);
+//		float numerator = union.size();
+//		
+//		Set<EntityMeeting> inter = new TreeSet<EntityMeeting>(this.meetings);
+//		union.retainAll(meetings);
+//		float denominator = inter.size();
+//		
+//		if(denominator>0)
+//			result = numerator / denominator; 
+//		return result;
+//	}
 	
 	/////////////////////////////////////////////////////////////////
     // DATES			/////////////////////////////////////////////
@@ -567,7 +568,21 @@ public class Event
 	private float processDateSimilarity(Set<EntityDate> dates)
 	{	float result = 0;
 		
-		// TODO
+		// get the sets of periods
+		Set<Period> periods1 = new TreeSet<Period>();
+		for(EntityDate entity: this.dates)
+		{	Period period = entity.getValue();
+			periods1.add(period);
+		}
+		Set<Period> periods2 = new TreeSet<Period>();
+		for(EntityDate entity: dates)
+		{	Period period = entity.getValue();
+			periods2.add(period);
+		}
+		
+		// compare them
+		
+		// what do we want if several periods? overlaps? all of them similar? at least one?...
 		
 		return result;
 	}
