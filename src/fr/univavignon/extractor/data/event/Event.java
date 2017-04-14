@@ -554,6 +554,28 @@ public class Event
 	}
 	
 	/**
+	 * Compare the dates of this event with those of the
+	 * specified one.
+	 * <br/>
+	 * TODO.
+	 * 
+	 * @param dates
+	 * 		Dates of the other event.
+	 * @return
+	 * 		A float measuring the similarity between both groups of dates.
+	 */
+	private float processDateSimilarity(Set<EntityDate> dates)
+	{	float result = 0;
+		
+		// TODO
+		
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+    // SIMILARITY		/////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
+	/**
 	 * Processes a value between 0 and 1 representing the similarity
 	 * between this event and the specified one.
 	 * <br/>
@@ -567,62 +589,175 @@ public class Event
 	 */
 	public float processSimilarity(Event event)
 	{	float result = 0;
-		int norm = 0;
-
+		
 		/*
-		 * do that differently:
+		 * TODO                        DATE   FUNC   LOC   MEET   ORG   PERS   PROD
 		 * - Production:
-		 *   - Principle: two persons connected to the same intellectual object (eg book) are very likely to know each other.  
+		 *   - Principle: two persons connected to the same intellectual object (ex book) are very likely to know each other.  
 		 *   - If involved at least once, the production should be similar in both occurrences.
 		 *   - There is no meaning in comparing one event with a production and another one without any production.
-		 *   - Similar production alone is enough to state two events are similar (place, time don't matter).
+		 *   - Date helps characterizing the production: compare only if present in both events.
+		 *   - Similar production alone is enough to state two events are similar (organizations, persons, places, don't matter).
+		 *   - What about: functions, meetings? do we suppose they cannot co-occur?
 		 *   
-		 * - functions don't matter if different
-		 * - dates must overlap, or be close
-		 * - at least one common location? but not important if production?
-		 * - meeting: compulsory, since it is more or less an event in itself
-		 * - org must overlap
-		 * - person too?
-		 * maybe just apply the tool and see what the event look like in practice
+		 * - Functions 
+		 *   - Principle: two persons holding the same position around the same time are likely to know each other.
+		 *   - But functions don't matter much if different (common spatio temporal elements can be enough)
+		 *   - Date should either overlap or be close enough (direct succession?)
+		 *   - Place is important (ex. deputé de l'Essone)
+		 *   - Persons/organizations do not matter.
+		 *   - What about: meetings, productions? no co-occurrence?
+		 *   
+		 * - Meetings
+		 *   - Principle: two persons participating in the same meeting are likely to know each other.
+		 *   - Date and location matter a lot.
+		 *   - Persons, organizations do not matter.
+		 *   - functions, production: no co-occurrence?
+		 *  
+		 *  - When no function / meeting / production, we focus on spatio temporal elements
+		 *    - Dates must overlap, or be close
+		 *    - Locations are important.
+		 *    - Organizations strengthen the similarity
+		 *    - No function, meeting or production.
+		 * 
 		 */
 		
-		if(!dates.isEmpty() || !event.dates.isEmpty())
-		{	float score = processDateSimilarity(event.dates);
-			result = result + score;
-			norm++;
-		}
-		if(!functions.isEmpty() || !event.functions.isEmpty())
-		{	float score = processFunctionSimilarity(event.functions);
-			result = result + score;
-			norm++;
-		}
-		if(!locations.isEmpty() || !event.locations.isEmpty())
-		{	float score = processLocationSimilarity(event.locations);
-			result = result + score;
-			norm++;
-		}
-		if(!meetings.isEmpty() || !event.meetings.isEmpty())
-		{	float score = processMeetingSimilarity(event.meetings);
-			result = result + score;
-			norm++;
-		}
-		if(!organizations.isEmpty() || !event.organizations.isEmpty())
-		{	float score = processOrganizationSimilarity(event.organizations);
-			result = result + score;
-			norm++;
-		}
-		if(!persons.isEmpty() || !event.persons.isEmpty())
-		{	float score = processPersonSimilarity(event.persons);
-			result = result + score;
-			norm++;
-		}
+		boolean doSpatioTemporal = true;
+		
+		// one event contains a production
 		if(!productions.isEmpty() || !event.productions.isEmpty())
-		{	float score = processProductionSimilarity(event.productions);
-			result = result + score;
-			norm++;
+		{	int factor = 0;
+			float sum = 0;
+			int norm = 0;
+			
+			// productions
+			Set<EntityProduction> tmp = new TreeSet<EntityProduction>(productions);
+			tmp.retainAll(event.productions);
+			factor = tmp.size();
+			
+			// dates
+			if(!dates.isEmpty() && !event.dates.isEmpty())
+			{	sum = sum + processDateSimilarity(event.dates);// TODO must be similar
+				norm++;
+			}
+			
+			result = factor * (sum / norm);
+			doSpatioTemporal = false;
 		}
 		
-		result = result / norm;
+		// one event contains a function
+		if(!functions.isEmpty() || !event.functions.isEmpty())
+		{	int factor = 0;
+			float sum = 0;
+			int norm = 0;
+			
+			// functions
+			Set<EntityFunction> tmp = new TreeSet<EntityFunction>(functions);
+			tmp.retainAll(event.functions);
+			factor = tmp.size();
+			
+			// dates
+			sum = sum + processDateSimilarity(event.dates);// TODO must be the same, or overlap, or be successive
+			norm++;
+			
+			// locations
+			sum = sum + processLocationSimilarity(event.locations);
+			norm++;
+			
+			// overall score
+			float score = factor*(sum/norm);
+			if(score>result)
+				result = score;
+			doSpatioTemporal = factor==0;
+		}
+		
+		// one event contains a meeting
+		if(!meetings.isEmpty() || !event.meetings.isEmpty())
+		{	int factor = 0;
+			float sum = 0;
+			int norm = 0;
+			
+			// meetings
+			Set<EntityMeeting> tmp = new TreeSet<EntityMeeting>(meetings);
+			tmp.retainAll(event.meetings);
+			factor = tmp.size();
+			
+			// dates
+			sum = sum + processDateSimilarity(event.dates);// TODO must be similar
+			norm++;
+			
+			// locations
+			sum = sum + processLocationSimilarity(event.locations);
+			norm++;
+			
+			// overall score
+			float score = factor*(sum/norm);
+			if(score>result)
+				result = score;
+			doSpatioTemporal = false;
+		}
+		
+		// only spatio-temporal events
+		if(doSpatioTemporal)
+		{	float sum = 0;
+			int norm = 0;
+		
+			// dates
+			sum = sum + processDateSimilarity(event.dates);// TODO measure similarity
+			norm++;
+			
+			// locations
+			sum = sum + processLocationSimilarity(event.locations);
+			norm++;
+			
+			// organizations
+			sum = sum + processOrganizationSimilarity(event.organizations);
+			norm++;
+			
+			float score = sum/norm;
+			if(score>result)
+				result = score;
+		}
+		
+//		// very basic version
+//		int norm = 0;
+//		if(!dates.isEmpty() || !event.dates.isEmpty())
+//		{	float score = processDateSimilarity(event.dates);
+//			result = result + score;
+//			norm++;
+//		}
+//		if(!functions.isEmpty() || !event.functions.isEmpty())
+//		{	float score = processFunctionSimilarity(event.functions);
+//			result = result + score;
+//			norm++;
+//		}
+//		if(!locations.isEmpty() || !event.locations.isEmpty())
+//		{	float score = processLocationSimilarity(event.locations);
+//			result = result + score;
+//			norm++;
+//		}
+//		if(!meetings.isEmpty() || !event.meetings.isEmpty())
+//		{	float score = processMeetingSimilarity(event.meetings);
+//			result = result + score;
+//			norm++;
+//		}
+//		if(!organizations.isEmpty() || !event.organizations.isEmpty())
+//		{	float score = processOrganizationSimilarity(event.organizations);
+//			result = result + score;
+//			norm++;
+//		}
+//		if(!persons.isEmpty() || !event.persons.isEmpty())
+//		{	float score = processPersonSimilarity(event.persons);
+//			result = result + score;
+//			norm++;
+//		}
+//		if(!productions.isEmpty() || !event.productions.isEmpty())
+//		{	float score = processProductionSimilarity(event.productions);
+//			result = result + score;
+//			norm++;
+//		}
+//		result = result / norm;
+		
 		return result;
 	}
 	
