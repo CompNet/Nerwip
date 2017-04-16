@@ -21,6 +21,7 @@ package fr.univavignon.extractor.data.event;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -556,33 +557,85 @@ public class Event
 	
 	/**
 	 * Compare the dates of this event with those of the
-	 * specified one.
-	 * <br/>
-	 * TODO.
+	 * specified one, in terms of overlap. Returns the maximal
+	 * proportion of overlap over all pairs of dates taken in
+	 * both sets.
 	 * 
 	 * @param dates
 	 * 		Dates of the other event.
 	 * @return
-	 * 		A float measuring the similarity between both groups of dates.
+	 * 		A float measuring the max overlap over both groups of dates.
 	 */
-	private float processDateSimilarity(Set<EntityDate> dates)
+	private float processMaxDateOverlap(Set<EntityDate> dates)
 	{	float result = 0;
 		
 		// get the sets of periods
-		Set<Period> periods1 = new TreeSet<Period>();
+		List<Period> periods1 = new ArrayList<Period>();
 		for(EntityDate entity: this.dates)
 		{	Period period = entity.getValue();
 			periods1.add(period);
 		}
-		Set<Period> periods2 = new TreeSet<Period>();
+		List<Period> periods2 = new ArrayList<Period>();
 		for(EntityDate entity: dates)
 		{	Period period = entity.getValue();
 			periods2.add(period);
 		}
 		
 		// compare them
+		for(int i=0;i<periods1.size()-1;i++)
+		{	Period period1 = periods1.get(i);
+			for(int j=i+1;j<periods2.size()-1;j++)
+			{	Period period2 = periods2.get(j);
+				float tmp = period1.processOverlap(period2);
+				if(tmp>result)
+					result = tmp;
+			}
+		}
 		
-		// what do we want if several periods? overlaps? all of them similar? at least one?...
+		return result;
+	}
+	
+	/**
+	 * Compare the dates of this event with those of the
+	 * specified one, in terms of separation interval.
+	 * Returns a score ranging from 0 (the periods overlap)
+	 * to 1 (periods separated by an interval of at least 
+	 * three times the shortest period).
+	 * 
+	 * @param dates
+	 * 		Dates of the other event.
+	 * @return
+	 * 		A float measuring the min interval between both groups of dates.
+	 */
+	private float processMinDateInterval(Set<EntityDate> dates)
+	{	float result = 0;
+		
+		// get the sets of periods
+		List<Period> periods1 = new ArrayList<Period>();
+		for(EntityDate entity: this.dates)
+		{	Period period = entity.getValue();
+			periods1.add(period);
+		}
+		List<Period> periods2 = new ArrayList<Period>();
+		for(EntityDate entity: dates)
+		{	Period period = entity.getValue();
+			periods2.add(period);
+		}
+		
+		// compare them
+		for(int i=0;i<periods1.size()-1;i++)
+		{	Period period1 = periods1.get(i);
+			for(int j=i+1;j<periods2.size()-1;j++)
+			{	Period period2 = periods2.get(j);
+				float tmp = period1.processInterval(period2);
+				if(tmp<result)
+					result = tmp;
+			}
+		}
+		
+		// normalize
+		float limit = 3;
+		result = Math.min(result, limit) / limit;//after three times the shortest period, we consider everything's similar
 		
 		return result;
 	}
@@ -606,7 +659,7 @@ public class Event
 	{	float result = 0;
 		
 		/*
-		 * TODO                        DATE   FUNC   LOC   MEET   ORG   PERS   PROD
+		 *                         DATE   FUNC   LOC   MEET   ORG   PERS   PROD
 		 * - Production:
 		 *   - Principle: two persons connected to the same intellectual object (ex book) are very likely to know each other.  
 		 *   - If involved at least once, the production should be similar in both occurrences.
@@ -652,7 +705,7 @@ public class Event
 			
 			// dates
 			if(!dates.isEmpty() && !event.dates.isEmpty())
-			{	sum = sum + processDateSimilarity(event.dates);// TODO must be similar
+			{	sum = sum + processMaxDateOverlap(event.dates);
 				norm++;
 			}
 			
@@ -672,7 +725,12 @@ public class Event
 			factor = tmp.size();
 			
 			// dates
-			sum = sum + processDateSimilarity(event.dates);// TODO must be the same, or overlap, or be successive
+			float dateSim = processMaxDateOverlap(event.dates);
+			if(dateSim==0)
+				dateSim = 0.5f*(1-processMinDateInterval(event.dates));
+			else 
+				dateSim = 0.5f*dateSim + 0.5f;
+			sum = sum + dateSim;
 			norm++;
 			
 			// locations
@@ -698,7 +756,7 @@ public class Event
 			factor = tmp.size();
 			
 			// dates
-			sum = sum + processDateSimilarity(event.dates);// TODO must be similar
+			sum = sum + processMaxDateOverlap(event.dates);
 			norm++;
 			
 			// locations
@@ -718,7 +776,12 @@ public class Event
 			int norm = 0;
 		
 			// dates
-			sum = sum + processDateSimilarity(event.dates);// TODO measure similarity
+			float dateSim = processMaxDateOverlap(event.dates);
+			if(dateSim==0)
+				dateSim = 0.5f*(1-processMinDateInterval(event.dates));
+			else 
+				dateSim = 0.5f*dateSim + 0.5f;
+			sum = sum + dateSim;
 			norm++;
 			
 			// locations

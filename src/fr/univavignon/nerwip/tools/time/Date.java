@@ -404,21 +404,21 @@ public class Date implements Comparable<Date>
 	
 		// year
 		if((year==0 && date.year!=0) || (year!=0 && date.year==0))
-			throw new IncompleteDateException("The dates '"+this+"' and '"+date+"' cannot be compared, because the year is unknown for exactly one of them",this,date);
+			throw new IllegalArgumentException("The dates '"+this+"' and '"+date+"' cannot be compared, because the year is unknown for exactly one of them");
 		else
 		{	result = year - date.year;
 		
 			// month
 			if(result==0)
 			{	if((month==0 && date.month!=0) || (month!=0 && date.month==0))
-					throw new IncompleteDateException("The dates '"+this+"' and '"+date+"' cannot be compared, because the month is unknown for exactly one of them",this,date);
+					throw new IllegalArgumentException("The dates '"+this+"' and '"+date+"' cannot be compared, because the month is unknown for exactly one of them");
 				else
 				{	result = month - date.month;
 				
 					// day
 					if(result==0)
 					{	if((day==0 && date.day!=0) || (day!=0 && date.day==0))
-							throw new IncompleteDateException("The dates '"+this+"' and '"+date+"' cannot be compared, because the day is unknown for exactly one of them",this,date);
+							throw new IllegalArgumentException("The dates '"+this+"' and '"+date+"' cannot be compared, because the day is unknown for exactly one of them");
 						else
 						{	result = day - date.day;
 							
@@ -438,25 +438,6 @@ public class Date implements Comparable<Date>
 		{	Date date = (Date)object;
 			result = compareTo(date)==0;
 		}
-		return result;
-	}
-	
-	/**
-	 * Returns a real value between representing
-	 * how similar this date and the specified ones are.
-	 * It ranges from 0 (completely dissimilar) to 1
-	 * (completely similar).
-	 * 
-	 * @param date
-	 * 		Date to compare to this date.
-	 * @return
-	 * 		A real value in [0;1].
-	 */
-	public float processSimilarity(Date date)
-	{	float result = 0;
-		
-		
-		
 		return result;
 	}
 }

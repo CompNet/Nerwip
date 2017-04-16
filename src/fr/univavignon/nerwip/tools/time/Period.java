@@ -1,5 +1,9 @@
 package fr.univavignon.nerwip.tools.time;	
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -147,6 +151,83 @@ public class Period implements Comparable<Period>
 		return result;
 	}
 	
+	/**
+	 * Returns a Period instance which is a copy of this Period,
+	 * but with possibly completed dates, when the day or month is
+	 * missing. Does not complete dates where the "larger" elements
+	 * are missing (e.g. day and month are known, but not year): in this
+	 * case, the method returns {@code null}.
+	 *  
+	 * @return
+	 * 		Completed instance of this period, or {@code null} if completion
+	 * 		is not possible.
+	 */
+	public Period completeDates()
+	{	int startDay = this.startDate.getDay();
+		int startMonth = this.startDate.getMonth();
+		int startYear = this.startDate.getYear();
+		int endDay = this.endDate.getDay();
+		int endMonth = this.endDate.getMonth();
+		int endYear = this.endDate.getYear();
+		
+		boolean completable = true;
+		
+		// complete the years
+		if(startYear==0)
+		{	if(endYear==0)
+				completable = false;
+			else
+				startYear = endYear;
+		}
+		else
+		{	if(endYear==0)
+				endYear = startYear;
+		}
+		
+		if(completable)
+		{	// complete the months
+			if(startMonth==0)
+			{	if(endMonth==0)
+				{	startMonth = 1;
+					endMonth = 12;
+				}
+				else
+					endMonth = startMonth;
+			}
+			else
+			{	if(endMonth==0)
+					endMonth = startMonth;
+			}
+			
+			// complete the days
+			if(startDay==0)
+			{	if(endDay==0)
+				{	startDay = 1;
+					Calendar c = Calendar.getInstance();
+					c.set(endYear, endMonth-1, endDay);
+					c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+					endDay = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+				}
+				else
+					startDay = endDay;
+			}
+			else
+			{	if(endDay==0)
+					endDay = startDay;
+				
+			}
+		}
+		
+		// build and return result
+		Period result = null;
+		if(completable)
+		{	Date startDate = new Date(startDay,startMonth,startYear);
+			Date endDate = new Date(endDay,endMonth,endYear);
+			result = new Period(startDate,endDate);
+		}
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// COMPARISON		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -172,5 +253,129 @@ public class Period implements Comparable<Period>
 		return result;
 	}
 
-	//TODO probably needs to define other comparison methods...
+	
+	/**
+	 * Processes the proportion of overlap between two periods.
+	 * It is processed according to the following formula:
+	 * overlap/shortest where overlap is the overlap expressed
+	 * in days and shortest is the shortest of the two periods,
+	 * also expressed in days.
+	 * 
+	 * @param period
+	 * 		The period to which we want to compare this period.
+	 * @return
+	 * 		A float in [0;1] measuring how similar the periods are.
+	 */
+	public float processOverlap(Period period)
+	{	float result = 0;
+		
+		// first we complete the possibly incomplete dates
+		Period period1 = completeDates();
+		Period period2 = period.completeDates();
+		
+		// then we compare the completed periods
+		if(period1!=null && period2!=null)
+		{	// get the start/end dates
+			Date startDate1 = period1.getStartDate();
+			Date endDate1 = period1.getEndDate();
+			Date startDate2 = period2.getStartDate();
+			Date endDate2 = period2.getEndDate();
+			
+			// exchange periods if needed
+			float overlap = 0;
+			if(startDate1.compareTo(startDate2)>0)
+			{	startDate1 = period2.getStartDate();
+				endDate1 = period2.getEndDate();
+				startDate2 = period1.getStartDate();
+				endDate2 = period1.getEndDate();
+			}
+			
+			// process overlap
+			if(endDate1.compareTo(startDate2)>=0)
+			{	Date endDate = endDate1;
+				if(endDate1.compareTo(endDate2)>=0)
+					endDate = endDate2;
+				LocalDate d1 = LocalDate.of(startDate1.getYear(), startDate1.getMonth(), startDate1.getDay());
+				LocalDate d2 = LocalDate.of(endDate.getYear(), endDate.getMonth(), endDate.getDay());
+				overlap = ChronoUnit.DAYS.between(d1, d2);
+			}
+				
+			// process shortest period length
+			if(overlap>0)
+			{	// length of the first period
+				LocalDate d11 = LocalDate.of(startDate1.getYear(), startDate1.getMonth(), startDate1.getDay());
+				LocalDate d12 = LocalDate.of(endDate1.getYear(), endDate1.getMonth(), endDate1.getDay());
+				long length1 = ChronoUnit.DAYS.between(d11, d12);
+				// length of the second period
+				LocalDate d21 = LocalDate.of(startDate2.getYear(), startDate2.getMonth(), startDate2.getDay());
+				LocalDate d22 = LocalDate.of(endDate2.getYear(), endDate2.getMonth(), endDate2.getDay());
+				long length2 = ChronoUnit.DAYS.between(d21, d22);
+				// process overlap proportion
+				float shortest = Math.max(length1,length2);
+				result = overlap / shortest;
+			}
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Processes the time interval between two non-overlapping periods,
+	 * expressed as a proportion of the shortest of the two periods.
+	 * 
+	 * @param period
+	 * 		The period to which we want to compare this period.
+	 * @return
+	 * 		A positive float in [0;1] measuring the time separating the periods,
+	 * 		zero if the periods do not overlap.
+	 */
+	public float processInterval(Period period)
+	{	float result = 0;
+		
+		// first we complete the possibly incomplete dates
+		Period period1 = completeDates();
+		Period period2 = period.completeDates();
+		
+		// then we compare the completed periods
+		if(period1!=null && period2!=null)
+		{	// get the start/end dates
+			Date startDate1 = period1.getStartDate();
+			Date endDate1 = period1.getEndDate();
+			Date startDate2 = period2.getStartDate();
+			Date endDate2 = period2.getEndDate();
+			
+			// exchange periods if needed
+			float interval = 0;
+			if(startDate1.compareTo(startDate2)>0)
+			{	startDate1 = period2.getStartDate();
+				endDate1 = period2.getEndDate();
+				startDate2 = period1.getStartDate();
+				endDate2 = period1.getEndDate();
+			}
+			
+			// process overlap
+			if(endDate1.compareTo(startDate2)<0)
+			{	LocalDate d1 = LocalDate.of(endDate1.getYear(), endDate1.getMonth(), endDate1.getDay());
+				LocalDate d2 = LocalDate.of(startDate2.getYear(), startDate2.getMonth(), startDate2.getDay());
+				interval = ChronoUnit.DAYS.between(d1, d2);
+			}
+				
+			// process shortest period length
+			if(interval>0)
+			{	// length of the first period
+				LocalDate d11 = LocalDate.of(startDate1.getYear(), startDate1.getMonth(), startDate1.getDay());
+				LocalDate d12 = LocalDate.of(endDate1.getYear(), endDate1.getMonth(), endDate1.getDay());
+				long length1 = ChronoUnit.DAYS.between(d11, d12);
+				// length of the second period
+				LocalDate d21 = LocalDate.of(startDate2.getYear(), startDate2.getMonth(), startDate2.getDay());
+				LocalDate d22 = LocalDate.of(endDate2.getYear(), endDate2.getMonth(), endDate2.getDay());
+				long length2 = ChronoUnit.DAYS.between(d21, d22);
+				// process interval proportion
+				float shortest = Math.max(length1,length2);
+				result = interval / shortest;
+			}
+		}
+		
+		return result;
+	}
 }
