@@ -21,6 +21,7 @@ package fr.univavignon.nerwip.data.entity;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,8 @@ import java.util.TreeSet;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
+import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**
@@ -95,6 +98,12 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		}
 		return result;
 	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LOGGER		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Common object used for logging */
+	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
 	/////////////////////////////////////////////////////////////////
 	// MAIN NAME		/////////////////////////////////////////////
@@ -339,7 +348,11 @@ public abstract class AbstractNamedEntity extends AbstractEntity
 		EntityType type1 = getType();
 		EntityType type2 = entity.getType();
 		if(type1!=type2)
-			throw new IllegalArgumentException("Trying to merge entities of different types: "+type1+" vs. "+type2);
+		{	//throw new IllegalArgumentException("Trying to merge entities of different types: "+type1+" vs. "+type2);
+			logger.log("WARNING: Trying to merge entities of different types: "+type1+" vs. "+type2);
+			logger.log(Arrays.asList(toString(),entity.toString()));
+			//TODO for now, we just keep the old type
+		}
 		
 		// possibly update the name
 		if(entity.name.length() > name.length())

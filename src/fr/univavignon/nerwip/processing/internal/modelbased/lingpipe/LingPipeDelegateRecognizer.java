@@ -60,7 +60,7 @@ import java.util.List;
  * @author Samet Atdağ
  * @author Vincent Labatut
  */
-public class LingPipeDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<Chunking, LingPipeModelName>
+class LingPipeDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<Chunking, LingPipeModelName>
 {
 	/**
 	 * Builds and sets up an object representing

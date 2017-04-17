@@ -62,7 +62,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.Wikipe
  * 
  * @author Vincent Labatut
  */
-public class FullCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
+class FullCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 {	
 	/**
 	 * Builds a new full combinerName.

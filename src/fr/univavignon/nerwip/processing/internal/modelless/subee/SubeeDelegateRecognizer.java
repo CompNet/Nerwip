@@ -83,7 +83,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<AbstractMention<?>>>
+class SubeeDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<AbstractMention<?>>>
 {
 	/**
 	 * Builds and sets up an object representing

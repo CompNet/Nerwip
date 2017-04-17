@@ -185,6 +185,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				
 				int nbrEnt = entities.getEntities().size();
 				logger.log(linkerName+" over ["+article.getName()+"], processed "+nbrEnt+" entities");
+				result = new MentionsEntities(mentions, entities);
 			}
 			
 			// if the results already exist, we fetch them

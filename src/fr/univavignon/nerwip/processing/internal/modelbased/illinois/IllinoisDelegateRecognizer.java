@@ -61,7 +61,7 @@ import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedIn
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class IllinoisDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<Data, IllinoisModelName>
+class IllinoisDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<Data, IllinoisModelName>
 {	
 	/**
 	 * Builds and sets up an object representing

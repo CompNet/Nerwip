@@ -88,7 +88,7 @@ import fr.univavignon.nerwip.tools.file.FileNames;
  * @author Samet Atdağ
  * @author Vincent Labatut
  */
-public class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
+class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 {	
 	/**
 	 * Builds a new vote-based combiner.

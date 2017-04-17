@@ -65,7 +65,7 @@ import fr.univavignon.nerwip.tools.web.WebTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
+class OpenCalaisDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
 {	// user guide: http://new.opencalais.com/wp-content/uploads/2015/06/Thomson-Reuters-Open-Calais-API-User-Guide-v3.pdf
 	
 	/**

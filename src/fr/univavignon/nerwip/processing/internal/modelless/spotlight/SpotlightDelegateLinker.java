@@ -51,7 +51,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInte
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<List<String>>
+class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<List<String>>
 {
 	/**
 	 * Builds and sets up an object representing

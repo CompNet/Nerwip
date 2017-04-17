@@ -57,7 +57,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
+class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 {	
 	/**
 	 * Builds and sets up an object representing the Nero tool.

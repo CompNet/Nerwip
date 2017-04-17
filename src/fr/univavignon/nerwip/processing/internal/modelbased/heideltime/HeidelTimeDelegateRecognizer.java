@@ -58,7 +58,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-public class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<String, HeidelTimeModelName>
+class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<String, HeidelTimeModelName>
 {	
 	/**
 	 * Builds and sets up an object representing

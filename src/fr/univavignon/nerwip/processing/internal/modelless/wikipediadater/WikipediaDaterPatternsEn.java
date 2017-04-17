@@ -74,7 +74,7 @@ import java.util.regex.Pattern;
  * 
  * @author Vincent Labatut
  */
-public class WikipediaDaterPatternsEn
+class WikipediaDaterPatternsEn
 {
 	/////////////////////////////////////////////////////////////////
 	// PATTERNS		 		/////////////////////////////////////////

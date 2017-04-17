@@ -50,7 +50,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInte
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class SpotlightDelegateResolver extends AbstractModellessInternalDelegateResolver<List<String>>
+class SpotlightDelegateResolver extends AbstractModellessInternalDelegateResolver<List<String>>
 {
 	/**
 	 * Builds and sets up an object representing

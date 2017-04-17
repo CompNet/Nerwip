@@ -433,7 +433,10 @@ public abstract class AbstractMention<T extends Comparable<T>> implements Compar
 	 * 		Entity to associate to this mention.  
 	 */
 	public void setEntity(AbstractEntity entity)
-	{	this.entity = entity;
+	{	EntityType entityType = entity.getType();
+		if(entityType!=getType())
+			throw new IllegalArgumentException("Trying to associate a "+entityType+" to a "+getType()+" mention");
+		this.entity = entity;
 	}
 	
 	/**

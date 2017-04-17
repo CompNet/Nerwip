@@ -65,7 +65,7 @@ import fr.univavignon.nerwip.tools.xml.XmlTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
+class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 {	
 	/**
 	 * Builds and sets up an object representing the TagEN tool.

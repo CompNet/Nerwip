@@ -101,7 +101,12 @@ public class Period implements Comparable<Period>
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String toString()
-	{	String result = startDate.toString() + "-" + endDate.toString();
+	{	String result = "";
+		if(startDate!=null)
+			result = result + startDate.toString();
+		result = result + "-";
+		if(endDate!=null)
+			result = result + endDate.toString();
 		return result;
 	}
 	

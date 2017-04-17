@@ -31,6 +31,7 @@ import java.net.URLEncoder;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -276,6 +277,13 @@ public class WmCommonTools
 		{	e.printStackTrace();
 		}
 	}
+	/** Ignored knowledge bases */
+	private final static List<String> IGNORED_KB = Arrays.asList(
+			"P281",		// postal code (can be the same for different villages)
+			"P473",		// local dialing code (can be similar in different towns)
+			"P1036",	// Dewey decimal classification system (similar for many precise topics)
+			"P3238"		// Trunk prefix (telephone code)
+		);
 	
 	/** Map allowing to convert a WikiData property to an entity type*/
 	private final static Map<String,EntityType> MAP_ID_TO_TYPE = new HashMap<String,EntityType>();
@@ -331,7 +339,8 @@ public class WmCommonTools
 		String selectedId = filterIds(possibleNames,candidateIds,type);
 		
 		// retrieve the details associated to the remaining id and complete the entity
-		completeEntityWithIds(selectedId,entity);
+		if(selectedId!=null)
+			completeEntityWithIds(selectedId,entity);
 		//TODO should we also add all the names known in WD for this entity?
 		
 		logger.decreaseOffset();
@@ -370,7 +379,7 @@ public class WmCommonTools
 		Iterator<String> it = possibleNames.iterator();
 		do
 		{	String candidateName = it.next();
-			logger.log("Processing possible name "+candidateName);
+			logger.log("Processing possible name \""+candidateName+"\"");
 			logger.increaseOffset();
 		
 			// build the url
@@ -565,14 +574,15 @@ public class WmCommonTools
 		Iterator<String> it = possibleNames.iterator();
 		while(it.hasNext() && result==null)
 		{	String possibleName = it.next();
+			possibleName = StringTools.removeDiacritics(possibleName);
 			logger.log("Checking the map for name "+possibleName);
 		
 			// look for the possible name in the map of available ids
 			List<String> idList = new ArrayList<String>();
 			for(Entry<String,String> entry: ids.entrySet())
 			{	String id = entry.getKey();
-				String name = entry.getValue();
-				if(name.equalsIgnoreCase(possibleName) && !idList.contains(id))
+				String name = StringTools.removeDiacritics(entry.getValue());
+				if((name.equals(possibleName) || name.contains(possibleName)) && !idList.contains(id))
 					idList.add(id);
 			}
 			logger.log("Found "+idList.size()+" possible ids");
@@ -756,38 +766,39 @@ public class WmCommonTools
 		{	logger.log("Processing id "+i+"/"+resultElts.size());
 			List<Element> bindingElts = resultElt.getChildren(ELT_BINDING,ns);
 			Iterator<Element> it = bindingElts.iterator();
-			while(it.hasNext())
 			{	// property
 				Element bindingPropElt = it.next();
 				Element uriElt = bindingPropElt.getChild(ELT_URI,ns);
 				String uri = uriElt.getText().trim();
 				int pos = uri.lastIndexOf('/');
 				String kbId = uri.substring(pos+1);
-				String kb = MAP_ID_TO_KB.get(kbId);
-				
-				// value
-				Element bindingValueElt = it.next();
-				Element literalValueElt = bindingValueElt.getChild(ELT_LITERAL,ns);
-				String value = null;
-				if(literalValueElt!=null)
-					value = literalValueElt.getText().trim();
-				
-				// propLabel
-				Element bindingLabelElt = it.next();
-				Element literalLabelElt = bindingLabelElt.getChild(ELT_LITERAL,ns);
-				String label = literalLabelElt.getText().trim();
-				
-				// decision
-				if(kb==null)
-				{	//TODO debug this to find all KB
-					logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");
-				}
-				else
-				{	if(value==null)
-						logger.log("Found URI "+uri+" (kb="+kb+" but value="+value+")");
+				if(!IGNORED_KB.contains(kbId))
+				{	String kb = MAP_ID_TO_KB.get(kbId);
+					
+					// value
+					Element bindingValueElt = it.next();
+					Element literalValueElt = bindingValueElt.getChild(ELT_LITERAL,ns);
+					String value = null;
+					if(literalValueElt!=null)
+						value = literalValueElt.getText().trim();
+					
+					// propLabel
+					Element bindingLabelElt = it.next();
+					Element literalLabelElt = bindingLabelElt.getChild(ELT_LITERAL,ns);
+					String label = literalLabelElt.getText().trim();
+					
+					// decision
+					if(kb==null)
+					{	//TODO debug this to find all KB
+						logger.log("WARNING: Found URI "+uri+" corresponding to unknown knowledge base named \""+label+"\"");
+					}
 					else
-					{	logger.log("Found URI "+uri+" (kb="+kb+" label=\""+label+"\" value="+value+")");
-						entity.setExternalId(kb, value);
+					{	if(value==null)
+							logger.log("Found URI "+uri+" (kb="+kb+" but value="+value+")");
+						else
+						{	logger.log("Found URI "+uri+" (kb="+kb+" label=\""+label+"\" value="+value+")");
+							entity.setExternalId(kb, value);
+						}
 					}
 				}
 			}
@@ -885,7 +896,8 @@ public class WmCommonTools
 		logger.increaseOffset();
 		
 		// get the list of all KB
-		String query = URLEncoder.encode("SELECT DISTINCT ?prop ?propLabel ?propDescription WHERE{	?prop wdt:P31/wdt:P279*/wdt:P1269 wd:Q6545185. SERVICE wikibase:label{	bd:serviceParam wikibase:language \"en\" .}}", "UTF-8");
+//		String query = URLEncoder.encode("SELECT DISTINCT ?prop ?propLabel ?propDescription WHERE{	?prop wdt:P31/wdt:P279*/wdt:P1269 wd:Q6545185. SERVICE wikibase:label{	bd:serviceParam wikibase:language \"en\" .}}", "UTF-8"); // this request was too general: some properties where not unique identifiers
+		String query = URLEncoder.encode("SELECT DISTINCT ?prop ?propLabel ?propDescription WHERE{	?prop wdt:P31/wdt:P279* wd:Q19847637. SERVICE wikibase:label{	bd:serviceParam wikibase:language \"en\" .}}", "UTF-8");
 		String url = WIKIDATA_SPARQL_URL + query + WIKIDATA_SPARQL_URL_SUFFIX;
 		logger.log("URL: "+url);
 
@@ -944,6 +956,7 @@ public class WmCommonTools
 			{	Element bindingDescElt = it.next();
 				Element descElt = bindingDescElt.getChild(ELT_LITERAL,ns);
 				description = descElt.getText().trim();
+				description = description.replace("\"", "");
 				logger.log("Description: "+description);
 			}
 			else
@@ -957,6 +970,7 @@ public class WmCommonTools
 				i++;
 			}
 			label = tmpLabel;
+			names.add(label);
 			logger.log("Revised label: "+label);
 			
 			// display and write
@@ -998,6 +1012,6 @@ public class WmCommonTools
 ////    	Map<KnowledgeBase, String> extIds = entity.getExternalIds();
 ////    	System.out.println(extIds);
 //    	
-////    	extractKbList();
+//    	extractKbList();
 //	}
 }

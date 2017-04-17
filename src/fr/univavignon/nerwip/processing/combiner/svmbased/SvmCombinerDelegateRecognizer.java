@@ -94,7 +94,7 @@ import libsvm.svm_node;
  * 
  * @author Vincent Labatut
  */
-public class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
+class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 {	
 	/**
 	 * Builds a new SVM-based combiner.

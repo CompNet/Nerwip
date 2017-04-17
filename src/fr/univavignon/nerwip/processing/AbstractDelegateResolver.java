@@ -24,6 +24,7 @@ package fr.univavignon.nerwip.processing;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xml.sax.SAXException;
@@ -156,6 +157,8 @@ public abstract class AbstractDelegateResolver
 	 */
 	protected void complete(Mentions mentions, Entities entities)
 	{	List<AbstractMention<?>> mentionList = mentions.getMentions();
+		List<AbstractMention<?>> toBeRemoved = new ArrayList<AbstractMention<?>>();
+		
 		for(AbstractMention<?> mention: mentionList)
 		{	AbstractEntity entity = mention.getEntity();
 			if(entity==null)
@@ -185,9 +188,18 @@ public abstract class AbstractDelegateResolver
 						}
 					}
 				}
-				mention.setEntity(entity);
+				// if we have no entity, it means there's no value, so the mention should be removed
+				if(entity==null)
+					toBeRemoved.add(mention);
+				// otherwise, we set the entity
+				else
+					mention.setEntity(entity);
 			}
 		}
+
+		// remove the mentions with no entity
+		for(AbstractMention<?> mention: toBeRemoved)
+			mentions.removeMention(mention);
 	}
 	
 	/////////////////////////////////////////////////////////////////

@@ -145,14 +145,19 @@ public class Graph
 	{	String result = null;
 		switch(type)
 		{	case "xsd:string":
+			case "string":
 				result = "NA";
 				break;
 			case "xsd:integer":
 			case "xsd:int":
+			case "integer":
+			case "int":
 				result = "0";
 				break;
 			case "xsd:float":
 			case "xsd:double":
+			case "float":
+			case "double":
 				result = "0";
 				break;
 			

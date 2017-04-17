@@ -43,6 +43,7 @@ import fr.univavignon.nerwip.data.entity.AbstractEntity;
 import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.nerwip.data.entity.KnowledgeBase;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.MentionDate;
@@ -53,6 +54,8 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
+import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolver;
+import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
@@ -82,7 +85,16 @@ public class CooccurrenceNetworkExtraction
 	 */
 	public static void main(String[] args) throws Exception
 	{	InterfaceRecognizer recognizer = new StraightCombiner();
-		extractNetwork(recognizer);
+//		extractNetwork(recognizer);
+	
+		int maxDist = 4;
+		InterfaceResolver resolver = new NaiveResolver(recognizer, maxDist);
+		resolver.setCacheEnabled(false);
+		boolean revision = false;
+		InterfaceLinker linker = new WikiDataLinker(resolver, revision);
+		linker.setCacheEnabled(false);
+		
+		extractNetwork(linker);
 	}
 		
 	/////////////////////////////////////////////////////////////////
@@ -100,6 +112,8 @@ public class CooccurrenceNetworkExtraction
 	private final static String PROP_TYPE = "type";
 	/** Node property for full name */
 	private final static String PROP_NAME = "fullname";
+	/** Node property for Wikidata id */
+	private final static String PROP_WIKI_ID = "wikidataid";
 	/** Link property for weight */
 	private final static String PROP_WEIGHT = "weight";
 	
@@ -131,11 +145,16 @@ public class CooccurrenceNetworkExtraction
 		
 		// init graph
 		Graph graph = new Graph("Mention co-occurrence graph", false);
-		graph.addNodeProperty(PROP_FREQ,"xsd:integer");
-		graph.addNodeProperty(PROP_TYPE,"xsd:string");
-		graph.addNodeProperty(PROP_NAME,"xsd:string");
-		graph.addLinkProperty(PROP_WEIGHT,"xsd:integer");
+		graph.addNodeProperty(PROP_NAME,"string");
+		graph.addNodeProperty(PROP_FREQ,"int");
+		graph.addNodeProperty(PROP_TYPE,"string");
+		graph.addLinkProperty(PROP_WEIGHT,"int");
 		String filename = "cooccurrence-mentions-all" + FileNames.EX_GRAPHML;
+		
+		// node ids
+		Map<String,Long> nameToId = new HashMap<String, Long>();
+		Map<Long,String> idToName = new HashMap<Long,String>();
+		long nextId = 0;
 		
 		logger.log("Read all article entities");
 		logger.increaseOffset();
@@ -179,7 +198,8 @@ public class CooccurrenceNetworkExtraction
 				tmpEntities = me.entities;
 			}
 			if(tmpEntities!=null)
-			{	if(entities==null)
+			{	graph.addNodeProperty(PROP_WIKI_ID,"string");
+				if(entities==null)
 				{	entities = tmpEntities;
 					graph.setName("Entity co-occurrence graph");
 					filename = "cooccurrence-entities-all" + FileNames.EX_GRAPHML;
@@ -203,7 +223,16 @@ public class CooccurrenceNetworkExtraction
 						{	// mention name
 							String str;
 							if(entities==null)
-								str = mention.getStringValue();
+							{	name = mention.getStringValue();
+								Long id = nameToId.get(name);
+								if(id==null)
+								{	id = nextId;
+									nameToId.put(name,id);
+									idToName.put(id,name);
+									nextId++;
+								}
+								str = Long.toString(id);
+							}
 							else
 							{	AbstractEntity entity = mention.getEntity();
 								long id = entity.getInternalId();
@@ -224,9 +253,9 @@ public class CooccurrenceNetworkExtraction
 							map.put(type, count);
 						}
 					}
-					List<String> connectedEntities = new ArrayList<String>(conMentions);
 					
-					// insert the entities into the graph
+					// insert the mentions/entities into the graph
+					List<String> connectedEntities = new ArrayList<String>(conMentions);
 					int s = connectedEntities.size();
 					logger.log("Insert/update "+s+" nodes in the graph");
 					for(int j=0;j<connectedEntities.size();j++)
@@ -267,13 +296,22 @@ public class CooccurrenceNetworkExtraction
 			node.setProperty(PROP_TYPE,type.toString());
 			
 			// possibly setup the node name
-			if(entities!=null)
-			{	long id = Long.parseLong(name);
-				AbstractEntity entity = entities.getEntityById(id);
+			long id = Long.parseLong(name);
+			if(entities==null)
+			{	String fullname = idToName.get(id);
+				node.setProperty(PROP_NAME, fullname);
+			}
+			else
+			{	AbstractEntity entity = entities.getEntityById(id);
 				if(entity instanceof AbstractNamedEntity)
 				{	AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+					// name
 					String fullname = namedEntity.getName();
 					node.setProperty(PROP_NAME, fullname);
+					// wikidata id
+					String wikiId = namedEntity.getExternalId(KnowledgeBase.WIKIDATA_ID);
+					if(wikiId!=null)
+						node.setProperty(PROP_WIKI_ID, wikiId);
 				}
 			}
 		}

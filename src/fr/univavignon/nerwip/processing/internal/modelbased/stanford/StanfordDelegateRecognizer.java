@@ -57,7 +57,7 @@ import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedIn
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-public class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<List<List<CoreLabel>>, StanfordModelName>
+class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<List<List<CoreLabel>>, StanfordModelName>
 {	
 	/**
 	 * Builds and sets up an object representing

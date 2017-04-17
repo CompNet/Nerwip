@@ -40,6 +40,7 @@ import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleList;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityPerson;
+import fr.univavignon.nerwip.data.entity.KnowledgeBase;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
@@ -49,6 +50,7 @@ import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.CombinerName;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
+import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolver;
 import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
 import fr.univavignon.nerwip.retrieval.ArticleRetriever;
@@ -79,16 +81,17 @@ public class CoparticipationNetworkExtraction
 	 */
 	public static void main(String[] args) throws Exception
 	{	// set up recognizer
-		CombinerName combinerName = CombinerName.VOTE;
-		InterfaceRecognizer recognizer = new FullCombiner(combinerName);
+		InterfaceRecognizer recognizer = new StraightCombiner();
 		
 		// set up resolver
 		int maxDist = 4;
 		InterfaceResolver resolver = new NaiveResolver(recognizer, maxDist);
+		resolver.setCacheEnabled(false);
 		
 		// set up linker
 		boolean revision = true;
 		InterfaceLinker linker = new WikiDataLinker(resolver, revision);
+		linker.setCacheEnabled(false);
 		
 		// extract network
 		float minSim = 0.8f;
@@ -108,6 +111,8 @@ public class CoparticipationNetworkExtraction
 	private final static String PROP_FREQ = "frequence";
 	/** Node property for full name */
 	private final static String PROP_NAME = "fullname";
+	/** Node property for Wikidata id */
+	private final static String PROP_WIKI_ID = "wikidataid";
 	/** Link property for weight */
 	private final static String PROP_WEIGHT = "weight";
 	
@@ -138,9 +143,10 @@ public class CoparticipationNetworkExtraction
 		
 		// init graph
 		Graph graph = new Graph("Person entity co-participation graph", false);
-		graph.addNodeProperty(PROP_FREQ,"xsd:integer");
-		graph.addNodeProperty(PROP_NAME,"xsd:string");
-		graph.addLinkProperty(PROP_WEIGHT,"xsd:double");
+		graph.addNodeProperty(PROP_FREQ,"int");
+		graph.addNodeProperty(PROP_NAME,"string");
+		graph.addNodeProperty(PROP_WIKI_ID,"string");
+		graph.addLinkProperty(PROP_WEIGHT,"double");
 		String filename = "coparticipation-entities-persons" + FileNames.EX_GRAPHML;
 		
 		// init temp list
@@ -222,6 +228,10 @@ public class CoparticipationNetworkExtraction
 			// set the full name
 			String fullname = person.getName();
 			node.setProperty(PROP_NAME, fullname);
+			// set the Wikidata id
+			String wikiId = person.getExternalId(KnowledgeBase.WIKIDATA_ID);
+			if(wikiId!=null)
+				node.setProperty(PROP_WIKI_ID, wikiId);
 		}
 		
 		// process each event and compare it to the others

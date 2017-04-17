@@ -274,7 +274,7 @@ public class Entities
 	/** Entities by internal id */
 	private final Map<Long,AbstractEntity> entitiesById = new HashMap<Long,AbstractEntity>();
 	/** Named entities by external id */
-	private final Map<String,Map<String,AbstractNamedEntity>> namedEntitiesByExternalId = new HashMap<String,Map<String,AbstractNamedEntity>>();
+	private final Map<String,Map<String,Map<EntityType,AbstractNamedEntity>>> namedEntitiesByExternalId = new HashMap<String,Map<String,Map<EntityType,AbstractNamedEntity>>>();
 	/** Named entities by name */
 	private final Map<String,List<AbstractNamedEntity>> namedEntitiesByName = new HashMap<String,List<AbstractNamedEntity>>();
 	/** Valued entities by value */
@@ -327,20 +327,45 @@ public class Entities
 	}
 	
 	/**
-	 * Returns the named entity with the specified external id.
+	 * Returns the map of named entities with the specified external id.
+	 * Indeed, the same external id can be shared by several distinct instance
+	 * of the entity, possessing each a different type.
 	 * 
 	 * @param id
 	 * 		Unique external id of the named entity.
 	 * @param knowledgeBase
 	 * 		Knowledge base which delivered the external id.
 	 * @return
-	 * 		Named entity possessing the specified external id, or {@code null]} if none does.
+	 * 		Named entities possessing the specified external id (can be empty).
 	 */
-	public AbstractNamedEntity getNamedEntityById(String id, String knowledgeBase)
-	{	AbstractNamedEntity result = null;
-		Map<String,AbstractNamedEntity> map = namedEntitiesByExternalId.get(knowledgeBase);
+	public Map<EntityType,AbstractNamedEntity> getNamedEntityByExternalId(String id, String knowledgeBase)
+	{	Map<EntityType,AbstractNamedEntity> result = new HashMap<EntityType, AbstractNamedEntity>();
+		Map<String,Map<EntityType,AbstractNamedEntity>> map = namedEntitiesByExternalId.get(knowledgeBase);
 		if(map!=null)
 			result = map.get(id);
+		return result;
+	}
+
+	/**
+	 * Returns the named entity with the specified external id.
+	 * 
+	 * @param id
+	 * 		Unique external id of the named entity.
+	 * @param knowledgeBase
+	 * 		Knowledge base which delivered the external id.
+	 * @param type
+	 * 		Type of the desired entity.
+	 * @return
+	 * 		Named entity possessing the specified external id, or {@code null]} if none does.
+	 */
+	public AbstractNamedEntity getNamedEntityByExternalId(String id, String knowledgeBase, EntityType type)
+	{	AbstractNamedEntity result = null;
+		Map<String,Map<EntityType,AbstractNamedEntity>> map = namedEntitiesByExternalId.get(knowledgeBase);
+		if(map!=null)
+		{	Map<EntityType,AbstractNamedEntity> map2 = map.get(id);
+			if(map2!=null)
+				result = map2.get(type);
+		}
 		return result;
 	}
 
@@ -350,21 +375,26 @@ public class Entities
 	 * 
 	 * @param ids
 	 * 		Map associating knowledge bases and external ids.
+	 * @param type
+	 * 		Type of the desired entity.
 	 * @return
 	 * 		Named entity possessing at least one of the specified external id, 
 	 * 		or {@code null]} if none does.
 	 */
-	public AbstractNamedEntity getNamedEntityByIds(Map<String,String> ids)
+	public AbstractNamedEntity getNamedEntityByExternalIds(Map<String,String> ids, EntityType type)
 	{	AbstractNamedEntity result = null;
 		
 		Iterator<Entry<String,String>> it = ids.entrySet().iterator();
-		while(result==null)
+		while(result==null && it.hasNext())
 		{	Entry<String,String> entry = it.next();
 			String kb = entry.getKey();
 			String id = entry.getValue();
-			Map<String,AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
+			Map<String,Map<EntityType,AbstractNamedEntity>> map = namedEntitiesByExternalId.get(kb);
 			if(map!=null)
-				result = map.get(id);
+			{	Map<EntityType,AbstractNamedEntity> map2 = map.get(id);
+				if(map2!=null)
+					result = map2.get(type);
+			}
 		}
 		
 		return result;
@@ -424,19 +454,25 @@ public class Entities
 		if(entity instanceof AbstractNamedEntity)
 		{	// map by id
 			AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+			EntityType type = namedEntity.getType();
 			Set<Entry<String, String>> entrySet = namedEntity.getExternalIds().entrySet();
 			for(Entry<String, String> entry: entrySet)
 			{	String kb = entry.getKey();
 				String id = entry.getValue();
-				Map<String, AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
+				Map<String, Map<EntityType,AbstractNamedEntity>> map = namedEntitiesByExternalId.get(kb);
 				if(map==null)
-				{	map = new HashMap<String, AbstractNamedEntity>();
+				{	map = new HashMap<String, Map<EntityType,AbstractNamedEntity>>();
 					namedEntitiesByExternalId.put(kb,map);
 				}
-				if(map.containsKey(id))
+				Map<EntityType,AbstractNamedEntity> map2 = map.get(id);
+				if(map2==null)
+				{	map2 = new HashMap<EntityType,AbstractNamedEntity>();
+					map.put(id,map2);
+				}
+				if(map2.containsKey(type))
 					throw new IllegalArgumentException("Trying to add a named entity possessing the same external id ("+kb+":"+id+") than an already existing one.");
 				else
-					map.put(id,namedEntity);
+					map2.put(type,namedEntity);
 			}
 			// map by name
 			Set<String> names = namedEntity.getSurfaceForms();
@@ -474,13 +510,17 @@ public class Entities
 		if(entity instanceof AbstractNamedEntity)
 		{	// map by id
 			AbstractNamedEntity namedEntity = (AbstractNamedEntity)entity;
+			EntityType type = namedEntity.getType();
 			Set<Entry<String, String>> entrySet = namedEntity.getExternalIds().entrySet();
 			for(Entry<String, String> entry: entrySet)
 			{	String kb = entry.getKey();
 				String id = entry.getValue();
-				Map<String, AbstractNamedEntity> map = namedEntitiesByExternalId.get(kb);
+				Map<String, Map<EntityType,AbstractNamedEntity>> map = namedEntitiesByExternalId.get(kb);
 				if(map!=null)
-					map.remove(id);
+				{	Map<EntityType,AbstractNamedEntity> map2 = map.get(id);
+					if(map2!=null)
+						map2.remove(type);
+				}
 			}
 			// map by name
 			Set<String> names = namedEntity.getSurfaceForms();
@@ -517,9 +557,10 @@ public class Entities
 			if(newEntity instanceof AbstractNamedEntity)
 			{	// get the new entity ids
 				AbstractNamedEntity namedEntity = (AbstractNamedEntity)newEntity;
+				EntityType type = namedEntity.getType();
 				Map<String,String> exIds = namedEntity.getExternalIds();
 				// look for an existing entity with similar ids
-				AbstractNamedEntity oldEntity = getNamedEntityByIds(exIds);
+				AbstractNamedEntity oldEntity = getNamedEntityByExternalIds(exIds,type);
 				// can be used later for substitution (oldEntry possibly null, here)
 				if(oldEntity!=null)
 				{	// possibly complete the old entity with the new one
@@ -625,7 +666,7 @@ public class Entities
 		File schemaFile = new File(schemaPath);
 		
 		// build xml document
-		Element element = new Element(XmlNames.ELT_MENTIONS);
+		Element element = new Element(XmlNames.ELT_ENTITIES);
 		
 		// insert resolver attribute
 		Attribute resolverAttr = new Attribute(XmlNames.ATT_RESOLVER, resolver.toString());

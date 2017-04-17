@@ -49,7 +49,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInte
  * 
  * @author Vincent Labatut
  */
-public class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<MentionDate>>
+class WikipediaDaterDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<MentionDate>>
 {
 	/**
 	 * Builds and sets up an object representing

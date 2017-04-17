@@ -71,7 +71,7 @@ import fr.univavignon.nerwip.tools.web.WebTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
+class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
 {
 	/**
 	 * Builds and sets up an object representing

@@ -625,7 +625,7 @@ public class SpotlightTools
 				}
 				if(entities!=null)
 				{	if(type.isNamed())
-					{	AbstractNamedEntity entity = entities.getNamedEntityById(uri, KnowledgeBase.DBPEDIA_URI);
+					{	AbstractNamedEntity entity = entities.getNamedEntityByExternalId(uri, KnowledgeBase.DBPEDIA_URI, type);
 						if(entity==null)
 						{	entity = AbstractNamedEntity.buildEntity(-1, surfaceForm, type);
 							entity.setExternalId(KnowledgeBase.DBPEDIA_URI, uri);

@@ -232,33 +232,41 @@ public class DateParserFr
 			result[1] = new Date(1,1,year);
 		}
 		else if(special.equals("lundi de paques") && year>0)
-		{	Date easter = Date.getEasterDate(year);
-			LocalDate temp = LocalDate.of(year, easter.getMonth(), easter.getDay());
-			temp = temp.plusDays(1);
-			result[0] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
-			result[1] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+		{	if(year!=0)
+			{	Date easter = Date.getEasterDate(year);
+				LocalDate temp = LocalDate.of(year, easter.getMonth(), easter.getDay());
+				temp = temp.plusDays(1);
+				result[0] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+				result[1] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+			}
 		}
 		else if(special.equals("paques"))
-		{	result[0] = Date.getEasterDate(year);
-			result[1] = Date.getEasterDate(year);
+		{	if(year!=0)
+			{	result[0] = Date.getEasterDate(year);
+				result[1] = Date.getEasterDate(year);
+			}
 		}
 		else if(special.equals("fete du travail"))
 		{	result[0] = new Date(1,5,year);
 			result[1] = new Date(1,5,year);
 		}
 		else if(special.equals("ascension"))
-		{	Date easter = Date.getEasterDate(year);
-			LocalDate temp = LocalDate.of(year, easter.getMonth(), easter.getDay());
-			temp = temp.plusDays(39);
-			result[0] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
-			result[1] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+		{	if(year!=0)
+			{	Date easter = Date.getEasterDate(year);
+				LocalDate temp = LocalDate.of(year, easter.getMonth(), easter.getDay());
+				temp = temp.plusDays(39);
+				result[0] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+				result[1] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+			}
 		}
 		else if(special.equals("pentecote"))
-		{	Date easter = Date.getEasterDate(year);
-			LocalDate temp = LocalDate.of(year, easter.getMonth(), easter.getDay());
-			temp = temp.plusDays(49);
-			result[0] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
-			result[1] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+		{	if(year!=0)
+			{	Date easter = Date.getEasterDate(year);
+				LocalDate temp = LocalDate.of(year, easter.getMonth(), easter.getDay());
+				temp = temp.plusDays(49);
+				result[0] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+				result[1] = new Date(temp.getDayOfMonth(),temp.getMonthValue(),year);
+			}
 		}
 		else if(special.equals("transfiguration"))
 		{	result[0] = new Date(6,8,year);

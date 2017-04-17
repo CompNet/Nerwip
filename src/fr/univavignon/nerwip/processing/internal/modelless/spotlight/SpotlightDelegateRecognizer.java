@@ -47,7 +47,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInte
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class SpotlightDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
+class SpotlightDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<String>>
 {
 	/**
 	 * Builds and sets up an object representing

@@ -54,7 +54,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInte
  * 
  * @author Vincent Labatut
  */
-public class NaiveResolverDelegateResolver extends AbstractModellessInternalDelegateResolver<Entities>
+class NaiveResolverDelegateResolver extends AbstractModellessInternalDelegateResolver<Entities>
 {
 	/**
 	 * Builds and sets up an object representing

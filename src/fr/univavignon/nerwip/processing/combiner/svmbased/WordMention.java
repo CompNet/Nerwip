@@ -31,7 +31,7 @@ import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
  * 
  * @author Vincent Labatut
  */
-public class WordMention
+class WordMention
 {	
 	/**
 	 * Builds an empty object.

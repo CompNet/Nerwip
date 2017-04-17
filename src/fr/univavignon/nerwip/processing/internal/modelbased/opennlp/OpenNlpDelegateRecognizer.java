@@ -54,7 +54,7 @@ import opennlp.tools.util.Span;
  * 
  * @author Vincent Labatut
  */
-public class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<Map<EntityType,List<Span>>, OpenNlpModelName>
+class OpenNlpDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<Map<EntityType,List<Span>>, OpenNlpModelName>
 {	
 	/**
 	 * Builds and sets up an object representing

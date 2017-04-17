@@ -55,7 +55,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.Wikipe
  * 
  * @author Burcu Küpelioğlu
  */
-public class DateExtractorDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<MentionDate>>
+class DateExtractorDelegateRecognizer extends AbstractModellessInternalDelegateRecognizer<List<MentionDate>>
 {
 	/**
 	 * Builds and sets up an object representing

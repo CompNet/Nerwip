@@ -48,7 +48,7 @@ import fr.univavignon.nerwip.tools.wikimedia.WmCommonTools;
  * @author Sabrine Ayachi
  * @author Vincent Labatut
  */
-public class WikiDataLinkerDelegateLinker extends AbstractModellessInternalDelegateLinker<Entities>
+class WikiDataLinkerDelegateLinker extends AbstractModellessInternalDelegateLinker<Entities>
 {
 	/**
 	 * Builds and sets up an object representing

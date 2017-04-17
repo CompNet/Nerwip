@@ -78,7 +78,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.opener.OpeNer;
  * 
  * @author Vincent Labatut
  */
-public class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
+class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 {	
 	/**
 	 * Builds a new straight combiner.

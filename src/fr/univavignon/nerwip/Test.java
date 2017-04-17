@@ -2159,13 +2159,17 @@ public class Test
  * 
  * - network extraction
  *   	- generate the bipartite network persons/events
+ *    	- semi-supervised tool to unify entity names:
+ *        - propose names close in terms of string distance
+ *        - and name containing another entity's name
  * 
  * - Make it possible to use the reference annotations instead of estimated ones, before applying resolution or linking
  * 
  * - Check if the already configured tools are able to return periods, in which case it should
- *   be stored in the mention.
+ *   be stored in the mention (especially the specialized recognizers).
  * 
- * - Note: a resolver may add new mentions, e.g. to represent pronouns
+ * - Note: a resolver may add new mentions, e.g. to represent pronouns.
+ *   (like a linker may add new entities)
  * 
  * - Integrate the DBpedia tools of Sabrine (but what are they doing, exactly?).
  * 
