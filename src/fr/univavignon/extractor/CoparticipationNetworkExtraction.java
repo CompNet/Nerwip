@@ -48,8 +48,6 @@ import fr.univavignon.nerwip.processing.InterfaceLinker;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.nerwip.processing.combiner.fullcombiner.CombinerName;
-import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolver;
 import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
@@ -260,6 +258,14 @@ public class CoparticipationNetworkExtraction
 				}
 			}
 			
+			// increment the frequences of the concerned nodes
+			for(EntityPerson person1: persons1)
+			{	long id1 = person1.getInternalId();
+				String idStr1 = Long.toString(id1);
+				Node node = graph.retrieveNode(idStr1);
+				node.incrementIntProperty(PROP_FREQ);
+			}
+			
 			// then we compare to other events and possibly add some other links
 			if(e1<events.size()-1)
 			for(int e2=e1+1;e2<events.size();e2++)
@@ -281,7 +287,7 @@ public class CoparticipationNetworkExtraction
 							String idStr2 = Long.toString(id2);
 							// create/increment the link
 							Link link = graph.retrieveLink(idStr1, idStr2);
-							link.incrementFloatProperty(PROP_WEIGHT, 1f);
+							link.incrementFloatProperty(PROP_WEIGHT, sim);
 						}
 					}
 				}
