@@ -2162,6 +2162,7 @@ public class Test
  *    	- semi-supervised tool to unify entity names:
  *        - propose names close in terms of string distance
  *        - and name containing another entity's name
+ *      - check wht co-participation nets are so dense
  * 
  * - Make it possible to use the reference annotations instead of estimated ones, before applying resolution or linking
  * 
