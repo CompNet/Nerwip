@@ -159,8 +159,8 @@ public class ArticleRetriever
 		// choose the reader depending on the URL base
 		logger.log("Selecting reader: ");
 		logger.increaseOffset();
-		ArticleReader reader = ArticleReader.buildReader(address);
-		String name = reader.getName(url);
+			ArticleReader reader = ArticleReader.buildReader(address);
+			String name = reader.getName(url);
 		logger.log("Detected domain: "+reader.getDomain());
 		logger.decreaseOffset();
 		
@@ -171,7 +171,14 @@ public class ArticleRetriever
 			
 			// use the reader to get the text
 			reader.setCacheEnabled(readerCache);
-			result = reader.read(url,language);
+			try
+			{	result = reader.read(url,language);
+			}
+			catch(Exception e)
+			{	logger.decreaseOffset();
+				logger.decreaseOffset();
+				throw e;
+			}
 			logger.decreaseOffset();
 			
 			// then record the contents

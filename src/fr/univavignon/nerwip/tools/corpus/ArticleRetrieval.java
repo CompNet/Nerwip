@@ -121,7 +121,13 @@ public class ArticleRetrieval
 					{	e.printStackTrace();
 					}
 				}
-				retriever.process(url);
+				try
+				{	retriever.process(url);
+				}
+				catch(Exception e)
+				{	logger.decreaseOffset();
+					logger.decreaseOffset();
+				}
 			}
 		}
 		logger.decreaseOffset();

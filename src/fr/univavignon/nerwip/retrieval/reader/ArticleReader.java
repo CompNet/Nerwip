@@ -268,7 +268,7 @@ public abstract class ArticleReader
 				}
 				catch(HttpStatusException e)
 				{	logger.log(Arrays.asList(
-						"WARNING: Could not download the page, the server returned an error "+e.getStatusCode()+" .",
+						"WARNING: Could not download the page, the server returned an error "+e.getStatusCode()+".",
 						"Error message: "+e.getMessage()
 					));
 				}
