@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar" sourcepath="lib/commons-logging-1.1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/filterbuilder.jar"/>
 	<classpathentry kind="lib" path="lib/htmllexer.jar"/>
-	<classpathentry kind="lib" path="lib/htmlparser-src.zip" sourcepath="lib/htmlparser-2-src.zip.zip"/>
 	<classpathentry kind="lib" path="lib/json_simple-1.1.jar" sourcepath="lib/json_simple-1.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/lingpipe-4.1.0.jar" sourcepath="lib/lingpipe-4.0.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
@@ -30,4 +29,5 @@
 	<classpathentry kind="lib" path="lib/nerc-fr-bin.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.6.1.jar" sourcepath="lib/commons-math3-3.6.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
+	<referencedentry kind="lib" path="lib/htmlparser.jar" sourcepath="lib/htmlparser-src.zip"/>
 </classpath>
