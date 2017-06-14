@@ -251,4 +251,3 @@ public class FileNames
 	/** Graphml file extension */
 	public final static String EX_GRAPHML = ".graphml";
 }
-
