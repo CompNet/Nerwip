@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+
 import org.htmlparser.Parser;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.tags.LinkTag;
