@@ -157,7 +157,28 @@ public class Period implements Comparable<Period>
 	}
 	
 	/**
-	 * Returns a Period instance which is a copy of this Period,
+	 * Checks if the specified period is compatible with this period,
+	 * i.e. if they match exactly when ignoring their missing parts.
+	 * 
+	 * @param period
+	 * 		The period we want to compare to this date.
+	 * @return
+	 * 		{@code true} iff they match exactly when ignoring their
+	 * 		missing parts.
+	 */
+	public boolean isCompatible(Period period)
+	{	boolean result = false;
+		if(period!=null)
+		{	Date startDate2 = period.startDate;
+			Date endDate2 = period.endDate;
+			result = ((startDate==null && startDate2==null) || startDate.isCompatible(startDate2))
+					&& ((endDate==null && endDate2==null) || endDate.isCompatible(endDate2));
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns a {@code Period} instance which is a copy of this {@code Period},
 	 * but with possibly completed dates, when the day or month is
 	 * missing. Does not complete dates where the "larger" elements
 	 * are missing (e.g. day and month are known, but not year): in this

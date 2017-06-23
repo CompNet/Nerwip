@@ -372,7 +372,7 @@ public class Date implements Comparable<Date>
 	 * i.e. if they match exactly when ignoring their missing parts.
 	 * 
 	 * @param date
-	 * 		The date to compare to this date.
+	 * 		The date we want to compare to this date.
 	 * @return
 	 * 		{@code true} iff they match exactly when ignoring their
 	 * 		missing parts.
