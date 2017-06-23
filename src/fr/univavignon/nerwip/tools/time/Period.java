@@ -81,7 +81,7 @@ public class Period implements Comparable<Period>
 //	}
 	
 	/////////////////////////////////////////////////////////////////
-	// START DATE		/////////////////////////////////////////////
+	// END DATE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** End of this period */
 	private Date endDate;
@@ -229,6 +229,135 @@ public class Period implements Comparable<Period>
 		{	Date startDate = new Date(startDay,startMonth,startYear);
 			Date endDate = new Date(endDay,endMonth,endYear);
 			result = new Period(startDate,endDate);
+		}
+		return result;
+	}
+	
+	/**
+	 * Combines the specified date to this period. If the 
+	 * date is more extreme than one of the current bounds, 
+	 * it becomes the new bound. Same thing if it is more 
+	 * <i>precise</i>.
+	 * 
+	 * @param date
+	 * 		The date to merge to this period.
+	 * @return
+	 * 		{@code true} iff one of the start/end dates of
+	 * 		this period was modified during the processed.
+	 */
+	public boolean mergeDate(Date date)
+	{	boolean changedStart = false;
+		boolean changedEnd = false;
+		
+		if(startDate==null)
+		{	startDate = date;
+			changedStart = true;
+		}
+		else
+		{	int year1 = startDate.getYear();
+			int year2 = date.getYear();
+			int month1 = startDate.getMonth();
+			int month2 = date.getMonth();
+			int day1 = startDate.getDay();
+			int day2 = date.getDay();
+			
+			// check date vs start date
+			if(year1==0)
+			{	startDate = date;
+				changedStart = true;
+			}
+			else if(year2<year1)
+			{	if(endDate==null)
+				{	endDate = startDate;
+					changedEnd = true;
+				}
+				startDate = date;
+				changedStart = true;
+			}	
+			else if(year2==year1)
+			{	if(month1==0)
+				{	startDate = date;
+					changedStart = true;
+				}
+				else if(month2<month1)
+				{	if(endDate==null)
+					{	endDate = startDate;
+						changedEnd = true;
+					}
+					startDate = date;
+					changedStart = true;
+				}
+				else if(month2==month1)
+				{	if(day1==0)
+					{	startDate = date;
+						changedStart = true;
+					}
+					else if(day2<day1)
+					{	if(endDate==null)
+						{	endDate = startDate;
+							changedEnd = true;
+						}
+						startDate = date;
+						changedStart = true;
+					}
+				}
+			}
+			
+			// check date vs end date
+			if(!changedStart && !changedEnd)
+			{	if(endDate==null)
+				{	endDate = date;
+					changedEnd = true;
+				}
+			
+				else
+				{	year1 = endDate.getYear();
+					month1 = endDate.getMonth();
+					day1 = endDate.getDay();
+					
+					if(year2>year1)
+					{	endDate = date;
+						changedEnd = true;
+					}
+					else if(year2==year1)
+					{	if(month2>month1)
+						{	endDate = date;
+							changedEnd = true;
+						}
+						else if(month2==month1)
+						{	if(day2>day1)
+							{	endDate = date;
+								changedEnd = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		boolean result = changedEnd || changedStart;
+		return result;
+	}
+	
+	/**
+	 * Combines the specified period to this period. If some
+	 * of its bounds (or both) is more extreme than one of the 
+	 * current bounds, it replaces it. Same thing if it is more 
+	 * <i>precise</i>.
+	 * 
+	 * @param period
+	 * 		The period to merge with this one.
+	 * @return
+	 * 		{@code true} iff one of the start/end dates of
+	 * 		this period was modified during the processed.
+	 */
+	public boolean mergePeriod(Period period)
+	{	boolean result = false;
+		if(period!=null)
+		{	Date startDate = period.getStartDate();
+			result = mergeDate(startDate);
+			Date endDate = period.getEndDate();
+			result = result || mergeDate(endDate);
 		}
 		return result;
 	}
