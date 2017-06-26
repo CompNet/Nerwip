@@ -47,7 +47,7 @@ import fr.univavignon.nerwip.processing.ProcessorName;
  * 	<li>Type vote: we keep the majority entity type, among all activated tools.</li>
  *  <li>Existence vote: only the tools able to handle the selected type can vote.
  *      If the activated tools are majority among them, the process goes on.</li>
- *  <li>Position vote: all activated tool vote, the majority positions win.
+ *  <li>Position vote: all activated tools vote, the majority positions win.
  * </ol> 
  * <br/>
  * The recognizers used by this combiner are:
