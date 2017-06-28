@@ -263,9 +263,15 @@ class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegateRecogni
 				{	Comparable<?> value = voteForValue(map, type);
 					rawOutput.append(">> Value="+value+"\n");
 					mention = AbstractMention.build(type, startPos, endPos, recognizerName, valueStr, value);
+					if(mention==null)
+						logger.log("Could not infer the value associated to the mention");
 				}
-				result.addMention(mention);
-				rawOutput.append(">> Mention="+endPos+"\n\n");
+				if(mention!=null)
+				{	result.addMention(mention);
+					rawOutput.append(">> Mention="+endPos+"\n\n");
+				}
+				else
+					logger.log("Could not build the mention");
 			}
 			logger.decreaseOffset();
 		}

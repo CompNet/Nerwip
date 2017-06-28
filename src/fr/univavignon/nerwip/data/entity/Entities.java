@@ -435,7 +435,10 @@ public class Entities
 	 * 		Entity to add to the list.
 	 */
 	public void addEntity(AbstractEntity entity)
-	{	// possibly update the entity id
+	{	if(entity==null)
+			throw new NullPointerException("Trying to add a null entity to this Entities object");
+	
+		// possibly update the entity id
 		if(entity.internalId<0)
 		{	entity.internalId = nextInternalId;
 			nextInternalId++;

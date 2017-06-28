@@ -489,6 +489,7 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 			logger.log("Processing part "+i+"/"+data.size()/2);
 			String originalText = it.next();
 			String openerAnswer = it.next();
+//System.out.println(openerAnswer);			
 			
 			try
 			{	// build DOM
@@ -612,7 +613,13 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 						
 						// get its position
 						String offsetStr = wordElt.getAttributeValue(ATT_OFFSET);
-						int offset = Integer.parseInt(offsetStr);
+						int offset = 0;
+						if(offsetStr==null)
+						{	logger.log("WARNING: could not get the offset of element (using previous+1 instead) "+wordElt.toString());
+							offset = endPos2 + 1;
+						}
+						else
+							offset = Integer.parseInt(offsetStr);
 						String lengthStr = wordElt.getAttributeValue(ATT_LENGTH);
 						int length = Integer.parseInt(lengthStr);
 						
@@ -640,7 +647,7 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 			// external references
 			Element extReferencesElt = element.getChild(ELT_EXTERNAL_REFERENCES);
 			if(extReferencesElt!=null)
-			{	// TODO we could retrieve the assocated knowledge base references
+			{	// TODO we could retrieve the associated knowledge base references
 				// https://github.com/opener-project/kaf/wiki/KAF-structure-overview#nerc
 				List<Element> extReferenceElts = extReferencesElt.getChildren(ELT_EXTERNAL_REFERENCE);
 				logger.log("Found the following external references for mention "+result);

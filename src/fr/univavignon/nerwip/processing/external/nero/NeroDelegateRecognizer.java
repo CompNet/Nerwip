@@ -325,172 +325,187 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 //	);
 	
 	/////////////////////////////////////////////////////////////////
+	// ERROR MESSAGES		/////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Error message returned by Nero when it cannot handle the input text */
+	private static final String ERR_COOK = "\nThe cook with the punctuation has failed: please contact the administrator";
+	
+	/////////////////////////////////////////////////////////////////
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public Mentions convert(Article article, String data) throws ProcessorException
 	{	Mentions result = new Mentions(recognizer.getName());
-		ArticleLanguage language = article.getLanguage();
-		String originalText = article.getRawText();
-
-		LinkedList<EntityType> types = new LinkedList<EntityType>();
-		LinkedList<Integer> startPos1 = new LinkedList<Integer>();
+	
+		// problems with Nero
+		if(data.equalsIgnoreCase(ERR_COOK))
+			logger.log("WARNING: could not apply Nero, it returns the message \""+ERR_COOK+"\"");
+		else if(data.isEmpty())
+			logger.log("WARNING: Nero returned an empty string for this article");
+		
+		else
+		{	ArticleLanguage language = article.getLanguage();
+			String originalText = article.getRawText();
+	
+			LinkedList<EntityType> types = new LinkedList<EntityType>();
+			LinkedList<Integer> startPos1 = new LinkedList<Integer>();
 //		LinkedList<Integer> startPos2 = new LinkedList<Integer>();
-		LinkedList<String> tags = new LinkedList<String>();
-		
-		int i1 = 0;
-		int i2 = 0;
-		int c1 = originalText.codePointAt(i1);
-		int c2 = data.codePointAt(i2);
-		
-		// possibly pass starting newline characters 
-		while(c1=='\n')
-		{	i1++;
-			c1 = data.codePointAt(i1);
-		}
-		while(c2=='\n')
-		{	i2++;
-			c2 = data.codePointAt(i2);
-		}
-		
-		while(i1<originalText.length() && i2<data.length())
-		{	c1 = originalText.codePointAt(i1);
-			c2 = data.codePointAt(i2);
+			LinkedList<String> tags = new LinkedList<String>();
 			
-			// beginning of a tag
-			if(c2=='<')
-			{	int k2 = i2;
-				i2++; 
+			int i1 = 0;
+			int i2 = 0;
+			int c1 = originalText.codePointAt(i1);
+			int c2 = data.codePointAt(i2);
+			
+			// possibly pass starting newline characters 
+			while(c1=='\n')
+			{	i1++;
+				c1 = data.codePointAt(i1);
+			}
+			while(c2=='\n')
+			{	i2++;
+				c2 = data.codePointAt(i2);
+			}
+			
+			while(i1<originalText.length() && i2<data.length())
+			{	c1 = originalText.codePointAt(i1);
 				c2 = data.codePointAt(i2);
 				
-				// closing tag
-				if(c2=='/')
-				{	int j2 = data.indexOf('>', i2);
-					String tag = data.substring(i2+1,j2);
-					String tag0 = tags.pop();
-					if(!tag.equalsIgnoreCase(tag0))
-					{	String msg = StringTools.highlightPosition(i2, data, 20);
-						logger.log("WARNING: opening tag ("+tag0+") different from closing tag ("+tag+"):\n"+msg);
+				// beginning of a tag
+				if(c2=='<')
+				{	int k2 = i2;
+					i2++; 
+					c2 = data.codePointAt(i2);
+					
+					// closing tag
+					if(c2=='/')
+					{	int j2 = data.indexOf('>', i2);
+						String tag = data.substring(i2+1,j2);
+						String tag0 = tags.pop();
+						if(!tag.equalsIgnoreCase(tag0))
+						{	String msg = StringTools.highlightPosition(i2, data, 20);
+							logger.log("WARNING: opening tag ("+tag0+") different from closing tag ("+tag+"):\n"+msg);
+						}
+						i2 = j2 + 1;
+						EntityType type = types.pop();
+						int sp1 = startPos1.pop();
+//						int sp2 = startPos2.pop();
+						if(type!=null)
+						{
+//							String valueStr = data.substring(sp2,k2);
+							String valueStr = originalText.substring(sp1,i1);
+							AbstractMention<?> mention = AbstractMention.build(type, sp1, i1, ProcessorName.NERO, valueStr, language);
+							mention.correctMentionSpan(); // to remove some spaces located at the end of mentions
+							result.addMention(mention);
+						}
 					}
-					i2 = j2 + 1;
-					EntityType type = types.pop();
-					int sp1 = startPos1.pop();
-//					int sp2 = startPos2.pop();
-					if(type!=null)
-					{
-//						String valueStr = data.substring(sp2,k2);
-						String valueStr = originalText.substring(sp1,i1);
-						AbstractMention<?> mention = AbstractMention.build(type, sp1, i1, ProcessorName.NERO, valueStr, language);
-						mention.correctMentionSpan(); // to remove some spaces located at the end of mentions
-						result.addMention(mention);
+					
+					// opening tag
+					else
+					{	int j2 = data.indexOf('>', i2);
+						String tag = data.substring(i2,j2);
+						i2 = j2 + 1;
+						tags.push(tag);
+						EntityType type = CONVERSION_MAP.get(tag);
+						if(type==null && !IGNORED_TYPES.contains(tag))
+						{	if(tag.isEmpty())
+							{	int end = Math.min(j2+40, data.length());
+								String msg = data.substring(k2, end);
+								logger.log("WARNING: found an empty tag, settling for a date ("+msg+"[...])");
+								type = EntityType.DATE;
+							}
+							else
+							{	String msg = StringTools.highlightPosition(k2, data, 20);
+								throw new ProcessorException("Found an unknown tag : \""+tag+"\" at "+msg);
+							}
+						}
+						types.push(type);
+						startPos1.push(i1);
+//						startPos2.push(i2);
 					}
 				}
 				
-				// opening tag
+				// other character (than '<')
 				else
-				{	int j2 = data.indexOf('>', i2);
-					String tag = data.substring(i2,j2);
-					i2 = j2 + 1;
-					tags.push(tag);
-					EntityType type = CONVERSION_MAP.get(tag);
-					if(type==null && !IGNORED_TYPES.contains(tag))
-					{	if(tag.isEmpty())
-						{	int end = Math.min(j2+40, data.length());
-							String msg = data.substring(k2, end);
-							logger.log("WARNING: found an empty tag, settling for a date ("+msg+"[...])");
-							type = EntityType.DATE;
-						}
-						else
-						{	String msg = StringTools.highlightPosition(k2, data, 20);
-							throw new ProcessorException("Found an unknown tag : \""+tag+"\" at "+msg);
-						}
-					}
-					types.push(type);
-					startPos1.push(i1);
-//					startPos2.push(i2);
-				}
-			}
-			
-			// other character (than '<')
-			else
-			{	
+				{	
 //if(c1=='œ') // debug
 //	System.out.print("");
-
-				// similar characters
-				if(//IGNORED_CHARS.contains((char)c1) || 
-						StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)
-				{	// everything's normal
-					// >> go to next chars in both texts
-					i1++; 
-					i2++; 
-				}
-				
-				else
-				{	boolean moved = false;
-				
-					// pass all non-letter and non-digit characters
-					if(!Character.isLetterOrDigit(c1))//c1==' ' || c1=='\n' || StringTools.isPunctuation(c1))
-					{	i1++;
-						moved = true;
+					
+					// similar characters
+					if(//IGNORED_CHARS.contains((char)c1) || 
+							StringTools.compareCharsRelaxed(c1,c2)==0)// || c2==65533)
+					{	// everything's normal
+						// >> go to next chars in both texts
+						i1++; 
+						i2++; 
 					}
 					
-					// pass all non-letter and non-digit characters
-					if(!Character.isLetterOrDigit(c2))//c2==' ' || c2=='\n' || StringTools.isPunctuation(c2))
-					{	i2++;
-						moved = true;
-					}
+					else
+					{	boolean moved = false;
 					
-					// if both are letters or digits (but different), we have a problem
-					if(!moved)
-					{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
-						String msg2 = StringTools.highlightPosition(i2, data, 20);
-						throw new ProcessorException("Found an untreatable character:\n"+msg1+"\n"+msg2);
+						// pass all non-letter and non-digit characters
+						if(!Character.isLetterOrDigit(c1))//c1==' ' || c1=='\n' || StringTools.isPunctuation(c1))
+						{	i1++;
+							moved = true;
+						}
+						
+						// pass all non-letter and non-digit characters
+						if(!Character.isLetterOrDigit(c2))//c2==' ' || c2=='\n' || StringTools.isPunctuation(c2))
+						{	i2++;
+							moved = true;
+						}
+						
+						// if both are letters or digits (but different), we have a problem
+						if(!moved)
+						{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
+							String msg2 = StringTools.highlightPosition(i2, data, 20);
+							throw new ProcessorException("Found an untreatable character:\n"+msg1+"\n"+msg2);
+						}
 					}
 				}
 			}
-		}
-		
-		// check if we actually processed the whole texts
-		if(i1<originalText.length())
-		{	
-//			// possibly consume the final newline chars
-//			do
-//			{	c1 = originalText.codePointAt(i1);
-//				i1++;
-//			}
-//			while(i1<originalText.length() && (c1=='\n' || c1==' '));
 			
-			// possibly consume all non-letter characters
-			c1 = originalText.codePointAt(i1);
-			while(i1<originalText.length() && !Character.isLetterOrDigit(c1))
-			{	i1++;
-				if(i1<originalText.length())
-					c1 = originalText.codePointAt(i1);
-			}
-			
+			// check if we actually processed the whole texts
 			if(i1<originalText.length())
-			{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
-				throw new ProcessorException("Didn't reach the end of the original text\n"+msg1);
-			}
-		}
-		else if(i2<data.length())
-		{	// possibly consume all non-letter characters
-			boolean insideTag = false;
-			c2 = data.codePointAt(i2);
-			while(i2<data.length() && (!Character.isLetterOrDigit(c2)) || insideTag)
-			{	if(c2=='<')
-					insideTag = true;
-				else if(c2=='>')
-					insideTag = false;
-				i2++;
-				if(i2<data.length())
-					c2 = data.codePointAt(i2);
-			}
+			{	
+//				// possibly consume the final newline chars
+//				do
+//				{	c1 = originalText.codePointAt(i1);
+//					i1++;
+//				}
+//				while(i1<originalText.length() && (c1=='\n' || c1==' '));
 			
-			if(i2<data.length())
-			{	String msg2 = StringTools.highlightPosition(i2, data, 20);
-				throw new ProcessorException("Didn't reach the end of the annotated text\n"+msg2);
+				// possibly consume all non-letter characters
+				c1 = originalText.codePointAt(i1);
+				while(i1<originalText.length() && !Character.isLetterOrDigit(c1))
+				{	i1++;
+					if(i1<originalText.length())
+						c1 = originalText.codePointAt(i1);
+				}
+				
+				if(i1<originalText.length())
+				{	String msg1 = StringTools.highlightPosition(i1, originalText, 20);
+					throw new ProcessorException("Didn't reach the end of the original text\n"+msg1);
+				}
+			}
+			else if(i2<data.length())
+			{	// possibly consume all non-letter characters
+				boolean insideTag = false;
+				c2 = data.codePointAt(i2);
+				while(i2<data.length() && (!Character.isLetterOrDigit(c2)) || insideTag)
+				{	if(c2=='<')
+						insideTag = true;
+					else if(c2=='>')
+						insideTag = false;
+					i2++;
+					if(i2<data.length())
+						c2 = data.codePointAt(i2);
+				}
+				
+				if(i2<data.length())
+				{	String msg2 = StringTools.highlightPosition(i2, data, 20);
+					throw new ProcessorException("Didn't reach the end of the annotated text\n"+msg2);
+				}
 			}
 		}
 		

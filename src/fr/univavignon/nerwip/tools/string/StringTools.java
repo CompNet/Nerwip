@@ -296,6 +296,58 @@ public class StringTools
 	}
 	
 	/////////////////////////////////////////////////////////////////
+	// SPACES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Process the specified string in order to remove
+	 * space character-related problems.
+	 *  
+	 * @param string
+	 * 		The original string (not modified).
+	 * @return
+	 * 		Modified version of the input string.
+	 */
+	public static String cleanSpaces(String string)
+	{	String result = string;
+		
+		if(result!=null)
+		{	// replace all white spaces by regular spaces
+			result = result.replaceAll("\\s", " ");
+			
+			// replace all consecutive spaces by a single one
+			result = result.replaceAll(" +", " ");
+			
+			// remove initial/final spaces
+			result = result.trim();
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Process the specified string in order to replace
+	 * non-standard whitespace characters. The number
+	 * of characters in the text is not modified
+	 * (unlike {@link #cleanSpaces(String)}).
+	 *  
+	 * @param string
+	 * 		The original string (not modified).
+	 * @return
+	 * 		Modified version of the input string.
+	 */
+	public static String replaceSpaces(String string)
+	{	String result = string;
+		
+		if(result!=null)
+		{	// replace all white spaces by regular spaces
+			// new line and tabs are not affected
+			result = result.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces than \s
+		}
+		
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
 	// LETTERS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
@@ -409,37 +461,28 @@ public class StringTools
 			
 			// sentence too long for maxSize
 			if(length > maxSize)
-			{	// if only one sentence: must split
-				if(start==prevEnd)
-				{	// we look for semicolons
-					int from = start;
+			{	// if only one sentence: must split using a lesser criterion
+				char candidates[] = {'\n','\r',';',',','|',':'};
+				int i = 0;
+				int from;
+				while(i<candidates.length && start==prevEnd)
+				{	from = start;
 					do
-					{	from = text.indexOf(';', from+1);
+					{	from = text.indexOf(candidates[i], from+1);
 						if(from!=-1 && (from-start)<maxSize)
 							prevEnd = from;
 					}
 					while(from!=-1 && (from-start)<maxSize);
-					// if none found
-					if(start==prevEnd)
-					{	// we look for colons
-						from = start;
-						do
-						{	from = text.indexOf(',', from+1);
-							if(from!=-1 && (from-start)<maxSize)
-								prevEnd = from;
-						}
-						while(from!=-1 && (from-start)<maxSize);
-						// if none found, exception
-						if(start==prevEnd)
-						{	// TODO we could force-split between words, it's better than nothing
-							throw new IllegalArgumentException("The sentence \""+text.substring(start,curEnd)+"\" ("+(curEnd-start)+" chars) is too long and cannot be split for maxSize="+maxSize);
-						}
-						else
-							prevEnd ++;
-					}
-					else
-						prevEnd ++;
+					i++;
 				}
+				// if none found, exception
+				if(start==prevEnd)
+				{	// TODO we could force-split between words, it's better than nothing
+					String sentence = text.substring(start,curEnd);
+					throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+(curEnd-start)+" chars) is too long and cannot be split for maxSize="+maxSize);
+				}
+				else
+					prevEnd ++;
 				
 				// force the inclusion of a possible ending space
 				char c = text.charAt(prevEnd);
@@ -490,7 +533,7 @@ public class StringTools
 	 * 		Corresponding integer list.
 	 */
 	public static List<Integer> extractValues(String expression)
-	{	TreeSet<Integer> temp = new TreeSet<Integer>();
+	{	Set<Integer> temp = new TreeSet<Integer>();
 		String s1[] = expression.split(",");
 		for(String str1: s1)
 		{	if(!str1.isEmpty())
@@ -619,21 +662,30 @@ public class StringTools
 	 * 		The highlighted string.
 	 */
 	public static String highlightPosition(int pos, String string, int range)
-	{	// process the interval
+	{	String sep = "[...]";
+		
+		// process the interval
 		int beginIndex = Math.max(0, pos-range);
 		int endIndex = Math.min(string.length(), pos+range);
+		int posIndex = pos-beginIndex;
 		
 		// define the result string
 		String result = "";
 		if(beginIndex>0)
-			result = result + "[...]";
+		{	result = result + sep;
+			posIndex = posIndex + sep.length();
+		}
 		result = result + string.substring(beginIndex, endIndex);
 		if(endIndex<string.length())
-			result = result + "[...]";
+			result = result + sep;
 		result = result + "\n";
 
-		for(int i=0;i<pos-beginIndex+5;i++)
-			result = result + " ";
+		for(int i=0;i<posIndex;i++)
+		{	if(result.charAt(i)=='\n' || result.charAt(i)=='\r')
+				result = result + "\n";
+			else
+				result = result + " ";
+		}
 		result = result + "^";
 		
 		return result;

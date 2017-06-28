@@ -169,10 +169,10 @@ public abstract class ArticleReader
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Processes the specified URL to get the
-	 * targetted article. Also applies a cleaning step,
+	 * targeted article. Also applies a cleaning step,
 	 * removing non-breaking space, and so on. The same
 	 * cleaning step is applied when loading an article
-	 * from file, for consistancy.
+	 * from file, for consistency.
 	 * 
 	 * @param url
 	 * 		Article address.
@@ -194,7 +194,7 @@ public abstract class ArticleReader
 
 	/**
 	 * Processes the specified URL to get the
-	 * targetted article.
+	 * targeted article.
 	 * 
 	 * @param url
 	 * 		Article address.
@@ -209,7 +209,7 @@ public abstract class ArticleReader
 	public abstract Article processUrl(URL url, ArticleLanguage language) throws ReaderException;
 
 	/**
-	 * Loads the html source code from the cached file,
+	 * Loads the HTML source code from the cached file,
 	 * or fetches it from the Web server if needed.
 	 * 
 	 * @param name
@@ -397,7 +397,7 @@ public abstract class ArticleReader
 	}
 
 	/**
-	 * Retrieve the text located in a offline quote (BLOCKQUOTE) HTML element.
+	 * Retrieve the text located in an offline quote (BLOCKQUOTE) HTML element.
 	 * 
 	 * @param element
 	 * 		Element to be processed.

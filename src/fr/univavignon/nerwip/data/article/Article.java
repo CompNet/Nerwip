@@ -461,7 +461,7 @@ public class Article
 	public void cleanContent()
 	{	// raw text	
 		rawText = StringTools.cleanText(rawText);
-				
+		
 		// linked text
 		linkedText = StringTools.cleanText(linkedText);
 		
