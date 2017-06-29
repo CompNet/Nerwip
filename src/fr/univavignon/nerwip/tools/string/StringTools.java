@@ -22,6 +22,7 @@ package fr.univavignon.nerwip.tools.string;
  */
 
 import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -200,6 +201,8 @@ public class StringTools
 	private final static String PUNCTUATION = "'()<>:,\\-!.\";&@%+";
 	/** Regex used to detect HTML hyperlink tags */
 	private final static Pattern HL_PATTERN = Pattern.compile("</?a ?[^>]*>");
+	/** Regex used to detect non-latin letters */
+	private final static Pattern NL_PATTERN = Pattern.compile("[^"+PUNCTUATION+"\\sA-Za-z0-9]");
 	
 	/**
 	 * Cleans the specified string, in order to remove characters
@@ -371,12 +374,22 @@ public class StringTools
 		output = output.replaceAll("\\(\\)", "");
 		
 		// removes characters which are neither punctuation, whitespaces, letters or digits
-		output = output.replaceAll("[^"+PUNCTUATION+"\\s\\p{L}\\d]", "");
+//		output = output.replaceAll("[^"+PUNCTUATION+"\\s\\p{L}\\d]", "");
+		output = output.replaceAll("[^"+PUNCTUATION+"\\s\\p{L}0-9]", "");
 		
-//if(!output.equals(input))
-//{	System.out.println(input);
-//	System.out.println(output);
-//}
+		// removes non-latin letters
+		String diacLess = removeDiacritics(output);
+		Matcher matcher = NL_PATTERN.matcher(diacLess);
+		String tmp = "";
+		int prevPos = 0;
+		while(matcher.find())
+		{	int pos = matcher.start();
+			tmp = tmp + output.substring(prevPos,pos);
+			prevPos = pos + 1;
+		}
+		tmp = tmp + output.substring(prevPos,output.length());
+		output = tmp;
+		
 		return output;
 	}
 	
@@ -456,15 +469,22 @@ public class StringTools
 	 * Taken from <a href="http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string">
 	 * http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string</a>.
 	 * 
-	 * @param string
+	 * @param text
 	 * 		String to process, containing diacritics.
 	 * @return
-	 * 		Same string, but withouth the diacritics.
+	 * 		Same string, but without the diacritics.
 	 */
-	public static String removeDiacritics(String string) 
-	{	String result = Normalizer.normalize(string, Normalizer.Form.NFD);
-		result = result.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-	    return result;
+	public static String removeDiacritics(String text) 
+	{	String result = 
+//		Normalizer.normalize(text, Form.NFD)
+		Normalizer.normalize(text, Form.NFKD)	// catches supposedly more diacritics
+			.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+		
+		// for some reason, certain characters are missed by the above instruction
+		result = result.replace('ł','l');		
+		result = result.replace('Ł','L');
+		
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
