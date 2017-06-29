@@ -196,6 +196,11 @@ public class StringTools
 	/////////////////////////////////////////////////////////////////
 	// CLEAN			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Accepted punctuation marks */
+	private final static String PUNCTUATION = "'()<>:,\\-!.\";&@%+";
+	/** Regex used to detect HTML hyperlink tags */
+	private final static Pattern HL_PATTERN = Pattern.compile("</?a ?[^>]*>");
+	
 	/**
 	 * Cleans the specified string, in order to remove characters
 	 * causing problems when detecting named entity mentions.
@@ -212,86 +217,166 @@ public class StringTools
 		do
 		{	previous = output;
 			
-			// replace all white spaces by regular spaces
-			// new line and tabs are not affected
-			output = output.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces than \s
-			
 			// move punctuation out of hyperlinks
 			String punctuation = "[ \\n\\.,;]";
 			output = output.replaceAll("<a ([^>]*?)>("+punctuation+"*)([^<]*?)("+punctuation+"*)</a>","$2<a $1>$3</a>$4");
 			output = output.replaceAll("<a ([^>]*?)>(\\()([^<]*?)(\\))</a>","$2<a $1>$3</a>$4");
 			output = output.replaceAll("<a ([^>]*?)>(\\[)([^<]*?)(\\])</a>","$2<a $1>$3</a>$4");
 			
-			// replace multiple consecutive spaces by a single one 
-			output = output.replaceAll("( )+", " ");
-			
-			// replace multiple consecutive newlines by a single one 
-			output = output.replaceAll("(\\n)+", "\n");
-			
-			// remove spaces at the end of lines 
-			output = output.replaceAll(" \\n", "\n");
-			
-			// replace multiple space-separated punctuations by single ones 
-//			output = output.replaceAll("; ;", ";");
-//			output = output.replaceAll(", ,", ",");
-//			output = output.replaceAll(": :", ":");
-//			output = output.replaceAll("\\. \\.", "\\.");
-			
-			// replace multiple consecutive punctuation marks by a single one 
-			output = output.replaceAll("([\\.,;:] )[\\.,;:]", "$1");
-	
-			// remove spaces before dots 
-			output = output.replaceAll(" \\.", ".");
-			
-			// remove spaces after opening parenthesis
-			output = output.replaceAll("\\( +", "(");
-			// remove spaces before closing parenthesis
-			output = output.replaceAll(" +\\)", ")");
-			
-			// remove various combinations of punctuation marks
-			output = output.replaceAll("\\(;", "(");
-	
-			// remove empty square brackets and parentheses
-			output = output.replaceAll("\\[\\]", "");
-			output = output.replaceAll("\\(\\)", "");
-			
-			// adds a final dot when it is missing at the end of a sentence (itself detected thanks to the new line)
-//			output = output.replaceAll("([^(\\.|\\-)])\\n", "$1.\n");
-			
-			// insert a space after a coma, when missing
-//			output = output.replaceAll(",([^ _])", ", $1");
-	
-			// insert a space after a semi-column, when missing
-//			output = output.replaceAll(";([^ _])", "; $1");
-			
-			// replace 2 single quotes by double quotes
-			output = output.replaceAll("''+", "\"");
-			
-			// replace ligatures by two characters
-			// note : the normalizer does not seem to work well for most ligature
-			// cf. http://stackoverflow.com/questions/7171377/separating-unicode-ligature-characters
-			output = output.replaceAll("œ", "oe");
-			output = output.replaceAll("Œ", "Oe");
-			output = output.replaceAll("æ", "ae");
-			output = output.replaceAll("Æ", "Ae");
-			output = output.replaceAll("ﬁ", "fi");
-			
-			// replace certain punctuation marks
-			output = output.replaceAll("« ", "\"");
-			output = output.replaceAll("«", "\"");
-			output = output.replaceAll(" »", "\"");
-			output = output.replaceAll("»", "\"");
-			output = output.replaceAll("’","'");
-			output = output.replaceAll("‒","-");	// \u2012
-			output = output.replaceAll("–","-");	// \u2013
-			output = output.replaceAll("—","-");	// \u2014
-			output = output.replaceAll("―","-");	// \u2015
-			output = output.replaceAll("⁓","-");	// \u2053
-			
+			// process the text which does not belong to hyperlink tags (i.e. the raw, non-html text)
+			String tmpStr = "";
+			int prevPos = 0;
+			Matcher matcher = HL_PATTERN.matcher(output);
+			while(matcher.find())
+			{	int startPos = matcher.start();
+				int endPos = matcher.end();
+				String substr = output.substring(prevPos,startPos);
+				substr = cleanInnerText(substr);
+				String tagStr = output.substring(startPos,endPos);
+				tmpStr = tmpStr + substr + tagStr;
+				prevPos = endPos;
+			}
+			int startPos = output.length();
+			String substr = output.substring(prevPos,startPos);
+			substr = cleanInnerText(substr);
+			tmpStr = tmpStr + substr;
+			output = tmpStr;
 		}
 		while(!output.equals(previous));
 		
 		output = output.trim();
+		return output;
+	}
+	
+	/**
+	 * Clean the text which is not in HTML hyperlink tags.
+	 * These method is used by {@link #cleanText(String)}.
+	 * 
+	 * @param input
+	 * 		The text to clean.
+	 * @return
+	 * 		The cleaned text.
+	 */
+	private static String cleanInnerText(String input)
+	{	String output = input;
+		
+		// replace all white spaces by regular spaces
+		// new line and tabs are not affected
+		output = output.replaceAll("\\p{Z}", " "); // \p{Z} includes more different whitespaces than \s
+		// replace tabs by simple spaces
+		output = output.replaceAll("\\t", " ");
+		
+		// replace multiple consecutive spaces by a single one 
+		output = output.replaceAll("( )+", " ");
+
+		// normalize newlines
+		output = output.replaceAll("(\\r)+", "\n");
+		// replace multiple consecutive newlines by a single one 
+		output = output.replaceAll("(\\n)+", "\n");
+		
+		// remove spaces at the end of lines 
+		output = output.replaceAll(" \\n", "\n");
+		
+		// replace multiple space-separated punctuations by single ones 
+//			output = output.replaceAll("; ;", ";");
+//			output = output.replaceAll(", ,", ",");
+//			output = output.replaceAll(": :", ":");
+//			output = output.replaceAll("\\. \\.", "\\.");
+		
+		// replace multiple consecutive punctuation marks by a single one 
+		output = output.replaceAll("([\\.,;:] )[\\.,;:]", "$1");
+
+		// remove spaces before dots 
+		output = output.replaceAll(" \\.", ".");
+		
+		// remove various combinations of punctuation marks
+		output = output.replaceAll("\\(;", "(");
+
+		// adds a final dot when it is missing at the end of a sentence (itself detected thanks to the new line)
+//			output = output.replaceAll("([^(\\.|\\-)])\\n", "$1.\n");
+		
+		// insert a space after a coma, when missing
+//			output = output.replaceAll(",([^ _])", ", $1");
+
+		// insert a space after a semi-column, when missing
+//			output = output.replaceAll(";([^ _])", "; $1");
+		
+		// replace ligatures by two characters
+		// note : the normalizer does not seem to work well for most ligatures
+		// cf. http://stackoverflow.com/questions/7171377/separating-unicode-ligature-characters
+		output = output.replaceAll("ꜳ", "aa");
+		output = output.replaceAll("Ꜳ", "Aa");
+		output = output.replaceAll("æ", "ae");
+		output = output.replaceAll("Æ", "Ae");
+		output = output.replaceAll("ꜵ", "ao");
+		output = output.replaceAll("Ꜵ", "Ao");
+		output = output.replaceAll("ꜷ", "au");
+		output = output.replaceAll("Ꜷ", "Au");
+		output = output.replaceAll("ꜹ", "av");
+		output = output.replaceAll("Ꜹ", "Av");
+		output = output.replaceAll("ꜻ", "av");
+		output = output.replaceAll("Ꜻ", "Av");
+		output = output.replaceAll("ﬁ", "fi");
+		output = output.replaceAll("ﬂ", "fl");
+		output = output.replaceAll("ﬀ", "ff");
+		output = output.replaceAll("ﬃ", "ffi");
+		output = output.replaceAll("ﬄ", "ffl");
+		output = output.replaceAll("œ", "oe");
+		output = output.replaceAll("Œ", "Oe");
+		output = output.replaceAll("ꝏ", "oo");
+		output = output.replaceAll("Ꝏ", "Oo");
+		output = output.replaceAll("ﬆ", "st");
+		output = output.replaceAll("ꜩ", "tz");
+		output = output.replaceAll("Ꜩ", "Tz");
+		output = output.replaceAll("ᵫ", "ue");
+		
+		// replace certain punctuation marks (list of characters obtained from Wikipedia)
+			// apostrophe and variants
+			output = output.replaceAll("[’’ʼ`´ʹʻʽʾʿˈˊʹ΄՚᾽᾿′Ꞌꞌ＇︐︑՝]","'");
+			// opening brackets
+			output = output.replaceAll("[(\\[{❴〈⧼❬❰❮〈〈⸤⸤｢｢「⌜⸢⟦⌈⌊⟆⟓⟬⟮⦃⦅⦇⦉⦋⦏⦑⦓⦕⦗⧘⧚❨❪❲⁅⸦⸨〔〖〘〚【（［｛]", "(");
+			// closing brackets
+			output = output.replaceAll("[)\\]}❵〉⧽❭❱❯〉〉⸥⸥｣｣」⌝⸣⟧⌉⌋⟅⟔⟭⟯⦄⦆⦈⦊⦌⦐⦒⦔⦖⦘⧙⧛❩❫❳⁆⸧⸩〕〗〙〛】）］｝]", ")");
+			// colons and variants
+			output = output.replaceAll("[:：ː]",":");
+			// coma and variants
+			output = output.replaceAll("[,،⸲⸴⹁、﹐﹑，､‚]",",");
+			// hyphens and variants \u2012 \u2013 \u2014 \u2015 \u2053
+			output = output.replaceAll("[-‐‑֊᠆﹣－‒–—―⁓=*_/⁄∕／\\\\]","-");
+			// ellipsis and variants
+			output = output.replaceAll("[…᠁⋯⋰⋱︙⋮]","...");
+			// exclamation mark and variants
+			output = output.replaceAll("[ǃ‼⁈⁉⚠❕❗❢❣ꜝꜞꜟ﹗！🕴᥄]","!");
+			// period and variants
+			output = output.replaceAll("[⸼·]",".");
+			// opening double quotes
+			output = output.replaceAll(  "[«‹„⟪《『⸂⸄⸉⸌〝｟] ?", "\"");
+			// closing double quotes
+			output = output.replaceAll(" ?[»›“⟫》』⸃⸅⸊⸍〞｠]", "\"");
+			// question mark and variants
+			output = output.replaceAll("[⁇﹖⁈⁉‽]","?");
+			// semicolon and variants
+			output = output.replaceAll("[;؛⁏፤；︔﹔⍮⸵;]",";");
+		
+		// replace 2 consecutive single quotes by 1 double quote
+		output = output.replaceAll("''+", "\"");
+		// remove empty quotes
+		output = output.replaceAll("\"\"", "");
+	
+		// remove spaces after opening parenthesis
+		output = output.replaceAll("\\( +", "(");
+		// remove spaces before closing parenthesis
+		output = output.replaceAll(" +\\)", ")");
+		// remove empty parentheses
+		output = output.replaceAll("\\(\\)", "");
+		
+		// removes characters which are neither punctuation, whitespaces, letters or digits
+		output = output.replaceAll("[^"+PUNCTUATION+"\\s\\p{L}\\d]", "");
+		
+//if(!output.equals(input))
+//{	System.out.println(input);
+//	System.out.println(output);
+//}
 		return output;
 	}
 	
