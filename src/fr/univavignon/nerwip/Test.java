@@ -149,15 +149,15 @@ public class Test
 //		URL url = new URL("http://en.wikipedia.org/wiki/Fleur_Pellerin");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Aart_Kemink");
 //		URL url = new URL("http://en.wikipedia.org/wiki/Ibrahim_Maalouf");
-		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
+//		URL url = new URL("http://en.wikipedia.org/wiki/Catherine_Jacob_(journalist)");
 
 //		String name = "Émilien_Brigault";
 //		String name = "Aimé Piton";
 //		String name = "Albert_Chauly";
 //		String name = "Gilles_Marcel_Cachin";
 //    	String name = "Alexandre_Bracke";
-//    	String name = "Achille_Eugène_Fèvre";
-    	String name = "Adolphe_Lucien_Lecointe";
+    	String name = "Achille_Eugène_Fèvre";
+//    	String name = "Adolphe_Lucien_Lecointe";
 
 //		String name = "Barack_Obama";
      	
@@ -182,7 +182,7 @@ public class Test
 //		testTagEnRaw();
 
 //		testDateExtractor(url);
-//		testHeidelTime(url);
+		testHeidelTime(name);
 //		testIllinois(url);
 //		testLingPipe(url);
 //		testNero(name);
@@ -195,7 +195,7 @@ public class Test
 //		testTagEn(name);
 //		testWikipediaDater(url);
 //    	testNaiveResolver(name);
-    	testWikiDataLinker(name);
+//    	testWikiDataLinker(name);
 		
 //		testVoteCombiner(url);
 //		testSvmCombiner(url);
@@ -887,19 +887,19 @@ public class Test
 	/**
 	 * Tests the features related to NER. 
 	 * 
-	 * @param url
-	 * 		URL of the article to parse.
+	 * @param name
+	 * 		Name of the (already cached) article.
 	 * 
 	 * @throws Exception
 	 * 		Something went wrong... 
 	 */
-	private static void testHeidelTime(URL url) throws Exception
+	private static void testHeidelTime(String name) throws Exception
 	{	logger.setName("Test-HeidelTime");
 		logger.log("Start testing HeidelTime");
 		logger.increaseOffset();
 		
 		{	ArticleRetriever retriever = new ArticleRetriever();
-			Article article = retriever.process(url);
+			Article article = retriever.process(name);
 	
 			HeidelTimeModelName modelName = HeidelTimeModelName.FRENCH_NARRATIVES;
 			boolean doIntervalTagging = false;
@@ -907,10 +907,10 @@ public class Test
 			heidelTime.setCacheEnabled(false);
 			
 			// only the specified article
-//			heidelTime.process(article);
+			heidelTime.recognize(article);
 
 			// all the corpus
-			testAllCorpusRecognizer(heidelTime,0);
+//			testAllCorpusRecognizer(heidelTime,0);
 		}
 		
 		logger.decreaseOffset();

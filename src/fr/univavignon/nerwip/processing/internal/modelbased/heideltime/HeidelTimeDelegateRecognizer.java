@@ -26,6 +26,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jdom2.Content;
@@ -45,6 +46,7 @@ import fr.univavignon.nerwip.data.entity.mention.MentionDate;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedInternalDelegateRecognizer;
+import fr.univavignon.nerwip.tools.string.StringTools;
 import fr.univavignon.nerwip.tools.time.Date;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 
@@ -58,7 +60,7 @@ import fr.univavignon.nerwip.tools.xml.XmlNames;
  * 
  * @author Vincent Labatut
  */
-class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<String, HeidelTimeModelName>
+class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRecognizer<List<String>, HeidelTimeModelName>
 {	
 	/**
 	 * Builds and sets up an object representing
@@ -157,36 +159,54 @@ class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRec
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING	 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** HeidelTime does not really need to split long text, but if we don't, it takes significantly more time */
+	private static final int MAX_SIZE = 25000;
+	
 	@Override
-	protected String detectMentions(Article article) throws ProcessorException
+	protected List<String> detectMentions(Article article) throws ProcessorException
 	{	logger.increaseOffset();
-		String result = null;
+		List<String> result = new ArrayList<String>();
 		
 		logger.log("Applying HeidelTime to detect dates");
 		String text = article.getRawText();
-		
 		java.util.Date date = article.getPublishingDate();
-		try
-		{	// if HeidelTime needs a reference date
-			if(modelName.requiresDate())
-			{	if(date!=null)
-					result = mainModel.process(text, date);
+		
+		// we don't really need to break down the text, but HeidelTime takes too much time when the text is very long
+		List<String> parts = StringTools.splitText(text, MAX_SIZE);
+		
+		for(int i=0;i<parts.size();i++)
+		{	logger.log("Processing HeidelTime part #"+(i+1)+"/"+parts.size());
+			logger.increaseOffset();
+			String part = parts.get(i);
+			try
+			{	String answer;
+				
+				// if HeidelTime needs a reference date
+				if(modelName.requiresDate())
+				{	if(date!=null)
+						answer = mainModel.process(part, date);
+					else
+						answer = altModel.process(part);
+				}
+				
+				// if it doesn't need a date
 				else
-					result = altModel.process(text);
+				{	if(date!=null)
+						answer = mainModel.process(part, date);
+					else
+						answer = mainModel.process(part);
+				}
+				
+				result.add(part);
+				result.add(answer);
+			}
+			catch (DocumentCreationTimeMissingException e)
+			{	logger.log("ERROR: problem with the date given to HeidelTime ("+date+")");
+//				e.printStackTrace();
+				throw new ProcessorException(e.getMessage());
 			}
 			
-			// if it doesn't need a date
-			else
-			{	if(date!=null)
-					result = mainModel.process(text, date);
-				else
-					result = mainModel.process(text);
-			}
-		}
-		catch (DocumentCreationTimeMissingException e)
-		{	logger.log("ERROR: problem with the date given to HeidelTime ("+date+")");
-//			e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
+			logger.decreaseOffset();
 		}
 		
 	    logger.decreaseOffset();
@@ -224,57 +244,73 @@ class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRec
 	private static final String TIME_PREFIX = "XXXX-XX-XX";
 	
 	@Override
-	public Mentions convert(Article article, String data) throws ProcessorException
+	public Mentions convert(Article article, List<String> data) throws ProcessorException
 	{	logger.increaseOffset();
 		Mentions result = new Mentions(recognizer.getName());
 		
-		// parse the xml source
-		logger.log("Parsing the XML source previously produced by HeidelTime");
-		Element root;
-		try
-		{	String xmlSource = data.replace(ORIGINAL_DOCTYPE, "");
-			xmlSource = xmlSource.replaceAll("&", "&amp;"); // needed to handle possible "&" chars (we suppose the original text does not contain any mention)
-			SAXBuilder sb = new SAXBuilder();
-			Document doc = sb.build(new StringReader(xmlSource));
-			root = doc.getRootElement();
-		}
-		catch (JDOMException e)
-		{	//e.printStackTrace();
-			System.err.println(data);
-			throw new ProcessorException(e.getMessage());
-		}
-		catch (IOException e)
-		{	//e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-
-		// process the xml document
-		logger.log("Processing the resulting XML document");
+		logger.log("Processing each part of data and its associated answer");
+		Iterator<String> it = data.iterator();
 		logger.increaseOffset();
-		int index = -1; //-1 and not zero, because a new line is inserted at the beginning of the article in the XML file 
-		XMLOutputter xo = new XMLOutputter();
-		List<Content> children = root.getContent();
-		for(Content child: children)
-		{	// text content is just counted
-			if(child instanceof Text)
-			{	Text t = (Text)child;
-				String str = t.getText();
-				int length = str.length();
-				logger.log("("+index+")"+str+ "[["+length+"]]");
-				index = index + length;
-			}
+		int i = 0;
+		int prevSize = 0;
+		while(it.hasNext())
+		{	i++;
+			logger.log("Processing part "+i+"/"+data.size()/2);
+			String originalText = it.next();
+			String ocAnswer = it.next();
 			
-			// elements are processed individually
-			else if(child instanceof Element)
-			{	Element e = (Element)child;
-				String str = e.getText();
-				int length = str.length();
-				logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
-				MentionDate mention = convertElement(e, index);
-				if(mention!=null)
-					result.addMention(mention);
-				index = index + length;
+			// parse the xml source
+			logger.log("Parsing the XML source previously produced by HeidelTime");
+			Element root;
+			try
+			{	String xmlSource = ocAnswer.replace(ORIGINAL_DOCTYPE, "");
+				xmlSource = xmlSource.replaceAll("&", "&amp;"); // needed to handle possible "&" chars (we suppose the original text does not contain any mention)
+				SAXBuilder sb = new SAXBuilder();
+				Document doc = sb.build(new StringReader(xmlSource));
+				root = doc.getRootElement();
 			}
+			catch (JDOMException e)
+			{	//e.printStackTrace();
+				System.err.println(ocAnswer);
+				throw new ProcessorException(e.getMessage());
+			}
+			catch (IOException e)
+			{	//e.printStackTrace();
+				throw new ProcessorException(e.getMessage());
+			}
+	
+			// process the xml document
+			logger.log("Processing the resulting XML document");
+			logger.increaseOffset();
+			int index = -1; //-1 and not zero, because a new line is inserted at the beginning of the article in the XML file 
+			XMLOutputter xo = new XMLOutputter();
+			List<Content> children = root.getContent();
+			for(Content child: children)
+			{	// text content is just counted
+				if(child instanceof Text)
+				{	Text t = (Text)child;
+					String str = t.getText();
+					int length = str.length();
+					logger.log("("+index+")"+str+ "[["+length+"]]");
+					index = index + length;
+				}
+				
+				// elements are processed individually
+				else if(child instanceof Element)
+				{	Element e = (Element)child;
+					String str = e.getText();
+					int length = str.length();
+					logger.log("("+index+")"+xo.outputString(e)+ "[["+length+"]]");
+					MentionDate mention = convertElement(e, prevSize+index);
+					if(mention!=null)
+						result.addMention(mention);
+					index = index + length;
+				}
+			}
+			logger.decreaseOffset();
+			
+			// update size
+			prevSize = prevSize + originalText.length();
 		}
 		logger.decreaseOffset();
 
@@ -428,7 +464,16 @@ class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRec
 	// RAW FILE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void writeRawResults(Article article, String intRes) throws IOException
-	{	writeRawResultsStr(article, intRes);
+	protected void writeRawResults(Article article, List<String> intRes) throws IOException
+	{	String temp = "";
+		int i = 0;
+		for(String str: intRes)
+		{	i++;
+			if(i%2==1)
+				temp = temp + "\n>>> Part " + ((i+1)/2) + "/" + intRes.size() + " - Original Text <<<\n" + str + "\n";
+			else
+				temp = temp + "\n>>> Part " + (i/2) + "/" + intRes.size() + " - HeidelTime Response <<<\n" + str + "\n";
+		}
+		writeRawResultsStr(article, temp);
 	}
 }

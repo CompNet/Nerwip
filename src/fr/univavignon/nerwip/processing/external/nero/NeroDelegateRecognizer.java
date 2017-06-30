@@ -175,17 +175,11 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 		boolean outRawResults = recognizer.doesOutputRawResults();
 		StringBuffer tempRes = new StringBuffer();
 		String text = article.getRawText();
-
-		// debug
-//		String val = System.getenv("PATH");
-//		System.out.println(val);
-//		val = System.getenv("IRISA_NE");
-//		System.out.println(val);
 		
 		// we need to break down the text: Nero can't handle more than 100000 chars at once
 		// (at least on the test computer)
 		List<String> parts = StringTools.splitText(text, MAX_SIZE);
-
+		
 		for(int i=0;i<parts.size();i++)
 		{	logger.log("Processing Nero part #"+(i+1)+"/"+parts.size());
 			logger.increaseOffset();
@@ -294,6 +288,7 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 		
 		result = result.replaceAll("ë", "e");
 		result = result.replaceAll("û", "u");
+		result = result.replaceAll("ń", "n");
 		
 		return result;
 	}
@@ -336,7 +331,7 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	@Override
 	public Mentions convert(Article article, String data) throws ProcessorException
 	{	Mentions result = new Mentions(recognizer.getName());
-	
+		
 		// problems with Nero
 		if(data.equalsIgnoreCase(ERR_COOK))
 			logger.log("WARNING: could not apply Nero, it returns the message \""+ERR_COOK+"\"");
@@ -346,10 +341,10 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 		else
 		{	ArticleLanguage language = article.getLanguage();
 			String originalText = article.getRawText();
-	
+			
 			LinkedList<EntityType> types = new LinkedList<EntityType>();
 			LinkedList<Integer> startPos1 = new LinkedList<Integer>();
-//		LinkedList<Integer> startPos2 = new LinkedList<Integer>();
+//			LinkedList<Integer> startPos2 = new LinkedList<Integer>();
 			LinkedList<String> tags = new LinkedList<String>();
 			
 			int i1 = 0;
@@ -474,7 +469,7 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 //					i1++;
 //				}
 //				while(i1<originalText.length() && (c1=='\n' || c1==' '));
-			
+				
 				// possibly consume all non-letter characters
 				c1 = originalText.codePointAt(i1);
 				while(i1<originalText.length() && !Character.isLetterOrDigit(c1))

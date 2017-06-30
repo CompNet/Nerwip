@@ -172,7 +172,7 @@ public abstract class AbstractDelegateRecognizer
 	private static final Map<ArticleLanguage,List<String>> PRONOUN_LISTS = new HashMap<ArticleLanguage,List<String>>();
 	
 	/**
-	 * Loads a set of language-dependant list of words.
+	 * Loads a set of language-dependent list of words.
 	 * This is only used during recognition.
 	 * 
 	 * @param prefix

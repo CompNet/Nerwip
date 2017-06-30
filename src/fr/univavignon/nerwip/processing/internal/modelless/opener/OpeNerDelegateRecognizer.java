@@ -489,7 +489,6 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 			logger.log("Processing part "+i+"/"+data.size()/2);
 			String originalText = it.next();
 			String openerAnswer = it.next();
-//System.out.println(openerAnswer);			
 			
 			try
 			{	// build DOM
