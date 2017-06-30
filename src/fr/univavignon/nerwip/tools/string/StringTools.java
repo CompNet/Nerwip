@@ -567,7 +567,7 @@ public class StringTools
 			// sentence too long for maxSize
 			if(length > maxSize)
 			{	// if only one sentence: must split using a lesser criterion
-				char candidates[] = {'\n','\r',';',',','|',':'};
+				char candidates[] = {'\n','\r','!','?',';',',','|',':','(',' '};
 				int i = 0;
 				int from;
 				while(i<candidates.length && start==prevEnd)
@@ -582,8 +582,7 @@ public class StringTools
 				}
 				// if none found, exception
 				if(start==prevEnd)
-				{	// TODO we could force-split between words, it's better than nothing
-					String sentence = text.substring(start,curEnd);
+				{	String sentence = text.substring(start,curEnd);
 					throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+(curEnd-start)+" chars) is too long and cannot be split for maxSize="+maxSize);
 				}
 				else

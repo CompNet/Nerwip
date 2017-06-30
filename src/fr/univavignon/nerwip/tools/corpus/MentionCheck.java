@@ -98,7 +98,7 @@ public class MentionCheck
 		logger.increaseOffset();
 		for(File file: articles)
 		{	String name = file.getName();
-			logger.log("Processing article '" + name + "'");
+			logger.log("Processing article \"" + name + "\"");
 			logger.increaseOffset();
 			Article article = Article.read(name);
 			String text = article.getRawText();
@@ -155,7 +155,7 @@ public class MentionCheck
 		logger.increaseOffset();
 		for(File file: articles)
 		{	String name = file.getName();
-			logger.log("Processing article '" + name + "'");
+			logger.log("Processing article \"" + name + "\"");
 			logger.increaseOffset();
 			Article article = Article.read(name);
 			String text = article.getRawText();
@@ -220,7 +220,7 @@ public class MentionCheck
 		logger.increaseOffset();
 		for(File file: articles)
 		{	String name = file.getName();
-			logger.log("Processing article '" + name + "'");
+			logger.log("Processing article \"" + name + "\"");
 			logger.increaseOffset();
 			Article article = Article.read(name);
 			String text = article.getRawText();

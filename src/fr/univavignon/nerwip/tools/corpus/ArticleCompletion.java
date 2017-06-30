@@ -106,7 +106,7 @@ public class ArticleCompletion
 		List<File> files = ArticleLists.getArticleList();
 		for(File file: files)
 		{	String name = file.getName();
-			logger.log("Processing article '" + name + "'");
+			logger.log("Processing article \"" + name + "\"");
 			logger.increaseOffset();
 
 			Article article = Article.read(name);
@@ -200,7 +200,7 @@ public class ArticleCompletion
 		List<File> files = ArticleLists.getArticleList();
 		for(File file: files)
 		{	String name = file.getName();
-			logger.log("Processing article '" + name + "'");
+			logger.log("Processing article \"" + name + "\"");
 			logger.increaseOffset();
 			Article article = Article.read(name);
 			
@@ -245,7 +245,7 @@ public class ArticleCompletion
 			String rawText = article.getRawText();
 			String sentence = rawText.substring(0,25);
 			
-			logger.log("Processing article "+name+": '"+sentence+"'");
+			logger.log("Processing article "+name+": \""+sentence+"\"");
 			article.setTitle(sentence);
 			article.write();
 		}
