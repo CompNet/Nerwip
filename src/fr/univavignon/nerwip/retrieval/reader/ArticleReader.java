@@ -26,9 +26,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -36,6 +38,9 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -258,7 +263,13 @@ public abstract class ArticleReader
 				catch(SocketTimeoutException e)
 				{	logger.log("Could not download the page (timeout="+timeOut+" ms) >> trying again");
 					timeOut = timeOut + 5000;
-					again = true;
+					again = timeOut<1*60*1000;	//2*60*1000;
+				}
+				catch(ConnectException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Could not download the page, the server seems to be offline.",
+						"Error message: "+e.getMessage()
+					));
 				}
 				catch(UnsupportedMimeTypeException e)
 				{	logger.log(Arrays.asList(
@@ -269,6 +280,24 @@ public abstract class ArticleReader
 				catch(HttpStatusException e)
 				{	logger.log(Arrays.asList(
 						"WARNING: Could not download the page, the server returned an error "+e.getStatusCode()+".",
+						"Error message: "+e.getMessage()
+					));
+				}
+				catch(UnknownHostException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Could not download the page, the IP address of the server could not be determined.",
+						"Error message: "+e.getMessage()
+					));
+				}
+				catch(SSLHandshakeException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Security error when connecting to the URL.",
+						"Error message: "+e.getMessage()
+					));
+				}
+				catch(SSLException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Security error when connecting to the URL.",
 						"Error message: "+e.getMessage()
 					));
 				}

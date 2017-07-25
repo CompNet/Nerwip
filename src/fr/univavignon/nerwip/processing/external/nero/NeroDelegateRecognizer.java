@@ -188,6 +188,7 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 			try
 			{	// write article raw text in a temp file
 				part = cleanText(part);
+//				System.out.println(part);
 				String tempPath = getTempFile(article,i);
 				File tempFile = new File(tempPath);
 				logger.log("Copying the article content in partial temp file "+tempFile);
@@ -218,7 +219,7 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 					BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream(),"ISO-8859-1"));
 					String line;
 					while((line=stdError.readLine()) != null)
-					{	System.out.println(line);
+					{	logger.log(line);
 						error = error + "\n" + line;
 					}
 				}
@@ -236,7 +237,9 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 					BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream(),"ISO-8859-1"));
 					String line;
 					while((line=stdInput.readLine()) != null)
-					{	System.out.println(line);
+					{	logger.log(line);
+						if(line.contains(ERR_COOK))
+							logger.log("WARNING: could not apply Nero, it returns the message \""+ERR_COOK+"\"");
 						res = res + "\n" + line;
 					}
 					tempRes.append(res);
@@ -276,7 +279,9 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	/**
 	 * Some characters must be cleaned from the text to be annotated by
 	 * Nero, otherwise it outputs additional characters which makes the
-	 * conversion much harder.
+	 * conversion much harder. Unusual characters or combination of known
+	 * characters can also break Nero's preprocessing and causes the 
+	 * {@link #ERR_COOK} error message.
 	 * 
 	 * @param text
 	 * 		Original text.
@@ -284,11 +289,60 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	 * 		Cleaned text.
 	 */
 	private String cleanText(String text)
-	{	String result = text;
-		
-		result = result.replaceAll("ë", "e");
-		result = result.replaceAll("û", "u");
-		result = result.replaceAll("ń", "n");
+	{	String result;
+		String prev = text;
+		String punctuation = "'()<>:,\\-!.\";&@%+";
+
+		do
+		{	result = prev;
+			
+//			prev = prev.replaceAll("Ắ", "A");
+//			prev = prev.replaceAll("ắ", "a");
+//			prev = prev.replaceAll("Ầ", "A");
+//			prev = prev.replaceAll("ầ", "a");
+//			
+//			prev = prev.replaceAll("Č", "C");
+//			prev = prev.replaceAll("č", "c");
+//			
+//			prev = prev.replaceAll("ë", "e");
+//			prev = prev.replaceAll("Ë", "E");
+//			prev = prev.replaceAll("ể", "e");
+//			prev = prev.replaceAll("Ể", "E");
+//			prev = prev.replaceAll("ệ", "e");
+//			prev = prev.replaceAll("Ệ", "E");
+//			
+//			prev = prev.replaceAll("ń", "n");
+//			prev = prev.replaceAll("Ń", "N");
+//			
+//			prev = prev.replaceAll("ộ", "o");
+//			prev = prev.replaceAll("Ộ", "O");
+//			
+//			prev = prev.replaceAll("Š", "S");
+//			prev = prev.replaceAll("š", "s");
+//			prev = prev.replaceAll("Ş", "S");
+//			prev = prev.replaceAll("ş", "s");
+//			
+//			prev = prev.replaceAll("û", "u");
+//			prev = prev.replaceAll("Û", "U");
+//			prev = prev.replaceAll("Ụ", "U");
+//			prev = prev.replaceAll("ụ", "u");
+//			prev = prev.replaceAll("Ữ", "U");
+//			prev = prev.replaceAll("ữ", "u");
+//			prev = prev.replaceAll("Ử", "U");
+//			prev = prev.replaceAll("ử", "u");
+//			
+//			prev = prev.replaceAll("Ž", "Z");
+//			prev = prev.replaceAll("ž", "z");
+
+			prev = StringTools.removeDiacritics(prev);
+			
+			prev = prev.replaceAll("\"", " ");
+			prev = prev.replaceAll("(["+punctuation+"])\\1+", "$1");
+			prev = prev.replaceAll("[\n\r](["+punctuation+"])", " $1");
+			prev = prev.replaceAll("^["+punctuation+"]", " ");
+			prev = prev.replaceAll("[\n\r] ", "  ");
+		}
+		while(!result.equals(prev));
 		
 		return result;
 	}
@@ -323,7 +377,7 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	// ERROR MESSAGES		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Error message returned by Nero when it cannot handle the input text */
-	private static final String ERR_COOK = "\nThe cook with the punctuation has failed: please contact the administrator";
+	private static final String ERR_COOK = "The cook with the punctuation has failed: please contact the administrator";
 	
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION		/////////////////////////////////////////////
@@ -333,7 +387,7 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	{	Mentions result = new Mentions(recognizer.getName());
 		
 		// problems with Nero
-		if(data.equalsIgnoreCase(ERR_COOK))
+		if(data.contains(ERR_COOK))
 			logger.log("WARNING: could not apply Nero, it returns the message \""+ERR_COOK+"\"");
 		else if(data.isEmpty())
 			logger.log("WARNING: Nero returned an empty string for this article");

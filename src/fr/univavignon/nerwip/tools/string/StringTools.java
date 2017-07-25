@@ -387,7 +387,8 @@ public class StringTools
 			tmp = tmp + output.substring(prevPos,pos);
 			prevPos = pos + 1;
 		}
-		tmp = tmp + output.substring(prevPos,output.length());
+		if(prevPos<output.length())
+			tmp = tmp + output.substring(prevPos,output.length());
 		output = tmp;
 		
 		return output;
@@ -474,7 +475,7 @@ public class StringTools
 	 * @return
 	 * 		Same string, but without the diacritics.
 	 */
-	public static String removeDiacritics(String text) 
+	public static String removeDiacritics(String text)
 	{	String result = 
 //		Normalizer.normalize(text, Form.NFD)
 		Normalizer.normalize(text, Form.NFKD)	// catches supposedly more diacritics
@@ -483,6 +484,12 @@ public class StringTools
 		// for some reason, certain characters are missed by the above instruction
 		result = result.replace('ł','l');		
 		result = result.replace('Ł','L');
+//		result = result.replace('Š','S');
+//		result = result.replace('š','s');
+//		result = result.replace('Č','C');
+//		result = result.replace('č','c');
+//		result = result.replace('Ž','Z');
+//		result = result.replace('ž','z');
 		
 		return result;
 	}

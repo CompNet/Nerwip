@@ -168,6 +168,7 @@ class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegateRecogni
 			boolean ignorePronouns = false;
 			boolean exclusionOn = false;
 			Nero nero = new Nero(neroTagger, flat, ignorePronouns, exclusionOn);
+//			nero.setCacheEnabled(false);
 			recognizers.add(nero);
 		}
 		
@@ -186,6 +187,7 @@ class StraightCombinerDelegateRecognizer extends AbstractCombinerDelegateRecogni
 			boolean ignorePronouns = false;
 			boolean exclusionOn = false;
 			OpeNer opeNer = new OpeNer(parenSplit, ignorePronouns, exclusionOn);
+//			opeNer.setCacheEnabled(false);
 			recognizers.add(opeNer);
 		}
 		

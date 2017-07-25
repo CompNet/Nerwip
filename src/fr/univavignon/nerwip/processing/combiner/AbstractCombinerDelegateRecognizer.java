@@ -105,8 +105,8 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 	// CACHING			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Enable/disable the caches of each individual
-	 * recognizer used by the combiner of this combiner.
+	 * Enables/disables the cache of each individual
+	 * recognizer used by the delegate of this combiner.
 	 * By default, the caches are set to the default
 	 * values of the individual recognizers.
 	 * 

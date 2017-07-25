@@ -44,6 +44,7 @@ import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.string.StringTools;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 import fr.univavignon.nerwip.tools.xml.XmlTools;
+import fr.univavignon.nerwip.data.article.Article;
 
 /**
  * This class represents an article, i.e. all
@@ -51,7 +52,7 @@ import fr.univavignon.nerwip.tools.xml.XmlTools;
  * 
  * @author Vincent Labatut
  */
-public class Article
+public class Article implements Comparable<Article>
 {
 	/**
 	 * Creates a new article.
@@ -450,7 +451,7 @@ public class Article
 	 * could complicate the task of the recognizers, or any subsequent 
 	 * processing.
 	 * <br/>
-	 * This method is called when reading an Article from file, and when
+	 * This method is called when reading an {@code Article} from file, and when
 	 * retrieving an article from the Web. It should not be called if
 	 * the article has already been annotated (be it manually or automatically), 
 	 * because it does <i>not</i> update the position of mentions in
@@ -908,6 +909,23 @@ public class Article
 	@Override
 	public String toString()
 	{	String result = "["+name+"] "+title;
+		return result;
+	}
+
+	@Override
+	public int compareTo(Article o) 
+	{	String title2 = o.title;
+		int result = title.compareTo(title2);
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) 
+	{	boolean result = false;
+		if(obj!=null && obj instanceof Article)
+		{	Article article = (Article)obj;
+			result = this.compareTo(article)==0;
+		}
 		return result;
 	}
 }

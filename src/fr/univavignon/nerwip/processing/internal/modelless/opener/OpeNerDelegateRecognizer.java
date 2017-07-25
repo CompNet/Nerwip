@@ -156,7 +156,7 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 	/** Mention recognizer URL */
 	private static final String RECOGNIZER_URL = SERVICE_URL + "/ner";
 	/** Maximal request size for OpenNer (the doc recomands 1000) */
-	private static final int MAX_SIZE = 1000;
+	private static final int MAX_SIZE = 600;
 	/** Sleep periods (in ms) */ // this is actually not needed
 	private static final long SLEEP_PERIOD = 100;
 	
@@ -174,19 +174,24 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 		{	logger.log("Processing OpeNer part #"+(i+1)+"/"+parts.size());
 			logger.increaseOffset();
 			String part = parts.get(i);
+			part = cleanText(part);
+//System.out.println(part);
 			
 			try
 			{	// tokenize the text
 				String tokenizedText = performTokenization(part);
 				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
+//System.out.println(tokenizedText);
 
 				// detect part-of-speech
 				String taggedText = performTagging(tokenizedText);
 				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
+//System.out.println(taggedText);
 				
 				// apply the constituent parser
 				String parsedText = performParsing(taggedText);
 				Thread.sleep(SLEEP_PERIOD); // sometimes not needed
+//System.out.println(parsedText);
 				
 				// perform the recognition
 				String nerText = performRecognition(parsedText);
@@ -201,19 +206,19 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 				result.add(part);
 				result.add(nerText);
 			}
-			catch (UnsupportedEncodingException e)
+			catch(UnsupportedEncodingException e)
 			{	//e.printStackTrace();
 				throw new ProcessorException(e.getMessage());
 			}
-			catch (ClientProtocolException e)
+			catch(ClientProtocolException e)
 			{	//e.printStackTrace();
 				throw new ProcessorException(e.getMessage());
 			}
-			catch (IOException e)
+			catch(IOException e)
 			{	//e.printStackTrace();
 				throw new ProcessorException(e.getMessage());
 			}
-			catch (InterruptedException e)
+			catch(InterruptedException e)
 			{	//e.printStackTrace();
 				throw new ProcessorException(e.getMessage());
 			}
@@ -225,6 +230,37 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 		return result;
 	}
 	
+	/**
+	 * Some punctuation combinations seem to cause problem to OpeNer. This
+	 * method replaces them by plain space characters.
+	 * 
+	 * @param text
+	 * 		Original text.
+	 * @return
+	 * 		Cleaned text.
+	 */
+	private String cleanText(String text)
+	{	String result;
+		String prev = text;
+		String punctuation = "'()<>:,\\-!.\";&@%+";
+		
+		do
+		{	result = prev;
+			
+			prev = prev.replaceAll("\"", " ");
+			prev = prev.replaceAll("@", " ");
+			prev = prev.replaceAll("(["+punctuation+"])\\1+", "$1");
+//			prev = prev.replaceAll("[\n\r](["+punctuation+"])", " $1");
+			prev = prev.replaceAll("^["+punctuation+"]", " ");
+//			prev = prev.replaceAll("[\n\r] ", "  ");
+			prev = prev.replaceAll("[\n\r]", " ");
+			prev = prev.replaceAll("- -", " - ");
+		}
+		while(!result.equals(prev));
+		
+		return result;
+	}
+
 	/**
 	 * Sends the original text to the OpenNer tokenizer,
 	 * as a first processing step.
@@ -314,7 +350,7 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 	private String performParsing(String taggedText) throws ProcessorException, ClientProtocolException, IOException
 	{	logger.log("Perform constituent parsing");
 		logger.increaseOffset();
-	
+		
 		// define HTTP message
 		logger.log("Define HTTP message for parser");
 		HttpPost method = new HttpPost(PARSER_URL);
@@ -381,21 +417,23 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 	 * 		Problem while accessing the OpenNer service.
 	 */
 	private String sendReceiveRequest(HttpPost method) throws ClientProtocolException, IOException, ProcessorException
-	{	// send to service
+	{	String result = "";
+		// send to service
 		logger.log("Send message to service");
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response = client.execute(method);
 		int responseCode = response.getStatusLine().getStatusCode();
 		logger.log("Response Code : " + responseCode);
 		if(responseCode!=200)
-		{	throw new ProcessorException("Received an error code ("+responseCode+") while accessing the service");
+		{	throw new ProcessorException("Received an error code ("+responseCode+") while accessing the service ("+response.getStatusLine().getReasonPhrase()+")");
 			//TODO maybe we should try again and issue a warning?
 			//logger.log("WARNING: received an error code ("+responseCode+") from the OpenNer service");
 		}
-		
-	    // read service answer
-	 	logger.log("Read the service answer");
-		String result = WebTools.readAnswer(response);
+		else
+		{	// read service answer
+			logger.log("Read the service answer");
+			result = WebTools.readAnswer(response);
+		}
 		
 		return result;
 	}
@@ -489,6 +527,7 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 			logger.log("Processing part "+i+"/"+data.size()/2);
 			String originalText = it.next();
 			String openerAnswer = it.next();
+//System.out.println(openerAnswer);			
 			
 			try
 			{	// build DOM
@@ -594,7 +633,7 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 				int startPos = -1;
 				int endPos = 0;
 				for(Element targetElt: targetElts)
-				{	// get the refered term id
+				{	// get the referred term id
 					String id = targetElt.getAttributeValue(ATT_ID);
 					// get the corresponding term element
 					Element termElt = termMap.get(id);
@@ -619,6 +658,11 @@ class OpeNerDelegateRecognizer extends AbstractModellessInternalDelegateRecogniz
 						}
 						else
 							offset = Integer.parseInt(offsetStr);
+						if(offset<endPos)
+						{	logger.log("WARNING: the offset of the element seems incorrect: using previous+1 instead "+wordElt.toString());
+							offset = endPos + 1;
+						
+						}
 						String lengthStr = wordElt.getAttributeValue(ATT_LENGTH);
 						int length = Integer.parseInt(lengthStr);
 						
