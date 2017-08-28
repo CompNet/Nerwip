@@ -2174,7 +2174,7 @@ public class Test
  * 
  * - Integrate the DBpedia tools of Sabrine (but what are they doing, exactly?).
  * 
- * - See if OpenNer can be adapted to process links (?) 
+ * - See if OpeNer can be adapted to process links (?) 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
  * - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.
@@ -2192,8 +2192,8 @@ public class Test
  *   using Wikimedia Foundation services.
  *   
  * - Once the entities have correctly been identified, we may want to switch to a more DB-oriented representation,
- *   in which we retrive a bunch of info describing each entity. This would make it easier to compare entities like
- *   places, when infering event similarity.
+ *   in which we retrieve a bunch of info describing each entity. This would make it easier to compare entities like
+ *   places, when inferring event similarity.
  *   
  *   - what about applying several resolution tools in sequence? e.g. anaphora detection + coreference resolution
  */
