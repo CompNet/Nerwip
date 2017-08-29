@@ -231,4 +231,22 @@ public class Link implements Comparable<Link>
 		int result = name.hashCode();
 		return result;
 	}
+
+	/////////////////////////////////////////////////////////////////
+	// STRING			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	@Override
+	public String toString()
+	{	String result = "";
+		if(source!=null)
+			result = result + source.getName();
+		else
+			result = result + "N/A";
+		result = result + " -> ";
+		if(target!=null)
+			result = result + target.getName();
+		else
+			result = result + "N/A";
+		return result;
+	}
 }

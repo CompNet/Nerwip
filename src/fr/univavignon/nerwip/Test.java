@@ -2157,22 +2157,26 @@ public class Test
 
 /* TODO
  * 
+ * - apply the resolvers and linkers to the whole corpus
+ *   - what about the combination of resolving/linking, how does this work?
+ *   - assess their quality, possibly make some corrections
+ * - assess the network extraction classes
+ * 
  * - network extraction
  *   	- generate the bipartite network persons/events
  *    	- semi-supervised tool to unify entity names:
  *        - propose names close in terms of string distance
  *        - and name containing another entity's name
- *      - check wht co-participation nets are so dense
+ *      - check why co-participation nets are so dense
  * 
  * - Make it possible to use the reference annotations instead of estimated ones, before applying resolution or linking
+ *   	>> just need a recognizer able to load the reference file
  * 
  * - Check if the already configured tools are able to return periods, in which case it should
  *   be stored in the mention (especially the specialized recognizers).
  * 
  * - Note: a resolver may add new mentions, e.g. to represent pronouns.
  *   (like a linker may add new entities)
- * 
- * - Integrate the DBpedia tools of Sabrine (but what are they doing, exactly?).
  * 
  * - See if OpeNer can be adapted to process links (?) 
  *   And all the other tools, too (OpenCalais is a candidate).
@@ -2195,7 +2199,8 @@ public class Test
  *   in which we retrieve a bunch of info describing each entity. This would make it easier to compare entities like
  *   places, when inferring event similarity.
  *   
- *   - what about applying several resolution tools in sequence? e.g. anaphora detection + coreference resolution
+ * - what about applying several resolution tools in sequence? e.g. anaphora detection + coreference resolution
+ *   >> this could be done as a specific resolver, combining other existing (and complementary) processors
  */
 
 /*

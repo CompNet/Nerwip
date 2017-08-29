@@ -286,7 +286,7 @@ public class Graph
 	/**
 	 * Retrieve the link between the specified nodes.
 	 * If no such link exist, it is first created
-	 * then returned. The nodes must exist.
+	 * then returned. The nodes must already exist, though.
 	 * 
 	 * @param sourceName
 	 * 		Name of the source node of the link.
@@ -305,7 +305,7 @@ public class Graph
 	/**
 	 * Retrieve the link between the specified nodes.
 	 * If no such link exist, it is first created
-	 * then returned. The nodes must exist.
+	 * then returned. The nodes must already exist.
 	 * 
 	 * @param source
 	 * 		Source node of the link.
