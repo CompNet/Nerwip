@@ -1,1 +1,0 @@
-This folder contains all log files produced by Nerwip. The purposes of this file is only to force Git to store this (normally initially empty) folder on the remote repository. 

@@ -1,1 +1,0 @@
-Before applying certain NER tool, you must download some packages from Figshare and put them here, as explained in the README file.

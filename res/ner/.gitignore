@@ -1,15 +1,2 @@
-/crfpp
-/custom
-/heideltime
-/illinois
-/liane
-/liatagg
-/lingpipe
-/nero
-/opennlp
-/stanford
-/subee
-/svmcombiner
-/tagen
-/treetagger
-/votecombiner
+*
+!.gitignore
