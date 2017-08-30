@@ -2163,6 +2163,8 @@ public class Test
  * - apply the resolvers and linkers to the whole corpus
  *   - what about the combination of resolving/linking, how does this work?
  *   - assess their quality, possibly make some corrections
+ *   - check wikidatalinker, it possible requires the same postprocessing as spotlight in order to create missing entities
+ *     (for unrecognized mentions)
  * - assess the network extraction classes
  * 
  * - network extraction
@@ -2204,6 +2206,10 @@ public class Test
  *   
  * - what about applying several resolution tools in sequence? e.g. anaphora detection + coreference resolution
  *   >> this could be done as a specific resolver, combining other existing (and complementary) processors
+ *   
+ * - Should we use a "unknown" entity type?
+ *   some tools are able to detect an entity but not always its type. still, the information is valuable.
+ *   such a type would allow taking advantage of this spatial aspect...
  */
 
 /*

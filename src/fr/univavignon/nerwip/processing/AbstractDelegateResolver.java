@@ -175,7 +175,7 @@ public abstract class AbstractDelegateResolver
 	 * @param entities
 	 * 		Current entities.
 	 */
-	protected void complete(Mentions mentions, Entities entities)
+	public void completeEntities(Mentions mentions, Entities entities)
 	{	List<AbstractMention<?>> mentionList = mentions.getMentions();
 		List<AbstractMention<?>> toBeRemoved = new ArrayList<AbstractMention<?>>();
 		
@@ -186,11 +186,11 @@ public abstract class AbstractDelegateResolver
 				if(type.isNamed())
 				{	String name = mention.getStringValue();
 					if(resolveHomonyms)
-					{	List<AbstractNamedEntity> list = entities.getNamedEntitiesByName(name);
+					{	List<AbstractNamedEntity> list = entities.getNamedEntitiesByNameType(name,type);
 						if(list.size()==1)
 							entity = list.get(0);
 						else if(list.size()>1)
-							logger.log("WARNING: several entities already have the same name >> creating a new one despite the user will to relate homonyms.");
+							logger.log("WARNING: several entities of the same type already have the same name >> creating a new one despite the user instruction to relate homonyms.");
 					}
 					if(entity==null)
 					{	entity = AbstractNamedEntity.buildEntity(-1, name, type);
@@ -211,7 +211,7 @@ public abstract class AbstractDelegateResolver
 				// if we have no entity, it means there's no value, so the mention should be removed
 				if(entity==null)
 					toBeRemoved.add(mention);
-				// otherwise, we set the entity
+				// otherwise, we associate the entity to the mention
 				else
 					mention.setEntity(entity);
 			}
@@ -220,6 +220,8 @@ public abstract class AbstractDelegateResolver
 		// remove the mentions with no entity
 		for(AbstractMention<?> mention: toBeRemoved)
 			mentions.removeMention(mention);
+		
+		// TODO if the same name is used for several entities of different types, we could merge them
 	}
 	
 	/////////////////////////////////////////////////////////////////

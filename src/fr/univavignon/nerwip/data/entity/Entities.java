@@ -401,7 +401,7 @@ public class Entities
 	}
 
 	/**
-	 * Returns a list of named entity with the specified name.
+	 * Returns a list of named entities with the specified name.
 	 *  
 	 * @param name
 	 * 		Name of the targeted entity, which may not be unique.
@@ -412,6 +412,31 @@ public class Entities
 	{	List<AbstractNamedEntity> result = namedEntitiesByName.get(name);
 		if(result==null)
 			result = new ArrayList<AbstractNamedEntity>();
+		else
+			result = new ArrayList<AbstractNamedEntity>(result);
+		return result;
+	}
+
+	/**
+	 * Returns a list of named entities with the specified name and type.
+	 *  
+	 * @param name
+	 * 		Name of the targeted entity, which may not be unique.
+	 * @param type
+	 * 		Type of the targeted entity.
+	 * @return
+	 * 		A list (possibly empty) of named entities with the specified name
+	 * 		and type.
+	 */
+	public List<AbstractNamedEntity> getNamedEntitiesByNameType(String name, EntityType type)
+	{	List<AbstractNamedEntity> result = getNamedEntitiesByName(name);
+		Iterator<AbstractNamedEntity> it = result.iterator();
+		while(it.hasNext())
+		{	AbstractNamedEntity entity = it.next();
+			EntityType entType = entity.getType();
+			if(!entType.equals(type))
+				it.remove();
+		}
 		return result;
 	}
 

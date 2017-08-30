@@ -436,11 +436,17 @@ public class SpotlightTools
 		
 		// init with the original text
 		result.append("<"+ELT_ANNOTATION+" "+ATT_TEXT+"=\""+text+"\">");
+		int textLength = text.length();
 		
 		for(AbstractMention<?> mention: mentions.getMentions())
-		{	String valueStr = mention.getStringValue();
+		{	// get the mention info
+			String valueStr = mention.getStringValue();
+			int length = valueStr.length();
 			int offset = mention.getStartPos() - startPos;
-			result.append("<"+ELT_SURFACE_FORM+" "+ATT_NAME+"=\""+valueStr+"\" "+ATT_OFFSET+"=\""+offset+"\"/>");
+			
+			// check if it belongs to the current part of the text
+			if(offset>=0 && offset+length<=textLength)
+				result.append("<"+ELT_SURFACE_FORM+" "+ATT_NAME+"=\""+valueStr+"\" "+ATT_OFFSET+"=\""+offset+"\"/>");
 		}
 
 		// close the main tag
@@ -451,7 +457,7 @@ public class SpotlightTools
 
 	/**
 	 * Converts the specified objects, used internally by the associated
-	 * recognizer, into the mention list used internally by Nerwip.  
+	 * processor, into the mention list used internally by Nerwip.  
 	 * 
 	 * @param data
 	 * 		List of SpotLight answers.
@@ -607,9 +613,10 @@ public class SpotlightTools
 		}
 		else
 		{	// get the type
-			type = typeList.iterator().next();
+			Iterator<EntityType> itt = typeList.iterator();
+			type = itt.next();
 			if(typeList.size()>1)
-				logger.log("WARNING: several different types for the same entity ("+typeList.toString()+") >> Selecting the first one ("+type+")");
+				logger.log("WARNING: several different types for the same entity ("+typeList.toString()+") >> Selecting (arbitrarily) the first one ("+type+")");
 			
 			// get the mention position
 			int startPos = prevSize + offset;
@@ -633,7 +640,27 @@ public class SpotlightTools
 					logger.log("Retrieved mention "+mention.toString());
 				}
 				if(entities!=null)
-				{	if(type.isNamed())
+				{	// checking type compatibility
+					EntityType mentionType = mention.getType();
+					if(!mentionType.equals(type))
+					{	logger.log("Type incompatible with that of the entity >> trying the other available ones");
+						logger.increaseOffset();
+						while(itt.hasNext() && !mentionType.equals(type))
+						{	type = itt.next();
+							logger.log("Checking "+type+"...");
+						}
+						logger.decreaseOffset();
+					}
+					// if no compatible type found, changing the type of the mention to reflect that of the entity
+					if(!mentionType.equals(type))
+					{	mentions.removeMention(mention);
+						mention = AbstractMention.build(type, mention.getStartPos(), mention.getEndPos(), mention.getSource(), mention.getStringValue(), language);
+						mentions.addMention(mention);
+						logger.log("Changing the type of the mention to fit the identified entity: "+mention);
+					}
+					
+					// named entity
+					if(type.isNamed())
 					{	AbstractNamedEntity entity = entities.getNamedEntityByExternalId(uri, KnowledgeBase.DBPEDIA_URI, type);
 						if(entity==null)
 						{	entity = AbstractNamedEntity.buildEntity(-1, surfaceForm, type);

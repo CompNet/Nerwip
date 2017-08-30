@@ -61,7 +61,7 @@ class SpotlightDelegateResolver extends AbstractModellessInternalDelegateResolve
 	 * @param minConf 
 	 * 		Minimal confidence for the recognized mentions (used only in case of recognition).
 	 * @param resolveHomonyms
-	 * 		Whether unresolved named entities should be resolved based
+	 * 		Whether unresolved named entities should be grouped based
 	 * 		on exact homonymy, or not.
 	 */
 	public SpotlightDelegateResolver(Spotlight spotlight, float minConf, boolean resolveHomonyms)

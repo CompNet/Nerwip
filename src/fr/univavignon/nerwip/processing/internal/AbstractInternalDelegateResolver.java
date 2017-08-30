@@ -144,7 +144,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 				prepareResolver();
 				T intRes = resolveCoreferences(article, mentions);
 				
-				// possibly record results as they are outputted (useful for debug)
+				// possibly record results as they are output (useful for debug)
 				if(resolver.doesOutputRawResults())
 				{	logger.log("Record raw "+resolverName+" results");
 					writeRawResults(article, intRes);
@@ -158,7 +158,7 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 				
 				// possibly complete entities, if some mentions do not have any
 				logger.log("Complete mentions/entities (in case of missing entities)");
-				complete(mentions,entities);
+				completeEntities(mentions,entities);
 				
 				// record the result using our xml format
 				logger.log("Record mentions using our XML format, including entity references");

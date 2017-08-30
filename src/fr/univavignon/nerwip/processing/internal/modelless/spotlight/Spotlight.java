@@ -60,7 +60,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	 * @param minConf 
 	 * 		Minimal confidence for the mentions returned by the recognizer.
 	 * @param resolveHomonyms
-	 * 		Whether unresolved named entities should be resolved based
+	 * 		Whether unresolved named entities should be grouped based
 	 * 		on exact homonymy, or not.
 	 */
 	public Spotlight(float minConf, boolean resolveHomonyms)
@@ -90,7 +90,7 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	 * @param recognizer
 	 * 		Processor used to recognize the entity mentions.
 	 * @param resolveHomonyms
-	 * 		Whether unresolved named entities should be resolved based
+	 * 		Whether unresolved named entities should be grouped based
 	 * 		on exact homonymy, or not.
 	 */
 	public Spotlight(InterfaceRecognizer recognizer, boolean resolveHomonyms)
