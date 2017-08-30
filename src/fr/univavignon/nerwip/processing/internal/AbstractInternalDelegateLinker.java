@@ -183,10 +183,11 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				else
 					logger.log("Linker not configured to revise coreference resolutions");
 				
-				// record results using our xml format
+				// record the result using our xml format
 				logger.log("Record mentions and entities using our XML format");
 				writeXmlResults(article,mentions,entities);
 				
+				// setup the result
 				int nbrEnt = entities.getEntities().size();
 				logger.log(linkerName+" over ["+article.getName()+"], processed "+nbrEnt+" entities");
 				result = new MentionsEntities(mentions, entities);

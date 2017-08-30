@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing.combiner.fullcombiner;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -117,6 +119,11 @@ public class FullCombiner extends AbstractProcessor implements InterfaceRecogniz
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	@Override
+	public void writeRecognizerResults(Article article, Mentions mentions) throws IOException 
+	{	delegateRecognizer.writeXmlResults(article, mentions);
 	}
 	
 	/////////////////////////////////////////////////////////////////

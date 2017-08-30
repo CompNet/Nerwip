@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -96,4 +98,17 @@ public interface InterfaceRecognizer extends InterfaceProcessor
 	 * 		Problem while recognizing the mentions. 
 	 */
 	public Mentions recognize(Article article) throws ProcessorException;
+
+	/**
+	 * Write the results obtained by this recognizer for the specified article,
+	 * as an XML file.
+	 * 
+	 * @param article
+	 * 		Concerned article.
+	 * @param mentions
+	 * 		List of the detected mentions.
+	 * @throws IOException
+	 * 		Problem while writing the file.
+	 */
+	public void writeRecognizerResults(Article article, Mentions mentions) throws IOException;
 }

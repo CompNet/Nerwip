@@ -288,7 +288,14 @@ public abstract class AbstractDelegateLinker
 	 * 		Problem while writing the file.
 	 */
 	public void writeXmlResults(Article article, Mentions mentions, Entities entities) throws IOException
-	{	// data files
+	{	// possibly write the results as a resolver, if this processor is both a resolver and a linker
+		InterfaceResolver resolver = linker.getResolver();
+		if(resolver==null)
+		{	resolver = (InterfaceResolver)linker;
+			resolver.writeResolverResults(article, mentions, entities);
+		}
+		
+		// data files
 		File mentionsFile = getMentionsXmlFile(article);
 		File entitiesFile = getEntitiesXmlFile(article);
 		

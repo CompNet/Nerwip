@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -28,6 +30,7 @@ import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
 
 /**
  * Interface implemented by all classes able to perform
@@ -113,4 +116,19 @@ public interface InterfaceResolver extends InterfaceProcessor
 	 * 		Problem while resolving co-occurrences. 
 	 */
 	public MentionsEntities resolve(Article article) throws ProcessorException;
+	
+	/**
+	 * Write the results obtained by this resolver for the specified article,
+	 * as an XML file.
+	 * 
+	 * @param article
+	 * 		Concerned article.
+	 * @param mentions
+	 * 		List of the detected mentions.
+	 * @param entities
+	 * 		List of the detected entities.
+	 * @throws IOException
+	 * 		Problem while writing the file.
+	 */
+	public void writeResolverResults(Article article, Mentions mentions, Entities entities) throws IOException;
 }

@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing.internal.modelbased.opennlp;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -109,6 +111,11 @@ public class OpenNlp extends AbstractProcessor implements InterfaceRecognizer
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	@Override
+	public void writeRecognizerResults(Article article, Mentions mentions) throws IOException 
+	{	delegateRecognizer.writeXmlResults(article, mentions);
 	}
 	
 	/////////////////////////////////////////////////////////////////

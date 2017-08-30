@@ -144,7 +144,7 @@ class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<Li
 		// if spotlight is also the recognizer
 		if(recognizer==null)
 			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, true, language);
-		// otherwise, if spotlight is only the resolver
+		// otherwise, if spotlight is only the resolver+linker
 		else
 			SpotlightTools.convertSpotlightToNerwip(data, linkerName, mentions, result, false, language);
 	}

@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing.internal.modelless.spotlight;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -25,6 +27,7 @@ import java.util.List;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
@@ -80,9 +83,9 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	 * invoke the latter separately. So, if the linker method of this class
 	 * is later invoked, the provided resolved data will simply be ignored:
 	 * only the result of the recognition will be fetched to Spotlight (and 
-	 * moreover, to the resolver, not the linker). Maybe the linker could
-	 * be invoked separately if we would use the Java local version of
-	 * Spotlight.
+	 * moreover, to the resolver, not the linker). <b>Note:</b> maybe the 
+	 * linker could be invoked separately by using the Java local version 
+	 * of Spotlight (instead of the Web service).
 	 * 
 	 * @param recognizer
 	 * 		Processor used to recognize the entity mentions.
@@ -166,7 +169,12 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
-
+	
+	@Override
+	public void writeRecognizerResults(Article article, Mentions mentions) throws IOException 
+	{	delegateRecognizer.writeXmlResults(article, mentions);
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// RESOLVER		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -202,7 +210,12 @@ public class Spotlight extends AbstractProcessor implements InterfaceRecognizer,
 	{	MentionsEntities result = delegateResolver.delegateResolve(article);
 		return result;
 	}
-
+	
+	@Override
+	public void writeResolverResults(Article article, Mentions mentions, Entities entities) throws IOException 
+	{	delegateResolver.writeXmlResults(article, mentions, entities);
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// LINKER		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

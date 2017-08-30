@@ -30,6 +30,7 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -115,6 +116,11 @@ public class LingPipe extends AbstractProcessor implements InterfaceRecognizer
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	@Override
+	public void writeRecognizerResults(Article article, Mentions mentions) throws IOException 
+	{	delegateRecognizer.writeXmlResults(article, mentions);
 	}
 	
 	/////////////////////////////////////////////////////////////////

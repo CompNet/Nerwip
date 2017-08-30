@@ -281,7 +281,14 @@ public abstract class AbstractDelegateResolver
 	 * 		Problem while writing the file.
 	 */
 	public void writeXmlResults(Article article, Mentions mentions, Entities entities) throws IOException
-	{	// data files
+	{	// possibly write the results as a resolver, if this processor is both a recognizer and a resolver
+		InterfaceRecognizer recognizer = resolver.getRecognizer();
+		if(recognizer==null)
+		{	recognizer = (InterfaceRecognizer)resolver;
+			recognizer.writeRecognizerResults(article, mentions);
+		}
+		
+		// data files
 		File entitiesFile = getEntitiesXmlFile(article);
 		File mentionsFile = getMentionsXmlFile(article);
 		

@@ -160,14 +160,13 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 				logger.log("Complete mentions/entities (in case of missing entities)");
 				complete(mentions,entities);
 				
-				// record mentions using our xml format
+				// record the result using our xml format
 				logger.log("Record mentions using our XML format, including entity references");
 				writeXmlResults(article,mentions,entities);
 
 				// setup the result
 				int nbrEnt = entities.getEntities().size();
 				logger.log(resolverName+" over ["+article.getName()+"], found "+nbrEnt+" distinct entities");
-
 				result = new MentionsEntities(mentions, entities);
 			}
 			

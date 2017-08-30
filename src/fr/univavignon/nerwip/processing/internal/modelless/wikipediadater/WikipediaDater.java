@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing.internal.modelless.wikipediadater;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -96,6 +98,12 @@ public class WikipediaDater extends AbstractProcessor implements InterfaceRecogn
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
 	}
+	
+	@Override
+	public void writeRecognizerResults(Article article, Mentions mentions) throws IOException 
+	{	delegateRecognizer.writeXmlResults(article, mentions);
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// RESOLVER			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing.combiner.svmbased;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -151,6 +153,11 @@ public class SvmCombiner extends AbstractProcessor implements InterfaceRecognize
 	public Mentions recognize(Article article) throws ProcessorException
 	{	Mentions result = delegateRecognizer.delegateRecognize(article);
 		return result;
+	}
+	
+	@Override
+	public void writeRecognizerResults(Article article, Mentions mentions) throws IOException 
+	{	delegateRecognizer.writeXmlResults(article, mentions);
 	}
 	
 	/////////////////////////////////////////////////////////////////

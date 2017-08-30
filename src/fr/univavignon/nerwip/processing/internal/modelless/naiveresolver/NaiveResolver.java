@@ -1,5 +1,7 @@
 package fr.univavignon.nerwip.processing.internal.modelless.naiveresolver;
 
+import java.io.IOException;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -25,8 +27,10 @@ import java.util.List;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.MentionsEntities;
+import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
@@ -88,17 +92,17 @@ public class NaiveResolver extends AbstractProcessor implements InterfaceResolve
 	public InterfaceRecognizer getRecognizer()
 	{	return recognizer;
 	}
+	@Override
+	public boolean isRecognizer()
+	{	return true;
+	}
+	
 	
 	/////////////////////////////////////////////////////////////////
 	// RESOLVER		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Delegate in charge of recognizing entity mentions */
 	protected NaiveResolverDelegateResolver delegateResolver;
-	
-	@Override
-	public boolean isRecognizer()
-	{	return true;
-	}
 	
 	@Override
 	public List<EntityType> getResolvedEntityTypes()
@@ -118,12 +122,14 @@ public class NaiveResolver extends AbstractProcessor implements InterfaceResolve
 		return result;
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// RESOLVER			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
 	@Override
 	public boolean isResolver()
 	{	return false;
+	}
+	
+	@Override
+	public void writeResolverResults(Article article, Mentions mentions, Entities entities) throws IOException 
+	{	delegateResolver.writeXmlResults(article, mentions, entities);
 	}
 	
 	/////////////////////////////////////////////////////////////////
