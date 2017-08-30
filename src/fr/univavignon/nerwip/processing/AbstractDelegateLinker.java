@@ -224,21 +224,27 @@ public abstract class AbstractDelegateLinker
 	 */
 	public File getEntitiesXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
-		String linkerFolder = getFolder();
-	
-		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
-		if(recognizer==null)
-			resultsFolder = resultsFolder + File.separator + linkerFolder;
-		else
-			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
-		
+		InterfaceRecognizer recognizer;
+		String recognizerFolder;
 		InterfaceResolver resolver = linker.getResolver();
+		String resolverFolder;
+		String linkerFolder = getFolder();
+		
 		if(resolver==null)
-			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		{	resolverFolder = linkerFolder;
+			recognizer = ((InterfaceResolver)linker).getRecognizer();
+		}
 		else
-			resultsFolder = resultsFolder + File.separator + resolver.getResolverFolder();
+		{	resolverFolder = resolver.getResolverFolder();
+			recognizer = resolver.getRecognizer();
+		}
 
-		resultsFolder = resultsFolder + File.separator + linkerFolder;
+		if(recognizer==null)
+			recognizerFolder = linkerFolder;
+		else
+			recognizerFolder = recognizer.getRecognizerFolder();
+		
+		resultsFolder = resultsFolder + File.separator + recognizerFolder + File.separator + resolverFolder + File.separator + linkerFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
 		
 		File result = new File(filePath);
@@ -256,21 +262,27 @@ public abstract class AbstractDelegateLinker
 	 */
 	public File getMentionsXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
-		String linkerFolder = getFolder();
-	
-		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
-		if(recognizer==null)
-			resultsFolder = resultsFolder + File.separator + linkerFolder;
-		else
-			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
-		
+		InterfaceRecognizer recognizer;
+		String recognizerFolder;
 		InterfaceResolver resolver = linker.getResolver();
+		String resolverFolder;
+		String linkerFolder = getFolder();
+		
 		if(resolver==null)
-			resultsFolder = resultsFolder + File.separator + linkerFolder;
+		{	resolverFolder = linkerFolder;
+			recognizer = ((InterfaceResolver)linker).getRecognizer();
+		}
 		else
-			resultsFolder = resultsFolder + File.separator + resolver.getResolverFolder();
-	
-		resultsFolder = resultsFolder + File.separator + linkerFolder;
+		{	resolverFolder = resolver.getResolverFolder();
+			recognizer = resolver.getRecognizer();
+		}
+		
+		if(recognizer==null)
+			recognizerFolder = linkerFolder;
+		else
+			recognizerFolder = recognizer.getRecognizerFolder();
+		
+		resultsFolder = resultsFolder + File.separator + recognizerFolder + File.separator + resolverFolder + File.separator + linkerFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
 		
 		File result = new File(filePath);

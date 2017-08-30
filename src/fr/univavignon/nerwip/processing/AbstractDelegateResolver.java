@@ -222,15 +222,16 @@ public abstract class AbstractDelegateResolver
 	 */
 	public File getEntitiesXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
+		InterfaceRecognizer recognizer = resolver.getRecognizer();
+		String recognizerFolder;
 		String resolverFolder = getFolder();
 		
-		InterfaceRecognizer recognizer = resolver.getRecognizer();
 		if(recognizer==null)
-			resultsFolder = resultsFolder + File.separator + resolverFolder;
+			recognizerFolder = resolverFolder;
 		else
-			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+			recognizerFolder = recognizer.getRecognizerFolder();
 		
-		resultsFolder = resultsFolder + File.separator + resolverFolder;
+		resultsFolder = resultsFolder + File.separator + recognizerFolder + File.separator + resolverFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
 		
 		File result = new File(filePath);
@@ -248,15 +249,16 @@ public abstract class AbstractDelegateResolver
 	 */
 	public File getMentionsXmlFile(Article article)
 	{	String resultsFolder = article.getFolderPath();
-		String resolverFolder = getFolder();
-	
 		InterfaceRecognizer recognizer = resolver.getRecognizer();
+		String recognizerFolder;
+		String resolverFolder = getFolder();
+
 		if(recognizer==null)
-			resultsFolder = resultsFolder + File.separator + resolverFolder;
+			recognizerFolder = resolverFolder;
 		else
-			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
+			recognizerFolder = recognizer.getRecognizerFolder();
 		
-		resultsFolder = resultsFolder + File.separator + resolverFolder;
+		resultsFolder = resultsFolder + File.separator + recognizerFolder + File.separator + resolverFolder;
 		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
 		
 		File result = new File(filePath);

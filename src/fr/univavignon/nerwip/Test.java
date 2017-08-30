@@ -176,13 +176,15 @@ public class Test
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
 //		testOpeNer(name);
+    	
 //		testSpotlightRecognizer(name);
 //		testSpotlightResolver(name);
-
+    	testSpotlightLinker(name);
+    	
 //		testTagEnRaw();
 
 //		testDateExtractor(url);
-		testHeidelTime(name);
+//		testHeidelTime(name);
 //		testIllinois(url);
 //		testLingPipe(url);
 //		testNero(name);
@@ -1362,7 +1364,7 @@ public class Test
 					ArticleRetriever retriever = new ArticleRetriever();
 					Article article = retriever.process(name);
 						
-					logger.log("Apply the recognizer");
+					logger.log("Apply the resolver");
 					resolver.resolve(article);
 					
 				logger.decreaseOffset();
@@ -1395,17 +1397,18 @@ public class Test
 
 		float minConf = 0.3f;
 		boolean resolveHomonyms = true;
-		Spotlight spotlight = new Spotlight(minConf,resolveHomonyms);
+//		Spotlight spotlight = new Spotlight(minConf,resolveHomonyms);
 //		InterfaceRecognizer recognizer = new OpenCalais(OpenCalaisLanguage.FR, true, true);
-//		Spotlight spotlight = new Spotlight(recognizer,resolveHomonyms);
-		spotlight.setOutputRawResults(true);
+		InterfaceRecognizer recognizer = new StraightCombiner();
+		Spotlight spotlight = new Spotlight(recognizer,resolveHomonyms);
+		spotlight.setOutputRawResults(false);
 		spotlight.setCacheEnabled(false);
 		
 		// only the specified article
-		spotlight.link(article);
+//		spotlight.link(article);
 		
 		// all the corpus
-//		testAllCorpusLinker(spotlight,0);
+		testAllCorpusLinker(spotlight,0);
 		
 		logger.decreaseOffset();
 	}
@@ -1484,7 +1487,7 @@ public class Test
 					ArticleRetriever retriever = new ArticleRetriever();
 					Article article = retriever.process(name);
 						
-					logger.log("Apply the recognizer");
+					logger.log("Apply the linker");
 					linker.link(article);
 					
 				logger.decreaseOffset();

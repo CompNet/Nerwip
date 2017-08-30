@@ -47,8 +47,8 @@ public class FileNames
 	/** Output folder */
 //	public final static String FO_OUTPUT = "out";	//actual folder
 
-	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
-//	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
+//	public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
+	public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
 //	public final static String FO_OUTPUT = "/home/vlabatut/eclipse/workspaces/Extraction/Nerwip/out";
 	
 //	public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
