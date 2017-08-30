@@ -159,7 +159,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 					logger.log("WARNING: This linker does not handle the language of this article ("+language+")");
 				
 				// apply the linker
-				logger.log("Detect the mentions");
+				logger.log("Link the entities");
 				prepareLinker();
 				T intRes = linkEntities(article, mentions, entities);
 				

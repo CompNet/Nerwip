@@ -289,7 +289,8 @@ public class SpotlightTools
 		List<String> convertedParts = new ArrayList<String>();
 		int pos = 0;
 		for(String part: parts)
-		{	String convertedPart = convertMentionsToSpotlight(part,mentions,pos);	
+		{	String cleanedPart = part.replace('"', ' ');
+			String convertedPart = convertMentionsToSpotlight(cleanedPart,mentions,pos);	
 			convertedParts.add(convertedPart);
 			pos = pos + part.length();
 		}
@@ -330,7 +331,7 @@ public class SpotlightTools
 	 * @throws ProcessorException
 	 * 		Problem while accessing the online service.
 	 */
-	protected static List<String> invokeService(List<String> parts, String url, List<NameValuePair> origParams) throws ProcessorException
+	private static List<String> invokeService(List<String> parts, String url, List<NameValuePair> origParams) throws ProcessorException
 	{	List<String> result = new ArrayList<String>();
 		
 		// then we process each part separately
@@ -359,6 +360,11 @@ public class SpotlightTools
 				logger.log("Read the spotlight answer");
 				String answer = WebTools.readAnswer(response);
 				
+				if(responseCode!=200)
+				{	System.out.println(part); //debug
+					throw new ProcessorException("Problem while invoking Spotlight: HTTP status="+responseCode);
+				}
+				
 				result.add(part);
 				result.add(answer);
 
@@ -366,19 +372,20 @@ public class SpotlightTools
 			}
 
 			catch (UnsupportedEncodingException e) 
-			{	// TODO Auto-generated catch block
-				e.printStackTrace();
+			{	e.printStackTrace();
+				throw new ProcessorException("Problem while invoking Spotlight: "+e.getMessage());
 			}
 			catch (ClientProtocolException e) 
-			{	// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) 
-			{	// TODO Auto-generated catch block
-				e.printStackTrace();
+			{	e.printStackTrace();
+				throw new ProcessorException("Problem while invoking Spotlight: "+e.getMessage());
+			} 
+			catch (IOException e) 
+			{	e.printStackTrace();
+				throw new ProcessorException("Problem while invoking Spotlight: "+e.getMessage());
 			}
 			catch (InterruptedException e)
-			{	// a problem occured while sleeping
-				e.printStackTrace();
+			{	e.printStackTrace();
+				throw new ProcessorException("Problem while invoking Spotlight: "+e.getMessage());
 			}
 			logger.decreaseOffset();
 		}
@@ -503,9 +510,11 @@ public class SpotlightTools
 			}
 			catch (JDOMException e)
 			{	e.printStackTrace();
+				throw new ProcessorException("Problem while converting Spotlight response: "+e.getMessage());
 			}
 			catch (IOException e)
 			{	e.printStackTrace();
+				throw new ProcessorException("Problem while converting Spotlight response: "+e.getMessage());
 			}
 		}
 		logger.decreaseOffset();

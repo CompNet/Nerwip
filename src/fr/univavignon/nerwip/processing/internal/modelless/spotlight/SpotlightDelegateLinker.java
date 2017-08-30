@@ -123,7 +123,8 @@ class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<Li
 	/////////////////////////////////////////////////////////////////
 	@Override
 	protected List<String> linkEntities(Article article, Mentions mentions, Entities entities) throws ProcessorException
-	{	List<String> result = SpotlightTools.invokeAnnotate(article, minConf);
+	{	//List<String> result = SpotlightTools.invokeAnnotate(article, minConf);
+		List<String> result = SpotlightTools.invokeDisambiguate(article, mentions);
 		return result;
 	}
 
