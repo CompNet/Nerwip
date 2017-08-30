@@ -128,7 +128,9 @@ public abstract class AbstractInternalDelegateResolver<T> extends AbstractDelega
 					mentions = recognizer.recognize(article);
 				// no recognizer means this resolver will also perform the recognition
 				else
-					mentions = new Mentions(resolverName);
+				{	mentions = new Mentions(resolverName);
+					recognizer = (InterfaceRecognizer)resolver;
+				}
 				
 				// check language
 				ArticleLanguage language = article.getLanguage();

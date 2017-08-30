@@ -134,17 +134,21 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				}
 				// no resolver means this linker will also perform the resolution
 				else
-					entities = new Entities(linkerName,linkerName);
+				{	entities = new Entities(linkerName,linkerName);
+					resolver = (InterfaceResolver)linker;
+				}
 				
 				// possibly get the mentions
 				if(mentions==null)
-				{	InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
+				{	InterfaceRecognizer recognizer = resolver.getRecognizer();
 					// recognize the mentions (or load them if previously cached...)
 					if(recognizer!=null)
 						mentions = recognizer.recognize(article);
 					// no recognizer means this linker will also perform the recognition
 					else
-						mentions = new Mentions(linkerName,linkerName);
+					{	mentions = new Mentions(linkerName,linkerName);
+						recognizer = (InterfaceRecognizer)resolver;
+					}
 				}
 				
 				// check language
@@ -159,7 +163,7 @@ public abstract class AbstractInternalDelegateLinker<T> extends AbstractDelegate
 				prepareLinker();
 				T intRes = linkEntities(article, mentions, entities);
 				
-				// possibly record entities as they are outputted (useful for debug)
+				// possibly record entities as they are output (useful for debug)
 				if(linker.doesOutputRawResults())
 				{	logger.log("Record raw "+linkerName+" results");
 					writeRawResults(article, intRes);

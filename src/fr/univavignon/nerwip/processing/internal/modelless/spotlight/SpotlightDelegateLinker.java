@@ -39,6 +39,7 @@ import fr.univavignon.nerwip.data.entity.Entities;
 import fr.univavignon.nerwip.data.entity.EntityType;
 import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
+import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateLinker;
@@ -134,7 +135,10 @@ class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<Li
 	{	ProcessorName linkerName = linker.getName();
 		ArticleLanguage language = article.getLanguage();
 		Entities result = new Entities(linkerName);
-		InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
+		InterfaceResolver resolver = linker.getResolver();
+		if(resolver==null)
+			resolver = (InterfaceResolver)linker;
+		InterfaceRecognizer recognizer = resolver.getRecognizer();
 		
 		// if spotlight is also the recognizer
 		if(recognizer==null)
@@ -149,7 +153,10 @@ class SpotlightDelegateLinker extends AbstractModellessInternalDelegateLinker<Li
 	/////////////////////////////////////////////////////////////////
 	@Override
     protected void writeRawResults(Article article, List<String> intRes) throws IOException
-    {	InterfaceRecognizer recognizer = linker.getResolver().getRecognizer();
+    {	InterfaceResolver resolver = linker.getResolver();
+		if(resolver==null)
+			resolver = (InterfaceResolver)linker;
+		InterfaceRecognizer recognizer = resolver.getRecognizer();
     	
     	// number of parts
     	int total;

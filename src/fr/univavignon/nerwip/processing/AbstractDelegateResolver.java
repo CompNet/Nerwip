@@ -96,6 +96,26 @@ public abstract class AbstractDelegateResolver
 	 */
 	public abstract String getFolder();
 	
+	/**
+	 * Returns the path of the folder containing the results of this
+	 * delegate linker, by considering the associated recognizer. It 
+	 * uses {@link #getFolder()}.
+	 * 
+	 * @return
+	 * 		Path of the appropriate folder.
+	 */
+	public String getFullFolder()
+	{	InterfaceRecognizer recognizer = resolver.getRecognizer();
+		if(recognizer==null)
+			recognizer = (InterfaceRecognizer)resolver;
+		
+		String result = "";
+		result = result + File.separator + recognizer.getRecognizerFolder();
+		result = result + File.separator + getFolder();
+		
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// ENTITY TYPES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -221,20 +241,11 @@ public abstract class AbstractDelegateResolver
 	 * 		A {@code File} object representing the associated XML result file.
 	 */
 	public File getEntitiesXmlFile(Article article)
-	{	String resultsFolder = article.getFolderPath();
-		InterfaceRecognizer recognizer = resolver.getRecognizer();
-		String recognizerFolder;
-		String resolverFolder = getFolder();
+	{	String path = article.getFolderPath()
+			+ File.separator + getFullFolder()
+			+ File.separator + FileNames.FI_ENTITY_LIST;
 		
-		if(recognizer==null)
-			recognizerFolder = resolverFolder;
-		else
-			recognizerFolder = recognizer.getRecognizerFolder();
-		
-		resultsFolder = resultsFolder + File.separator + recognizerFolder + File.separator + resolverFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_ENTITY_LIST;
-		
-		File result = new File(filePath);
+		File result = new File(path);
 		return result;
 	}
 	
@@ -248,20 +259,11 @@ public abstract class AbstractDelegateResolver
 	 * 		A {@code File} object representing the associated XML result file.
 	 */
 	public File getMentionsXmlFile(Article article)
-	{	String resultsFolder = article.getFolderPath();
-		InterfaceRecognizer recognizer = resolver.getRecognizer();
-		String recognizerFolder;
-		String resolverFolder = getFolder();
-
-		if(recognizer==null)
-			recognizerFolder = resolverFolder;
-		else
-			recognizerFolder = recognizer.getRecognizerFolder();
+	{	String path = article.getFolderPath()
+			+ File.separator + getFullFolder()
+			+ File.separator + FileNames.FI_MENTION_LIST;
 		
-		resultsFolder = resultsFolder + File.separator + recognizerFolder + File.separator + resolverFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
-		
-		File result = new File(filePath);
+		File result = new File(path);
 		return result;
 	}
 	
@@ -350,19 +352,11 @@ public abstract class AbstractDelegateResolver
 	 * 		A {@code File} object representing the associated raw result file.
 	 */
 	public File getRawFile(Article article)
-	{	String resultsFolder = article.getFolderPath();
-		String resolverFolder = getFolder();
+	{	String path = article.getFolderPath()
+			+ File.separator + getFullFolder()
+			+ File.separator + FileNames.FI_OUTPUT_TEXT;
 		
-		InterfaceRecognizer recognizer = resolver.getRecognizer();
-		if(recognizer==null)
-			resultsFolder = resultsFolder + File.separator + resolverFolder;
-		else
-			resultsFolder = resultsFolder + File.separator + recognizer.getRecognizerFolder();
-		
-		resultsFolder = resultsFolder + File.separator + resolverFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;
-		
-		File result = new File(filePath);
+		File result = new File(path);
 		return result;
 	}
 	
