@@ -289,7 +289,7 @@ class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelegateRecog
 	 * 		List of mentions whose positions must be fixed.
 	 * 
 	 * @deprecated 
-	 * 		We now directly use the objects outputed
+	 * 		We now directly use the objects output
 	 * 		by Stanford, and not a single String any more.
 	 */
 	@SuppressWarnings("unused")

@@ -562,10 +562,10 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 
 	/**
 	 * Produces a mention depending on the class 
-	 * outputed by the SVM, and the mentions estimated
+	 * output by the SVM, and the mentions estimated
 	 * by the selected recognizers. The mentions have
 	 * to vote to determine the exact position of the
-	 * mention, which was not outputted by the SVM.
+	 * mention, which was not output by the SVM.
 	 * <br/>
 	 * This method is used when using the mention-by-mention mode.
 	 * 
@@ -736,7 +736,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 
 	/**
 	 * Produces a mention type depending on the class 
-	 * outputed by the SVM.
+	 * output by the SVM.
 	 * <br/>
 	 * This method is used when using the word-by-word mode.
 	 * 
@@ -760,7 +760,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	
 	/**
 	 * Produces a boolean indicating if the class 
-	 * outputed by the SVM means the considerd word
+	 * output by the SVM means the considerd word
 	 * is at the beginning ({@code true} or inside
 	 * {@code false} of a mention.
 	 * <br/>
