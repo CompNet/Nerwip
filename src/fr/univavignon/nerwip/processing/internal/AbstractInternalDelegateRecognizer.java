@@ -130,7 +130,7 @@ public abstract class AbstractInternalDelegateRecognizer<T> extends AbstractDele
 				prepareRecognizer();
 				T intRes = detectMentions(article);
 				
-				// possibly record mentions as they are outputted (useful for debug)
+				// possibly record mentions as they are output (useful for debug)
 				if(recognizer.doesOutputRawResults())
 				{	logger.log("Record raw "+recognizerName+" results");
 					writeRawResults(article, intRes);
