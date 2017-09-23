@@ -41,6 +41,8 @@ public class HtmlNames
 	public final static String ATT_HREF = "href";
 	/** Html title attribute */
 	public final static String ATT_TITLE = "title";
+	/** Html itemprop attribute */
+	public final static String ATT_ITEMPROP = "itemprop";
 
 	/////////////////////////////////////////////////////////////////
 	// HTML ELEMENTS		/////////////////////////////////////////////

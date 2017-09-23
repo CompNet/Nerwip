@@ -21,6 +21,7 @@ package fr.univavignon.nerwip.tools.string;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.IOException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
@@ -36,21 +37,46 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Combinations;
 
+import com.google.common.base.Optional;
+import com.optimaize.langdetect.DetectedLanguage;
+import com.optimaize.langdetect.LanguageDetector;
+import com.optimaize.langdetect.LanguageDetectorBuilder;
+import com.optimaize.langdetect.i18n.LdLocale;
+import com.optimaize.langdetect.ngram.NgramExtractors;
+import com.optimaize.langdetect.profiles.LanguageProfile;
+import com.optimaize.langdetect.profiles.LanguageProfileReader;
+import com.optimaize.langdetect.text.CommonTextObjectFactories;
+import com.optimaize.langdetect.text.TextObject;
+import com.optimaize.langdetect.text.TextObjectFactory;
+
+import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
+import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+
 /**
- * This class contains various methods
- * used when processing strings.
+ * This class contains various methods used when processing strings.
+ * <br/>
+ * We consider a text to be clean if it contains only Latin letters
+ * (possibly with diacritics), digits, punctuation as defined in
+ * {@link #PUNCTUATION}, regular spaces and new lines {@code '\n'}.
+ * This holds for an article body: in addition, an article title must
+ * not contain new lines or double quotes {@code '"'}, so that
+ * we can include it in CSV files.
  *  
  * @author Vincent Labatut
  */
 public class StringTools
 {
 	/**
-	 * Tests the {@link #splitText(String, int)} method.
+	 * Tests various methods of this class.
 	 * 
 	 * @param args
 	 * 		No need.
+	 * 
+	 * @throws Exception
+	 * 		Whatever exception was thrown. 
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{	
 		// test split
 //		String text = "This is a first sentence. Cela semble marcher très bien."
@@ -89,12 +115,49 @@ public class StringTools
 		// test expr
 //		List<Integer> list = extractValues("1,2,3,8,9,10-18,56,98,2,6,8");
 //		System.out.println(list);
+		
+		// test rtl cleaning
+//		String str = removeNonLatinChars("sdsfsd fتثتqsdsq");
+//		System.out.println(str);
+		
+		// language detection
+//		String texts[] = 
+//		{	// french
+//			"Le Bureau des Légendes Saison 2 streaming vf HD Au sein de la DGSE (Direction Générale de la Sécurité Extérieure), un département appelé le Bureau des légendes (BDL) pilote à distance les agents les plus importants des services de renseignements français : les clandestins. En immersion dans des pays hostiles, leur mission consiste à repérer les personnes susceptibles d'être recrutées comme source de renseignements. Opérant dans l'ombre 'sous légende', c'est-à-dire sous une identité fabriquée de toutes pièces, ils vivent durant de longues années dans une duplicité permanente.De retour d'une mission clandestine de six années à Damas, notre héros - plus connu sous le nom de code Malotru - est promu au sein du BDL et reprend peu à peu pied dans sa vraie vie. Mais contrairement à toute procédure de sécurité, il semble ne pas abandonner sa légende et l'identité sous laquelle il vivait en Syrie.",
+//			// english
+//			"Washington is the 18th largest state with an area of 71,362 square miles (184,827 sq km), and the 13th most populous state with over 7 million people. Approximately 60 percent of Washington's residents live in the Seattle metropolitan area, the center of transportation, business, and industry along the Puget Sound region of the Salish Sea, an inlet of the Pacific Ocean consisting of numerous islands, deep fjords, and bays carved out by glaciers. The remainder of the state consists of deep temperate rainforests in the west, mountain ranges in the west, central, northeast and far southeast, and a semi-arid basin region in the east, central, and south, given over to intensive agriculture. Washington is the second most populous state on the West Coast and in the Western United States, after California. Mount Rainier, an active stratovolcano, is the state's highest elevation at almost 14,411 feet (4,392 m) and is the most topographically prominent mountain in the contiguous United States.",
+//			// spanish
+//			"Fue nombrado en homenaje al líder de las fuerzas estadounidenses de la Guerra de la Independencia de EE. UU. de 1776 y primer presidente de Estados Unidos, George Washington. Los nombres de muchas ciudades y condados de Estados Unidos rinden homenaje a diversos presidentes estadounidenses, pero el estado de Washington es el único estado en ser nombrado en homenaje a un presidente estadounidense. Para diferenciarla de la capital de Estados Unidos, Washington D. C., en Estados Unidos, se suele llamar 'estado de Washington' al estado y 'D. C.' (abreviatura de 'Distrito de Columbia', District of Columbia en inglés), 'ciudad federal' o 'ciudad de Washington' o a la capital nacional.",
+//			// german
+//			"Gemessen an seiner Fläche steht Washington unter den US-Bundesstaaten mit 184.665 Quadratkilometern an 18. Stelle, gemessen an seiner Bevölkerung von 6.724.540 Einwohnern an 13. Stelle (Stand 2010). Der Großteil der Bevölkerung konzentriert sich rund um den Puget Sound, eine etwa 150 km lange, inselreiche und weitverzweigte Bucht im Westen des Staates, an dem auch die Hauptstadt Olympia sowie Seattle, die mit Abstand größte Stadt, liegen."
+//		};
+//		for(String text: texts)
+//		{	System.out.println(text);
+//			ArticleLanguage lg = detectLanguage(text, false);
+//			System.out.println(">> "+lg);
+//		}
+		
+		// non-latin character removal
+		removeNonLatinLetters("Super Mario Bros. Anime Movie Restored (Best Quality!) . English subbed . スーパーマリオブラザーズ ピーチ姫救出大作戦!");
 	}
-
+	
+	/////////////////////////////////////////////////////////////////
+	// LOGGER		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Common object used for logging */
+	public static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+	
 	/////////////////////////////////////////////////////////////////
 	// COMPARISON		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Compares two strings while ignoring their case */
+	/** 
+	 * Compares two strings while ignoring their case as well as diacritics.
+	 * This method is meant to be applied on <i>clean</i> text.
+	 * <br/>
+	 * It is currently used to compare the surface forms of entities.
+	 * It is also used by the method {@link #compareCharsRelaxed(int, int)},
+	 * which is itself use during the post-processing of Nero results.
+	 */
 	public static final Comparator<String> COMPARATOR = new Comparator<String>()
 	{	@Override
 		public int compare(String s1, String s2)
@@ -107,10 +170,11 @@ public class StringTools
 			string2 = string2.toUpperCase(Locale.ENGLISH);
 			
 			// normalize double quotes
-			string1 = string1.replaceAll("«", "\"");
-			string2 = string2.replaceAll("«", "\"");
-			string1 = string1.replaceAll("»", "\"");
-			string2 = string2.replaceAll("»", "\"");
+			// >> there should be none of them after cleaning, now
+//			string1 = string1.replaceAll("«", "\"");
+//			string2 = string2.replaceAll("«", "\"");
+//			string1 = string1.replaceAll("»", "\"");
+//			string2 = string2.replaceAll("»", "\"");
 			
 			// compare
 			int result = string1.compareTo(string2);
@@ -120,7 +184,8 @@ public class StringTools
 	
 	/**
 	 * Compare the specified characters, using {@link #COMPARATOR},
-	 * i.e. ignoring case and diacritics.
+	 * i.e. ignoring case and diacritics. This method is meant to be
+	 * applied to <i>clean</i> text.
 	 * 
 	 * @param c1
 	 * 		First character to compare.
@@ -130,11 +195,7 @@ public class StringTools
 	 * 		Integer representing a classic comparison result.
 	 */
 	public static int compareCharsRelaxed(int c1, int c2)
-	{	
-//if(c1=='û')
-//	System.out.print("");
-		
-		String s1 = new String(new int[]{c1},0,1);
+	{	String s1 = new String(new int[]{c1},0,1);
 		String s2 = new String(new int[]{c2},0,1);
 		
 		int result = COMPARATOR.compare(s1, s2);
@@ -142,11 +203,14 @@ public class StringTools
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// CHARACTER TYPES	/////////////////////////////////////////////
+	// PUNCTUATION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Accepted punctuation marks, in a clean text */
+	private final static String PUNCTUATION = "'():,\\-!.\";&@%+";
+	
 	/**
-	 * Checks whether the specified character
-	 * is a punctuation mark or not.
+	 * Checks whether the specified character is a punctuation mark or not.
+	 * This holds only for <i>clean</i> texts (cf. the class documentation).
 	 * 
 	 * @param c
 	 * 		The character of interest.
@@ -154,8 +218,28 @@ public class StringTools
 	 * 		{@code true} iff the character is a punctuation mark.
 	 */
 	public static boolean isPunctuation(int c)
-	{	String string = new String(new int[]{c},0,1);
-		boolean result = Pattern.matches("\\p{Punct}", string);
+	{	int pos = PUNCTUATION.indexOf(c);
+		boolean result = pos>=0;
+		
+		return result;
+	}
+	
+	/**
+	 * Removes the punctuation as defined in {@link #PUNCTUATION}. It also
+	 * removes multiple consecutive regular spaces. The goal is to get a string
+	 * that is easy to tokenize.
+	 * <br/>
+	 * This method is meant to be applied on <i>clean</i> texts or titles 
+	 * (it does not handle fancy characters).
+	 * 
+	 * @param str
+	 * 		The text to process.
+	 * @return
+	 * 		The same text without any punctuation.
+	 */
+	public static String removePunctuation(String str)
+	{	String result = str.replaceAll("["+PUNCTUATION+"]"," ");
+		result = result.replaceAll(" +", " ");
 		return result;
 	}
 	
@@ -163,9 +247,10 @@ public class StringTools
 	// INITIALS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Changes the case of the specified String,
-	 * so that the first letter is upper case
-	 * and the rest is lower case.
+	 * Changes the case of the specified {@code String},
+	 * so that the first letter is upper case and the rest is lower case.
+	 * This can be used when handling proper names. The method does not
+	 * check if the string contains several distinct words.
 	 * 
 	 * @param string
 	 * 		String to process.
@@ -180,8 +265,7 @@ public class StringTools
 	}
 	
 	/**
-	 * Checks if the specified string
-	 * starts with an upercase character.
+	 * Checks if the specified string starts with an uppercase character.
 	 * 
 	 * @param string
 	 * 		The string of interest.
@@ -197,16 +281,39 @@ public class StringTools
 	/////////////////////////////////////////////////////////////////
 	// CLEAN			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Accepted punctuation marks */
-	private final static String PUNCTUATION = "'()<>:,\\-!.\";&@%+";
 	/** Regex used to detect HTML hyperlink tags */
 	private final static Pattern HL_PATTERN = Pattern.compile("</?a ?[^>]*>");
-	/** Regex used to detect non-latin letters */
-	private final static Pattern NL_PATTERN = Pattern.compile("[^"+PUNCTUATION+"\\sA-Za-z0-9]");
+	/** List of allowed "latin" characters, used when cleaning articles */
+	private final static List<Character> LATIN_CHARS = new ArrayList<Character>();
+	static
+	{	String latinStr = "";
+		// add lowercase letters
+		latinStr = latinStr + "abcdefghijklmnopqrstuvwxyz";
+		// add uppercase letters
+		latinStr = latinStr + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		// add digits
+		latinStr = latinStr + "0123456789";
+		// add (accepted) punctuation
+		latinStr = latinStr + PUNCTUATION;
+		// add all these chars to the list
+		for(int i=0;i<latinStr.length();i++)
+		{	char c = latinStr.charAt(i);
+			LATIN_CHARS.add(c);
+		}
+	}
 	
 	/**
 	 * Cleans the specified string, in order to remove characters
-	 * causing problems when detecting named entity mentions.
+	 * causing problems when detecting named entity mentions (or
+	 * other processing). This method is meant to be applied to
+	 * both raw and linked text (i.e. text containing hyperlinks or not).
+	 * <br/>
+	 * To summarize, we do the following:
+	 * <ul>
+	 * 	<li>Clean problems related to the variants of the space character, using {@link #cleanSpaces(String)}.</li>
+	 * 	<li>Move certain characters (such as punctuation and newlines) out of hyperlinks.</li>
+	 * 	<li>Clean the text using {@link #cleanInnerText(String)} (except URLs, which are kept as is).</li>
+	 * </ul>
 	 *    
 	 * @param input
 	 * 		The string to process.
@@ -216,11 +323,14 @@ public class StringTools
 	public static String cleanText(String input)
 	{	String output = input;
 		
+		// clean spaces
+		output = cleanSpaces(output);
+		
 		String previous = output;
 		do
 		{	previous = output;
 			
-			// move punctuation out of hyperlinks
+			// move certain punctuation marks and special characters out of hyperlinks
 			String punctuation = "[ \\n\\.,;]";
 			output = output.replaceAll("<a ([^>]*?)>("+punctuation+"*)([^<]*?)("+punctuation+"*)</a>","$2<a $1>$3</a>$4");
 			output = output.replaceAll("<a ([^>]*?)>(\\()([^<]*?)(\\))</a>","$2<a $1>$3</a>$4");
@@ -252,8 +362,26 @@ public class StringTools
 	}
 	
 	/**
-	 * Clean the text which is not in HTML hyperlink tags.
-	 * These method is used by {@link #cleanText(String)}.
+	 * Clean some text taken from an article, and which is not a URL.
+	 * This method is meant used only by {@link #cleanText(String)}.
+	 * <br/>
+	 * It involves numerous operations:
+	 * <ul>
+	 * 	<li>Replace all fancy whitespaces (except newlines, but including tabs) by regular spaces {@code ' '}.</li>
+	 * 	<li>Replace all fancy newlines by {@code '\n'}.</li>
+	 * 	<li>Replace the remaining multiple consecutive whitespaces by single ones.</li>
+	 * 	<li>Remove spaces at the end of lines.</li>
+	 * 	<li>Replace multiple consecutive punctuation marks by single ones.</li>
+	 * 	<li>Remove spaces before dots.</li>
+	 * 	<li>Remove various impossible combinations of punctuation marks, such as {@code "(;"} (which becomes {@code "("}.</li>
+	 * 	<li>Replace ligatures by two characters, e.g. {@code "Æ"} becomes {@code "Ae"}.</li>
+	 * 	<li>Normalize puntuation marks, e.g. all the variants of the hyphen are replaced by the regular {@code '-'}.</li>
+	 * 	<li>Remove spaces located right before closing parentheses or right after opening ones.</li>
+	 * 	<li>Replace 2 consecutive single quotes by a double quote.</li>
+	 * 	<li>Remove empty double quotes and parentheses.</li>
+	 * 	<li>Remove remaining characters which are neither punctuation, whitespaces, letters or digits.</li>
+	 * 	<li>Remove all remaining non-latin letters, using method {@link #removeNonLatinLetters(String)}.</li>
+	 * </ul>
 	 * 
 	 * @param input
 	 * 		The text to clean.
@@ -337,9 +465,9 @@ public class StringTools
 			// apostrophe and variants
 			output = output.replaceAll("[’’ʼ`´ʹʻʽʾʿˈˊʹ΄՚᾽᾿′Ꞌꞌ＇︐︑՝]","'");
 			// opening brackets
-			output = output.replaceAll("[(\\[{❴〈⧼❬❰❮〈〈⸤⸤｢｢「⌜⸢⟦⌈⌊⟆⟓⟬⟮⦃⦅⦇⦉⦋⦏⦑⦓⦕⦗⧘⧚❨❪❲⁅⸦⸨〔〖〘〚【（［｛]", "(");
+			output = output.replaceAll("[(\\[{❴〈⧼❬❰❮〈〈⸤⸤｢｢「⌜⸢⟦⌈⌊⟆⟓⟬⟮⦃⦅⦇⦉⦋⦏⦑⦓⦕⦗⧘⧚❨❪❲⁅⸦⸨〔〖〘〚【（［｛<]", "(");
 			// closing brackets
-			output = output.replaceAll("[)\\]}❵〉⧽❭❱❯〉〉⸥⸥｣｣」⌝⸣⟧⌉⌋⟅⟔⟭⟯⦄⦆⦈⦊⦌⦐⦒⦔⦖⦘⧙⧛❩❫❳⁆⸧⸩〕〗〙〛】）］｝]", ")");
+			output = output.replaceAll("[)\\]}❵〉⧽❭❱❯〉〉⸥⸥｣｣」⌝⸣⟧⌉⌋⟅⟔⟭⟯⦄⦆⦈⦊⦌⦐⦒⦔⦖⦘⧙⧛❩❫❳⁆⸧⸩〕〗〙〛】）］｝>]", ")");
 			// colons and variants
 			output = output.replaceAll("[:：ː]",":");
 			// coma and variants
@@ -363,9 +491,9 @@ public class StringTools
 		
 		// replace 2 consecutive single quotes by 1 double quote
 		output = output.replaceAll("''+", "\"");
-		// remove empty quotes
+		// remove empty double quotes
 		output = output.replaceAll("\"\"", "");
-	
+		
 		// remove spaces after opening parenthesis
 		output = output.replaceAll("\\( +", "(");
 		// remove spaces before closing parenthesis
@@ -373,46 +501,62 @@ public class StringTools
 		// remove empty parentheses
 		output = output.replaceAll("\\(\\)", "");
 		
-		// removes characters which are neither punctuation, whitespaces, letters or digits
+		// remove characters which are neither punctuation, whitespaces, letters or digits
 //		output = output.replaceAll("[^"+PUNCTUATION+"\\s\\p{L}\\d]", "");
 		output = output.replaceAll("[^"+PUNCTUATION+"\\s\\p{L}0-9]", "");
 		
-		// removes non-latin letters
-		String diacLess = removeDiacritics(output);
-		Matcher matcher = NL_PATTERN.matcher(diacLess);
-		String tmp = "";
-		int prevPos = 0;
-		while(matcher.find())
-		{	int pos = matcher.start();
-			tmp = tmp + output.substring(prevPos,pos);
-			prevPos = pos + 1;
-		}
-		if(prevPos<output.length())
-			tmp = tmp + output.substring(prevPos,output.length());
-		output = tmp;
+		// remove non-latin characters
+		output = removeNonLatinLetters(output);
 		
 		return output;
+	}
+	
+	/**
+	 * Clean a string representing an article title. It is cleaned like
+	 * regular text using {@link #cleanText(String)}, then new lines and
+	 * double quotes are removed (so that this string can be put in a CSV
+	 * file if needed).
+	 * 
+	 * @param title
+	 * 		Original raw title.
+	 * @return
+	 * 		Clean version of the title.
+	 */
+	public static String cleanTitle(String title)
+	{	String result = cleanText(title);
+		result = result.replaceAll("\"", "");
+		result = result.replaceAll("\\n", " ");
+		result = result.replaceAll(" +"," ");
+		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// SPACES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Process the specified string in order to remove
-	 * space character-related problems.
+	 * Process the specified string in order to remove space character-related problems. 
+	 * All whitespaces are replaced by standard spaces ' ', excepted '\n'. All new line
+	 * character variants are replaced by '\n'. All consecutive redundant whitespaces are 
+	 * removed. The text is also trimed (leading and trailing whitespaces are removed).
+	 * <br/>
+	 * This method is meant to be used only by {@link #cleanText(String)}.
 	 *  
 	 * @param string
 	 * 		The original string (not modified).
 	 * @return
 	 * 		Modified version of the input string.
 	 */
-	public static String cleanSpaces(String string)
+	private static String cleanSpaces(String string)
 	{	String result = string;
 		
 		if(result!=null)
-		{	// replace all white spaces by regular spaces
-			result = result.replaceAll("\\s", " ");
+		{	// replace all carriage return chars by newline ones
+			result = result.replace('\r', '\n');
+			// replace all consecutive new line chars by a single one //TODO should we accept "\n\n" to get paragraphs?
+			result = result.replaceAll("\\n+", "\n");
 			
+			// replace all white spaces (except newline chars) by regular spaces
+			result = result.replaceAll("[\\s^\\n]", " ");
 			// replace all consecutive spaces by a single one
 			result = result.replaceAll(" +", " ");
 			
@@ -424,10 +568,10 @@ public class StringTools
 	}
 
 	/**
-	 * Process the specified string in order to replace
-	 * non-standard whitespace characters. The number
-	 * of characters in the text is not modified
-	 * (unlike {@link #cleanSpaces(String)}).
+	 * Process the specified string in order to <i>replace</i> non-standard 
+	 * whitespace characters. The number of characters in the text is 
+	 * not modified (unlike {@link #cleanSpaces(String)}). Tabs and new lines
+	 * are not affected.
 	 *  
 	 * @param string
 	 * 		The original string (not modified).
@@ -469,6 +613,10 @@ public class StringTools
 	 * <br/>
 	 * Taken from <a href="http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string">
 	 * http://stackoverflow.com/questions/15190656/easy-way-to-remove-utf-8-accents-from-a-string</a>.
+	 * <br/>
+	 * Some exotic characters are treated separately: they look like they possess
+	 * some diacritics (e.g. 'Ł'), but still they are not affected by Java's normalization. 
+	 * So we process them manually.
 	 * 
 	 * @param text
 	 * 		String to process, containing diacritics.
@@ -494,13 +642,81 @@ public class StringTools
 		return result;
 	}
 	
+	/**
+	 * Removes all the non-latin letters, as they generally not supported
+	 * by the recognizers (or other processors).
+	 * <br/>
+	 * This method is meant to be used only by {@link #cleanInnerText(String)}.
+	 * 
+	 * @param input
+	 * 		Original string.
+	 * @return
+	 * 		Same string, without the non-latin letters.
+	 */
+	private static String removeNonLatinLetters(String input)
+	{	logger.increaseOffset();
+//		boolean disp = input.length()>100000;
+		String result = input;
+		
+		if (input!=null)
+		{	// first version, regex-based: problems when dealing with bidirectional texts (eg english + arabic)
+//			String diacLess = removeDiacritics(result);
+//			Matcher matcher = NL_PATTERN.matcher(diacLess);
+//			String tmp = "";
+//			int prevPos = 0;
+//			while(matcher.find())
+//			{	int pos = matcher.start();
+//				tmp = tmp + result.substring(prevPos,pos);
+//				prevPos = pos + 1;
+//			}
+//			if(prevPos<result.length())
+//				tmp = tmp + result.substring(prevPos,result.length());
+//			result = tmp;
+			
+			// second version: brute force, but seems more robust
+//			String diacLess = removeDiacritics(result);			
+//			StringBuffer tmp = new StringBuffer();
+//			for(int i=0;i<diacLess.length();i++) 
+//			{	
+////				if(disp && (i+1)%50000==0)
+////					logger.log("Processing char "+(i+1)+"/"+diacLess.length());
+//				
+//				char c = diacLess.charAt(i);
+//				if(LATIN_CHARS.contains(c))
+//				{	char cc = input.charAt(i);
+//					tmp.append(cc);
+//				}
+//	        }
+//			result = tmp.toString();
+			/*  pb when dealing with non-latin diacritics.
+			 * 	example : "Super Mario Bros. Anime Movie Restored (Best Quality!) . English subbed . スーパーマリオブラザーズ ピーチ姫救出大作戦!"
+			 */
+			
+			// third version: even bruter force
+			StringBuffer tmp = new StringBuffer();
+			for(int i=0;i<result.length();i++) 
+			{	String charStr = Character.toString(result.charAt(i));
+				String diacLess = removeDiacritics(charStr);
+				char c = diacLess.charAt(0);
+				if(LATIN_CHARS.contains(c))
+				{	char cc = input.charAt(i);
+					tmp.append(cc);
+				}
+	        }
+			result = tmp.toString();
+	    }
+		
+		logger.decreaseOffset();
+		 return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// SPLIT			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** 
 	 * Pattern used to detect sentences when splitting text 
-	 * (taken from Ruchira Gayan Ranaweera's answer from 
-	 * http://stackoverflow.com/questions/21430447/how-to-split-paragraphs-into-sentences) 
+	 * (taken from Ruchira Gayan Ranaweera's answer on 
+	 * <a href="http://stackoverflow.com/questions/21430447/how-to-split-paragraphs-into-sentences">StackOverflow</a>) 
 	 */ 
 	private static final Pattern SENTENCE_PATTERN = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)", Pattern.MULTILINE);
     
@@ -574,7 +790,7 @@ public class StringTools
 			// sentence too long for maxSize
 			if(length > maxSize)
 			{	// if only one sentence: must split using a lesser criterion
-				char candidates[] = {'\n','\r','!','?',';',',','|',':','(',' '};
+				char candidates[] = {'\n','\r','!','?',':',';',',','"','\'','|','(',' ','-','.'};
 				int i = 0;
 				int from;
 				while(i<candidates.length && start==prevEnd)
@@ -587,10 +803,13 @@ public class StringTools
 					while(from!=-1 && (from-start)<maxSize);
 					i++;
 				}
-				// if none found, exception
+					
+				// if none found...
 				if(start==prevEnd)
-				{	String sentence = text.substring(start,curEnd);
-					throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+(curEnd-start)+" chars) is too long and cannot be split for maxSize="+maxSize);
+				{	//String sentence = text.substring(start,curEnd);
+					//throw new IllegalArgumentException("The sentence \""+sentence+"\" ("+(curEnd-start)+" chars) is too long and cannot be split for maxSize="+maxSize);
+					// just one single word? there must a problem... cut anyway!
+					prevEnd = start + maxSize;
 				}
 				else
 					prevEnd ++;
@@ -744,6 +963,89 @@ public class StringTools
 				// we also try only the lastnames
 				if(!result.contains(lastnames))
 					result.add(lastnames);
+			}
+		}
+		
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LANGUAGE			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Object used to detect the language of a text */
+	private static LanguageDetector LANGUAGE_DETECTOR = null;
+	/** Object used by the language detector for long texts */
+	private static TextObjectFactory TEXT_FACTORY_LONG = null;
+	/** Object used by the language detector for short texts */
+	private static TextObjectFactory TEXT_FACTORY_SHORT = null;
+
+	/**
+	 * Detects the language in the specified text, and return the corresponding enum value.
+	 * If the language does not correspond to one of the enumerated languages, then the
+	 * method returns {@code null}.
+	 * 
+	 * @param text
+	 * 		The text whose language we want to detect. 
+	 * @param shortText
+	 * 		Whether the text is short ({@code true}) or long ({@code false}). 
+	 * @return 
+	 * 		The {@link ArticleLanguage} value associated to the detected language,
+	 * 		or {@code null} if the language could be recognized or is not enumerated.
+	 *  
+	 * @throws IOException 
+	 * 		Problem while initializing the library.
+	 */
+	public static ArticleLanguage detectLanguage(String text, boolean shortText) throws IOException
+	{	ArticleLanguage result = null;
+		
+		if(text!=null && !text.isEmpty())
+		{	// init language detector
+			if(LANGUAGE_DETECTOR==null)
+			{	List<LanguageProfile> languageProfiles = new LanguageProfileReader().readAllBuiltIn();
+				LANGUAGE_DETECTOR = LanguageDetectorBuilder.create(NgramExtractors.standard())
+					.withProfiles(languageProfiles)
+					.build();
+			}
+			// init text factory
+			TextObjectFactory textObjectFactory;
+			if(shortText)
+			{	if(TEXT_FACTORY_SHORT==null)
+					TEXT_FACTORY_SHORT = CommonTextObjectFactories.forDetectingShortCleanText();
+				textObjectFactory = TEXT_FACTORY_SHORT;
+			}
+			else
+			{	if(TEXT_FACTORY_LONG==null)
+				TEXT_FACTORY_LONG = CommonTextObjectFactories.forDetectingOnLargeText();
+				textObjectFactory = TEXT_FACTORY_LONG;
+			}
+			
+			// process the text
+			TextObject textObject = textObjectFactory.forText(text);
+			Optional<LdLocale> lang = LANGUAGE_DETECTOR.detect(textObject);
+			LdLocale loc = null;
+			if(lang.isPresent())
+				loc = lang.get();
+			else
+			{	List<DetectedLanguage> dls = LANGUAGE_DETECTOR.getProbabilities(textObject);
+				double maxProba = 0;
+				for(DetectedLanguage dl: dls)
+				{	double proba = dl.getProbability();
+					if(proba>maxProba)
+					{	loc = dl.getLocale();
+						maxProba = proba;
+					}
+				}
+			}
+			if(loc!=null)
+			{	String iso = loc.getLanguage();
+				switch(iso)
+				{	case "fr": 
+						result = ArticleLanguage.FR;
+						break;
+					case "en": 
+						result = ArticleLanguage.EN;
+						break;
+				}
 			}
 		}
 		

@@ -64,6 +64,7 @@ import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.freebase.FbCommonTools;
 import fr.univavignon.nerwip.tools.freebase.FbTypeTools;
 import fr.univavignon.nerwip.tools.html.HtmlNames;
+import fr.univavignon.nerwip.tools.string.StringTools;
 
 /**
  * From a specified URL, this class retrieves a Wikipedia page,
@@ -1038,7 +1039,7 @@ public class WikipediaReader extends ArticleReader
 			// get its title
 			Element firstHeadingElt = document.getElementsByAttributeValue(HtmlNames.ATT_ID,ID_TITLE).get(0);
 			String title = firstHeadingElt.text();
-			title = removeGtst(title);
+			title = StringTools.cleanTitle(title);
 			logger.log("Get title: "+title);
 			
 			// get raw and linked texts

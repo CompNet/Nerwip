@@ -2157,7 +2157,7 @@ public class Test
 	}
 }
 
-// TODO recommencer en divisiant en plus petits morceaux, pour idenfitier plus précisément le pb
+// TODO ATTENTION charger/sauver chaque texte, afin de refaire la normalisation (faire des vérifs, notamment sur saut de ligne)
 
 /* TODO
  * 
