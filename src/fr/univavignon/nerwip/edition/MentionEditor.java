@@ -3331,7 +3331,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 * specified article.
 	 * 
 	 * @param articlePath
-	 * 		File path of the targetted article.
+	 * 		File path of the targeted article.
 	 * 	
 	 * @throws IOException 
 	 * 		Problem while accessing the files.

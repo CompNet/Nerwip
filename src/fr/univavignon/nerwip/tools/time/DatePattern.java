@@ -37,7 +37,7 @@ public abstract class DatePattern
 	 * Builds a new pattern processor.
 	 * 
 	 * @param pattern
-	 * 		Targetted pattern.
+	 * 		targeted pattern.
 	 */
 	public DatePattern(String pattern)
 	{	this.pattern = Pattern.compile(pattern);

@@ -184,7 +184,7 @@ public abstract class ArticleReader
 	 * @param language
 	 * 		Language of the retrieved article, or {@code null} if it is unknown.
 	 * @return
-	 * 		An Article object corresponding to the targetted URL.
+	 * 		An Article object corresponding to the targeted URL.
 	 * 
 	 * @throws ReaderException
 	 * 		Problem while retrieving the article.
@@ -206,7 +206,7 @@ public abstract class ArticleReader
 	 * @param language
 	 * 		Language of the retrieved article, or {@code null} if it is unknown.
 	 * @return
-	 * 		An Article object corresponding to the targetted URL.
+	 * 		An Article object corresponding to the targeted URL.
 	 * 
 	 * @throws ReaderException
 	 * 		Problem while retrieving the article.
