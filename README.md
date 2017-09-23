@@ -94,7 +94,6 @@ Here are the dependencies for Nerwip. All of them are included in the Eclipse pr
   * [Nero](https://nero.irisa.fr/)
   * [Stanford Named Entity Recognizer](http://nlp.stanford.edu/software/CRF-NER.shtml)
   * [TagEN](http://gurau-audibert.hd.free.fr/josdblog/wp-content/uploads/2008/03/TagEN.tar.gz)
-  * [Thomson Reuters OpenCalais](http://www.opencalais.com/)
 * Other libraries:
   * [Apache Commons](http://commons.apache.org/)
   * [Apache HttpComponents](https://hc.apache.org/downloads.cgi)
@@ -111,7 +110,7 @@ Here are the dependencies for Nerwip. All of them are included in the Eclipse pr
   * [Wapiti](http://wapiti.limsi.fr/), needed by Nero (again, see its `README` file in folder `res`, for instructions).
 
 The project also makes use of several Web services:
-* [Reuters OpenCalais](http://new.opencalais.com/)
+* [Thomson Reuters OpenCalais](http://new.opencalais.com/)
 * [OpeNER](http://www.opener-project.eu/)
 * [DBpedia Spotlight](https://github.com/dbpedia-spotlight/dbpedia-spotlight)
 
