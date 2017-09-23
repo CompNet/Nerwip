@@ -28,6 +28,8 @@
 	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar" sourcepath="lib/jdom-2.0.6-sources.jar"/>
 	<classpathentry kind="lib" path="lib/nerc-fr-bin.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.6.1.jar" sourcepath="lib/commons-math3-3.6.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/guava-23.0.jar" sourcepath="lib/guava-23.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/language-detector-0.6.jar" sourcepath="lib/language-detector-0.6-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 	<referencedentry kind="lib" path="lib/htmlparser.jar" sourcepath="lib/htmlparser-src.zip"/>
 </classpath>

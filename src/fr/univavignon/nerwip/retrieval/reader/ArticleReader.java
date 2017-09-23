@@ -53,12 +53,21 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.nerwip.retrieval.reader.journals.LeMondeReader;
+import fr.univavignon.nerwip.retrieval.reader.journals.LiberationReader;
 import fr.univavignon.nerwip.retrieval.reader.wikipedia.WikipediaReader;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.html.HtmlNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.nerwip.retrieval.reader.GenericReader;
+import fr.univavignon.nerwip.retrieval.reader.journals.LExpressReader;
+import fr.univavignon.nerwip.retrieval.reader.journals.LaProvenceReader;
+import fr.univavignon.nerwip.retrieval.reader.journals.LaVoixDuNordReader;
+import fr.univavignon.nerwip.retrieval.reader.journals.LeFigaroReader;
+import fr.univavignon.nerwip.retrieval.reader.journals.LeParisienReader;
+import fr.univavignon.nerwip.retrieval.reader.journals.LePointReader;
 
 /**
  * All classes automatically getting articles
@@ -84,15 +93,31 @@ public abstract class ArticleReader
 	public static ArticleReader buildReader(String url)
 	{	ArticleReader result;
 		
+		// wikipedia article
 		if(url.contains(WikipediaReader.DOMAIN))
 			result = new WikipediaReader();
-//		else if(url.contains(LeMondeReader.DOMAIN))
-//			result = new LeMondeReader();
-//		else if(url.contains(LiberationReader.DOMAIN))
-//			result = new LiberationReader();
+		
+		// handled french journal
+		else if(url.contains(LaProvenceReader.DOMAIN))
+			result = new LaProvenceReader();
+		else if(url.contains(LaVoixDuNordReader.DOMAIN))
+			result = new LaVoixDuNordReader();
+		else if(url.contains(LeFigaroReader.DOMAIN))
+			result = new LeFigaroReader();
+		else if(url.contains(LeMondeReader.DOMAIN))
+			result = new LeMondeReader();
+		else if(url.contains(LeParisienReader.DOMAIN))
+			result = new LeParisienReader();
+		else if(url.contains(LePointReader.DOMAIN))
+			result = new LePointReader();
+		else if(url.contains(LExpressReader.DOMAIN))
+			result = new LExpressReader();
+		else if(url.contains(LiberationReader.DOMAIN))
+			result = new LiberationReader();
+		
+		// generic reader for the other cases
 		else
-//			result = new GenericReader();
-			result = null;
+			result = new GenericReader();
 		
 		return result;
 	}
