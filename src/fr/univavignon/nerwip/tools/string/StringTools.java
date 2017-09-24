@@ -138,7 +138,11 @@ public class StringTools
 //		}
 		
 		// non-latin character removal
-		removeNonLatinLetters("Super Mario Bros. Anime Movie Restored (Best Quality!) . English subbed . スーパーマリオブラザーズ ピーチ姫救出大作戦!");
+//		removeNonLatinLetters("Super Mario Bros. Anime Movie Restored (Best Quality!) . English subbed . スーパーマリオブラザーズ ピーチ姫救出大作戦!");
+		
+		// clean spaces
+		String res = cleanSpaces("fdssd\n dsfsdf\nsd dsf sdfsd fdsf    sdfsdf  sdfsd\n\n\nsdfsdf");
+		System.out.println(res);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -286,7 +290,7 @@ public class StringTools
 	/** List of allowed "latin" characters, used when cleaning articles */
 	private final static List<Character> LATIN_CHARS = new ArrayList<Character>();
 	static
-	{	String latinStr = "";
+	{	String latinStr = " \n";
 		// add lowercase letters
 		latinStr = latinStr + "abcdefghijklmnopqrstuvwxyz";
 		// add uppercase letters
@@ -408,7 +412,7 @@ public class StringTools
 		// remove spaces at the end of lines 
 		output = output.replaceAll(" \\n", "\n");
 		
-		// replace multiple space-separated punctuations by single ones 
+		// replace multiple space-separated punctuation marks by single ones 
 //			output = output.replaceAll("; ;", ";");
 //			output = output.replaceAll(", ,", ",");
 //			output = output.replaceAll(": :", ":");
@@ -556,7 +560,7 @@ public class StringTools
 			result = result.replaceAll("\\n+", "\n");
 			
 			// replace all white spaces (except newline chars) by regular spaces
-			result = result.replaceAll("[\\s^\\n]", " ");
+			result = result.replaceAll("[\\s&&[^\\n]]", " ");
 			// replace all consecutive spaces by a single one
 			result = result.replaceAll(" +", " ");
 			
