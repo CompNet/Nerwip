@@ -41,6 +41,8 @@ import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
+import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
+import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.string.StringTools;
 import fr.univavignon.nerwip.tools.xml.XmlNames;
 import fr.univavignon.nerwip.tools.xml.XmlTools;
@@ -79,6 +81,12 @@ public class Article implements Comparable<Article>
 		
 		initFiles(corpusFolder);
 	}
+	
+	/////////////////////////////////////////////////////////////////
+	// LOGGER		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Common object used for logging */
+	public static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
 	/////////////////////////////////////////////////////////////////
 	// NAME				/////////////////////////////////////////////
@@ -460,14 +468,31 @@ public class Article implements Comparable<Article>
 	 * can become incorrect.
 	 */
 	public void cleanContent()
-	{	// raw text	
+	{	logger.log("Clean article content (can take quite some time for very long articles)");
+		logger.increaseOffset();
+		
+		// raw text
+		logger.log("Clean raw text");
 		rawText = StringTools.cleanText(rawText);
 		
 		// linked text
+		logger.log("Clean linked text");
 		linkedText = StringTools.cleanText(linkedText);
 		
 		// remove < and > signs
+		logger.log("Remove tag signs");
 		removeTagSigns();
+		
+		// clean title
+		logger.log("Possibly setup title (if none), and clean it");
+		if(title==null || title.isEmpty())
+		{	int length = Math.min(50,rawText.length());
+			if(length>0)
+				title = rawText.substring(0,length);
+		}
+		title = StringTools.cleanTitle(title);
+		
+		logger.decreaseOffset();
 	}
 	
 	/**

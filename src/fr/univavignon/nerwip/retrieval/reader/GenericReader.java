@@ -195,7 +195,6 @@ public class GenericReader extends ArticleReader
 			else
 			{	Element titleElt = titleElts.get(0);
 				title = titleElt.text();
-				title = StringTools.cleanTitle(title);
 				logger.log("Get title: "+title);
 			}
 			
@@ -250,13 +249,6 @@ public class GenericReader extends ArticleReader
 			// processing each element in the content part
 			logger.log("Get raw and linked texts");
 			processAnyElement(contentElt, rawStr, linkedStr);
-			if(title==null)
-			{	title = rawStr.substring(0, Math.min(20,rawStr.length()));
-				if(title.isEmpty())
-					title = "Untitled";
-				else
-					title = StringTools.cleanTitle(title);
-			}
 			
 			// create article object
 			result = new Article(name);

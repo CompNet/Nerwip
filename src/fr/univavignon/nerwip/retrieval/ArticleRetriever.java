@@ -54,7 +54,7 @@ public class ArticleRetriever
 	public ArticleRetriever()
 	{	//
 	}
-
+	
 	/**
 	 * Creates a new retriever with 
 	 * the specified caching behavior.
@@ -234,13 +234,15 @@ public class ArticleRetriever
 			result = process(url);
 		}
 		
-		// the string is not a URL, it's a name
+		// the string is not a URL: it's a name
 		catch(MalformedURLException e)
 		{	logger.log("This name is not a URL, so trying to retrieve it directly from cache");
 			result = Article.read(name);
 		}
 		
-		logger.decreaseOffset();
+		finally
+		{	logger.decreaseOffset();
+		}
 		logger.log("Retrieval done for article "+name);
 		return result;
 	}

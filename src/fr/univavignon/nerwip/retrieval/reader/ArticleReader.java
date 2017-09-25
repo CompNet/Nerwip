@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.NoRouteToHostException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -77,7 +79,7 @@ import fr.univavignon.nerwip.retrieval.reader.journals.LePointReader;
  * @author Vincent Labatut
  */
 public abstract class ArticleReader
-{
+{	
 	/////////////////////////////////////////////////////////////////
 	// FACTORY		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -202,7 +204,7 @@ public abstract class ArticleReader
 	 * targeted article. Also applies a cleaning step,
 	 * removing non-breaking space, and so on. The same
 	 * cleaning step is applied when loading an article
-	 * from file, for consistency.
+	 * from file, for consistency. TODO is it though?
 	 * 
 	 * @param url
 	 * 		Article address.
@@ -288,11 +290,23 @@ public abstract class ArticleReader
 				catch(SocketTimeoutException e)
 				{	logger.log("Could not download the page (timeout="+timeOut+" ms) >> trying again");
 					timeOut = timeOut + 5000;
-					again = timeOut<1*60*1000;	//2*60*1000;
+					again = timeOut<1*10*1000;	//TODO 2*60*1000;
+				}
+				catch(NoRouteToHostException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Could not download the page, the server seems to be offline.",
+						"Error message: "+e.getMessage()
+					));
 				}
 				catch(ConnectException e)
 				{	logger.log(Arrays.asList(
 						"WARNING: Could not download the page, the server seems to be offline.",
+						"Error message: "+e.getMessage()
+					));
+				}
+				catch(SocketException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Could not download the page, the server ended the file transmission.",
 						"Error message: "+e.getMessage()
 					));
 				}
@@ -323,6 +337,12 @@ public abstract class ArticleReader
 				catch(SSLException e)
 				{	logger.log(Arrays.asList(
 						"WARNING: Security error when connecting to the URL.",
+						"Error message: "+e.getMessage()
+					));
+				}
+				catch(IOException e)
+				{	logger.log(Arrays.asList(
+						"WARNING: Problem while accessing the webpage.",
 						"Error message: "+e.getMessage()
 					));
 				}
@@ -435,18 +455,24 @@ public abstract class ArticleReader
 	 */
 	protected void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
 	{	// possibly add a new line character first (if the last one is not already a newline)
-		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
-		{	rawStr.append("\n");
-			linkedStr.append("\n");
+		if(rawStr.length()>0)
+		{	char c = rawStr.charAt(rawStr.length()-1);
+			if(c!='\n')
+			{	rawStr.append("\n");
+				linkedStr.append("\n");
+			}
 		}
 		
 		// recursive processing
 		processAnyElement(element,rawStr,linkedStr);
 		
 		// possibly add a new line character (if the last one is not already a newline)
-		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
-		{	rawStr.append("\n");
-			linkedStr.append("\n");
+		if(rawStr.length()>0)
+		{	char c = rawStr.charAt(rawStr.length()-1);
+			if(c!='\n')
+			{	rawStr.append("\n");
+				linkedStr.append("\n");
+			}
 		}
 	}
 
@@ -466,9 +492,12 @@ public abstract class ArticleReader
 	{	boolean result = true;
 		
 		// possibly modify the previous characters 
-		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)=='\n')
-		{	rawStr.deleteCharAt(rawStr.length()-1);
-			linkedStr.deleteCharAt(linkedStr.length()-1);
+		if(rawStr.length()>0)
+		{	char c = rawStr.charAt(rawStr.length()-1);
+			if(c=='\n')
+			{	rawStr.deleteCharAt(rawStr.length()-1);
+				linkedStr.deleteCharAt(linkedStr.length()-1);
+			}
 		}
 		
 		// insert quotes
@@ -488,9 +517,12 @@ public abstract class ArticleReader
 		}
 		
 		// possibly modify the ending characters 
-		if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)=='\n')
-		{	rawStr.deleteCharAt(rawStr.length()-1);
-			linkedStr.deleteCharAt(linkedStr.length()-1);
+		if(rawStr.length()>0)
+		{	char c = rawStr.charAt(rawStr.length()-1);
+			if(c=='\n')
+			{	rawStr.deleteCharAt(rawStr.length()-1);
+				linkedStr.deleteCharAt(linkedStr.length()-1);
+			}
 		}
 
 		// insert quotes
@@ -836,14 +868,17 @@ public abstract class ArticleReader
 				processAnyElement(colElt, rawStr, linkedStr);
 				
 				// possibly add final dot and space. 
-				if(rawStr.charAt(rawStr.length()-1)!=' ')
-				{	if(rawStr.charAt(rawStr.length()-1)=='.')
-					{	rawStr.append(" ");
-						linkedStr.append(" ");
-					}
-					else
-					{	rawStr.append(". ");
-						linkedStr.append(". ");
+				if(rawStr.length()>0)
+				{	char c = rawStr.charAt(rawStr.length()-1);
+					if(c!=' ')
+					{	if(rawStr.charAt(rawStr.length()-1)=='.')
+						{	rawStr.append(" ");
+							linkedStr.append(" ");
+						}
+						else
+						{	rawStr.append(". ");
+							linkedStr.append(". ");
+						}
 					}
 				}
 			}
@@ -1455,7 +1490,7 @@ public abstract class ArticleReader
 				
 				// the text but must non-empty, and contains something else than spaces
 				if(!text.trim().isEmpty())
-				{	// if at the begining of a new line, or already preceeded by a space, remove leading spaces
+				{	// if at the beginning of a new line, or already preceded by a space, remove leading spaces
 					while(rawStr.length()>0 
 							&& (rawStr.charAt(rawStr.length()-1)=='\n' || rawStr.charAt(rawStr.length()-1)==' ') 
 							&& text.startsWith(" "))
