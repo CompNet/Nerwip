@@ -345,18 +345,21 @@ public class GenericReader extends ArticleReader
 		logger.log("Total text length: "+totalLength+" characters");
 		
 		// presence of an article element in the page
-		Elements articleElts = root.getElementsByTag(HtmlNames.ELT_ARTICLE);
-		if(!articleElts.isEmpty())
-		{	logger.log("Found an <article> element in this Web page >> using it as the main content element");
-			root = articleElts.first();
-			if(articleElts.size()>1)
-			{	logger.log("ERROR: found several <article> elements in this Web page >> it is probably a list of articles, and not a single article");
-				throw new ReaderException("The document is not article, but a list of articles",true);
-			}
-		}
-		// not a good idea: <article> is often misused (as well as <section>)
-		
-		// now, use text size 
+//		Elements articleElts = root.getElementsByTag(HtmlNames.ELT_ARTICLE);
+//		if(!articleElts.isEmpty())
+//		{	logger.log("Found an <article> element in this Web page >> using it as the main content element");
+//			root = articleElts.first();
+//			if(articleElts.size()>1)
+//			{	logger.log("ERROR: found several <article> elements in this Web page >> it is probably a list of articles, and not a single article");
+//				throw new ReaderException("The document is not article, but a list of articles",true);
+//			}
+//		}
+//		// not a good idea: <article> is often misused (as well as <section>)
+//		// for instance, in this page: https://www.toulouse7.com/2017/03/11/sarkozy-expulse-camp-nou-lors-de-barcelone-paris/
+//		// the main content is not in an <article> element, and these are used to list articles related to the main content
+//		
+//		// now, use text size
+//		else
 		{	//logger.log("No <article> element in this Web page >> using text size");
 			
 			// set up data structures
