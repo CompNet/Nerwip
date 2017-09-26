@@ -30,13 +30,25 @@ package fr.univavignon.nerwip.retrieval.reader;
 public class ReaderException extends Exception
 {	/** Class id */
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
-	 * Creates a new exception,
-	 * with no message.
+	 * Creates a new exception, with no message. 
+	 * By default, the cause of the exception is "article list".
 	 */
 	public ReaderException()
 	{	super();
+	}
+	
+	/**
+	 * Creates a new exception, with no message.
+	 * 
+	 * @param articleList
+	 * 		Whether the exception was thrown because the
+	 * 		targeted page is an article list.
+	 */
+	public ReaderException(boolean articleList)
+	{	super();
+		this.articleList = articleList;
 	}
 	
 	/**
@@ -48,5 +60,38 @@ public class ReaderException extends Exception
 	 */
 	public ReaderException(String s)
 	{	super(s);
+	}
+	
+	/**
+	 * Creates a new exception,
+	 * with a specific message.
+	 * 
+	 * @param s
+	 * 		Message of the exception.
+	 * @param articleList
+	 * 		Whether the exception was thrown because the
+	 * 		targeted page is an article list.
+	 */
+	public ReaderException(String s, boolean articleList)
+	{	super(s);
+		this.articleList = articleList;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// ARTICLE LIST	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Indicates whether the exception was thrown because the page is an article list (and not a single article) */
+	boolean articleList = false;
+
+	/**
+	 * Indicates whether this exception was thrown because the targeted page
+	 * is not a single article, but rather a list of articles (or a list of
+	 * article summaries).
+	 * 
+	 * @return
+	 * 		{@code true} iff the targeted page is a list of articles.
+	 */
+	public boolean isArticleList()
+	{	return articleList;
 	}
 }

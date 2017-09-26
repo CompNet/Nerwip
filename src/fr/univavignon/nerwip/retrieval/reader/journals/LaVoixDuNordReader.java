@@ -21,67 +21,39 @@ package fr.univavignon.nerwip.retrieval.reader.journals;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
-import java.text.Normalizer;
 import java.text.SimpleDateFormat;
-import java.text.Normalizer.Form;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.retrieval.reader.ArticleReader;
 import fr.univavignon.nerwip.retrieval.reader.ReaderException;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.html.HtmlNames;
 import fr.univavignon.nerwip.tools.html.HtmlTools;
 import fr.univavignon.nerwip.tools.string.StringTools;
 
 /**
  * From a specified URL, this class retrieves a page
- * from the french newspaper La Voix du Nord (as of 21/08/2017),
+ * from the French newspaper La Voix du Nord (as of 21/08/2017),
  * and gives access to the raw and linked texts, as well
  * as other metadata (authors, publishing date, etc.).nerwip
  * 
  * @author Vincent Labatut
  */
-@SuppressWarnings("unused")
 public class LaVoixDuNordReader extends ArticleReader
 {	
 	/**

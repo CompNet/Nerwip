@@ -21,56 +21,31 @@ package fr.univavignon.nerwip.retrieval.reader;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
-import java.text.Normalizer;
 import java.text.SimpleDateFormat;
-import java.text.Normalizer.Form;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
-
-import javax.net.ssl.SSLHandshakeException;
 
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import fr.univavignon.nerwip.data.article.Article;
 import fr.univavignon.nerwip.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.retrieval.reader.ArticleReader;
 import fr.univavignon.nerwip.retrieval.reader.ReaderException;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.html.HtmlNames;
 import fr.univavignon.nerwip.tools.html.HtmlTools;
 import fr.univavignon.nerwip.tools.string.StringTools;
@@ -83,7 +58,6 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * 
  * @author Vincent Labatut
  */
-@SuppressWarnings("unused")
 public class GenericReader extends ArticleReader
 {	
 	/**
@@ -357,8 +331,11 @@ public class GenericReader extends ArticleReader
 	 * 		Root element.
 	 * @return
 	 * 		The elected subelement.
+	 * 
+	 * @throws ReaderException
+	 * 		Problem while extracting the page textual content. 
 	 */
-	private Element getContentElement(Element root)
+	private Element getContentElement(Element root) throws ReaderException
 	{	Element result = null;
 		int maxText = 0;
 		
@@ -367,14 +344,16 @@ public class GenericReader extends ArticleReader
 		logger.increaseOffset();
 		logger.log("Total text length: "+totalLength+" characters");
 		
-		// presence of an <article> element in the page
-//		Elements articleElts = root.getElementsByTag(HtmlNames.ELT_ARTICLE);
-//		if(!articleElts.isEmpty())
-//		{	logger.log("Found an <article> element in this Web page >> using it as the main content element");
-//			root = articleElts.first();
-//			if(articleElts.size()>1)
-//				logger.log("WARNING: found several <article> elements in this Web page");
-//		}
+		// presence of an article element in the page
+		Elements articleElts = root.getElementsByTag(HtmlNames.ELT_ARTICLE);
+		if(!articleElts.isEmpty())
+		{	logger.log("Found an <article> element in this Web page >> using it as the main content element");
+			root = articleElts.first();
+			if(articleElts.size()>1)
+			{	logger.log("ERROR: found several <article> elements in this Web page >> it is probably a list of articles, and not a single article");
+				throw new ReaderException("The document is not article, but a list of articles",true);
+			}
+		}
 		// not a good idea: <article> is often misused (as well as <section>)
 		
 		// now, use text size 

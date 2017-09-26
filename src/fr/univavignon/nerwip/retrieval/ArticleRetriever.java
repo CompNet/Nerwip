@@ -205,7 +205,7 @@ public class ArticleRetriever
 	 * Returns the texts corresponding to the specified name.
 	 * <br/>
 	 * We suppose the corresponding article was previously cached,
-	 * other wise the method will fail, and you rather have to
+	 * otherwise the method will fail, and you rather have to
 	 * use {@link #process(URL)}. 
 	 * 
 	 * @param name
