@@ -473,11 +473,11 @@ public class Article implements Comparable<Article>
 		
 		// raw text
 		logger.log("Clean raw text");
-		rawText = StringTools.cleanText(rawText);
+		rawText = StringTools.cleanText(rawText,language);
 		
 		// linked text
 		logger.log("Clean linked text");
-		linkedText = StringTools.cleanText(linkedText);
+		linkedText = StringTools.cleanText(linkedText,language);
 		
 		// remove < and > signs
 		logger.log("Remove tag signs");
@@ -490,7 +490,7 @@ public class Article implements Comparable<Article>
 			if(length>0)
 				title = rawText.substring(0,length);
 		}
-		title = StringTools.cleanTitle(title);
+		title = StringTools.cleanTitle(title,language);
 		
 		logger.decreaseOffset();
 	}

@@ -218,7 +218,6 @@ public class LaVoixDuNordReader extends ArticleReader
 			// get the title
 			Element titleElt = headerElt.getElementsByTag(HtmlNames.ELT_H1).first();
 			title = titleElt.text(); 
-			title = StringTools.cleanTitle(title);
 			logger.log("Get title: \""+title+"\"");
 
 			// retrieve the dates

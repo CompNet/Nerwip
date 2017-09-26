@@ -225,7 +225,6 @@ public class LeParisienReader extends ArticleReader
 				// get the title
 				Element titleElt = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_TITLE).first();
 				title = titleElt.text(); 
-				title = StringTools.cleanTitle(title);
 				logger.log("Get title: \""+title+"\"");
 		
 				// retrieve the dates

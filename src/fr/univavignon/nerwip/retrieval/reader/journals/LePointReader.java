@@ -212,7 +212,6 @@ public class LePointReader extends ArticleReader
 			// get the title
 			Element titleElt = headerElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_TITLE).first();
 			title = titleElt.text(); 
-			title = StringTools.cleanTitle(title);
 			logger.log("Get title: \""+title+"\"");
 	
 			// retrieve the dates

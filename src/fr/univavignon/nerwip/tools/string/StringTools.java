@@ -316,15 +316,17 @@ public class StringTools
 	 * <ul>
 	 * 	<li>Clean problems related to the variants of the space character, using {@link #cleanSpaces(String)}.</li>
 	 * 	<li>Move certain characters (such as punctuation and newlines) out of hyperlinks.</li>
-	 * 	<li>Clean the text using {@link #cleanInnerText(String)} (except URLs, which are kept as is).</li>
+	 * 	<li>Clean the text using {@link #cleanInnerText(String,ArticleLanguage)} (except URLs, which are kept as is).</li>
 	 * </ul>
 	 *    
 	 * @param input
 	 * 		The string to process.
+	 * @param language 
+	 * 		Language of the considered text.
 	 * @return
 	 * 		Cleaned string.
 	 */
-	public static String cleanText(String input)
+	public static String cleanText(String input, ArticleLanguage language)
 	{	String output = input;
 		
 		// clean spaces
@@ -348,14 +350,14 @@ public class StringTools
 			{	int startPos = matcher.start();
 				int endPos = matcher.end();
 				String substr = output.substring(prevPos,startPos);
-				substr = cleanInnerText(substr);
+				substr = cleanInnerText(substr,language);
 				String tagStr = output.substring(startPos,endPos);
 				tmpStr = tmpStr + substr + tagStr;
 				prevPos = endPos;
 			}
 			int startPos = output.length();
 			String substr = output.substring(prevPos,startPos);
-			substr = cleanInnerText(substr);
+			substr = cleanInnerText(substr,language);
 			tmpStr = tmpStr + substr;
 			output = tmpStr;
 		}
@@ -367,7 +369,7 @@ public class StringTools
 	
 	/**
 	 * Clean some text taken from an article, and which is not a URL.
-	 * This method is meant used only by {@link #cleanText(String)}.
+	 * This method is meant used only by {@link #cleanText(String,ArticleLanguage)}.
 	 * <br/>
 	 * It involves numerous operations:
 	 * <ul>
@@ -389,10 +391,12 @@ public class StringTools
 	 * 
 	 * @param input
 	 * 		The text to clean.
+	 * @param language
+	 * 		Language of the considered text.
 	 * @return
 	 * 		The cleaned text.
 	 */
-	private static String cleanInnerText(String input)
+	private static String cleanInnerText(String input, ArticleLanguage language)
 	{	String output = input;
 		
 		// replace all white spaces by regular spaces
@@ -493,6 +497,14 @@ public class StringTools
 			// semicolon and variants
 			output = output.replaceAll("[;؛⁏፤；︔﹔⍮⸵;]",";");
 		
+		// replace space-separated & by the full word
+		String repl = "/";
+		if(language!=null)
+			repl = language.getEt();
+		output = output.replaceAll(" & "," "+repl+" ");
+		// remove the remaining & (not space-separated)
+		output = output.replaceAll("&","/");
+		
 		// replace 2 consecutive single quotes by 1 double quote
 		output = output.replaceAll("''+", "\"");
 		// remove empty double quotes
@@ -517,17 +529,19 @@ public class StringTools
 	
 	/**
 	 * Clean a string representing an article title. It is cleaned like
-	 * regular text using {@link #cleanText(String)}, then new lines and
+	 * regular text using {@link #cleanText(String,ArticleLanguage)}, then new lines and
 	 * double quotes are removed (so that this string can be put in a CSV
 	 * file if needed).
 	 * 
 	 * @param title
 	 * 		Original raw title.
+	 * @param language
+	 * 		Language of the title to process.
 	 * @return
 	 * 		Clean version of the title.
 	 */
-	public static String cleanTitle(String title)
-	{	String result = cleanText(title);
+	public static String cleanTitle(String title, ArticleLanguage language)
+	{	String result = cleanText(title,language);
 		result = result.replaceAll("\"", "");
 		result = result.replaceAll("\\n", " ");
 		result = result.replaceAll(" +"," ");
@@ -541,9 +555,9 @@ public class StringTools
 	 * Process the specified string in order to remove space character-related problems. 
 	 * All whitespaces are replaced by standard spaces ' ', excepted '\n'. All new line
 	 * character variants are replaced by '\n'. All consecutive redundant whitespaces are 
-	 * removed. The text is also trimed (leading and trailing whitespaces are removed).
+	 * removed. The text is also trimmed (leading and trailing whitespaces are removed).
 	 * <br/>
-	 * This method is meant to be used only by {@link #cleanText(String)}.
+	 * This method is meant to be used only by {@link #cleanText(String,ArticleLanguage)}.
 	 *  
 	 * @param string
 	 * 		The original string (not modified).
@@ -650,7 +664,7 @@ public class StringTools
 	 * Removes all the non-latin letters, as they generally not supported
 	 * by the recognizers (or other processors).
 	 * <br/>
-	 * This method is meant to be used only by {@link #cleanInnerText(String)}.
+	 * This method is meant to be used only by {@link #cleanInnerText(String,ArticleLanguage)}.
 	 * 
 	 * @param input
 	 * 		Original string.

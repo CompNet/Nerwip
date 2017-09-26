@@ -192,7 +192,6 @@ public class LiberationReader extends ArticleReader
 			// get its title
 			Element titleElt = document.getElementsByTag(HtmlNames.ELT_TITLE).first();
 			String title = titleElt.text();
-			title = StringTools.cleanTitle(title);
 			logger.log("Get title: "+title);
 			
 			// check if the access is restricted
