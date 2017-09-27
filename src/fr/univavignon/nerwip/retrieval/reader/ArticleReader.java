@@ -145,9 +145,9 @@ public abstract class ArticleReader
 	public void setCacheEnabled(boolean enabled)
 	{	this.cache = enabled;
 	}
-
+	
 	/////////////////////////////////////////////////////////////////
-	// MISC				/////////////////////////////////////////////
+	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Processes the name of the article
@@ -1125,9 +1125,9 @@ public abstract class ArticleReader
 				{	// nothing to do
 				}
 				
-				// font: ignored
+				// font: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FONT))
-				{	// nothing to do
+				{	processAnyElement(element, rawStr, linkedStr);
 				}
 				
 				// footer: treated like a div
@@ -1477,7 +1477,12 @@ public abstract class ArticleReader
 				
 				// no other elements should be encountered 
 				else
-				{	throw new IllegalArgumentException("Unexpected HTML element <"+eltName+">");
+				{	//throw new IllegalArgumentException("Unexpected HTML element <"+eltName+">");
+					logger.log("WARNING: Unexpected HTML element <"+eltName+">");
+					String text = element.text();
+					text = removeGtst(text);
+					rawStr.append(text);
+					linkedStr.append(text);
 				}
 			}
 			

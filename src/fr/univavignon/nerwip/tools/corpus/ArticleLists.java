@@ -328,7 +328,7 @@ public class ArticleLists
 	// URL				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Returns the list of the URL of all articles in
+	 * Returns the list of the URLs of all articles in
 	 * the corpus.
 	 * 
 	 * @return

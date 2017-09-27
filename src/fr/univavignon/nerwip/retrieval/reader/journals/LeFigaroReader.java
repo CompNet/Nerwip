@@ -22,9 +22,7 @@ package fr.univavignon.nerwip.retrieval.reader.journals;
  */
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +54,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * 
  * @author Vincent Labatut
  */
-public class LeFigaroReader extends ArticleReader
+public class LeFigaroReader extends AbstractJournalReader
 {	
 	/**
 	 * Method defined only for a quick test.
@@ -77,44 +75,6 @@ public class LeFigaroReader extends ArticleReader
 		Article article = reader.processUrl(url, ArticleLanguage.FR);
 		System.out.println(article);
 		article.write();
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// NAME				/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Processes the name of the article
-	 * from the specified URL.
-	 * 
-	 * @param url
-	 * 		URL of the article.
-	 * @return
-	 * 		Name of the article.
-	 */
-	@Override
-	public String getName(URL url)
-	{	String address = url.toString();
-		
-		// convert the full URL to a file-compatible name
-		String result = null;
-		try 
-		{	result = URLEncoder.encode(address,"UTF-8");
-			// reverse the transformation :
-			// String original = URLDecoder.decode(result, "UTF-8");
-		
-			// needed if the URL is longer than the max length authorized by the OS for folder names
-			if(result.length()>255)	
-				result = result.substring(0,255);
-
-		}
-		catch (UnsupportedEncodingException e)
-		{	e.printStackTrace();
-		}
-		
-		// alternative : generate a random name (not reproducible, though)
-//		UUID.randomUUID();
-
-		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -180,7 +140,7 @@ public class LeFigaroReader extends ArticleReader
 			}
 			else 
 			{	if(articleElts.size()>1)
-					logger.log("WARNING: several articles present in this page, we take the first one.");
+					logger.log("WARNING: found several <article> elements in the same page.");
 				articleElt = articleElts.first();
 			}
 					

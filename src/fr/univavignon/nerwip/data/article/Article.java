@@ -489,6 +489,8 @@ public class Article implements Comparable<Article>
 		{	int length = Math.min(50,rawText.length());
 			if(length>0)
 				title = rawText.substring(0,length);
+			else
+				title = "Empty article!";
 		}
 		title = StringTools.cleanTitle(title,language);
 		

@@ -55,25 +55,25 @@ public class ReaderException extends Exception
 	 * Creates a new exception,
 	 * with a specific message.
 	 * 
-	 * @param s
+	 * @param message
 	 * 		Message of the exception.
 	 */
-	public ReaderException(String s)
-	{	super(s);
+	public ReaderException(String message)
+	{	super(message);
 	}
 	
 	/**
 	 * Creates a new exception,
 	 * with a specific message.
 	 * 
-	 * @param s
+	 * @param message
 	 * 		Message of the exception.
 	 * @param articleList
 	 * 		Whether the exception was thrown because the
 	 * 		targeted page is an article list.
 	 */
-	public ReaderException(String s, boolean articleList)
-	{	super(s);
+	public ReaderException(String message, boolean articleList)
+	{	super(message);
 		this.articleList = articleList;
 	}
 	

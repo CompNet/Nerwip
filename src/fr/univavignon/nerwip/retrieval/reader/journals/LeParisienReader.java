@@ -22,9 +22,7 @@ package fr.univavignon.nerwip.retrieval.reader.journals;
  */
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +53,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * 
  * @author Vincent Labatut
  */
-public class LeParisienReader extends ArticleReader
+public class LeParisienReader extends AbstractJournalReader
 {	
 	/**
 	 * Method defined only for a quick test.
@@ -75,44 +73,6 @@ public class LeParisienReader extends ArticleReader
 		Article article = reader.processUrl(url, ArticleLanguage.FR);
 		System.out.println(article);
 		article.write();
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// NAME				/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Processes the name of the article
-	 * from the specified URL.
-	 * 
-	 * @param url
-	 * 		URL of the article.
-	 * @return
-	 * 		Name of the article.
-	 */
-	@Override
-	public String getName(URL url)
-	{	String address = url.toString();
-		
-		// convert the full URL to a file-compatible name
-		String result = null;
-		try 
-		{	result = URLEncoder.encode(address,"UTF-8");
-			// reverse the transformation :
-			// String original = URLDecoder.decode(result, "UTF-8");
-		
-			// needed if the URL is longer than the max length authorized by the OS for folder names
-			if(result.length()>255)	
-				result = result.substring(0,255);
-
-		}
-		catch (UnsupportedEncodingException e)
-		{	e.printStackTrace();
-		}
-		
-		// alternative : generate a random name (not reproducible, though)
-//		UUID.randomUUID();
-
-		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -155,156 +115,168 @@ public class LeParisienReader extends ArticleReader
 	@Override
 	public Article processUrl(URL url, ArticleLanguage language) throws ReaderException
 	{	Article result = null;
-		String name = getName(url);
 		
-		try
-		{	// init variables
-			String title = "";
-			StringBuilder rawStr = new StringBuilder();
-			StringBuilder linkedStr = new StringBuilder();
-			Date publishingDate = null;
-			Date modificationDate = null;
-			List<String> authors = new ArrayList<String>();
+		// just a list of articles: nothing to get from that
+		if(url.toString().contains("/actualites/"))
+		{	logger.log("ERROR: The document is not an article, but a list of articles (URL "+url+")");
+			throw new ReaderException("The document is not an article, but a list of articles (URL "+url+")",true);
+		}
+		
+		// an actual article, processed appropriately
+		else
+		{	String name = getName(url);
 			
-			// get the page
-			String address = url.toString();
-			logger.log("Retrieving page "+address);
-			long startTime = System.currentTimeMillis();
-			Document document  = retrieveSourceCode(name,url);
-			if(document==null)
-			{	logger.log("ERROR: Could not retrieve the document at URL "+url);
-				throw new ReaderException("Could not retrieve the document at URL "+url);
-			}
-			
-			// get the article element
-			logger.log("Get the main element of the document");
-			Elements articleElts = document.getElementsByTag(HtmlNames.ELT_ARTICLE);
-			if(articleElts.size()==0)
-				throw new IllegalArgumentException("No <article> element found in the Web page");
-			Element articleElt = articleElts.first();
-			Element fullElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_ARTICLE_MAIN).first();
-			if(fullElt==null)
-			{	logger.log("WARNING: Could not find the \"article-full\" element >> probably a list of articles (by opposition to a single specific article)");
-				throw new ReaderException("Could not access the article content");
-			}
-			else
-			{	Element infoElt = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_INFO).first();
+			try
+			{	// init variables
+				String title = "";
+				StringBuilder rawStr = new StringBuilder();
+				StringBuilder linkedStr = new StringBuilder();
+				Date publishingDate = null;
+				Date modificationDate = null;
+				List<String> authors = new ArrayList<String>();
 				
-				// check if the access is restricted
-				String text = articleElt.text();
-				if(text.contains(MSG_RESTRICTED))
-					logger.log("WARNING: The access to this article is limited, only the beginning is available.");
-		
-				// get the title
-				Element titleElt = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_TITLE).first();
-				title = titleElt.text(); 
-				logger.log("Get title: \""+title+"\"");
-		
-				// retrieve the dates
-				Element datesElt = infoElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DATES).first();
-				Element spanElt = datesElt.child(0);
-				List<TextNode> textNodes = spanElt.textNodes();
-				String pubDateStr = textNodes.get(0).text().trim();
-				String updtDateStr = null;
-				if(textNodes.size()>1)
-					updtDateStr = textNodes.get(1).text().trim().substring(UPDT_PREFIX.length());
-				try
-				{	publishingDate = DATE_FORMAT.parse(pubDateStr);
-					logger.log("Found the publishing date: "+publishingDate);
-					if(updtDateStr!=null)
-					{	modificationDate = DATE_FORMAT.parse(updtDateStr);
-						logger.log("Found the last modification date: "+modificationDate);
-					}
-					else
-						logger.log("Did not find any last modification date");
-				}
-				catch (java.text.ParseException e) 
-				{	e.printStackTrace();
+				// get the page
+				String address = url.toString();
+				logger.log("Retrieving page "+address);
+				long startTime = System.currentTimeMillis();
+				Document document  = retrieveSourceCode(name,url);
+				if(document==null)
+				{	logger.log("ERROR: Could not retrieve the document at URL "+url);
+					throw new ReaderException("Could not retrieve the document at URL "+url);
 				}
 				
-				// retrieve the authors
-				Element authorElt = infoElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_AUTHORS).first();
-				if(authorElt!=null)
-				{	String authorName = authorElt.text();
-					authorName = removeGtst(authorName);
-					authors.add(authorName);
-					logger.log("Authors: ");
-					logger.log(authors);
+				// get the article element
+				logger.log("Get the main element of the document");
+				Elements articleElts = document.getElementsByTag(HtmlNames.ELT_ARTICLE);
+				if(articleElts.size()==0)
+					throw new IllegalArgumentException("No <article> element found in the Web page");
+				else if(articleElts.size()>1)
+					logger.log("WARNING: found several <article> elements in the same page.");
+				Element articleElt = articleElts.first();
+				Element fullElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_ARTICLE_MAIN).first();
+				if(fullElt==null)
+				{	logger.log("WARNING: Could not find the \"article-full\" element >> probably a list of articles (by opposition to a single specific article)");
+					throw new ReaderException("Could not access the article content");
 				}
 				else
-					logger.log("Could not find any author for this article");
-		
-				// get the description
-				Elements descriptionElts = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DESCRIPTION);
-				Element descriptionElt = null;
-				if(!descriptionElts.isEmpty())
-				{	descriptionElt = descriptionElts.first();
-					processAnyElement(descriptionElt, rawStr, linkedStr);
-				}
-				
-				// processing the article main content
-				if(descriptionElt==null)
-				{	Element bodyElt = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_ARTICLE_BODY).first();
-					descriptionElt = bodyElt.child(0);
-				}
-				Element contentElt = descriptionElt.nextElementSibling();
-				while(contentElt!=null)
-				{	Attributes attr = contentElt.attributes();
-					if(attr.size()==0)
-						processAnyElement(contentElt, rawStr, linkedStr);
-					contentElt = contentElt.nextElementSibling();
-				}
-				
-				// create and init article object
-				result = new Article(name);
-				result.setTitle(title);
-				result.setUrl(url);
-				result.initRetrievalDate();
-				result.setPublishingDate(publishingDate);
-				if(modificationDate!=null)
-					result.setModificationDate(modificationDate);
-				if(authors!=null)
-					result.addAuthors(authors);
-				
-				// add the title to the content, just in case the entity appears there but not in the article body
-				String rawText = rawStr.toString();
-				String linkedText = linkedStr.toString();
-				if(title!=null && !title.isEmpty())
-				{	rawText = title + "\n" + rawText;
-					linkedText = title + "\n" + linkedText;
-				}
-				
-				// clean text
-				result.setRawText(rawText);
-				logger.log("Length of the raw text: "+rawText.length()+" chars.");
-				result.setLinkedText(linkedText);
-				logger.log("Length of the linked text: "+linkedText.length()+" chars.");
-
-				// language
-				if(language==null)
-				{	language = StringTools.detectLanguage(rawText,false);
-					logger.log("Detected language: "+language);
-				}
-				result.setLanguage(language);
-				
-				// get original html source code
-				logger.log("Get original HTML source code.");
-				String originalPage = document.toString();
-				result.setOriginalPage(originalPage);
-				logger.log("Length of the original page: "+originalPage.length()+" chars.");
-			}
+				{	Element infoElt = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_INFO).first();
+					
+					// check if the access is restricted
+					String text = articleElt.text();
+					if(text.contains(MSG_RESTRICTED))
+						logger.log("WARNING: The access to this article is limited, only the beginning is available.");
 			
-			long endTime = System.currentTimeMillis();
-			logger.log("Total duration: "+(endTime-startTime)+" ms.");
-		}
-		catch (ClientProtocolException e)
-		{	e.printStackTrace();
-		} 
-		catch (ParseException e)
-		{	e.printStackTrace();
-		}
-		catch (IOException e)
-		{	e.printStackTrace();
+					// get the title
+					Element titleElt = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_TITLE).first();
+					title = titleElt.text(); 
+					logger.log("Get title: \""+title+"\"");
+			
+					// retrieve the dates
+					Element datesElt = infoElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DATES).first();
+					Element spanElt = datesElt.child(0);
+					List<TextNode> textNodes = spanElt.textNodes();
+					String pubDateStr = textNodes.get(0).text().trim();
+					String updtDateStr = null;
+					if(textNodes.size()>1)
+						updtDateStr = textNodes.get(1).text().trim().substring(UPDT_PREFIX.length());
+					try
+					{	publishingDate = DATE_FORMAT.parse(pubDateStr);
+						logger.log("Found the publishing date: "+publishingDate);
+						if(updtDateStr!=null)
+						{	modificationDate = DATE_FORMAT.parse(updtDateStr);
+							logger.log("Found the last modification date: "+modificationDate);
+						}
+						else
+							logger.log("Did not find any last modification date");
+					}
+					catch (java.text.ParseException e) 
+					{	e.printStackTrace();
+					}
+					
+					// retrieve the authors
+					Element authorElt = infoElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_AUTHORS).first();
+					if(authorElt!=null)
+					{	String authorName = authorElt.text();
+						authorName = removeGtst(authorName);
+						authors.add(authorName);
+						logger.log("Authors: ");
+						logger.log(authors);
+					}
+					else
+						logger.log("Could not find any author for this article");
+			
+					// get the description
+					Elements descriptionElts = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DESCRIPTION);
+					Element descriptionElt = null;
+					if(!descriptionElts.isEmpty())
+					{	descriptionElt = descriptionElts.first();
+						processAnyElement(descriptionElt, rawStr, linkedStr);
+					}
+					
+					// processing the article main content
+					if(descriptionElt==null)
+					{	Element bodyElt = fullElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_ARTICLE_BODY).first();
+						descriptionElt = bodyElt.child(0);
+					}
+					Element contentElt = descriptionElt.nextElementSibling();
+					while(contentElt!=null)
+					{	Attributes attr = contentElt.attributes();
+						if(attr.size()==0)
+							processAnyElement(contentElt, rawStr, linkedStr);
+						contentElt = contentElt.nextElementSibling();
+					}
+					
+					// create and init article object
+					result = new Article(name);
+					result.setTitle(title);
+					result.setUrl(url);
+					result.initRetrievalDate();
+					result.setPublishingDate(publishingDate);
+					if(modificationDate!=null)
+						result.setModificationDate(modificationDate);
+					if(authors!=null)
+						result.addAuthors(authors);
+					
+					// add the title to the content, just in case the entity appears there but not in the article body
+					String rawText = rawStr.toString();
+					String linkedText = linkedStr.toString();
+					if(title!=null && !title.isEmpty())
+					{	rawText = title + "\n" + rawText;
+						linkedText = title + "\n" + linkedText;
+					}
+					
+					// clean text
+					result.setRawText(rawText);
+					logger.log("Length of the raw text: "+rawText.length()+" chars.");
+					result.setLinkedText(linkedText);
+					logger.log("Length of the linked text: "+linkedText.length()+" chars.");
+	
+					// language
+					if(language==null)
+					{	language = StringTools.detectLanguage(rawText,false);
+						logger.log("Detected language: "+language);
+					}
+					result.setLanguage(language);
+					
+					// get original html source code
+					logger.log("Get original HTML source code.");
+					String originalPage = document.toString();
+					result.setOriginalPage(originalPage);
+					logger.log("Length of the original page: "+originalPage.length()+" chars.");
+				}
+				
+				long endTime = System.currentTimeMillis();
+				logger.log("Total duration: "+(endTime-startTime)+" ms.");
+			}
+			catch (ClientProtocolException e)
+			{	e.printStackTrace();
+			} 
+			catch (ParseException e)
+			{	e.printStackTrace();
+			}
+			catch (IOException e)
+			{	e.printStackTrace();
+			}
 		}
 		
 		return result;

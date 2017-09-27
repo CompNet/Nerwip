@@ -22,13 +22,12 @@ package fr.univavignon.nerwip.retrieval.reader.journals;
  */
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,7 +53,7 @@ import fr.univavignon.nerwip.tools.string.StringTools;
  * 
  * @author Vincent Labatut
  */
-public class LaVoixDuNordReader extends ArticleReader
+public class LaVoixDuNordReader extends AbstractJournalReader
 {	
 	/**
 	 * Method defined only for a quick test.
@@ -75,44 +74,6 @@ public class LaVoixDuNordReader extends ArticleReader
 		Article article = reader.processUrl(url, ArticleLanguage.FR);
 		System.out.println(article);
 		article.write();
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// NAME				/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Processes the name of the article
-	 * from the specified URL.
-	 * 
-	 * @param url
-	 * 		URL of the article.
-	 * @return
-	 * 		Name of the article.
-	 */
-	@Override
-	public String getName(URL url)
-	{	String address = url.toString();
-		
-		// convert the full URL to a file-compatible name
-		String result = null;
-		try 
-		{	result = URLEncoder.encode(address,"UTF-8");
-			// reverse the transformation :
-			// String original = URLDecoder.decode(result, "UTF-8");
-		
-			// needed if the URL is longer than the max length authorized by the OS for folder names
-			if(result.length()>255)	
-				result = result.substring(0,255);
-
-		}
-		catch (UnsupportedEncodingException e)
-		{	e.printStackTrace();
-		}
-		
-		// alternative : generate a random name (not reproducible, though)
-//		UUID.randomUUID();
-
-		return result;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -177,6 +138,8 @@ public class LaVoixDuNordReader extends ArticleReader
 			Elements articleElts = document.getElementsByTag(HtmlNames.ELT_ARTICLE);
 			if(articleElts.size()==0)
 				throw new IllegalArgumentException("No <article> element found in the Web page");
+			else if(articleElts.size()>1)
+				logger.log("WARNING: found several <article> elements in the same page.");
 			Element articleElt = articleElts.first();
 			Element headerElt = articleElt.getElementsByTag(HtmlNames.ELT_HEADER).first();
 			Element infoElt = headerElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_INFO).first();
@@ -234,16 +197,16 @@ public class LaVoixDuNordReader extends ArticleReader
 			if(parElts.isEmpty())
 				throw new ReaderException("Could not find the body of the article at URL "+url);
 			else
-			{	String classStr;
-				Element parElt = parElts.first();
-				do
+			{	Iterator<Element> it = parElts.iterator();
+				Element parElt = it.next();
+				String classStr = parElt.attr(HtmlNames.ATT_CLASS);
+				while(!classStr.equalsIgnoreCase(CLASS_ARTICLE_END))
 				{	processAnyElement(parElt, rawStr, linkedStr);
 					rawStr.append("\n");
 					linkedStr.append("\n");
-					parElt = parElt.nextElementSibling();
+					parElt = it.next();
 					classStr = parElt.attr(HtmlNames.ATT_CLASS);
 				}
-				while(!classStr.equalsIgnoreCase(CLASS_ARTICLE_END));
 			}
 			
 			// create and init article object
