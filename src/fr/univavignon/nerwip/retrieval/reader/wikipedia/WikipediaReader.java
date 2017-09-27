@@ -1161,14 +1161,14 @@ public class WikipediaReader extends ArticleReader
 			StringBuilder linkedStr = new StringBuilder();
 			Element bodyContentElt = document.getElementsByAttributeValue(HtmlNames.ATT_ID,ID_CONTENT).get(0);
 			// processing each element in the content part
-			boolean ignoringSection = false;
+			int ignoringSectionLevel = 0;	// indicates whether the current section should be ignored
 			boolean first = true;
 			for(Element element: bodyContentElt.children())
 			{	String eltName = element.tag().getName();
 				String eltClass = element.attr(HtmlNames.ATT_CLASS);
 			
 				// section headers
-				if(eltName.equals(HtmlNames.ELT_H2))
+				if(HtmlNames.ELT_HS.contains(eltName))
 				{	first = false;
 					// get section name
 					StringBuilder fakeRaw = new StringBuilder();
@@ -1176,26 +1176,22 @@ public class WikipediaReader extends ArticleReader
 					processParagraphElement(element,fakeRaw,fakeLinked);
 					String str = fakeRaw.toString().trim().toLowerCase(Locale.ENGLISH);
 					// check section name
+					int level = HtmlNames.ELT_HS.indexOf(eltName);
 					if(IGNORED_SECTIONS.contains(str))
-						ignoringSection = true;
+						ignoringSectionLevel = Math.min(ignoringSectionLevel,level);
 					else
-					{	ignoringSection = false;
-						rawStr.append("\n-----");
-						linkedStr.append("\n-----");
-						processParagraphElement(element,rawStr,linkedStr);
+					{	if(level<=ignoringSectionLevel)
+						{	ignoringSectionLevel = HtmlNames.ELT_HS.size();
+							rawStr.append("\n-----");
+							linkedStr.append("\n-----");
+							processParagraphElement(element,rawStr,linkedStr);
+						}
 					}
 				}
-			
-				else if(!ignoringSection)
-				{	// lower sections
-					if(eltName.equals(HtmlNames.ELT_H3) || eltName.equals(HtmlNames.ELT_H4) 
-						|| eltName.equals(HtmlNames.ELT_H5) || eltName.equals(HtmlNames.ELT_H6))
-					{	first = false;
-						processParagraphElement(element,rawStr,linkedStr);
-					}
-					
-					// paragraph
-					else if(eltName.equals(HtmlNames.ELT_P))
+				
+				else if(ignoringSectionLevel==HtmlNames.ELT_HS.size())
+				{	// paragraph
+					if(eltName.equals(HtmlNames.ELT_P))
 					{	String str = element.text();
 						// ignore possible initial disambiguation link
 						if(!first || !str.startsWith(PARAGRAPH_FORTHE))	 

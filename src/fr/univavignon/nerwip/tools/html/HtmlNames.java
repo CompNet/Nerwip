@@ -1,5 +1,8 @@
 package fr.univavignon.nerwip.tools.html;
 
+import java.util.Arrays;
+import java.util.List;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-17 Vincent Labatut et al.
@@ -161,6 +164,8 @@ public class HtmlNames
 	public final static String ELT_H5 = "h5";
 	/** Html section tag */
 	public final static String ELT_H6 = "h6";
+	/** Html section tags */
+	public final static List<String> ELT_HS = Arrays.asList(ELT_H1,ELT_H2,ELT_H3,ELT_H4,ELT_H5,ELT_H6);
 	/** Html document head tag */
 	public final static String ELT_HEAD = "head";
 	/** Html section header tag */
