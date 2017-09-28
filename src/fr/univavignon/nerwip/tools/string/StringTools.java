@@ -329,41 +329,43 @@ public class StringTools
 	public static String cleanText(String input, ArticleLanguage language)
 	{	String output = input;
 		
-		// clean spaces
-		output = cleanSpaces(output);
-		
-		String previous = output;
-		do
-		{	previous = output;
+		if(input!=null)
+		{	// clean spaces
+			output = cleanSpaces(output);
 			
-			// move certain punctuation marks and special characters out of hyperlinks
-			String punctuation = "[ \\n\\.,;]";
-			output = output.replaceAll("<a ([^>]*?)>("+punctuation+"*)([^<]*?)("+punctuation+"*)</a>","$2<a $1>$3</a>$4");
-			output = output.replaceAll("<a ([^>]*?)>(\\()([^<]*?)(\\))</a>","$2<a $1>$3</a>$4");
-			output = output.replaceAll("<a ([^>]*?)>(\\[)([^<]*?)(\\])</a>","$2<a $1>$3</a>$4");
-			
-			// process the text which does not belong to hyperlink tags (i.e. the raw, non-html text)
-			String tmpStr = "";
-			int prevPos = 0;
-			Matcher matcher = HL_PATTERN.matcher(output);
-			while(matcher.find())
-			{	int startPos = matcher.start();
-				int endPos = matcher.end();
+			String previous = output;
+			do
+			{	previous = output;
+				
+				// move certain punctuation marks and special characters out of hyperlinks
+				String punctuation = "[ \\n\\.,;]";
+				output = output.replaceAll("<a ([^>]*?)>("+punctuation+"*)([^<]*?)("+punctuation+"*)</a>","$2<a $1>$3</a>$4");
+				output = output.replaceAll("<a ([^>]*?)>(\\()([^<]*?)(\\))</a>","$2<a $1>$3</a>$4");
+				output = output.replaceAll("<a ([^>]*?)>(\\[)([^<]*?)(\\])</a>","$2<a $1>$3</a>$4");
+				
+				// process the text which does not belong to hyperlink tags (i.e. the raw, non-html text)
+				String tmpStr = "";
+				int prevPos = 0;
+				Matcher matcher = HL_PATTERN.matcher(output);
+				while(matcher.find())
+				{	int startPos = matcher.start();
+					int endPos = matcher.end();
+					String substr = output.substring(prevPos,startPos);
+					substr = cleanInnerText(substr,language);
+					String tagStr = output.substring(startPos,endPos);
+					tmpStr = tmpStr + substr + tagStr;
+					prevPos = endPos;
+				}
+				int startPos = output.length();
 				String substr = output.substring(prevPos,startPos);
 				substr = cleanInnerText(substr,language);
-				String tagStr = output.substring(startPos,endPos);
-				tmpStr = tmpStr + substr + tagStr;
-				prevPos = endPos;
+				tmpStr = tmpStr + substr;
+				output = tmpStr;
 			}
-			int startPos = output.length();
-			String substr = output.substring(prevPos,startPos);
-			substr = cleanInnerText(substr,language);
-			tmpStr = tmpStr + substr;
-			output = tmpStr;
+			while(!output.equals(previous));
+			
+			output = output.trim();
 		}
-		while(!output.equals(previous));
-		
-		output = output.trim();
 		return output;
 	}
 	
@@ -408,10 +410,10 @@ public class StringTools
 		// replace multiple consecutive spaces by a single one 
 		output = output.replaceAll("( )+", " ");
 
-		// normalize newlines
-		output = output.replaceAll("(\\r)+", "\n");
+//		// normalize newlines
+//		output = output.replaceAll("\\r", "\n");
 		// replace multiple consecutive newlines by a single one 
-		output = output.replaceAll("(\\n)+", "\n");
+		output = output.replaceAll("\\n\\n+", "\n\n");
 		
 		// remove spaces at the end of lines 
 		output = output.replaceAll(" \\n", "\n");
@@ -571,7 +573,7 @@ public class StringTools
 		{	// replace all carriage return chars by newline ones
 			result = result.replace('\r', '\n');
 			// replace all consecutive new line chars by a single one //TODO should we accept "\n\n" to get paragraphs?
-			result = result.replaceAll("\\n+", "\n");
+			result = result.replaceAll("\\n\\n+", "\n\n");
 			
 			// replace all white spaces (except newline chars) by regular spaces
 			result = result.replaceAll("[\\s&&[^\\n]]", " ");

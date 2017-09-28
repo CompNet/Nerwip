@@ -70,7 +70,9 @@ public class WikipediaReader extends ArticleReader
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-		URL url = new URL("https://fr.wikipedia.org/wiki/Boeing_767");
+//		URL url = new URL("https://fr.wikipedia.org/wiki/Boeing_767");
+//		URL url = new URL("https://fr.wikipedia.org/wiki/Appareil_informatique");
+		URL url = new URL("https://fr.wikipedia.org/wiki/Apache_Software_Foundation");
 		
 		ArticleReader reader = new WikipediaReader();
 		Article article = reader.processUrl(url, ArticleLanguage.FR);
@@ -86,9 +88,15 @@ public class WikipediaReader extends ArticleReader
 	public String getName(URL url)
 	{	String address = url.toString();
 		
-		// get the last part of the URL as the page name
-		String temp[] = address.split("/");
-		String result = temp[temp.length-1];
+//		// get the last part of the URL as the page name
+//		String temp[] = address.split("/");
+//		String result = temp[temp.length-1];
+//		// doesn't work if there's "/" in the name, e.g. "MPEG-1/2_Audio_Layer_III"
+		
+		String prfx = "wiki/";
+		int pos = address.indexOf(prfx);
+		pos = pos + prfx.length();
+		String result = address.substring(pos);
 		
 		// remove diacritics
 		result = StringTools.removeDiacritics(result);
@@ -356,12 +364,14 @@ public class WikipediaReader extends ArticleReader
 	/** Id of the element containing the article title in the Wikipedia page */
 	private final static String ID_TITLE = "firstHeading";
 	
+	/** Class of main content */
+	private final static String CLASS_CONTENT = "mw-parser-output";
 	/** Class of announcements */
-	private final static String[] CLASS_ANNOUNCEMENTS = {"????","bandeau-article"};
+	private final static String[] CLASS_ANNOUNCEMENTS = {"hatnote","bandeau"};
 	/** Class of phonetic transcriptions */
 	private final static String[] CLASS_IPA = {"IPA","API"};
 	/** Class of disambiguisation links */
-	private final static String CLASS_DISAMB_LINK = "plainlinks";
+	private final static String[] CLASS_DISAMB_LINK = {"plainlinks","homonymie"};
 	/** Class of WP edit buttons */
 	private final static String CLASS_EDIT = "editsection";
 	/** Class of external hyperlinks of the Wikipedia page */
@@ -401,24 +411,30 @@ public class WikipediaReader extends ArticleReader
 	private final static String PARAGRAPH_FORTHE = "For the";
 
 	/** List of sections to be ignored */
-	private final static List<String> IGNORED_SECTIONS = Arrays.asList(
-		"audio books", "audio recordings", /*"awards", "awards and honors",*/
-		"bibliography", "books",
-		"collections", "collections (selection)",
-		"directed",
-		"external links",
-		"film adaptations", "film and television adaptations", "filmography", "footnotes", "further reading",
-		"gallery",
-//		"honours",
-		"main writings",
-		"notes", "nudes",
-		"patents", "publications",
-		"quotes",
-		"references",
-		"secondary bibliography", "see also", "selected bibliography", "selected filmography", "selected list of works", "selected works", "self-portraits", "sources", "stage adaptations",
-		"texts of songs", "theme exhibitions", "theme exhibitions (selection)",
-		"works"
-	);
+	private final static List<List<String>> IGNORED_SECTIONS = Arrays.asList(
+		Arrays.asList("audio books", "audio recordings", /*"awards", "awards and honors",*/
+			"bibliography", "books",
+			"collections", "collections (selection)",
+			"directed",
+			"external links",
+			"film adaptations", "film and television adaptations", "filmography", "footnotes", "further reading",
+			"gallery",
+//			"honours",
+			"main writings",
+			"notes", "nudes",
+			"patents", "publications",
+			"quotes",
+			"references",
+			"secondary bibliography", "see also", "selected bibliography", "selected filmography", "selected list of works", "selected works", "self-portraits", "sources", "stage adaptations",
+			"texts of songs", "theme exhibitions", "theme exhibitions (selection)",
+			"works"),
+		Arrays.asList(
+			"annexes",
+			"bibliographie",	// TODO keep when dealing with biographies
+			"notes et références","références",
+			"liens externes", "lien externe"
+//			"voir aussi"	//TODO keep when extracting networks of WP pages
+	));
 	
 	/////////////////////////////////////////////////////////////////
 	// QUOTES			/////////////////////////////////////////////
@@ -712,24 +728,30 @@ public class WikipediaReader extends ArticleReader
 					processAnyElement(tempElt,rawStr,linkedStr);
 					
 					// possibly remove the last new line character
-					char c = rawStr.charAt(rawStr.length()-1);
-					if(c=='\n')
-					{	rawStr.deleteCharAt(rawStr.length()-1);
-						linkedStr.deleteCharAt(linkedStr.length()-1);
+					if(rawStr.length()>0)
+					{	char c = rawStr.charAt(rawStr.length()-1);
+						if(c=='\n')
+						{	rawStr.deleteCharAt(rawStr.length()-1);
+							linkedStr.deleteCharAt(linkedStr.length()-1);
+						}
 					}
 					
-					// possibly remove preceeding space
-					c = rawStr.charAt(rawStr.length()-1);
-					if(c==' ')
-					{	rawStr.deleteCharAt(rawStr.length()-1);
-						linkedStr.deleteCharAt(linkedStr.length()-1);
+					// possibly remove preceding space
+					if(rawStr.length()>0)
+					{	char c = rawStr.charAt(rawStr.length()-1);
+						if(c==' ')
+						{	rawStr.deleteCharAt(rawStr.length()-1);
+							linkedStr.deleteCharAt(linkedStr.length()-1);
+						}
 					}
 					
 					// possibly add a column and space
-					c = rawStr.charAt(rawStr.length()-1);
-					if(c!='.' && c!=':' && c!=';')
-					{	rawStr.append(": ");
-						linkedStr.append(": ");
+					if(rawStr.length()>0)
+					{	char c = rawStr.charAt(rawStr.length()-1);
+						if(c!='.' && c!=':' && c!=';')
+						{	rawStr.append(": ");
+							linkedStr.append(": ");
+						}
 					}
 					
 					// go to next element
@@ -746,24 +768,30 @@ public class WikipediaReader extends ArticleReader
 					processAnyElement(tempElt,rawStr,linkedStr);
 					
 					// possibly remove the last new line character
-					char c = rawStr.charAt(rawStr.length()-1);
-					if(c=='\n')
-					{	rawStr.deleteCharAt(rawStr.length()-1);
-						linkedStr.deleteCharAt(linkedStr.length()-1);
+					if(rawStr.length()>0)
+					{	char c = rawStr.charAt(rawStr.length()-1);
+						if(c=='\n')
+						{	rawStr.deleteCharAt(rawStr.length()-1);
+							linkedStr.deleteCharAt(linkedStr.length()-1);
+						}
 					}
 					
 					// possibly remove preceeding space
-					c = rawStr.charAt(rawStr.length()-1);
-					if(c==' ')
-					{	rawStr.deleteCharAt(rawStr.length()-1);
-						linkedStr.deleteCharAt(linkedStr.length()-1);
+					if(rawStr.length()>0)
+					{	char c = rawStr.charAt(rawStr.length()-1);
+						if(c==' ')
+						{	rawStr.deleteCharAt(rawStr.length()-1);
+							linkedStr.deleteCharAt(linkedStr.length()-1);
+						}
 					}
 					
 					// possibly add a semi-column
-					c = rawStr.charAt(rawStr.length()-1);
-					if(c!='.' && c!=':' && c!=';')
-					{	rawStr.append(";");
-						linkedStr.append(";");
+					if(rawStr.length()>0)
+					{	char c = rawStr.charAt(rawStr.length()-1);
+						if(c!='.' && c!=':' && c!=';')
+						{	rawStr.append(";");
+							linkedStr.append(";");
+						}
 					}
 					
 					// go to next element
@@ -865,7 +893,7 @@ public class WikipediaReader extends ArticleReader
 			// list of bibiliographic references located at the end of the page
 			&& !eltClass.contains(CLASS_REFERENCES[language.ordinal()])
 			// WP warning links (disambiguation and such)
-			&& !eltClass.contains(CLASS_DISAMB_LINK)
+			&& !eltClass.contains(CLASS_DISAMB_LINK[language.ordinal()])
 			// related links
 			&& !eltClass.contains(CLASS_RELATEDLINK)
 			// audio or video clip
@@ -940,23 +968,29 @@ public class WikipediaReader extends ArticleReader
 				// personal data box (?)
 				&& !eltClass.contains(CLASS_PERSONDATA)))
 				
-			{	result = true;
-				Element tbodyElt = element.children().get(0);
-				
-				for(Element rowElt: tbodyElt.children())
-				{	for(Element colElt: rowElt.children())
-					{	// process cell content
-						processAnyElement(colElt, rawStr, linkedStr);
-						
-						// possibly add final dot and space. 
-						if(rawStr.charAt(rawStr.length()-1)!=' ')
-						{	if(rawStr.charAt(rawStr.length()-1)=='.')
-							{	rawStr.append(" ");
-								linkedStr.append(" ");
-							}
-							else
-							{	rawStr.append(". ");
-								linkedStr.append(". ");
+			{	Elements children = element.children();
+				if(!children.isEmpty())
+				{	result = true;
+					Element tbodyElt = children.first();
+					
+					for(Element rowElt: tbodyElt.children())
+					{	for(Element colElt: rowElt.children())
+						{	// process cell content
+							processAnyElement(colElt, rawStr, linkedStr);
+							
+							// possibly add final dot and space. 
+							if(rawStr.length()>0)
+							{	char c = rawStr.charAt(rawStr.length()-1);
+								if(c!=' ')
+								{	if(c=='.')
+									{	rawStr.append(" ");
+										linkedStr.append(" ");
+									}
+									else
+									{	rawStr.append(". ");
+										linkedStr.append(". ");
+									}
+								}
 							}
 						}
 					}
@@ -1159,9 +1193,10 @@ public class WikipediaReader extends ArticleReader
 			logger.log("Get raw and linked texts.");
 			StringBuilder rawStr = new StringBuilder();
 			StringBuilder linkedStr = new StringBuilder();
-			Element bodyContentElt = document.getElementsByAttributeValue(HtmlNames.ATT_ID,ID_CONTENT).get(0);
+			Element mainContentElt = document.getElementsByAttributeValue(HtmlNames.ATT_ID,ID_CONTENT).first();
+			Element bodyContentElt = mainContentElt.getElementsByClass(CLASS_CONTENT).first();
 			// processing each element in the content part
-			int ignoringSectionLevel = 0;	// indicates whether the current section should be ignored
+			int ignoringSectionLevel = HtmlNames.ELT_HS.size();	// indicates whether the current section should be ignored
 			boolean first = true;
 			for(Element element: bodyContentElt.children())
 			{	String eltName = element.tag().getName();
@@ -1177,13 +1212,13 @@ public class WikipediaReader extends ArticleReader
 					String str = fakeRaw.toString().trim().toLowerCase(Locale.ENGLISH);
 					// check section name
 					int level = HtmlNames.ELT_HS.indexOf(eltName);
-					if(IGNORED_SECTIONS.contains(str))
+					if(IGNORED_SECTIONS.get(language.ordinal()).contains(str))
 						ignoringSectionLevel = Math.min(ignoringSectionLevel,level);
 					else
 					{	if(level<=ignoringSectionLevel)
 						{	ignoringSectionLevel = HtmlNames.ELT_HS.size();
-							rawStr.append("\n-----");
-							linkedStr.append("\n-----");
+							rawStr.append("\n");
+							linkedStr.append("\n");
 							processParagraphElement(element,rawStr,linkedStr);
 						}
 					}
