@@ -404,6 +404,8 @@ public class WikipediaReader extends ArticleReader
 	private final static String CLASS_TOPICON = "topicon";
 	/** Class of the element containing some kind of generated table */
 	private final static String CLASS_WIKITABLE = "wikitable";
+	/** Class of boxes referring to other Wikimedia projects */
+	private final static String CLASS_INTERPROJECTS = "js-interprojets";
 	
 	/** Title of audio links  */
 	private final static String TITLE_LISTEN = "Listen";
@@ -430,10 +432,11 @@ public class WikipediaReader extends ArticleReader
 			"works"),
 		Arrays.asList(
 			"annexes",
-			"bibliographie",	// TODO keep when dealing with biographies
-			"notes et références","références",
-			"liens externes", "lien externe"
-//			"voir aussi"	//TODO keep when extracting networks of WP pages
+			"bibliographie",	// keep when dealing with biographies
+			"notes et références","références","notes",
+			"liens externes", "lien externe",
+//			"voir aussi"		// keep when extracting networks of WP pages
+			"source"
 	));
 	
 	/////////////////////////////////////////////////////////////////
@@ -888,8 +891,8 @@ public class WikipediaReader extends ArticleReader
 //	System.out.print("");
 		
 		if(eltClass==null || 
-			// we ignore tables of content
-			(!eltClass.contains(CLASS_TABLEOFCONTENT)
+		(	// we ignore tables of content
+			!eltClass.contains(CLASS_TABLEOFCONTENT)
 			// list of bibiliographic references located at the end of the page
 			&& !eltClass.contains(CLASS_REFERENCES[language.ordinal()])
 			// WP warning links (disambiguation and such)
@@ -904,7 +907,13 @@ public class WikipediaReader extends ArticleReader
 			&& !eltClass.contains(CLASS_TOPICON)
 			// announcements at the top of the page
 			&& !eltClass.contains(CLASS_ANNOUNCEMENTS[language.ordinal()])
-			))
+			// link to other wikimedia projects
+			&& !eltClass.contains(CLASS_INTERPROJECTS)
+			// navigation boxes
+			&& !eltClass.contains(CLASS_NAVIGATIONBOX)
+			// information boxes
+			&& !eltClass.contains(CLASS_INFORMATIONBOX)
+		))
 		{	result = true;
 			processAnyElement(element, rawStr, linkedStr);
 		}
