@@ -115,7 +115,7 @@ The project also makes use of several Web services:
 * [DBpedia Spotlight](https://github.com/dbpedia-spotlight/dbpedia-spotlight)
 
 ## References
-* **[AL'13]** Atdağ, S. & Labatut, V. A Comparison of Named Entity Recognition Tools Applied to Biographical Texts, 2nd International Conference on Systems and Computer Science, 2013, 228-233. 
+* **[AL'13]** S. Atdağ & V. Labatut. *A Comparison of Named Entity Recognition Tools Applied to Biographical Texts*, 2nd International Conference on Systems and Computer Science, 228-233, 2013. 
 http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6632052&tag=1
-* **[L'13]** Labatut, V. Improved Named Entity Recognition Through SVM-Based Combination, Technical Report, 2013. 
+* **[L'13]** V. Labatut. *Improved Named Entity Recognition Through SVM-Based Combination*, Technical Report, Galatasaray University, hal-01322867, 2013. 
 https://hal.archives-ouvertes.fr/hal-01322867/
