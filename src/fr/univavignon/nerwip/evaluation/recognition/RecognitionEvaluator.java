@@ -44,7 +44,7 @@ import fr.univavignon.nerwip.retrieval.reader.ReaderException;
  * This class is used to evaluate the performance
  * of recognizers. It requires a collection of manually
  * annotated articles, to be used as references.
- * recognizers are assessd by comparing their estimated
+ * recognizers are assessed by comparing their estimated
  * mentions to the actual ones. Various measures can
  * be used to perform this comparison.
  * 
