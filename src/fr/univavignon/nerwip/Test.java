@@ -2157,9 +2157,21 @@ public class Test
 	}
 }
 
+/**
+ * TODO
+ * - separate the retrieval phase
+ * 		- connexion to some source eg web page
+ * 		- text cleaning, and record in file, metadata, etc.
+ * 		- synch with the transpolo stuff
+ * 		- do we still need to keep the hyperlinks?
+ * - separate the editor
+ * 		- move the XML names where they are needed
+ */
+
 // TODO ATTENTION charger/sauver chaque texte, afin de refaire la normalisation (faire des vérifs, notamment sur saut de ligne)
 
 /* TODO
+ * - the Spotlight API has completely changed: must update all of this :(
  * 
  * - apply the resolvers and linkers to the whole corpus
  *   - what about the combination of resolving/linking, how does this work?

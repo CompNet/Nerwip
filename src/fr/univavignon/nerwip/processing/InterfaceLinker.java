@@ -103,7 +103,7 @@ public interface InterfaceLinker extends InterfaceProcessor
 	 * The recognizer and resolver that were set up for this linker will 
 	 * automatically be applied, or their results will be loaded if their
 	 * cache is enabled (and the results are cached). The corresponding 
-	 * {@code Mentions} object will be completed and returned wit the
+	 * {@code Mentions} object will be completed and returned with the
 	 * {@link Entities}.
 	 * 
 	 * @param article

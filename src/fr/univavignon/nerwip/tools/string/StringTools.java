@@ -663,7 +663,7 @@ public class StringTools
 	}
 	
 	/**
-	 * Removes all the non-latin letters, as they generally not supported
+	 * Removes all the non-latin letters, as they are generally not supported
 	 * by the recognizers (or other processors).
 	 * <br/>
 	 * This method is meant to be used only by {@link #cleanInnerText(String,ArticleLanguage)}.

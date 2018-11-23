@@ -36,8 +36,8 @@ import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 
 /**
- * This class contains various methods used to verify reference mentions
- * are correct: no overlap, consistant position, no empty mentions, etc.
+ * This class contains various methods used to verify that reference mentions
+ * are correct: no overlap, consistent position, no empty mentions, etc.
  *  
  * @author Vincent Labatut
  */

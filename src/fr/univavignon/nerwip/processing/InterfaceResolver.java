@@ -34,7 +34,7 @@ import fr.univavignon.nerwip.data.entity.mention.Mentions;
 
 /**
  * Interface implemented by all classes able to perform
- * coreference resolution, i.e. determine if two entity object
+ * coreference resolution, i.e. determine if two entity objects
  * actually correspond to the same entity or not.
  * 		 
  * @author Vincent Labatut

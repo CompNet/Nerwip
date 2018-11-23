@@ -89,7 +89,7 @@ public class LinkTools
 	 * 		Start of the piece of text to be removed,
 	 * 		expressed without regards for the links.
 	 * @param length
-	 * 		Length ot the piece of text to be removed,
+	 * 		Length of the piece of text to be removed,
 	 * 		expressed in characters and without regards for the links.
 	 * @return
 	 * 		Shortened text.

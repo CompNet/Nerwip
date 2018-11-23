@@ -66,7 +66,7 @@ import fr.univavignon.nerwip.tools.web.WebTools;
 
 /**
  * This class contains methods implementing 
- * some processing related to Wikimedia Foundation services.
+ * some processing related to WikiMedia Foundation services.
  * 
  * @author Vincent Labatut
  * @author Sabrine Ayachi
@@ -302,7 +302,7 @@ public class WmCommonTools
 	// PROCESS		 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Receives an incomplete entity, and try to find out its WikiData id.
+	 * Receives an incomplete entity, and tries to find out its WikiData id.
 	 * Also complete the entity with various details, in particular the other
 	 * ids indicated on WikiData.
 	 * 
