@@ -254,7 +254,7 @@ public class VoteWeights<T extends InterfaceProcessor>
 			String line = scanner.nextLine();
 			{	String temp[] = line.split("\t");
 				String nerName = temp[0];
-				if(nerName.equals(recognizer.getName()))
+				if(nerName.equals(recognizer.getName().toString()))
 					logger.log("WARNING: just recognizer '"+nerName+"' where it should have been '"+recognizer+"'");
 				for(int i=1;i<temp.length;i++)
 				{	String catStr = temp[i];

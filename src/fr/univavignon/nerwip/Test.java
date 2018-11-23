@@ -2164,7 +2164,7 @@ public class Test
  * - apply the resolvers and linkers to the whole corpus
  *   - what about the combination of resolving/linking, how does this work?
  *   - assess their quality, possibly make some corrections
- *   - check wikidatalinker, it possible requires the same postprocessing as spotlight in order to create missing entities
+ *   - check wikidatalinker, it possibly requires the same post-processing as spotlight in order to create missing entities
  *     (for unrecognized mentions)
  * - assess the network extraction classes
  * 
@@ -2187,7 +2187,7 @@ public class Test
  * - See if OpeNer can be adapted to process links (?) 
  *   And all the other tools, too (OpenCalais is a candidate).
  *   
- * - the unification between entities over the whole corpus is performed out of the processors, as an additional thing.
+ * - The unification between entities over the whole corpus is performed out of the processors, as an additional thing.
  *    also, its entities are recorded in specific files, at the level of the corpus.
  *    whereas the new mentions (bc of their entities) are recorded in a different file 
  *    	in the concerned linker folders of each article (?)
@@ -2208,13 +2208,13 @@ public class Test
  * - what about applying several resolution tools in sequence? e.g. anaphora detection + coreference resolution
  *   >> this could be done as a specific resolver, combining other existing (and complementary) processors
  *   
- * - Should we use a "unknown" entity type?
+ * - Should we use an "unknown" entity type?
  *   some tools are able to detect an entity but not always its type. still, the information is valuable.
  *   such a type would allow taking advantage of this spatial aspect...
  */
 
 /*
- * Check libraries (probably added by Sabrine?)
+ * Check libraries (probably added by Sabrine ages ago?)
  * - why commons-csv-1.0.jar ?
  * - what is filterbuilder.jar ?
  * - htmlexer.jar ?
