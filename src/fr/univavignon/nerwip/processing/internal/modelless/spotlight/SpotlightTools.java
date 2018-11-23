@@ -43,7 +43,7 @@ import fr.univavignon.nerwip.tools.web.WebTools;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
- * Copyright 2011-17 Vincent Labatut et al.
+ * Copyright 2011-18 Vincent Labatut et al.
  * 
  * This file is part of Nerwip - Named Entity Extraction in Wikipedia Pages.
  * 
