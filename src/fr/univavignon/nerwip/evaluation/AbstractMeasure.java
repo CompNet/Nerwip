@@ -26,8 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import fr.univavignon.nerwip.data.article.ArticleCategory;
-import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.common.data.article.ArticleCategory;
+import fr.univavignon.common.data.entity.EntityType;
 
 /**
  * This class contains a set of methods useful for

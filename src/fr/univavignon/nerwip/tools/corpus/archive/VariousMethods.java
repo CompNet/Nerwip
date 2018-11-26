@@ -29,17 +29,17 @@ import java.util.List;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.ArticleList;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.external.AbstractExternalDelegateRecognizer;
-import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.retriever.reader.ReaderException;
 
 /**
  * This class contains various methods

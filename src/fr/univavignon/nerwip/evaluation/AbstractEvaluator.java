@@ -31,16 +31,16 @@ import java.util.List;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.article.ArticleCategory;
-import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.common.data.article.ArticleCategory;
+import fr.univavignon.common.data.article.ArticleList;
+import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.time.TimeFormatting;
+import fr.univavignon.retriever.reader.ReaderException;
 
 /**
  * This class is used to evaluate the performance

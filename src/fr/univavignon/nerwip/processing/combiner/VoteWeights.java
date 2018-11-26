@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeSet;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleCategory;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.nerwip.evaluation.AbstractEvaluator;
 import fr.univavignon.nerwip.evaluation.AbstractMeasure;
 import fr.univavignon.nerwip.processing.InterfaceProcessor;

@@ -27,21 +27,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import fr.univavignon.nerwip.data.entity.EntityDate;
-import fr.univavignon.nerwip.data.entity.EntityFunction;
-import fr.univavignon.nerwip.data.entity.EntityLocation;
-import fr.univavignon.nerwip.data.entity.EntityMeeting;
-import fr.univavignon.nerwip.data.entity.EntityOrganization;
-import fr.univavignon.nerwip.data.entity.EntityPerson;
-import fr.univavignon.nerwip.data.entity.EntityProduction;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.MentionDate;
-import fr.univavignon.nerwip.data.entity.mention.MentionFunction;
-import fr.univavignon.nerwip.data.entity.mention.MentionLocation;
-import fr.univavignon.nerwip.data.entity.mention.MentionMeeting;
-import fr.univavignon.nerwip.data.entity.mention.MentionOrganization;
-import fr.univavignon.nerwip.data.entity.mention.MentionPerson;
-import fr.univavignon.nerwip.data.entity.mention.MentionProduction;
+import fr.univavignon.common.data.entity.EntityDate;
+import fr.univavignon.common.data.entity.EntityFunction;
+import fr.univavignon.common.data.entity.EntityLocation;
+import fr.univavignon.common.data.entity.EntityMeeting;
+import fr.univavignon.common.data.entity.EntityOrganization;
+import fr.univavignon.common.data.entity.EntityPerson;
+import fr.univavignon.common.data.entity.EntityProduction;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.MentionDate;
+import fr.univavignon.common.data.entity.mention.MentionFunction;
+import fr.univavignon.common.data.entity.mention.MentionLocation;
+import fr.univavignon.common.data.entity.mention.MentionMeeting;
+import fr.univavignon.common.data.entity.mention.MentionOrganization;
+import fr.univavignon.common.data.entity.mention.MentionPerson;
+import fr.univavignon.common.data.entity.mention.MentionProduction;
 import fr.univavignon.nerwip.tools.time.Period;
 
 /**

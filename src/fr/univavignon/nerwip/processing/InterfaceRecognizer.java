@@ -25,10 +25,10 @@ import java.io.IOException;
 
 import java.util.List;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.mention.Mentions;
 
 /**
  * Interface implemented by all classes able to perform

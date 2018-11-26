@@ -36,13 +36,13 @@ import java.util.TreeSet;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleCategory;
-import fr.univavignon.nerwip.retrieval.ArticleRetriever;
-import fr.univavignon.nerwip.retrieval.reader.ReaderException;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.retriever.ArticleRetriever;
+import fr.univavignon.retriever.reader.ReaderException;
 
 /**
  * This class represents how categories are distributed

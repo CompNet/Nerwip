@@ -23,10 +23,10 @@ package fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker;
 
 import java.util.List;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.MentionsEntities;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.MentionsEntities;
 import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
 import fr.univavignon.nerwip.processing.InterfaceResolver;

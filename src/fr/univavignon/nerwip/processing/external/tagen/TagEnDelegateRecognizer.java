@@ -40,16 +40,16 @@ import org.jdom2.Text;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.external.AbstractExternalDelegateRecognizer;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.xml.XmlTools;
+import fr.univavignon.tools.xml.XmlTools;
 
 /**
  * This class acts as a delegate for the mention recognition with TagEN.

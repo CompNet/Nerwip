@@ -27,10 +27,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fr.univavignon.nerwip.data.article.ArticleCategory;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.ArticleCategory;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.tools.file.FileNames;
 

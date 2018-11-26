@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.univavignon.nerwip.data.article.ArticleList;
+import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
 import fr.univavignon.nerwip.tools.file.FileTools;

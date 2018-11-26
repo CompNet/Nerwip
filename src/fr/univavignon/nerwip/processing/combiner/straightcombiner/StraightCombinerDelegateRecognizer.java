@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;

@@ -32,11 +32,11 @@ import java.util.Scanner;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.retrieval.ArticleRetriever;
-import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.retriever.ArticleRetriever;
+import fr.univavignon.retriever.reader.ReaderException;
 
 /**
  * This class contains various methods to retrieve sets

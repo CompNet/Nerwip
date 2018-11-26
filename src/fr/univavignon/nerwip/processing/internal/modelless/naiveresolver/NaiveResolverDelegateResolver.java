@@ -31,15 +31,15 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.AbstractEntity;
-import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
-import fr.univavignon.nerwip.data.entity.AbstractValuedEntity;
-import fr.univavignon.nerwip.data.entity.Entities;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.AbstractEntity;
+import fr.univavignon.common.data.entity.AbstractNamedEntity;
+import fr.univavignon.common.data.entity.AbstractValuedEntity;
+import fr.univavignon.common.data.entity.Entities;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateResolver;

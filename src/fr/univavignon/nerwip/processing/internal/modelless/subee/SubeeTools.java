@@ -28,7 +28,7 @@ import java.util.TreeSet;
 
 import org.apache.http.client.ClientProtocolException;
 
-import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.tools.freebase.FbTypeTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;

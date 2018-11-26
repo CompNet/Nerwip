@@ -27,10 +27,10 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.edition.MentionEditor;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleList;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.editor.MentionEditor;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
@@ -59,12 +59,12 @@ import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalaisLanguage;
 import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
-import fr.univavignon.nerwip.retrieval.ArticleRetriever;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
 import fr.univavignon.nerwip.tools.corpus.ArticleRetrieval;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.retriever.ArticleRetriever;
 
 /**
  * This is the main class to launch the main

@@ -49,7 +49,7 @@ import com.optimaize.langdetect.text.CommonTextObjectFactories;
 import com.optimaize.langdetect.text.TextObject;
 import com.optimaize.langdetect.text.TextObjectFactory;
 
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
+import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 

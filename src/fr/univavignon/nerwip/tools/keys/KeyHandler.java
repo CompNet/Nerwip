@@ -31,8 +31,7 @@ import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.xml.XmlNames;
-import fr.univavignon.nerwip.tools.xml.XmlTools;
+import fr.univavignon.tools.xml.XmlTools;
 
 /**
  * This class handles the keys associated to the
@@ -59,6 +58,15 @@ public class KeyHandler
 	/////////////////////////////////////////////////////////////////
 	// LOADING		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Some key stored in an XML file */
+	public static final String ELT_KEY = "key";
+	/** Name of the key */
+	public static final String ATT_NAME = "name";
+	/** Value associated to the key */
+	public static final String ATT_VALUE = "value";
+	/** Id associated to the key */
+	public static final String ATT_KEYID = "id";
+	
 	/**
 	 * Loads the list of keys as set by the user in
 	 * the appropriate XML file, as well as the
@@ -76,11 +84,11 @@ public class KeyHandler
 			Element keysElt = XmlTools.getRootFromFile(dataFile, schemaFile);
 			
 			// populate map
-			List<Element> keyElts = keysElt.getChildren(XmlNames.ELT_KEY);
+			List<Element> keyElts = keysElt.getChildren(ELT_KEY);
 			for(Element keyElt: keyElts)
-			{	String name = keyElt.getAttributeValue(XmlNames.ATT_NAME);
-				String value = keyElt.getAttributeValue(XmlNames.ATT_VALUE);
-				String id = keyElt.getAttributeValue(XmlNames.ATT_KEYID);
+			{	String name = keyElt.getAttributeValue(ATT_NAME);
+				String value = keyElt.getAttributeValue(ATT_VALUE);
+				String id = keyElt.getAttributeValue(ATT_KEYID);
 				
 				// ignore empty keys or names
 				if(!name.isEmpty() && !value.isEmpty())

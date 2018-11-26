@@ -23,7 +23,7 @@ package fr.univavignon.nerwip.processing.internal.modelbased;
 
 import java.util.List;
 
-import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.internal.AbstractInternalDelegateRecognizer;

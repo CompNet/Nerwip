@@ -24,8 +24,8 @@ package fr.univavignon.nerwip.processing.external.tagen;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.EntityType;
 
 /**
  * Class representing the predefined

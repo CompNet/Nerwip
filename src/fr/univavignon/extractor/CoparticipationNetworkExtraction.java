@@ -32,18 +32,18 @@ import java.util.TreeSet;
 
 import org.xml.sax.SAXException;
 
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleList;
+import fr.univavignon.common.data.entity.Entities;
+import fr.univavignon.common.data.entity.EntityPerson;
+import fr.univavignon.common.data.entity.KnowledgeBase;
+import fr.univavignon.common.data.entity.MentionsEntities;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.extractor.data.event.Event;
 import fr.univavignon.extractor.data.graph.Graph;
 import fr.univavignon.extractor.data.graph.Link;
 import fr.univavignon.extractor.data.graph.Node;
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.Entities;
-import fr.univavignon.nerwip.data.entity.EntityPerson;
-import fr.univavignon.nerwip.data.entity.KnowledgeBase;
-import fr.univavignon.nerwip.data.entity.MentionsEntities;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceLinker;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
@@ -51,13 +51,13 @@ import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolver;
 import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
-import fr.univavignon.nerwip.retrieval.ArticleRetriever;
-import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.corpus.ArticleLists;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.retriever.ArticleRetriever;
+import fr.univavignon.retriever.reader.ReaderException;
 
 /**
  * Extract an interaction network from a corpus

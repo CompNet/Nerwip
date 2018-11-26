@@ -28,8 +28,8 @@ import java.util.List;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.EntityType;
+import fr.univavignon.common.data.article.ArticleList;
+import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
@@ -37,9 +37,9 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
-import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.retriever.reader.ReaderException;
 
 /**
  * This class sets up the voting parameters for the

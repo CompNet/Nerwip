@@ -45,11 +45,11 @@ import libsvm.svm_problem;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.AbstractMention;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleList;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
@@ -57,13 +57,13 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
-import fr.univavignon.nerwip.retrieval.ArticleRetriever;
-import fr.univavignon.nerwip.retrieval.reader.ReaderException;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.time.TimeFormatting;
+import fr.univavignon.retriever.ArticleRetriever;
+import fr.univavignon.retriever.reader.ReaderException;
 
 /**
  * This class trains a SVM on the corpus. It uses the 

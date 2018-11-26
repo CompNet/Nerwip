@@ -43,8 +43,8 @@ import java.util.Scanner;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.data.article.ArticleList;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.ArticleList;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;

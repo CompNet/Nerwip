@@ -53,16 +53,16 @@ import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.AbstractNamedEntity;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.KnowledgeBase;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.AbstractNamedEntity;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.KnowledgeBase;
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.file.FileTools;
 import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
 import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.nerwip.tools.string.StringTools;
-import fr.univavignon.nerwip.tools.web.WebTools;
+import fr.univavignon.tools.web.WebTools;
 
 /**
  * This class contains methods implementing 

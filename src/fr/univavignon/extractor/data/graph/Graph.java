@@ -36,8 +36,8 @@ import org.jdom2.Element;
 
 import fr.univavignon.nerwip.tools.file.FileNames;
 import fr.univavignon.nerwip.tools.time.TimeFormatting;
-import fr.univavignon.nerwip.tools.xml.GraphmlTools;
-import fr.univavignon.nerwip.tools.xml.XmlTools;
+import fr.univavignon.tools.xml.GraphmlTools;
+import fr.univavignon.tools.xml.XmlTools;
 
 /**
  * This class represents a graph, i.e.

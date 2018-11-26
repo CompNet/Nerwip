@@ -39,16 +39,15 @@ import org.jdom2.output.XMLOutputter;
 
 import de.unihd.dbs.heideltime.standalone.HeidelTimeStandalone;
 import de.unihd.dbs.heideltime.standalone.exceptions.DocumentCreationTimeMissingException;
-import fr.univavignon.nerwip.data.article.Article;
-import fr.univavignon.nerwip.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.data.entity.EntityType;
-import fr.univavignon.nerwip.data.entity.mention.MentionDate;
-import fr.univavignon.nerwip.data.entity.mention.Mentions;
+import fr.univavignon.common.data.article.Article;
+import fr.univavignon.common.data.article.ArticleLanguage;
+import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.data.entity.mention.MentionDate;
+import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.internal.modelbased.AbstractModelbasedInternalDelegateRecognizer;
 import fr.univavignon.nerwip.tools.string.StringTools;
 import fr.univavignon.nerwip.tools.time.Date;
-import fr.univavignon.nerwip.tools.xml.XmlNames;
 
 /**
  * This class acts as a delegate for the mention recognition with HeidelTime.
@@ -216,6 +215,10 @@ class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRec
 	/////////////////////////////////////////////////////////////////
 	// CONVERSION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** XML attribute */
+	private static final String ATT_TYPE = "type";
+	/** XML attribute */
+	private static final String ATT_VALUE = "value";
 	/** Header we need to remove before parsing the output text */
 	private static final String ORIGINAL_DOCTYPE = "<!DOCTYPE TimeML SYSTEM \"TimeML.dtd\">";
 	/** Value of the TIMEX3 attribute "type" for a calendar date */
@@ -341,10 +344,10 @@ class HeidelTimeDelegateRecognizer extends AbstractModelbasedInternalDelegateRec
 			logger.log("WARNING: detected some encapsulated elements in "+xo.outputString(element));
 		
 		else
-		{	String txType = element.getAttributeValue(XmlNames.ATT_TYPE);
+		{	String txType = element.getAttributeValue(ATT_TYPE);
 			// we only focus on dates and date-times
 			if(txType.equals(TYPE_DATE) || txType.equals(TYPE_TIME))
-			{	String valueStr = element.getAttributeValue(XmlNames.ATT_VALUE);
+			{	String valueStr = element.getAttributeValue(ATT_VALUE);
 				String text = element.getText();
 				Date date = parseTimex3Value(valueStr,text);
 				if(date==null)
