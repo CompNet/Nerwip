@@ -44,9 +44,8 @@ import fr.univavignon.nerwip.processing.AbstractDelegateRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.files.FileTools;
 
 /**
  * This class implements a specific type of recognizer:
@@ -130,56 +129,6 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 	 */
 	public abstract String getModelPath();
 	
-	/////////////////////////////////////////////////////////////////
-	// SUBEE			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Describes how {@link Subee} is applied (or not applied) */
-	protected SubeeMode subeeMode;
-	
-	/**
-	 * Enumeration used to configure how
-	 * {@link Subee} is applied (or not).
-	 * 
-	 * @author Vincent Labatut
-	 */
-	public enum SubeeMode
-	{	/** Does not use {@link Subee} */
-		NONE("none"),
-		/** Uses {@link Subee} with parameter addOcc=false */
-		SINGLE("single"),
-		/** Uses {@link Subee} with parameter addOcc=true */
-		ALL("all");
-		
-		/** String representing the parameter value */
-		private String name;
-		
-		/**
-		 * Builds a new Subee mode value
-		 * to be used as a parameter.
-		 * 
-		 * @param name
-		 * 		String representing the parameter value.
-		 */
-		SubeeMode(String name)
-		{	this.name = name;
-		}
-		
-		@Override
-		public String toString()
-		{	return name;
-		}
-	}
-	
-	/**
-	 * Returns the mode used to apply {@link Subee}.
-	 * 
-	 * @return
-	 * 		A symbol representing how {@code Subee} should be applied.
-	 */
-	public SubeeMode getSubeeMode()
-	{	return subeeMode;
-	}
-
 	/////////////////////////////////////////////////////////////////
 	// RECOGNIZERS		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

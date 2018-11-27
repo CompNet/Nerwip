@@ -21,10 +21,14 @@ package fr.univavignon.tools.xml;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jdom2.Element;
+
+import fr.univavignon.tools.files.FileNames;
 
 /**
  * This class contains Graphml-related names
@@ -34,6 +38,23 @@ import org.jdom2.Element;
  */
 public class GraphmlTools
 {	
+	/////////////////////////////////////////////////////////////////
+	// FILES			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** XML schema file used for graphml  */
+	private final static String FI_GRAPHML_SCHEMA = "graphml" + FileNames.EX_SCHEMA;
+	
+	/**
+	 * Returns the path for the Graphml schema file.
+	 * 
+	 * @return
+	 * 		Path of the Graphml schema file.
+	 */
+	public static final String getSchemaPath()
+	{	String result = FileNames.FO_SCHEMA + File.separator + FI_GRAPHML_SCHEMA;
+		return result;
+	}
+	
 	/////////////////////////////////////////////////////////////////
 	// GENERAL			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

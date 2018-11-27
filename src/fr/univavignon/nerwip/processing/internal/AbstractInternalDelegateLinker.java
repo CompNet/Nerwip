@@ -40,7 +40,7 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.InterfaceResolver;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.tools.file.FileTools;
+import fr.univavignon.tools.files.FileTools;
 
 /**
  * The linking process can be implemented either directly in the processor

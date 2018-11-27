@@ -56,8 +56,8 @@ import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.StanfordModelName;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalaisLanguage;
-import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileNames;
 import libsvm.svm;
 import libsvm.svm_model;
 import libsvm.svm_node;
@@ -74,7 +74,6 @@ import libsvm.svm_node;
  * 		<li>OpenCalais (see {@link OpenCalais})</li>
  * 		<li>OpenNLP (see {@link OpenNlp})</li>
  * 		<li>Stanford NER (see {@link Stanford})</li>
- * 		<li>Subee (see {@link Subee})</li>
  * </ul>
  * Various options allow changing the behavior of this combiner:
  * <ul>
@@ -86,8 +85,6 @@ import libsvm.svm_node;
  * 		<li>{@code useCategories}: whether the SVM should use article categories
  * 		as input, to try improving its prediction. It is independent from
  * 		whether categories are used or not during the voting process.</li>
- * 		<li>{@code subeeMode}: whether to use our recognizer {@link Subee}, and if yes,
- * 		how to use it. See {@code SubeeMode}.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used, in the case
  * 		there is some voting involved in the combination.</li>
  * </ul>
@@ -111,19 +108,16 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * 		Indicates if categories should be used when combining mentions.
 	 * @param combineMode
 	 * 		 Indicates how mentions should be combined.
-	 * @param subeeMode
-	 * 		Indicates how our recognizer {@link Subee} is used (if it's used). 
 	 *
 	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public SvmCombinerDelegateRecognizer(SvmCombiner svmCombiner, boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode, SubeeMode subeeMode) throws ProcessorException
+	public SvmCombinerDelegateRecognizer(SvmCombiner svmCombiner, boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode) throws ProcessorException
 	{	super(svmCombiner);
 		
 		this.specific = specific;
 		this.useCategories = useCategories;
 		this.combineMode = combineMode;
-		this.subeeMode = subeeMode;
 		
 		initRecognizers();
 		setSubCacheEnabled(recognizer.doesCache());
@@ -142,7 +136,6 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 		result = result + "_" + "spec="+specific;
 		result = result + "_" + "cat="+useCategories;
 		result = result + "_" + "combine="+combineMode.toString();
-		result = result + "_" + "subee="+subeeMode.toString();
 		
 //		result = result + "_" + "trim=" + trim;
 //		result = result + "_" + "ignPro=" + ignorePronouns;
@@ -252,18 +245,6 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			recognizers.add(stanford);
 		}
 		
-		// Subee
-		if(subeeMode!=SubeeMode.NONE)
-		{	logger.log("Init Subee");
-			boolean additionalOccurrences = subeeMode==SubeeMode.ALL;
-			boolean useTitle = true;
-			boolean notableType = true;
-			boolean useAcronyms = true;
-			boolean discardDemonyms = true;
-			Subee subee = new Subee(additionalOccurrences,useTitle,notableType,useAcronyms,discardDemonyms);
-			recognizers.add(subee);
-		}
-		
 		logger.decreaseOffset();		
 	}
 
@@ -272,7 +253,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String getModelPath()
-	{	return FileNames.FO_SVMCOMBINER;
+	{	return NerwipFileNames.FO_SVMCOMBINER;
 	}
 
 	/**

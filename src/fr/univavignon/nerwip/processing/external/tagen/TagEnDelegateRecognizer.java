@@ -47,8 +47,8 @@ import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.external.AbstractExternalDelegateRecognizer;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -127,16 +127,18 @@ class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Main program of the TagEn tool */
+	private final static String FI_TAGEN_EXE = "tagen";
 	/** Name of the temporary file generated for TagEn */
-	private static final String TEMP_FILE = "temp.txt";
+	private final static String TEMP_FILE = "temp.txt";
 	/** Name of the file storing the TagEn console outputs */
-	private static final String CONSOLE_FILE = "console.txt";
+	private final static String CONSOLE_FILE = "console.txt";
 	/** TagEn parameters the user does not need to change */
-	private static final String STATIC_PARAMS = ""
+	private final static String STATIC_PARAMS = ""
 			+ "--align "		// resets the text exactly like it originally was (cancelling whatever preprocessin/cleaning was performed) 
 			+ "--yes";			// automatically answers yes to all question of the type "do you want to overwrite some file?"
 	/** Sets the level of verbosity for the TagEn tool */
-	private static final Map<Integer,String> VERBOSITY_LEVEL = new HashMap<Integer,String>();
+	private final static Map<Integer,String> VERBOSITY_LEVEL = new HashMap<Integer,String>();
 	{	VERBOSITY_LEVEL.put(0, "--silent");
 		VERBOSITY_LEVEL.put(1, "--verbose");
 		VERBOSITY_LEVEL.put(2, "--Verbose");
@@ -195,7 +197,7 @@ class TagEnDelegateRecognizer extends AbstractExternalDelegateRecognizer
 				String outputPath = outputFile.getPath();
 				Runtime rt = Runtime.getRuntime();
 				String mainCommand = "." + File.separator 
-						+ FileNames.FO_TAGEN + File.separator + FileNames.FI_TAGEN_EXE 
+						+ NerwipFileNames.FO_TAGEN + File.separator + FI_TAGEN_EXE 
 						+ " :" + model.getParameter() + " "
 						+ STATIC_PARAMS + " " + VERBOSITY_LEVEL.get(2)
 						+ " " + inputPath + " " + outputPath;

@@ -31,9 +31,9 @@ import edu.illinois.cs.cogcomp.LbjNer.LbjFeatures.NETaggerLevel2;
 import edu.illinois.cs.cogcomp.LbjNer.LbjTagger.Parameters;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * Class representing the predefined
@@ -192,7 +192,7 @@ public enum IllinoisModelName
 		
 		// then load the models
 		SparseNetworkLearner result[] = new SparseNetworkLearner[2];
-		{	String path = FileNames.FO_ILLINOIS_MODELS + File.separator + modelFile;
+		{	String path = NerwipFileNames.FO_ILLINOIS_MODELS + File.separator + modelFile;
 			logger.log("Read the model files associated to the selected model ("+this+") "+path);
 			result[0] = new NETaggerLevel1(path+".level1",path+".level1.lex");
 			result[1] = new NETaggerLevel2(path+".level2",path+".level2.lex");
@@ -209,7 +209,7 @@ public enum IllinoisModelName
 	 * 		Problem while loading the configuration file.
 	 */
 	public void loadConfig() throws Exception
-	{	String path = FileNames.FO_ILLINOIS_CONFIGS + File.separator + configFile;
+	{	String path = NerwipFileNames.FO_ILLINOIS_CONFIGS + File.separator + configFile;
 		logger.log("Read the configuration file associated to the selected model ("+this+") "+path);
 		Parameters.readConfigAndLoadExternalData(path);
 	}

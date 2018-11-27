@@ -38,11 +38,11 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleCategory;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
 import fr.univavignon.retriever.ArticleRetriever;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * This class represents how categories are distributed

@@ -40,10 +40,10 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.retriever.reader.ArticleReader;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.html.HtmlNames;
 
 /**
  * From a specified URL, this class retrieves a page
@@ -130,7 +130,6 @@ public class LeParisienReader extends AbstractJournalReader
 			{	// init variables
 				String title = "";
 				StringBuilder rawStr = new StringBuilder();
-				StringBuilder linkedStr = new StringBuilder();
 				Date publishingDate = null;
 				Date modificationDate = null;
 				List<String> authors = new ArrayList<String>();
@@ -210,7 +209,7 @@ public class LeParisienReader extends AbstractJournalReader
 					Element descriptionElt = null;
 					if(!descriptionElts.isEmpty())
 					{	descriptionElt = descriptionElts.first();
-						processAnyElement(descriptionElt, rawStr, linkedStr);
+						processAnyElement(descriptionElt, rawStr);
 					}
 					
 					// processing the article main content
@@ -222,7 +221,7 @@ public class LeParisienReader extends AbstractJournalReader
 					while(contentElt!=null)
 					{	Attributes attr = contentElt.attributes();
 						if(attr.size()==0)
-							processAnyElement(contentElt, rawStr, linkedStr);
+							processAnyElement(contentElt, rawStr);
 						contentElt = contentElt.nextElementSibling();
 					}
 					
@@ -239,21 +238,16 @@ public class LeParisienReader extends AbstractJournalReader
 					
 					// add the title to the content, just in case the entity appears there but not in the article body
 					String rawText = rawStr.toString();
-					String linkedText = linkedStr.toString();
 					if(title!=null && !title.isEmpty())
-					{	rawText = title + "\n" + rawText;
-						linkedText = title + "\n" + linkedText;
-					}
+						rawText = title + "\n" + rawText;
 					
 					// clean text
 					result.setRawText(rawText);
 					logger.log("Length of the raw text: "+rawText.length()+" chars.");
-					result.setLinkedText(linkedText);
-					logger.log("Length of the linked text: "+linkedText.length()+" chars.");
 	
 					// language
 					if(language==null)
-					{	language = StringTools.detectLanguage(rawText,false);
+					{	language = CommonStringTools.detectLanguage(rawText,false);
 						logger.log("Detected language: "+language);
 					}
 					result.setLanguage(language);

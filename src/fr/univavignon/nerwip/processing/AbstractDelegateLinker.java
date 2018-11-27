@@ -39,9 +39,10 @@ import fr.univavignon.common.data.entity.Entities;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.MentionsEntities;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * The linking process can be implemented either directly in the processor
@@ -250,7 +251,7 @@ public abstract class AbstractDelegateLinker
 	public File getEntitiesXmlFile(Article article)
 	{	String path = article.getFolderPath()
 			+ File.separator + getFullFolder()
-			+ File.separator + FileNames.FI_ENTITY_LIST;
+			+ File.separator + CommonFileNames.FI_ENTITY_LIST;
 		
 		File result = new File(path);
 		return result;
@@ -268,7 +269,7 @@ public abstract class AbstractDelegateLinker
 	public File getMentionsXmlFile(Article article)
 	{	String path = article.getFolderPath()
 			+ File.separator + getFullFolder()
-			+ File.separator + FileNames.FI_MENTION_LIST;
+			+ File.separator + CommonFileNames.FI_MENTION_LIST;
 	
 		File result = new File(path);
 		return result;
@@ -358,7 +359,7 @@ public abstract class AbstractDelegateLinker
 	public File getRawFile(Article article)
 	{	String path = article.getFolderPath()
 			+ File.separator + getFullFolder()
-			+ File.separator + FileNames.FI_OUTPUT_TEXT;
+			+ File.separator + NerwipFileNames.FI_OUTPUT_TEXT;
 		
 		File result = new File(path);
 		return result;

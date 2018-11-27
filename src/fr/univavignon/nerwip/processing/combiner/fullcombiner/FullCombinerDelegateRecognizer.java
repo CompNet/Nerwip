@@ -156,8 +156,7 @@ class FullCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			boolean specific = true;
 			boolean useCategories = true;
 			CombineMode combineMode = CombineMode.CHUNK_PREVIOUS;
-			SubeeMode subeeMode = SubeeMode.ALL;
-			SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCategories, combineMode, subeeMode);
+			SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCategories, combineMode);
 			recognizers.add(svmCombiner);
 		}
 		else
@@ -166,8 +165,7 @@ class FullCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			VoteMode voteMode = VoteMode.WEIGHTED_CATEGORY;
 			boolean useRecall = true;
 			boolean existVote = true;
-			SubeeMode subeeMode = SubeeMode.ALL;
-			VoteCombiner voteCombiner = new VoteCombiner(loadModelOnDemand, specific, voteMode, useRecall, existVote, subeeMode);
+			VoteCombiner voteCombiner = new VoteCombiner(loadModelOnDemand, specific, voteMode, useRecall, existVote);
 			recognizers.add(voteCombiner);
 		}
 		

@@ -54,9 +54,11 @@ import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.nerwip.processing.internal.modelbased.AbstractTrainer;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.files.FileTools;
 
 /**
  * This class trains the Illinois Named Entity Tagger
@@ -88,7 +90,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 	// DATA				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the file containing the data */
-	private final static String DATA_FILENAME = FileNames.FO_OUTPUT + File.separator + "illinois.data" + FileNames.EX_TEXT;
+	private final static String DATA_FILENAME = CommonFileNames.FO_OUTPUT + File.separator + "illinois.data" + FileNames.EX_TEXT;
 	/** Map of EntityType to Illinois type conversion */
 	private final static Map<EntityType, String> CONVERSION_MAP = new HashMap<EntityType, String>();
 	
@@ -359,7 +361,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 		System.out.println("Pre-extracting the training data for Level 1 classifier");
 		// VL modification starts here
 		{	String prefix = modelName.getModelFilePrefix()+".level1.prefetchedTrainData";
-			List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+			List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 			for(File f: tempFiles)
 				f.delete();
 		}
@@ -369,7 +371,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 //		pr.waitFor();
 		// VL modification ends here
 		{	String prefix = modelName.getModelFilePrefix()+".level1.prefetchedTestData";
-			List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+			List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 			for(File f: tempFiles)
 				f.delete();
 		}
@@ -408,7 +410,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 		}
 		// VL modification starts here
 		{	String prefix = modelName.getModelFilePrefix()+".level1.prefetchedTrainData";
-			List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+			List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 			for(File f: tempFiles)
 				f.delete();
 		}
@@ -417,7 +419,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 //		pr.waitFor();
 		// VL modification ends here
 		{	String prefix = modelName.getModelFilePrefix()+".level1.prefetchedTestData";
-			List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+			List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 			for(File f: tempFiles)
 				f.delete();
 		}
@@ -440,7 +442,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 			
 			// VL modification starts here
 			{	String prefix = modelName.getModelFilePrefix()+".level2.prefetchedTrainData";
-				List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+				List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 				for(File f: tempFiles)
 					f.delete();
 			}
@@ -449,7 +451,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 //			pr.waitFor();
 			// VL modification ends here
 			{	String prefix = modelName.getModelFilePrefix()+".level2.prefetchedTestData";
-				List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+				List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 				for(File f: tempFiles)
 					f.delete();
 			}
@@ -489,7 +491,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 			}
 			// VL modification starts here
 			{	String prefix = modelName.getModelFilePrefix()+".level2.prefetchedTrainData";
-				List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+				List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 				for(File f: tempFiles)
 					f.delete();
 			}
@@ -498,7 +500,7 @@ public class IllinoisTrainer extends AbstractTrainer<Data>
 //			pr.waitFor();
 			// VL modification ends here
 			{	String prefix = modelName.getModelFilePrefix()+".level2.prefetchedTestData";
-				List<File> tempFiles = FileTools.getFilesStartingWith(FileNames.FO_ILLINOIS_MODELS,prefix);
+				List<File> tempFiles = FileTools.getFilesStartingWith(NerwipFileNames.FO_ILLINOIS_MODELS,prefix);
 				for(File f: tempFiles)
 					f.delete();
 			}

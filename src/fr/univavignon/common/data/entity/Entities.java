@@ -41,9 +41,10 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.time.TimeFormatting;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -655,7 +656,7 @@ public class Entities
 	 */
 	public static Entities readFromXml(File dataFile) throws SAXException, IOException, ParseException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_ENTITY_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+CommonFileNames.FI_ENTITY_SCHEMA;
 		File schemaFile = new File(schemaPath);
 
 		// load file
@@ -704,7 +705,7 @@ public class Entities
 	 */
 	public void writeToXml(File dataFile) throws IOException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_ENTITY_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+CommonFileNames.FI_ENTITY_SCHEMA;
 		File schemaFile = new File(schemaPath);
 		
 		// build xml document

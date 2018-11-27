@@ -56,8 +56,6 @@ public enum ProcessorName
 	/////////////////////////////////////////////////////////////////
 	/** Tool specifically developped to recognize dates */
 	DATEEXTRACTOR,
-	/** Takes advantage of hyperlinks to recognize named entity mentions */ 
-	SUBEE,
 	/** Tool specifically developped to recognize dates in Wikipedia articles */
 	WIKIPEDIADATER,
 	

@@ -38,11 +38,11 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.html.HtmlTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.retriever.reader.ArticleReader;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.html.HtmlNames;
+import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a page
@@ -173,10 +173,9 @@ public class LiberationReader extends AbstractJournalReader
 				logger.decreaseOffset();
 			}
 			
-			// get raw and linked texts
-			logger.log("Get raw and linked texts");
+			// get raw text
+			logger.log("Get raw text");
 			StringBuilder rawStr = new StringBuilder();
-			StringBuilder linkedStr = new StringBuilder();
 
 			// get the description
 			Element descriptionElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DESCRIPTION).first();
@@ -184,11 +183,10 @@ public class LiberationReader extends AbstractJournalReader
 			String text = h2Elt.text() + "\n";
 			text = removeGtst(text);
 			rawStr.append(text);
-			linkedStr.append(text);
 
 			// processing each element in the body
 			Element bodyElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_ARTICLE_BODY).first();
-			processAnyElement(bodyElt, rawStr, linkedStr);
+			processAnyElement(bodyElt, rawStr);
 				
 			// create and init article object
 			result = new Article(name);
@@ -203,25 +201,18 @@ public class LiberationReader extends AbstractJournalReader
 			
 			// add the title to the content, just in case the entity appears there but not in the article body
 			String rawText = rawStr.toString();
-			String linkedText = linkedStr.toString();
 			if(title!=null && !title.isEmpty())
-			{	rawText = title + "\n" + rawText;
-				linkedText = title + "\n" + linkedText;
-			}
+				rawText = title + "\n" + rawText;
 			
 			// clean text
 //			rawText = cleanText(rawText);
 //			rawText = ArticleCleaning.replaceChars(rawText);
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");
-//			linkedText = cleanText(linkedText);
-//			linkedText = ArticleCleaning.replaceChars(linkedText);
-			result.setLinkedText(linkedText);
-			logger.log("Length of the linked text: "+linkedText.length()+" chars.");
 
 			// language
 			if(language==null)
-			{	language = StringTools.detectLanguage(rawText,false);
+			{	language = CommonStringTools.detectLanguage(rawText,false);
 				logger.log("Detected language: "+language);
 			}
 			result.setLanguage(language);
@@ -252,25 +243,21 @@ public class LiberationReader extends AbstractJournalReader
 	// ELEMENTS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processParagraphElement(Element element, StringBuilder rawStr)
 	{	// we ignore the "related article" links
 		String str = element.text();
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		if(!str.startsWith(CONTENT_RELATED_ARTICLES) && !eltClass.equalsIgnoreCase(CLASS_FOOTNOTE))
 		{	// possibly add a new line character first (if the last one is not already a newline)
 			if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 			
 			// recursive processing
-			processAnyElement(element,rawStr,linkedStr);
+			processAnyElement(element,rawStr);
 			
 			// possibly add a new line character (if the last one is not already a newline)
 			if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 	}
 }

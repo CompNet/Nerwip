@@ -39,12 +39,13 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.strings.StringTools;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -64,7 +65,7 @@ public class Article implements Comparable<Article>
 	public Article(String name)
 	{	this.name = name;
 		
-		initFiles(FileNames.FO_OUTPUT);
+		initFiles(CommonFileNames.FO_OUTPUT);
 	}
 	
 	/**
@@ -363,8 +364,6 @@ public class Article implements Comparable<Article>
 	private File originalFile = null;
 	/** File containing the raw text */
 	private File rawFile = null;
-	/** File containing the text with hyperlinks */
-	private File linkedFile = null;
 	/** File containing the article metadata */
 	private File propertiesFile = null;
 	
@@ -376,10 +375,9 @@ public class Article implements Comparable<Article>
 	 */
 	private void initFiles(String corpusFolder)
 	{	folderPath = corpusFolder + File.separator + name;
-		originalFile = new File(folderPath + File.separator + FileNames.FI_ORIGINAL_PAGE);
-		rawFile = new File(folderPath + File.separator + FileNames.FI_RAW_TEXT);
-		linkedFile = new File(folderPath + File.separator + FileNames.FI_LINKED_TEXT);
-		propertiesFile = new File(folderPath + File.separator + FileNames.FI_PROPERTIES);
+		originalFile = new File(folderPath + File.separator + CommonFileNames.FI_ORIGINAL_PAGE);
+		rawFile = new File(folderPath + File.separator + CommonFileNames.FI_RAW_TEXT);
+		propertiesFile = new File(folderPath + File.separator + CommonFileNames.FI_PROPERTIES);
 	}
 	
 	/**
@@ -420,35 +418,7 @@ public class Article implements Comparable<Article>
 	public void setRawText(String rawText)
 	{	this.rawText = rawText;
 	}
-
-	/////////////////////////////////////////////////////////////////
-	// LINKED TEXT			/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Raw text with hyperlinks */
-	private String linkedText = null;
-
-	/**
-	 * Returns the linked text
-	 * of this page.
-	 * 
-	 * @return
-	 * 		Linked text of this page.
-	 */
-	public String getLinkedText()
-	{	return linkedText;
-	}
-
-	/**
-	 * Changes the linked text
-	 * of this page.
-	 * 
-	 * @param linkedText
-	 * 		New linkedText of this page.
-	 */
-	public void setLinkedText(String linkedText)
-	{	this.linkedText = linkedText;
-	}
-
+	
 	/////////////////////////////////////////////////////////////////
 	// CONTENT			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -474,14 +444,6 @@ public class Article implements Comparable<Article>
 		logger.log("Clean raw text");
 		rawText = StringTools.cleanText(rawText,language);
 		
-		// linked text
-		logger.log("Clean linked text");
-		linkedText = StringTools.cleanText(linkedText,language);
-		
-		// remove < and > signs
-		logger.log("Remove tag signs");
-		removeTagSigns();
-		
 		// clean title
 		logger.log("Possibly setup title (if none), and clean it");
 		if(title==null || title.isEmpty())
@@ -494,48 +456,6 @@ public class Article implements Comparable<Article>
 		title = StringTools.cleanTitle(title,language);
 		
 		logger.decreaseOffset();
-	}
-	
-	/**
-	 * Parses both raw and linked texts in order to remove the remaining {@code <} and
-	 * {@code >} signs (not belonging to an hyperlink, in the case of the linked text).
-	 */
-	private void removeTagSigns()
-	{	if(rawText.contains("<") || rawText.contains(">"))
-		{	StringBuffer rt = new StringBuffer();
-			StringBuffer lt = new StringBuffer();
-			int i = 0;
-			int j = 0;
-			while(i<rawText.length())
-			{	char c = rawText.charAt(i);
-				if(c=='<')
-				{	rt.append('(');
-					lt.append('(');
-				}
-				else if(c=='>')
-				{	rt.append(')');
-					lt.append(')');
-				}
-				else
-				{	rt.append(c);
-					c = linkedText.charAt(j); 
-					if(c=='<')
-					{	do
-						{	lt.append(c);
-							j++;
-							c = linkedText.charAt(j); 
-						}
-						while(c!='>');
-					}
-					lt.append(c);
-				}
-				i++;
-				j++;
-			}
-			
-			rawText = rt.toString();
-			linkedText = rt.toString();
-		}
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -579,13 +499,12 @@ public class Article implements Comparable<Article>
 //		for(int i=0;i<name.length();i++)
 //			System.out.println(i+": '"+name.charAt(i)+"'=='"+"Ahmet_Davutoglu".charAt(i)+"' >> "+(name.charAt(i)=="Ahmet_Davutoglu".charAt(i)));
 		
-		String folderPath = FileNames.FO_OUTPUT + File.separator + name;
+		String folderPath = CommonFileNames.FO_OUTPUT + File.separator + name;
 //		File originalFile = new File(folderPath + File.separator + FileNames.FI_ORIGINAL_PAGE);
-		File rawFile = new File(folderPath + File.separator + FileNames.FI_RAW_TEXT);
-		File linkedFile = new File(folderPath + File.separator + FileNames.FI_LINKED_TEXT);
+		File rawFile = new File(folderPath + File.separator + CommonFileNames.FI_RAW_TEXT);
 //		File propertiesFile = new File(folderPath + File.separator + FileNames.FI_PROPERTIES);
 		
-		boolean result = rawFile.exists() && linkedFile.exists() /*&& originalFile.exists()*/;
+		boolean result = rawFile.exists() /*&& originalFile.exists()*/;
 		return result;
 	}
 	
@@ -672,18 +591,10 @@ public class Article implements Comparable<Article>
 		rawText = rawText.trim();
 		result.setRawText(rawText);
 		
-		// raw text with hyperlinks
-		String linkedText = rawText;
-		if(result.linkedFile.exists())
-		{	linkedText = FileTools.readTextFile(result.linkedFile,"UTF-8");
-			linkedText = linkedText.trim();
-		}
-		result.setLinkedText(linkedText);
-		
 		// clean the texts
 		result.cleanContent();
 		// possibly re-record the article if its content was changed due to cleaning
-		boolean changed = !rawText.equals(result.getRawText()) || !linkedText.equals(result.getLinkedText());
+		boolean changed = !rawText.equals(result.getRawText());
 		if(changed)
 			result.write();
 	}
@@ -701,7 +612,7 @@ public class Article implements Comparable<Article>
 	 */
 	private void readProperties() throws ParseException, SAXException, IOException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_PROPERTY_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+CommonFileNames.FI_PROPERTY_SCHEMA;
 		File schemaFile = new File(schemaPath);
 
 		// load file
@@ -805,9 +716,6 @@ public class Article implements Comparable<Article>
 		// raw text only
 		FileTools.writeTextFile(rawFile,rawText,"UTF-8");
 		
-		// raw text with hyperlinks
-		FileTools.writeTextFile(linkedFile,linkedText,"UTF-8");
-		
 		// properties
 		writeProperties();
 	}
@@ -825,7 +733,7 @@ public class Article implements Comparable<Article>
 		if(!folder.exists())
 			folder.mkdirs();
 		// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_PROPERTY_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+CommonFileNames.FI_PROPERTY_SCHEMA;
 		File schemaFile = new File(schemaPath);
 		
 		// build xml document
@@ -923,7 +831,7 @@ public class Article implements Comparable<Article>
 	 * 		Problem while accessing the file.
 	 */
 	public Mentions getReferenceMentions() throws SAXException, IOException, ParseException
-	{	String path = folderPath + File.separator + FileNames.FI_MENTION_LIST;
+	{	String path = folderPath + File.separator + CommonFileNames.FI_MENTION_LIST;
 		File file = new File(path);
 		Mentions result = Mentions.readFromXml(file);
 		return result;
@@ -946,7 +854,7 @@ public class Article implements Comparable<Article>
 	 * 		Problem while accessing the file.
 	 */
 	public Mentions getEstimatedMentions(InterfaceRecognizer recognizer) throws SAXException, IOException, ParseException
-	{	String path = folderPath + File.separator + recognizer.getRecognizerFolder() + File.separator + FileNames.FI_MENTION_LIST;
+	{	String path = folderPath + File.separator + recognizer.getRecognizerFolder() + File.separator + CommonFileNames.FI_MENTION_LIST;
 		File file = new File(path);
 		Mentions result = Mentions.readFromXml(file);
 		return result;

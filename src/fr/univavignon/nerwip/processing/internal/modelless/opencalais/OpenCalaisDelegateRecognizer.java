@@ -47,10 +47,10 @@ import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.keys.KeyHandler;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateRecognizer;
-import fr.univavignon.nerwip.tools.keys.KeyHandler;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.tools.strings.StringTools;
 import fr.univavignon.tools.web.WebTools;
 
 /**

@@ -34,8 +34,7 @@ import java.util.TreeSet;
 import org.jdom2.Comment;
 import org.jdom2.Element;
 
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.time.TimeFormatting;
+import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.tools.xml.GraphmlTools;
 import fr.univavignon.tools.xml.XmlTools;
 
@@ -470,7 +469,7 @@ public class Graph
 	 */
 	public void writeToXml(File dataFile) throws IOException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA + File.separator + FileNames.FI_GRAPHML_SCHEMA;
+		String schemaPath = GraphmlTools.getSchemaPath();
 		File schemaFile = new File(schemaPath);
 		
 		// build xml document

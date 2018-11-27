@@ -29,10 +29,10 @@ import fr.univavignon.common.data.entity.AbstractEntity;
 import fr.univavignon.common.data.entity.Entities;
 import fr.univavignon.common.data.entity.EntityDate;
 import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.tools.time.Date;
+import fr.univavignon.common.tools.time.DateParser;
+import fr.univavignon.common.tools.time.Period;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.tools.time.Date;
-import fr.univavignon.nerwip.tools.time.DateParser;
-import fr.univavignon.nerwip.tools.time.Period;
 
 /**
  * This class represents a date mention.

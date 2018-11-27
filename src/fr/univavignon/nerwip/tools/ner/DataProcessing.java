@@ -51,14 +51,14 @@ import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
 import fr.univavignon.retriever.ArticleRetriever;
 import fr.univavignon.retriever.reader.ReaderException;
 import fr.univavignon.retriever.reader.wikipedia.WikipediaReader;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class contains various methods to manage the data files
@@ -140,7 +140,7 @@ public class DataProcessing
 		logger.increaseOffset();
 		for(String fileStr: filesStr)
 		{	logger.log("Loading lists " + fileStr);
-			File file = new File(FileNames.FO_CUSTOM_LISTS + File.separator + fileStr);	
+			File file = new File(NerwipFileNames.FO_CUSTOM_LISTS + File.separator + fileStr);	
 			FileInputStream fis = new FileInputStream(file);
 			InputStreamReader isr = new InputStreamReader(fis);
 			Scanner scanner = new Scanner(isr);
@@ -157,7 +157,7 @@ public class DataProcessing
 		
 		// record the set
 		logger.log("Recording new list");
-		File file = new File(FileNames.FO_CUSTOM_LISTS + File.separator + outputStr);	
+		File file = new File(NerwipFileNames.FO_CUSTOM_LISTS + File.separator + outputStr);	
 		File folder = file.getParentFile();
 		if(!folder.exists()) folder.mkdirs();
 		PrintWriter pw = FileTools.openTextFileWrite(file, "UTF-8");

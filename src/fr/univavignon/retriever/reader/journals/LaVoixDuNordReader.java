@@ -39,11 +39,11 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.html.HtmlTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.retriever.reader.ArticleReader;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.html.HtmlNames;
+import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a page
@@ -118,7 +118,6 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 		{	// init variables
 			String title = "";
 			StringBuilder rawStr = new StringBuilder();
-			StringBuilder linkedStr = new StringBuilder();
 			Date publishingDate = null;
 			Date modificationDate = null;
 			List<String> authors = new ArrayList<String>();
@@ -188,7 +187,7 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 			Elements descriptionElts = headerElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DESCRIPTION);
 			if(!descriptionElts.isEmpty())
 			{	Element descriptionElt = descriptionElts.first();
-				processAnyElement(descriptionElt, rawStr, linkedStr);
+				processAnyElement(descriptionElt, rawStr);
 			}
 	
 			// processing the article main content
@@ -201,9 +200,8 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 				Element parElt = it.next();
 				String classStr = parElt.attr(HtmlNames.ATT_CLASS);
 				while(!classStr.equalsIgnoreCase(CLASS_ARTICLE_END))
-				{	processAnyElement(parElt, rawStr, linkedStr);
+				{	processAnyElement(parElt, rawStr);
 					rawStr.append("\n");
-					linkedStr.append("\n");
 					parElt = it.next();
 					classStr = parElt.attr(HtmlNames.ATT_CLASS);
 				}
@@ -222,21 +220,16 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 			
 			// add the title to the content, just in case the entity appears there but not in the article body
 			String rawText = rawStr.toString();
-			String linkedText = linkedStr.toString();
 			if(title!=null && !title.isEmpty())
-			{	rawText = title + "\n" + rawText;
-				linkedText = title + "\n" + linkedText;
-			}
+				rawText = title + "\n" + rawText;
 			
 			// clean text
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");
-			result.setLinkedText(linkedText);
-			logger.log("Length of the linked text: "+linkedText.length()+" chars.");
 			
 			// language
 			if(language==null)
-			{	language = StringTools.detectLanguage(rawText,false);
+			{	language = CommonStringTools.detectLanguage(rawText,false);
 				logger.log("Detected language: "+language);
 			}
 			result.setLanguage(language);

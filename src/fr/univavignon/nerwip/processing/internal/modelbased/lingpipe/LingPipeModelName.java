@@ -34,9 +34,10 @@ import com.aliasi.util.AbstractExternalizable;
 
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -158,7 +159,7 @@ public enum LingPipeModelName
 	 * 		File containing the model.
 	 */
 	public File getModelFile()
-	{	String modelPath = FileNames.FO_LINGPIPE + File.separator + modelFile;
+	{	String modelPath = NerwipFileNames.FO_LINGPIPE + File.separator + modelFile;
 		File result = new File(modelPath);
 		return result;
 	}
@@ -183,7 +184,7 @@ public enum LingPipeModelName
 		{	case PREDEFINED_MODEL:
 			case NERWIP_MODEL:
 				logger.log("Get the chunker based on a predefined model");
-				String modelPath = FileNames.FO_LINGPIPE + File.separator + modelFile;
+				String modelPath = NerwipFileNames.FO_LINGPIPE + File.separator + modelFile;
 				File modelFile = new File(modelPath);
 				logger.log("Reading chunker from file: " + modelFile);
 				result = (Chunker) AbstractExternalizable.readObject(modelFile);
@@ -194,7 +195,7 @@ public enum LingPipeModelName
 					MapDictionary<String> dictionary = new MapDictionary<String>();
 					for(EntityType type: types)
 					{	String typeStr = type.toString().toLowerCase(Locale.ENGLISH);
-						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TEXT;
+						String filePath = NerwipFileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TEXT;
 						File file = new File(filePath);
 						Scanner scanner = new Scanner(file);
 						while(scanner.hasNext())
@@ -213,7 +214,7 @@ public enum LingPipeModelName
 					TrieDictionary<String> dictionary = new TrieDictionary<String>();
 					for(EntityType type: types)
 					{	String typeStr = type.toString().toLowerCase(Locale.ENGLISH);
-						String filePath = FileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TEXT;
+						String filePath = NerwipFileNames.FO_CUSTOM_LISTS + File.separator + typeStr + "s" + FileNames.EX_TEXT;
 						File file = new File(filePath);
 						Scanner scanner = new Scanner(file);
 						while (scanner.hasNext())

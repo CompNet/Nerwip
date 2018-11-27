@@ -42,10 +42,11 @@ import fr.univavignon.common.data.entity.AbstractEntity;
 import fr.univavignon.common.data.entity.Entities;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
+import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.time.TimeFormatting;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -774,7 +775,7 @@ public class Mentions
 	 */
 	public static Mentions readFromXml(File dataFile, Entities entities) throws SAXException, IOException, ParseException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+CommonFileNames.FI_MENTION_SCHEMA;
 		File schemaFile = new File(schemaPath);
 
 		// load file
@@ -843,7 +844,7 @@ public class Mentions
 	 */
 	public void writeToXml(File dataFile, Entities entities) throws IOException
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_MENTION_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+CommonFileNames.FI_MENTION_SCHEMA;
 		File schemaFile = new File(schemaPath);
 		
 		// build xml document

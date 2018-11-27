@@ -50,6 +50,8 @@ import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
@@ -57,13 +59,12 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.nerwip.tools.time.TimeFormatting;
 import fr.univavignon.retriever.ArticleRetriever;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * This class trains a SVM on the corpus. It uses the 
@@ -162,7 +163,7 @@ public class SvmTrainer
 	 */
 	private String getDataPath()
 	{	String base = combiner.getRecognizerFolder();
-		String result = FileNames.FO_OUTPUT + File.separator + "svm.data." + base + FileNames.EX_TEXT;
+		String result = CommonFileNames.FO_OUTPUT + File.separator + "svm.data." + base + FileNames.EX_TEXT;
 		return result;
 	}
 	

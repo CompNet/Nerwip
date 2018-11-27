@@ -104,12 +104,16 @@ import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.corpus.ArticleLists;
+import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.editor.gui.ColorMapper;
 import fr.univavignon.editor.gui.MentionEditorPanel;
 import fr.univavignon.editor.gui.TextDialog;
 import fr.univavignon.editor.gui.VerticalLabel;
 import fr.univavignon.editor.language.Language;
 import fr.univavignon.editor.language.LanguageLoader;
+import fr.univavignon.editor.tools.EditorFileNames;
+import fr.univavignon.editor.tools.EditorFileTools;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
 import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;
@@ -124,15 +128,13 @@ import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.StanfordModelName;
 import fr.univavignon.nerwip.processing.internal.modelless.dateextractor.DateExtractor;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
-import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
-import fr.univavignon.nerwip.tools.corpus.ArticleLists;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.nerwip.tools.string.LinkTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.strings.StringTools;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -198,7 +200,7 @@ public class MentionEditor implements WindowListener, ChangeListener
         setStatusInformation("Waiting...");
 		
         // add icon
-		String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_APP;
+		String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_APP);
 		File iconFile = new File(iconPath);
 		Image img = ImageIO.read(iconFile);
 		frame.setIconImage(img);
@@ -542,7 +544,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	/////////////////////////////////////////////////////////////////
 	// FRAME			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Frame to contain tabs and mentionss */
+	/** Frame to contain tabs and mentions */
 	private JFrame frame;
 	/** Version of this application */
 	private static final String APP_VERSION = "v2.34";
@@ -583,7 +585,6 @@ public class MentionEditor implements WindowListener, ChangeListener
 		initDisplayModeActions();
 		initFontActions();
 		initBrowseActions();
-		initLinksActions();
 		initSettingsActions();
 		initInformationActions();
 		initQuitActions();
@@ -631,8 +632,6 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 * 
 	 * @param text
 	 * 		Complete text of the article.
-	 * @param linkedText
-	 * 		Linked text of the article.
 	 * @param mentions
 	 * 		List of estimated mentions.
 	 * @param references
@@ -640,7 +639,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 * @param name
 	 * 		Full name of the tool.
 	 */
-	private void addTab(String text, String linkedText, Mentions mentions, Mentions references, String name)
+	private void addTab(String text, Mentions mentions, Mentions references, String name)
 	{	String temp[] = name.split("_");
 		String algoName = temp[0];
 		String status = "";
@@ -668,13 +667,11 @@ public class MentionEditor implements WindowListener, ChangeListener
 			boolean state = (Boolean)action.getValue(Action.SELECTED_KEY);
 			switches.put(type,state);
 		}
-		// get hyperlink switch
-		boolean linkState = (Boolean)showLinksAction.getValue(Action.SELECTED_KEY);
 		
 		// create and add panel
 		boolean editable = mentions==references && editableReference;
 		
-		MentionEditorPanel panel = new MentionEditorPanel(this, text, linkedText, mentions, references, params, modeState, switches, linkState, editable, name, currentLanguage);
+		MentionEditorPanel panel = new MentionEditorPanel(this, text, mentions, references, params, modeState, switches, editable, name, currentLanguage);
 		if(fontSize!=null)
 			panel.setFontSize(fontSize);
 		tabbedPane.add(algoName, panel);
@@ -958,7 +955,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			toolBar.add(filePanel);
 	    	toolBar.add(Box.createHorizontalStrut(5));
 			// save
-			{	String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SAVE;
+			{	String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_SAVE);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -973,7 +970,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 				filePanel.add(saveButton);
 			}
 			//load
-			{	String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_OPEN;
+			{	String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_OPEN);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1028,7 +1025,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		// view entity types
 		{	mentionViewButtons = new HashMap<EntityType, JToggleButton>();
 			// get the icon
-			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SHOW;
+			String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_SHOW);
 			File iconFile = new File(iconPath);
 			Image img = ImageIO.read(iconFile);
 			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1099,7 +1096,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		// edit mentions
 		{	mentionInsertButtons = new HashMap<EntityType, JButton>();
 			// get the icon
-			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_ADD;
+			String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_ADD);
 			File iconFile = new File(iconPath);
 			Image img = ImageIO.read(iconFile);
 			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1124,7 +1121,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		
 		// remove mention
 		{	// get the icon
-			String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_REMOVE;
+			String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_REMOVE);
 			File iconFile = new File(iconPath);
 			Image img = ImageIO.read(iconFile);
 			img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1163,7 +1160,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			}
 			// previous article
 			{	// get the icon
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_PREVIOUS;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_PREVIOUS);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1179,7 +1176,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			}
 			// next article
 			{	// get the icon
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_NEXT;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_NEXT);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1204,7 +1201,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			}
 			// smaller font
 			{	// get the icon
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SMALLER;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_SMALLER);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1219,7 +1216,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			}
 			// larger font
 			{	// get the icon
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LARGER;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_LARGER);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1296,8 +1293,6 @@ public class MentionEditor implements WindowListener, ChangeListener
 	private JMenuItem miIndex;
 	/** Menu item of the about action */
 	private JMenuItem miAbout;
-	/** Menu item of the show links */
-	private JCheckBoxMenuItem miLinks;
 	/** Menu item of the language selection */
 	private JMenu mLanguage;
 	/** Menu items of the available languages */
@@ -1322,7 +1317,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			menuBar.add(menu);
 			
 			{	miOpen = new JMenuItem(loadAction);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_OPEN;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_OPEN);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1331,7 +1326,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			}
 			
 			{	miPrev = new JMenuItem(prevAction);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_PREVIOUS;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_PREVIOUS);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1340,7 +1335,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			}
 			
 			{	miNext = new JMenuItem(nextAction);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_NEXT;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_NEXT);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1351,7 +1346,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			menu.addSeparator();
 			
 			{	miSave = new JMenuItem(saveAction);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SAVE;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_SAVE);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1388,7 +1383,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			for(EntityType type: EntityType.values())
 			{	Action action = mentionInsertActions.get(type);
 				JMenuItem jmi = new JMenuItem(action);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_ADD;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_ADD);
 				File iconFile = new File(iconPath);
 				BufferedImage img0 = ImageIO.read(iconFile);
 				Color to = MENTION_COLOR.get(type);
@@ -1404,7 +1399,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 
 			// remove mention
 			{	miRemove = new JMenuItem(mentionDeleteAction);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_REMOVE;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_REMOVE);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1417,7 +1412,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			// shift mentions
 			{	// left shift
 				{	miShiftLeft = new JMenuItem(mentionShiftLeftAction);
-					String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LEFT;
+					String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_LEFT);
 					File iconFile = new File(iconPath);
 					Image img = ImageIO.read(iconFile);
 					img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1426,7 +1421,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 				}
 				// right shift
 				{	miShiftRight = new JMenuItem(mentionShiftRightAction);
-					String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_RIGHT;
+					String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_RIGHT);
 					File iconFile = new File(iconPath);
 					Image img = ImageIO.read(iconFile);
 					img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1447,7 +1442,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			{	Action action = mentionViewActions.get(type);
 				JCheckBoxMenuItem  jmcbi = new JCheckBoxMenuItem(action);
 //				jmcbi.setSelected(true);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SHOW;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_SHOW);
 				File iconFile = new File(iconPath);
 				BufferedImage img0 = ImageIO.read(iconFile);
 				Color to = MENTION_COLOR.get(type);
@@ -1478,16 +1473,9 @@ public class MentionEditor implements WindowListener, ChangeListener
 			
 			menu.addSeparator();
 			
-			// links
-			{	miLinks = new JCheckBoxMenuItem(showLinksAction);
-				menu.add(miLinks);
-			}
-			
-			menu.addSeparator();
-			
 			// fonts
 			{	miLargerFont = new JMenuItem(largerFontAction);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_LARGER;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_LARGER);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1495,7 +1483,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 				menu.add(miLargerFont);
 			}
 			{	miSmallerFont = new JMenuItem(smallerFontAction);
-				String iconPath = FileNames.FO_IMAGES + File.separator + FileNames.FI_ICON_SMALLER;
+				String iconPath = EditorFileTools.getIconPath(EditorFileNames.FI_ICON_SMALLER);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1536,7 +1524,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			for(Action action: languageActions)
 			{	JRadioButtonMenuItem mi = new JRadioButtonMenuItem(action);
 				String languageName = (String) action.getValue(Action.NAME);
-				String iconPath = FileNames.FO_IMAGES + File.separator + languageName.toLowerCase(Locale.ENGLISH) + FileNames.EX_PNG;
+				String iconPath = EditorFileTools.getIconPath(languageName.toLowerCase(Locale.ENGLISH)+FileNames.EX_PNG);
 				File iconFile = new File(iconPath);
 				Image img = ImageIO.read(iconFile);
 				img = img.getScaledInstance(iconSize,iconSize,Image.SCALE_SMOOTH);
@@ -1878,46 +1866,6 @@ public class MentionEditor implements WindowListener, ChangeListener
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// HYPERLINKS		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** String used for action definition */
-	private final static String ACTION_LINKS = "ActionLinks";
-	/** Action showing/hidding hyperlinks */
-	private Action showLinksAction = null;
-	
-	/**
-	 * Initializes actions related to 
-	 * hyperlinks.
-	 */
-	private void initLinksActions()
-	{	String name = language.getText(ACTION_LINKS);
-		showLinksAction = new AbstractAction(name)
-		{	/** Class id */
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-		    public void actionPerformed(ActionEvent evt)
-			{	showLinks();
-		    }
-		};
-		showLinksAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift H"));
-		showLinksAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_LINKS));
-		showLinksAction.putValue(Action.SELECTED_KEY, false);
-	}
-	
-	/**
-	 * Switches on/off the display
-	 * of hyperlinks in the text panels.
-	 */
-	private void showLinks()
-	{	int count = tabbedPane.getComponentCount();
-		for(int i=0;i<count;i++)
-		{	MentionEditorPanel panel = (MentionEditorPanel)tabbedPane.getComponentAt(i);
-			panel.switchHyperlinks();
-		}
-	}
-	
-	/////////////////////////////////////////////////////////////////
 	// FONT SIZE		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Current font size */
@@ -2196,7 +2144,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	private void saveAll()
 	{	// record reference mentions
 		try
-		{	String fileName = currentArticle + File.separator + FileNames.FI_MENTION_LIST;
+		{	String fileName = currentArticle + File.separator + CommonFileNames.FI_MENTION_LIST;
 			File file = new File(fileName);
 //			int index = tabbedPane.getSelectedIndex();
 			int index = 0;
@@ -2219,7 +2167,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 				Mentions mentions = panel.getMentions();
 				if(references!=mentions)
 				{	String folder = panel.getFolder();
-					String fileName = currentArticle + File.separator + folder + File.separator + FileNames.FI_MENTION_LIST;
+					String fileName = currentArticle + File.separator + folder + File.separator + CommonFileNames.FI_MENTION_LIST;
 					File file = new File(fileName);
 					try
 					{	mentions.writeToXml(file);
@@ -2231,18 +2179,9 @@ public class MentionEditor implements WindowListener, ChangeListener
 			}
 			
 			// record raw text //TODO we should use the Article method instead
-			File rawFile = new File(currentArticle + File.separator + FileNames.FI_RAW_TEXT);
+			File rawFile = new File(currentArticle + File.separator + CommonFileNames.FI_RAW_TEXT);
 			try
 			{	FileTools.writeTextFile(rawFile, currentRawText, "UTF-8");
-			}
-			catch (IOException e)
-			{	e.printStackTrace();
-			}
-			
-			// record linked text
-			File linkedFile = new File(currentArticle + File.separator + FileNames.FI_LINKED_TEXT);
-			try
-			{	FileTools.writeTextFile(linkedFile, currentLinkedText, "UTF-8");
 			}
 			catch (IOException e)
 			{	e.printStackTrace();
@@ -2531,7 +2470,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		
 		// language
 		{	languageActions = new ArrayList<Action>();
-			String langPath = FileNames.FO_LANGUAGE;
+			String langPath = EditorFileNames.FO_LANGUAGE;
 			List<File> files = FileTools.getFilesEndingWith(langPath, FileNames.EX_XML);
 			for(File file: files)
 			{	String name0 = file.getName();
@@ -2641,7 +2580,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 */
 	private void displayHelpIndex()
 	{	try
-		{	String htmlPath = FileNames.FO_LANGUAGE + File.separator + language.getName().toLowerCase() + FileNames.EX_HTML; 
+		{	String htmlPath = EditorFileNames.FO_LANGUAGE + File.separator + language.getName().toLowerCase() + FileNames.EX_HTML; 
 			indexDialog = new TextDialog(
 				frame, 
 				language.getText(DIALOG_INDEX)+" "+APP_NAME,
@@ -2662,8 +2601,8 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 * Displays the about dialog.
 	 */
 	private void displayHelpAbout()
-	{	File labFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_LAB);
-		File uniFile = new File(FileNames.FO_IMAGES + File.separator + FileNames.FI_LOGO_UNIV);
+	{	File labFile = new File(EditorFileTools.getIconPath(EditorFileNames.FI_LOGO_LAB));
+		File uniFile = new File(EditorFileTools.getIconPath(EditorFileNames.FI_LOGO_UNIV));
 		String labStr = labFile.getAbsolutePath();
 		String uniStr = uniFile.getAbsolutePath();
 		if(labStr.contains("\\"))
@@ -2894,7 +2833,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 	private final static String DIALOG_SET_CORPUS_SELECT = "DialogSetCorpusSelect";
 
 	/** Full path of the configuration file */
-	public final static String CONFIG_PATH = System.getProperty("user.home") + File.separator + FileNames.FI_CONFIGURATION;
+	public final static String CONFIG_PATH = System.getProperty("user.home") + File.separator + EditorFileNames.FI_CONFIGURATION;
 //	private final static String CONFIG_PATH = FileNames.FO_MISC + File.separator + FileNames.FI_CONFIGURATION;
 	/** Main folder containing the whole corpus */
 	private String corpusFolder = null;
@@ -3067,11 +3006,11 @@ public class MentionEditor implements WindowListener, ChangeListener
 	 */
 	private void recordSettings() throws IOException
 	{	// check folder
-		File folder = new File(FileNames.FO_MISC);
+		File folder = new File(CommonFileNames.FO_MISC);
 		if(!folder.exists())
 			folder.mkdirs();
 		// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_CONFIGURATION_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+EditorFileNames.FI_CONFIGURATION_SCHEMA;
 		File schemaFile = new File(schemaPath);
 		
 		// build xml document
@@ -3142,12 +3081,12 @@ public class MentionEditor implements WindowListener, ChangeListener
 	private String retrieveSettings() throws SAXException, IOException, ParserConfigurationException
 	{	Locale.setDefault(Locale.ENGLISH);
 		// get the predefined folder
-		corpusFolder = FileNames.FO_OUTPUT; 
+		corpusFolder = CommonFileNames.FO_OUTPUT; 
 //		corpusFolder = System.getProperty("user.home");
 		String articlePath = "";
 		
 		// schema file
-		String schemaPath = FileNames.FO_SCHEMA+File.separator+FileNames.FI_CONFIGURATION_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA+File.separator+EditorFileNames.FI_CONFIGURATION_SCHEMA;
 		File schemaFile = new File(schemaPath);
 	
 		// load file
@@ -3235,30 +3174,16 @@ public class MentionEditor implements WindowListener, ChangeListener
 	// CONTENT			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Filter used to select only mention XML files */
-	private static final FilenameFilter FILTER = FileTools.createFilter(FileNames.FI_MENTION_LIST);
+	private static final FilenameFilter FILTER = FileTools.createFilter(CommonFileNames.FI_MENTION_LIST);
 	/** Article currently displayed */
 	private String currentArticle = null;
 	/** Index of the currently displayed article */
 	private int currentIndex = -1;
 	/** Raw text of the current article */
 	private String currentRawText = null;
-	/** Linked text of the current article */
-	private String currentLinkedText = null;
 	/** Natural language of the current article */
 	private ArticleLanguage currentLanguage = null;
 
-	/**
-	 * Returns the hyperlinked text
-	 * corresponding to the article
-	 * which is currently displayed.
-	 *  
-	 * @return
-	 * 		Hyperlinked text.
-	 */
-	public String getCurrentLinkedText()
-	{	return currentLinkedText;
-	}
-	
 	/**
 	 * Get the files containing mentions,
 	 * from the path of the article.
@@ -3392,16 +3317,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 			String tempFolder = tempFile.getParent();
 			Article article = Article.read(tempName, tempFolder);
 			currentRawText = article.getRawText();
-			currentLinkedText = article.getLinkedText();
 			currentLanguage = article.getLanguage();
-			// old version (directly read the texts)
-//			File rawFile = new File(articlePath + File.separator + FileNames.FI_RAW_TEXT);
-//			currentRawText = FileTools.readTextFile(rawFile);
-//			File linkedFile = new File(articlePath + File.separator + FileNames.FI_LINKED_TEXT);
-//			if(linkedFile.exists())
-//				currentLinkedText = FileTools.readTextFile(linkedFile);
-//			else
-//				currentLinkedText = FileTools.readTextFile(rawFile);
 			
 			// get article name
 			File temp = new File(articlePath);
@@ -3434,11 +3350,11 @@ public class MentionEditor implements WindowListener, ChangeListener
 			else
 			{	mentionLists.remove(refName);
 			}
-			addTab(currentRawText, currentLinkedText, references, references, refName);
+			addTab(currentRawText, references, references, refName);
 			Set<String> names = new TreeSet<String>(mentionLists.keySet());
 			for(String name: names)
 			{	Mentions mentions = mentionLists.get(name);
-				addTab(currentRawText, currentLinkedText, mentions, references, name);
+				addTab(currentRawText, mentions, references, name);
 			}
 			
 			// select tab
@@ -3488,8 +3404,6 @@ public class MentionEditor implements WindowListener, ChangeListener
 	public void textInserted(int start, String text)
 	{	// update texts
 		currentRawText = currentRawText.substring(0,start) + text + currentRawText.substring(start);
-		int pos = LinkTools.getLinkedTextPosition(currentLinkedText,start);
-		currentLinkedText = currentLinkedText.substring(0,pos) + text + currentLinkedText.substring(pos);
 		
 		// update panels
 		int selectedTab = tabbedPane.getSelectedIndex();
@@ -3497,7 +3411,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		for(int i=0;i<size;i++)
 		{	if(i!=selectedTab)
 			{	MentionEditorPanel pane = (MentionEditorPanel)tabbedPane.getComponentAt(i);
-				pane.textInserted(start, text, currentLinkedText);
+				pane.textInserted(start, text);
 			}
 		}
 		
@@ -3506,7 +3420,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		updateTitle();
 		
 		// update status bar
-		updateStatusPosition(pos,currentRawText.length());
+		updateStatusPosition(start, currentRawText.length());
 	}
 	
 	/**
@@ -3524,8 +3438,6 @@ public class MentionEditor implements WindowListener, ChangeListener
 	public void textRemoved(int start, int length)
 	{	// update texts
 		currentRawText = currentRawText.substring(0,start) + currentRawText.substring(start+length);
-		currentLinkedText = LinkTools.removeFromLinkedText(currentLinkedText, start, length);
-		currentLinkedText = LinkTools.removeEmptyLinks(currentLinkedText);
 		
 		// update panels
 		int selectedTab = tabbedPane.getSelectedIndex();
@@ -3533,7 +3445,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 		for(int i=0;i<size;i++)
 		{	if(i!=selectedTab)
 			{	MentionEditorPanel pane = (MentionEditorPanel)tabbedPane.getComponentAt(i);
-				pane.textRemoved(start, length, currentLinkedText);
+				pane.textRemoved(start, length);
 			}
 		}
 		

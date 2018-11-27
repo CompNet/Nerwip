@@ -32,7 +32,8 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.editor.tools.EditorFileNames;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -43,16 +44,19 @@ import fr.univavignon.tools.xml.XmlTools;
  */
 public class LanguageLoader
 {	
+	/** XML schema file used to store GUI texts */
+	private final static String FI_LANGUAGE = "language" + FileNames.EX_SCHEMA;
+	
 	/** Code of some textual GUI component or group */
-	private static final String ATT_NAME = "name";
+	private final static String ATT_NAME = "name";
 	/** Text to be displayed in some textual GUI component */
-	private static final String ATT_VALUE = "value";
+	private final static String ATT_VALUE = "value";
 	/** Tooltip associated to some GUI component */
-	private static final String ATT_TOOLTIP = "tooltip";
+	private final static String ATT_TOOLTIP = "tooltip";
 	/** A group of GUI texts */
-	private static final String ELT_GROUP = "group";
+	private final static String ELT_GROUP = "group";
 	/** Text properties in the editor */
-	private static final String ELT_TEXT = "text";
+	private final static String ELT_TEXT = "text";
 	
 	/**
 	 * Main method to load a language XML file.
@@ -71,11 +75,11 @@ public class LanguageLoader
 	 */
 	public static Language loadLanguage(String name) throws ParserConfigurationException, SAXException, IOException
 	{	// set up data file
-		String dataPath = FileNames.FO_LANGUAGE + File.separator + name.toLowerCase() + FileNames.EX_XML;
+		String dataPath = EditorFileNames.FO_LANGUAGE + File.separator + name.toLowerCase() + FileNames.EX_XML;
 		File dataFile = new File(dataPath);
 		
 		// set up schema file
-		String schemaPath = FileNames.FO_SCHEMA + File.separator + FileNames.FI_LANGUAGE;
+		String schemaPath = FileNames.FO_SCHEMA + File.separator + FI_LANGUAGE;
 		File schemaFile = new File(schemaPath);
 		
 		// load XML file

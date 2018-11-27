@@ -52,8 +52,7 @@ import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.StanfordModelName;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalaisLanguage;
-import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
 
 /**
  * This combiner relies on a vote-based process SVM to perform its combination. 
@@ -67,7 +66,6 @@ import fr.univavignon.nerwip.tools.file.FileNames;
  * 		<li>OpenCalais (see {@link OpenCalais})</li>
  * 		<li>OpenNLP (see {@link OpenNlp})</li>
  * 		<li>Stanford NER (see {@link Stanford})</li>
- * 		<li>Subee (see {@link Subee})</li>
  * </ul>
  * Various options allow changing the behavior of this combiner:
  * <ul>
@@ -79,8 +77,6 @@ import fr.univavignon.nerwip.tools.file.FileNames;
  * 		the existence of a mention. Otherwise, if at least one recognizer detects
  * 		something, we suppose a mention exists (increases the number of false 
  * 		positves).</li>
- * 		<li>subeeMode: whether to use our recognizer {@link Subee}, and if yes,
- * 		how to use it. See {@code SubeeMode}.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used to process weights.</li>
  * </ul>
  * 
@@ -107,20 +103,17 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * 		 Indicates if recall should be used when voting.
 	 * @param existVote
 	 * 		Indicates if mention existence should be voted. 
-	 * @param subeeMode
-	 * 		Indicates how our recognizer {@link Subee} is used (if it is used). 
 	 *
 	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public VoteCombinerDelegateRecognizer(VoteCombiner voteCombiner, boolean loadModelOnDemand, boolean specific, VoteMode voteMode, boolean useRecall, boolean existVote, SubeeMode subeeMode) throws ProcessorException
+	public VoteCombinerDelegateRecognizer(VoteCombiner voteCombiner, boolean loadModelOnDemand, boolean specific, VoteMode voteMode, boolean useRecall, boolean existVote) throws ProcessorException
 	{	super(voteCombiner);
 	
 		this.specific = specific;
 		this.voteMode = voteMode;
 		this.useRecall = useRecall;
 		this.existVote = existVote;
-		this.subeeMode = subeeMode;
 		
 		initRecognizers();
 		setSubCacheEnabled(recognizer.doesCache());
@@ -140,7 +133,6 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 		result = result + "_" + "mode="+voteMode.toString();
 		result = result + "_" + "rec="+useRecall;
 		result = result + "_" + "exvote="+existVote;
-		result = result + "_" + "subee="+subeeMode.toString();
 	
 //		result = result + "_" + "trim=" + trim;
 //		result = result + "_" + "ignPro=" + ignorePronouns;
@@ -250,18 +242,6 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			recognizers.add(stanford);
 		}
 		
-		// Subee
-		if(subeeMode!=SubeeMode.NONE)
-		{	logger.log("Init Subee");
-			boolean additionalOccurrences = subeeMode==SubeeMode.ALL;
-			boolean useTitle = true;
-			boolean notableType = true;
-			boolean useAcronyms = true;
-			boolean discardDemonyms = true;
-			Subee subee = new Subee(additionalOccurrences,useTitle,notableType,useAcronyms,discardDemonyms);
-			recognizers.add(subee);
-		}
-		
 		logger.decreaseOffset();		
 	}
 
@@ -270,7 +250,7 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	/////////////////////////////////////////////////////////////////
 	@Override
 	public String getModelPath()
-	{	return FileNames.FO_VOTECOMBINER;
+	{	return NerwipFileNames.FO_VOTECOMBINER;
 	}
 
 	/**

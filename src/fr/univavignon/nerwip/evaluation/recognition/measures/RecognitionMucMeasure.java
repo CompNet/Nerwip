@@ -32,7 +32,7 @@ import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.tools.files.FileNames;
 
 /**
  * This class implements the measures used in

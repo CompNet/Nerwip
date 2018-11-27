@@ -39,11 +39,11 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.html.HtmlTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.retriever.reader.ArticleReader;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.html.HtmlNames;
+import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a page
@@ -122,7 +122,6 @@ public class LaProvenceReader extends AbstractJournalReader
 		{	// init variables
 			String title = "";
 			StringBuilder rawStr = new StringBuilder();
-			StringBuilder linkedStr = new StringBuilder();
 			Date publishingDate = null;
 			Date modificationDate = null;
 			List<String> authors = new ArrayList<String>();
@@ -183,7 +182,7 @@ public class LaProvenceReader extends AbstractJournalReader
 			Element restrElt = articleElt.getElementById(ID_RESTRICTED);
 			if(restrElt!=null)
 			{	logger.log("WARNING: The access to this article is limited, only the beginning is available.");
-				processAnyElement(restrElt, rawStr, linkedStr);
+				processAnyElement(restrElt, rawStr);
 			}
 			else
 			{	// processing the article main content
@@ -191,14 +190,13 @@ public class LaProvenceReader extends AbstractJournalReader
 				Elements liveElts = bodyElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_LIVE);
 				if(!contentElts.isEmpty())
 				{	Element contentElt = contentElts.first();
-					processAnyElement(contentElt, rawStr, linkedStr);
+					processAnyElement(contentElt, rawStr);
 				}
 				// can alternatively be a live stream
 				else if(!liveElts.isEmpty())
 				{	for(Element liveElt: liveElts)
-					{	processAnyElement(liveElt, rawStr, linkedStr);
+					{	processAnyElement(liveElt, rawStr);
 						rawStr.append("\n");
-						linkedStr.append("\n");
 					}
 				}
 				// otherwise just use the attribute-less paragraphs
@@ -207,7 +205,7 @@ public class LaProvenceReader extends AbstractJournalReader
 					for(Element parElt: parElts)
 					{	Attributes attributes = parElt.attributes();
 						if(attributes==null || attributes.size()==0)
-							processAnyElement(parElt, rawStr, linkedStr);
+							processAnyElement(parElt, rawStr);
 					}
 				}
 			}
@@ -225,21 +223,16 @@ public class LaProvenceReader extends AbstractJournalReader
 			
 			// add the title to the content, just in case the entity appears there but not in the article body
 			String rawText = rawStr.toString();
-			String linkedText = linkedStr.toString();
 			if(title!=null && !title.isEmpty())
-			{	rawText = title + "\n" + rawText;
-				linkedText = title + "\n" + linkedText;
-			}
+				rawText = title + "\n" + rawText;
 			
 			// clean text
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");
-			result.setLinkedText(linkedText);
-			logger.log("Length of the linked text: "+linkedText.length()+" chars.");
-
+			
 			// language
 			if(language==null)
-			{	language = StringTools.detectLanguage(rawText,false);
+			{	language = CommonStringTools.detectLanguage(rawText,false);
 				logger.log("Detected language: "+language);
 			}
 			result.setLanguage(language);

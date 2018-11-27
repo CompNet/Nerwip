@@ -40,11 +40,13 @@ import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * The recognition process can be implemented either directly in the processor
@@ -184,7 +186,7 @@ public abstract class AbstractDelegateRecognizer
 	{	for(ArticleLanguage language: ArticleLanguage.values())
 		{	logger.log("Treating language "+language);
 			// set up file path
-			String path = FileNames.FO_CUSTOM_LISTS + File.separator + prefix + language.toString() + FileNames.EX_TEXT;
+			String path = NerwipFileNames.FO_CUSTOM_LISTS + File.separator + prefix + language.toString() + FileNames.EX_TEXT;
 			File file = new File(path);
 			
 			// retrieve values
@@ -217,7 +219,7 @@ public abstract class AbstractDelegateRecognizer
 	{	logger.log("Loading exclusion lists");
 		logger.increaseOffset();
 		
-		loadLanguageList(FileNames.PRE_EXCLUDED, EXCLUSION_LISTS);
+		loadLanguageList(NerwipFileNames.PRE_EXCLUDED, EXCLUSION_LISTS);
 		
 		logger.decreaseOffset();
 		logger.log("Loading complete");
@@ -280,7 +282,7 @@ public abstract class AbstractDelegateRecognizer
 	{	logger.log("Loading pronoun lists");
 		logger.increaseOffset();
 		
-		loadLanguageList(FileNames.PRE_PRONOUNS, PRONOUN_LISTS);
+		loadLanguageList(NerwipFileNames.PRE_PRONOUNS, PRONOUN_LISTS);
 		
 		logger.decreaseOffset();
 		logger.log("Loading complete");
@@ -662,7 +664,7 @@ public abstract class AbstractDelegateRecognizer
 	{	String resultsFolder = article.getFolderPath();
 		String recognizerFolder = getFolder();
 		resultsFolder = resultsFolder + File.separator + recognizerFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_MENTION_LIST;
+		String filePath = resultsFolder + File.separator + CommonFileNames.FI_MENTION_LIST;
 		
 		File result = new File(filePath);
 		return result;
@@ -736,7 +738,7 @@ public abstract class AbstractDelegateRecognizer
 	{	String resultsFolder = article.getFolderPath();
 		String recognizerFolder = getFolder();
 		resultsFolder = resultsFolder + File.separator + recognizerFolder;
-		String filePath = resultsFolder + File.separator + FileNames.FI_OUTPUT_TEXT;
+		String filePath = resultsFolder + File.separator + NerwipFileNames.FI_OUTPUT_TEXT;
 	
 		File result = new File(filePath);
 		return result;

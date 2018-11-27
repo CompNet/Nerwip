@@ -30,9 +30,9 @@ import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * Class representing the predefined
@@ -173,7 +173,7 @@ public enum StanfordModelName
 	 * 		Name of the classifier file.
 	 */
 	public String getModelFile()
-	{	String path = FileNames.FO_STANFORD_MODELS + File.separator + fileName;
+	{	String path = NerwipFileNames.FO_STANFORD_MODELS + File.separator + fileName;
 		return path;
 	}
 	

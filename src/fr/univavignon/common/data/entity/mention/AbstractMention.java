@@ -33,9 +33,9 @@ import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.AbstractEntity;
 import fr.univavignon.common.data.entity.Entities;
 import fr.univavignon.common.data.entity.EntityType;
+import fr.univavignon.common.tools.time.Date;
+import fr.univavignon.common.tools.time.Period;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.tools.time.Date;
-import fr.univavignon.nerwip.tools.time.Period;
 
 /**
  * Abstract class representing a general mention.

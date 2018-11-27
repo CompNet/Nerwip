@@ -33,8 +33,8 @@ import java.util.TreeSet;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * Abstract class representing a named entity, i.e. an entity

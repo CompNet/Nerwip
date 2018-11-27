@@ -40,6 +40,8 @@ import fr.univavignon.common.data.entity.KnowledgeBase;
 import fr.univavignon.common.data.entity.MentionsEntities;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.corpus.ArticleLists;
+import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.extractor.data.event.Event;
 import fr.univavignon.extractor.data.graph.Graph;
 import fr.univavignon.extractor.data.graph.Link;
@@ -51,13 +53,12 @@ import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
 import fr.univavignon.nerwip.processing.internal.modelless.naiveresolver.NaiveResolver;
 import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
-import fr.univavignon.nerwip.tools.corpus.ArticleLists;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.nerwip.tools.string.StringTools;
 import fr.univavignon.retriever.ArticleRetriever;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * Extract an interaction network from a corpus
@@ -305,14 +306,14 @@ public class CoparticipationNetworkExtraction
 		
 		// export the graph as a graphml file
 		logger.log("Export graph as XML");
-		String netPath = FileNames.FO_OUTPUT + File.separator + filename;
+		String netPath = CommonFileNames.FO_OUTPUT + File.separator + filename;
 		File netFile = new File(netPath);
 		graph.writeToXml(netFile);
 		
 		// export the collection of unified entities 
 		if(entities!=null)
 		{	logger.log("Export the unified entity set (to the corpus root)");
-			String path = FileNames.FO_OUTPUT + File.separator + FileNames.FI_ENTITY_LIST;
+			String path = CommonFileNames.FO_OUTPUT + File.separator + CommonFileNames.FI_ENTITY_LIST;
 			File entFile = new File(path);
 			entities.writeToXml(entFile);
 		}

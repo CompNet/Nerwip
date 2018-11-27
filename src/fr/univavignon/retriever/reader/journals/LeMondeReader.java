@@ -38,11 +38,11 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.html.HtmlTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.retriever.reader.ArticleReader;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.html.HtmlNames;
+import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a page
@@ -175,7 +175,6 @@ public class LeMondeReader extends AbstractJournalReader
 			// get raw and linked texts
 			logger.log("Get raw and linked texts");
 			StringBuilder rawStr = new StringBuilder();
-			StringBuilder linkedStr = new StringBuilder();
 			
 			// processing each element in the article body
 			Element bodyElt = articleElt.getElementById(ID_ARTICLE_BODY);
@@ -188,7 +187,7 @@ public class LeMondeReader extends AbstractJournalReader
 				else if(bodyElts.size()>1)
 					logger.log("WARNING: There are more than 1 element for the article body, which is unusual. Let's focus on the first.");
 			}
-			processAnyElement(bodyElt, rawStr, linkedStr);
+			processAnyElement(bodyElt, rawStr);
 			
 			// create and init article object
 			result = new Article(name);
@@ -203,25 +202,18 @@ public class LeMondeReader extends AbstractJournalReader
 			
 			// add the title to the content, just in case the entity appears there but not in the article body
 			String rawText = rawStr.toString();
-			String linkedText = linkedStr.toString();
 			if(title!=null && !title.isEmpty())
-			{	rawText = title + "\n" + rawText;
-				linkedText = title + "\n" + linkedText;
-			}
+				rawText = title + "\n" + rawText;
 			
 			// clean text
 //			rawText = cleanText(rawText);
 //			rawText = ArticleCleaning.replaceChars(rawText);
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");
-//			linkedText = cleanText(linkedText);
-//			linkedText = ArticleCleaning.replaceChars(linkedText);
-			result.setLinkedText(linkedText);
-			logger.log("Length of the linked text: "+linkedText.length()+" chars.");
 
 			// language
 			if(language==null)
-			{	language = StringTools.detectLanguage(rawText,false);
+			{	language = CommonStringTools.detectLanguage(rawText,false);
 				logger.log("Detected language: "+language);
 			}
 			result.setLanguage(language);
@@ -252,24 +244,20 @@ public class LeMondeReader extends AbstractJournalReader
 	// ELEMENTS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	@Override
-	protected void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processParagraphElement(Element element, StringBuilder rawStr)
 	{	String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		// we ignore the inter-paragraph hyperlinks
 		if(!eltClass.equalsIgnoreCase(CLASS_RELATED_ARTICLES))
 		{	// possibly add a new line character first (if the last one is not already a newline)
 			if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 			
 			// recursive processing
-			processAnyElement(element,rawStr,linkedStr);
+			processAnyElement(element,rawStr);
 			
 			// possibly add a new line character (if the last one is not already a newline)
 			if(rawStr.length()>0 && rawStr.charAt(rawStr.length()-1)!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 	}
 }

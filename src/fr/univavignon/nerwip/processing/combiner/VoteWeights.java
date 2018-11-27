@@ -38,9 +38,9 @@ import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.nerwip.evaluation.AbstractEvaluator;
 import fr.univavignon.nerwip.evaluation.AbstractMeasure;
 import fr.univavignon.nerwip.processing.InterfaceProcessor;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * This class is used to handle weights associated to processors

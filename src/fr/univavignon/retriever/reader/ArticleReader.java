@@ -55,11 +55,7 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.retriever.reader.GenericReader;
 import fr.univavignon.retriever.reader.journals.LExpressReader;
 import fr.univavignon.retriever.reader.journals.LaProvenceReader;
@@ -70,6 +66,10 @@ import fr.univavignon.retriever.reader.journals.LeParisienReader;
 import fr.univavignon.retriever.reader.journals.LePointReader;
 import fr.univavignon.retriever.reader.journals.LiberationReader;
 import fr.univavignon.retriever.reader.wikipedia.WikipediaReader;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.html.HtmlNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * All classes automatically getting articles
@@ -260,8 +260,8 @@ public abstract class ArticleReader
 		logger.log("Retrieve HTML source code");
 		
 		// check if the cache can/must be used
-		String folderPath = FileNames.FO_OUTPUT + File.separator + name;
-		File originalFile = new File(folderPath + File.separator + FileNames.FI_ORIGINAL_PAGE);
+		String folderPath = CommonFileNames.FO_OUTPUT + File.separator + name;
+		File originalFile = new File(folderPath + File.separator + CommonFileNames.FI_ORIGINAL_PAGE);
 		if(cache && originalFile.exists())
 		{	logger.log("Cache enabled and HTML already retrieved >> we use the cached file ("+originalFile.getName()+")");
 			String sourceCode = FileTools.readTextFile(originalFile, "UTF-8");
@@ -450,29 +450,23 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 */
-	protected void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processParagraphElement(Element element, StringBuilder rawStr)
 	{	// possibly add a new line character first (if the last one is not already a newline)
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 		
 		// recursive processing
-		processAnyElement(element,rawStr,linkedStr);
+		processAnyElement(element,rawStr);
 		
 		// possibly add a new line character (if the last one is not already a newline)
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 	}
 
@@ -483,51 +477,39 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	protected boolean processQuoteElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processQuoteElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 		
 		// possibly modify the previous characters 
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c=='\n')
-			{	rawStr.deleteCharAt(rawStr.length()-1);
-				linkedStr.deleteCharAt(linkedStr.length()-1);
-			}
+				rawStr.deleteCharAt(rawStr.length()-1);
 		}
 		
 		// insert quotes
 		rawStr.append(" \"");
-		linkedStr.append(" \"");
 		
 		// recursive processing
 		int rawIdx = rawStr.length();
-		int linkedIdx = linkedStr.length();
-		processAnyElement(element,rawStr,linkedStr);
+		processAnyElement(element,rawStr);
 
 		// possibly remove characters added after quote marks
-		while(rawStr.length()>rawIdx && 
-			(rawStr.charAt(rawIdx)=='\n' || rawStr.charAt(rawIdx)==' '))
-		{	rawStr.deleteCharAt(rawIdx);
-			linkedStr.deleteCharAt(linkedIdx);
-		}
+		while(rawStr.length()>rawIdx && (rawStr.charAt(rawIdx)=='\n' || rawStr.charAt(rawIdx)==' '))
+			rawStr.deleteCharAt(rawIdx);
 		
 		// possibly modify the ending characters 
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c=='\n')
-			{	rawStr.deleteCharAt(rawStr.length()-1);
-				linkedStr.deleteCharAt(linkedStr.length()-1);
-			}
+				rawStr.deleteCharAt(rawStr.length()-1);
 		}
 
 		// insert quotes
 		rawStr.append("\"");
-		linkedStr.append("\"");
 		
 		return result;
 	}
@@ -539,15 +521,13 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	protected boolean processSpanElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processSpanElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 		
-		processAnyElement(element,rawStr,linkedStr);
+		processAnyElement(element,rawStr);
 		
 		return result;
 	}
@@ -561,12 +541,10 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	protected boolean processHyperlinkElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processHyperlinkElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 			
 		// simple text
@@ -575,11 +553,6 @@ public abstract class ArticleReader
 		{	str = removeGtst(str);
 			rawStr.append(str);
 		}
-		
-		// hyperlink
-		String href = element.attr(HtmlNames.ATT_HREF);
-		String code = "<" + HtmlNames.ELT_A + " " +HtmlNames.ATT_HREF + "=\"" + href + "\">" + str + "</" + HtmlNames.ELT_A + ">";
-		linkedStr.append(code);
 		
 		return result;
 	}
@@ -592,12 +565,10 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	protected boolean processAbbreviationElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processAbbreviationElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 	
 		// get the title element if it exists
@@ -611,17 +582,12 @@ public abstract class ArticleReader
 		// complete the result texts
 		if(str.isEmpty())
 		{	if(title!=null)
-			{	rawStr.append(title);
-				linkedStr.append(title);
-			}
+				rawStr.append(title);
 		}
 		else
 		{	rawStr.append(str);
-			linkedStr.append(str);
 			if(title!=null)
-			{	rawStr.append(" ("+title+")");
-				linkedStr.append(" ("+title+")");
-			}
+				rawStr.append(" ("+title+")");
 		}
 		
 		return result;
@@ -634,17 +600,14 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
 	@SuppressWarnings("unused")
-	protected boolean processSpacerElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processSpacerElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 	
 		rawStr.append(" ");
-		linkedStr.append(" ");
 		
 		return result;
 	}
@@ -658,19 +621,15 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @param ordered
 	 * 		Whether the list is numbered or not.
 	 */
-	protected void processListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr, boolean ordered)
+	protected void processListElement(Element element, StringBuilder rawStr, boolean ordered)
 	{	// possibly add a new line character right before
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 		
 		// process each list element
@@ -678,25 +637,19 @@ public abstract class ArticleReader
 		for(Element listElt: element.getElementsByTag(HtmlNames.ELT_LI))
 		{	// add leading marker
 			if(ordered)
-			{	rawStr.append(count+") ");
-				linkedStr.append(count+") ");
-			}
+				rawStr.append(count+") ");
 			else
-			{	rawStr.append("- ");
-				linkedStr.append("- ");
-			}
+				rawStr.append("- ");
 			count++;
 			
 			// get text and links
-			processAnyElement(listElt,rawStr,linkedStr);
+			processAnyElement(listElt,rawStr);
 			
 			// possibly add a new line character
 			if(rawStr.length()>0)
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c!='\n')
-				{	rawStr.append("\n");
-					linkedStr.append("\n");
-				}
+					rawStr.append("\n");
 			}
 		}
 	}
@@ -708,17 +661,13 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 */
-	protected void processDescriptionListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processDescriptionListElement(Element element, StringBuilder rawStr)
 	{	// possibly add a new line character right before
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 		
 		// process each list element
@@ -730,21 +679,18 @@ public abstract class ArticleReader
 		while(tempElt!=null)
 		{	// add leading mark
 			rawStr.append("- ");
-			linkedStr.append("- ");
 			
 			// get term
 			String tempName = tempElt.tagName();
 			if(tempName.equalsIgnoreCase(HtmlNames.ELT_DT))
 			{	// process term
-				processAnyElement(tempElt,rawStr,linkedStr);
+				processAnyElement(tempElt,rawStr);
 				
 				// possibly add a column and space
 				if(rawStr.length()>0)
 				{	char c = rawStr.charAt(rawStr.length()-1);
 					if(c!='.' && c!=':' && c!=';')
-					{	rawStr.append(": ");
-						linkedStr.append(": ");
-					}
+						rawStr.append(": ");
 				}
 				
 				// go to next element
@@ -757,15 +703,13 @@ public abstract class ArticleReader
 			// get definition
 			if(tempElt!=null)
 			{	// process term
-				processAnyElement(tempElt,rawStr,linkedStr);
+				processAnyElement(tempElt,rawStr);
 				
 				// possibly add a new line character
 				if(rawStr.length()>0)
 				{	char c = rawStr.charAt(rawStr.length()-1);
 					if(c!='\n')
-					{	rawStr.append("\n");
-						linkedStr.append("\n");
-					}
+						rawStr.append("\n");
 				}
 				
 				// go to next element
@@ -784,15 +728,13 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	protected boolean processDivisionElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processDivisionElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 		
-		processParagraphElement(element, rawStr, linkedStr);
+		processParagraphElement(element, rawStr);
 		
 		return result;
 	}
@@ -804,17 +746,14 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
 	@SuppressWarnings("unused")
-	protected boolean processLinebreakElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processLinebreakElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 		
 		rawStr.append("\n");
-		linkedStr.append("\n");
 		
 		return result;
 	}
@@ -828,12 +767,10 @@ public abstract class ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
-	protected boolean processTableElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processTableElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 		
 		// extract the list of rows (we don't need the rest)
@@ -844,7 +781,7 @@ public abstract class ArticleReader
 			
 			// if there's a caption, put it first
 			if(name.equalsIgnoreCase(HtmlNames.ELT_CAPTION))
-			{	processAnyElement(child, rawStr, linkedStr);
+			{	processAnyElement(child, rawStr);
 			}
 			
 			// if the table has a header/body/footer, extract the rows
@@ -865,27 +802,22 @@ public abstract class ArticleReader
 		{	// process each column
 			for(Element colElt: rowElt.children())
 			{	// process cell content
-				processAnyElement(colElt, rawStr, linkedStr);
+				processAnyElement(colElt, rawStr);
 				
 				// possibly add final dot and space. 
 				if(rawStr.length()>0)
 				{	char c = rawStr.charAt(rawStr.length()-1);
 					if(c!=' ')
 					{	if(rawStr.charAt(rawStr.length()-1)=='.')
-						{	rawStr.append(" ");
-							linkedStr.append(" ");
-						}
+							rawStr.append(" ");
 						else
-						{	rawStr.append(". ");
-							linkedStr.append(". ");
-						}
+							rawStr.append(". ");
 					}
 				}
 			}
 			
 			// add new line
 			rawStr.append("\n");
-			linkedStr.append("\n");
 		}
 		
 		return result;
@@ -898,10 +830,8 @@ public abstract class ArticleReader
 	 * 		The element to be processed.
 	 * @param rawStr
 	 * 		The StringBuffer to contain the raw text.
-	 * @param linkedStr
-	 * 		The StringBuffer to contain the text with hyperlinks.
 	 */
-	protected void processAnyElement(Element textElement, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processAnyElement(Element textElement, StringBuilder rawStr)
 	{	// we process each element contained in the specified text element
 		for(Node node: textElement.childNodes())
 		{	// element node
@@ -911,12 +841,12 @@ public abstract class ArticleReader
 				
 				// hyperlinks: must be included in the linked version of the article
 				if(eltName.equalsIgnoreCase(HtmlNames.ELT_A))
-				{	processHyperlinkElement(element,rawStr,linkedStr);
+				{	processHyperlinkElement(element,rawStr);
 				}
 				
 				// abbreviations and acronyms: ignored
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ABBR) || eltName.equalsIgnoreCase(HtmlNames.ELT_ACRONYM))
-				{	processAbbreviationElement(element,rawStr,linkedStr);
+				{	processAbbreviationElement(element,rawStr);
 				}
 				
 				// author's address: ignored
@@ -937,7 +867,7 @@ public abstract class ArticleReader
 				
 				// article: considered as a div
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_ARTICLE))
-				{	processDivisionElement(element, rawStr, linkedStr);
+				{	processDivisionElement(element, rawStr);
 				}
 				
 				// aside: should be ignored, since it is secondary content
@@ -952,7 +882,7 @@ public abstract class ArticleReader
 				
 				// bold: just some text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_B)) //TODO 10
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// base: no use for us
@@ -967,32 +897,32 @@ public abstract class ArticleReader
 				
 				// text orientation: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BDI) || eltName.equalsIgnoreCase(HtmlNames.ELT_BDO))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// big: just some text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BIG))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// blinking text: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BLINK))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// quotes: processed recursively
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BLOCKQUOTE) || eltName.equalsIgnoreCase(HtmlNames.ELT_QUOTE) || eltName.equalsIgnoreCase(HtmlNames.ELT_Q))
-				{	processQuoteElement(element,rawStr,linkedStr);
+				{	processQuoteElement(element,rawStr);
 				}
 				
 				// document body: considered as a div
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BODY)) //TODO 20
-				{	processDivisionElement(element, rawStr, linkedStr);
+				{	processDivisionElement(element, rawStr);
 				}
 				
 				// line break: insert a newline
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_BR))
-				{	processLinebreakElement(element, rawStr, linkedStr);
+				{	processLinebreakElement(element, rawStr);
 				}
 				
 				// form button: no use for us
@@ -1007,7 +937,7 @@ public abstract class ArticleReader
 
 				// table caption: like a paragraph
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CAPTION))
-				{	processParagraphElement(element, rawStr, linkedStr);
+				{	processParagraphElement(element, rawStr);
 				}
 
 				// center: no use for us
@@ -1017,7 +947,7 @@ public abstract class ArticleReader
 				
 				// citation or title of a work: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_CITE))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// source code: we don't want that here
@@ -1037,7 +967,7 @@ public abstract class ArticleReader
 				
 				// structured data: just get the text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DATA))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// input options: no use for us
@@ -1062,12 +992,12 @@ public abstract class ArticleReader
 				
 				// details (hide/show): just get the text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DETAILS))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// term definition: like an abbreviation
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DFN))
-				{	processAbbreviationElement(element, rawStr, linkedStr);
+				{	processAbbreviationElement(element, rawStr);
 				}
 				
 				// dialog box: ignored
@@ -1082,12 +1012,12 @@ public abstract class ArticleReader
 				
 				// division: processed recursively
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DIV)) //TODO 40
-				{	processDivisionElement(element,rawStr,linkedStr);
+				{	processDivisionElement(element,rawStr);
 				}
 				
 				// definition list: process each item
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_DL))
-				{	processDescriptionListElement(element,rawStr,linkedStr);
+				{	processDescriptionListElement(element,rawStr);
 				}
 				
 				// term in a definition list: already processed in DL
@@ -1097,7 +1027,7 @@ public abstract class ArticleReader
 				
 				// emphasis: just some text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_EM))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// element: ignored
@@ -1127,12 +1057,12 @@ public abstract class ArticleReader
 				
 				// font: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FONT))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// footer: treated like a div
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_FOOTER)) //TODO 50
-				{	processDivisionElement(element, rawStr, linkedStr);
+				{	processDivisionElement(element, rawStr);
 					//TODO or maybe should be ignored...
 				}
 				
@@ -1149,7 +1079,7 @@ public abstract class ArticleReader
 				// section headers: treated like paragraphs
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_H1) || eltName.equalsIgnoreCase(HtmlNames.ELT_H2) || eltName.equalsIgnoreCase(HtmlNames.ELT_H3)
 					|| eltName.equalsIgnoreCase(HtmlNames.ELT_H4) || eltName.equalsIgnoreCase(HtmlNames.ELT_H5) || eltName.equalsIgnoreCase(HtmlNames.ELT_H6))
-				{	processParagraphElement(element,rawStr,linkedStr);
+				{	processParagraphElement(element,rawStr);
 				}
 				
 				// head: ignored
@@ -1159,7 +1089,7 @@ public abstract class ArticleReader
 				
 				// section header: treated like a div
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HEADER))
-				{	processDivisionElement(element, rawStr, linkedStr);
+				{	processDivisionElement(element, rawStr);
 					//TODO or maybe should be ignored...
 				}
 				
@@ -1170,17 +1100,17 @@ public abstract class ArticleReader
 				
 				// thematic break: insert a newline
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HR))
-				{	processLinebreakElement(element, rawStr, linkedStr);
+				{	processLinebreakElement(element, rawStr);
 				}
 				
 				// document: treat like a div
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_HTML))
-				{	processDivisionElement(element, rawStr, linkedStr);
+				{	processDivisionElement(element, rawStr);
 				}
 
 				// italic: just some text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_I))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 
 				// inline frame: ignored
@@ -1200,7 +1130,7 @@ public abstract class ArticleReader
 				
 				// inserted text: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_INS))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// input text: ignored
@@ -1245,7 +1175,7 @@ public abstract class ArticleReader
 				
 				// main content: treat like a div
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_MAIN))
-				{	processDivisionElement(element, rawStr, linkedStr);
+				{	processDivisionElement(element, rawStr);
 				}
 				
 				// image map: ignored
@@ -1255,7 +1185,7 @@ public abstract class ArticleReader
 				
 				// marked text: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_MARK)) //TODO 80
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// menu & menuitem: ignored
@@ -1280,17 +1210,17 @@ public abstract class ArticleReader
 				
 				// no frames alternative: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_NOFRAMES))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// no embed alternative: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_NOEMBED))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// no script alternative: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_NOSCRIPT))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// multimedia objects: ignored
@@ -1300,7 +1230,7 @@ public abstract class ArticleReader
 				
 				// various list types
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_OL)) //TODO 90
-				{	processListElement(element,rawStr,linkedStr,true);
+				{	processListElement(element,rawStr,true);
 				}
 
 				// form options: ignored
@@ -1315,7 +1245,7 @@ public abstract class ArticleReader
 				
 				// paragraph: processed recursively
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_P))
-				{	processParagraphElement(element,rawStr,linkedStr);
+				{	processParagraphElement(element,rawStr);
 				}
 				
 				// object parameter: ignored
@@ -1325,7 +1255,7 @@ public abstract class ArticleReader
 				
 				// plain text: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_PLAINTEXT) || eltName.equalsIgnoreCase(HtmlNames.ELT_PRE))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// progress bar: ignored
@@ -1356,7 +1286,7 @@ public abstract class ArticleReader
 				
 				// section: treated as a div
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SECTION))
-				{	processDivisionElement(element, rawStr, linkedStr);
+				{	processDivisionElement(element, rawStr);
 				}
 				
 				// form drop-down list: ignored
@@ -1366,7 +1296,7 @@ public abstract class ArticleReader
 				
 				// small: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SMALL))
-				{	processAbbreviationElement(element, rawStr, linkedStr);
+				{	processAbbreviationElement(element, rawStr);
 				}
 				
 				// audio source: ignored
@@ -1376,17 +1306,17 @@ public abstract class ArticleReader
 				
 				// spacer: just put a space
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SPACER))
-				{	processSpacerElement(element, rawStr, linkedStr);
+				{	processSpacerElement(element, rawStr);
 				}
 				
 				// span: processed recursively
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_SPAN))
-				{	processSpanElement(element,rawStr,linkedStr);
+				{	processSpanElement(element,rawStr);
 				}
 				
 				// strong: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_STRONG))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// document style: ignored
@@ -1406,7 +1336,7 @@ public abstract class ArticleReader
 				
 				// table: approximately represented as text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TABLE))
-				{	processTableElement(element, rawStr, linkedStr);
+				{	processTableElement(element, rawStr);
 				}
 				
 				// table-related elements: already processed in the table method
@@ -1427,12 +1357,12 @@ public abstract class ArticleReader
 				
 				// time/date: text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TIME))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// title: treated like a pargraph
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TITLE))
-				{	processParagraphElement(element, rawStr, linkedStr);
+				{	processParagraphElement(element, rawStr);
 				}
 				
 				// media track: ignored
@@ -1442,22 +1372,22 @@ public abstract class ArticleReader
 				
 				// teletype text: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_TT)) //TODO 130
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// special formatting: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_U))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// unordered list: each item is processed
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_UL))
-				{	processListElement(element,rawStr,linkedStr,false);
+				{	processListElement(element,rawStr,false);
 				}
 				
 				// variable definition: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_VAR))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// video: ignored
@@ -1467,7 +1397,7 @@ public abstract class ArticleReader
 				
 				// word break opportuinies: just text
 				else if(eltName.equalsIgnoreCase(HtmlNames.ELT_WBR))
-				{	processAnyElement(element, rawStr, linkedStr);
+				{	processAnyElement(element, rawStr);
 				}
 				
 				// xmp: ignored
@@ -1482,7 +1412,6 @@ public abstract class ArticleReader
 					String text = element.text();
 					text = removeGtst(text);
 					rawStr.append(text);
-					linkedStr.append(text);
 				}
 			}
 			
@@ -1503,7 +1432,6 @@ public abstract class ArticleReader
 					
 					// complete string buffers
 					rawStr.append(text);
-					linkedStr.append(text);
 				}
 			}
 		}

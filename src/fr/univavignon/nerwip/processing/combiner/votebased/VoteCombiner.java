@@ -33,13 +33,11 @@ import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer.SubeeMode;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;
 import fr.univavignon.nerwip.processing.internal.modelbased.lingpipe.LingPipe;
 import fr.univavignon.nerwip.processing.internal.modelbased.opennlp.OpenNlp;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
-import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
 
 /**
  * This combiner relies on a vote-based process SVM to perform its combination. 
@@ -53,7 +51,6 @@ import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
  * 		<li>OpenCalais (see {@link OpenCalais})</li>
  * 		<li>OpenNLP (see {@link OpenNlp})</li>
  * 		<li>Stanford NER (see {@link Stanford})</li>
- * 		<li>Subee (see {@link Subee})</li>
  * </ul>
  * Various options allow changing the behavior of this combiner:
  * <ul>
@@ -65,8 +62,6 @@ import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
  * 		the existence of a mention. Otherwise, if at least one recognizer detects
  * 		something, we suppose a mention exists (increases the number of false 
  * 		positves).</li>
- * 		<li>subeeMode: whether to use our recognizer {@link Subee}, and if yes,
- * 		how to use it. See {@code SubeeMode}.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used to process weights.</li>
  * </ul>
  * 
@@ -91,14 +86,12 @@ public class VoteCombiner extends AbstractProcessor implements InterfaceRecogniz
 	 * 		 Indicates if recall should be used when voting.
 	 * @param existVote
 	 * 		Indicates if mention existence should be voted. 
-	 * @param subeeMode
-	 * 		Indicates how our recognizer {@link Subee} is used (if it is used). 
 	 *
 	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public VoteCombiner(boolean loadModelOnDemand, boolean specific, VoteMode voteMode, boolean useRecall, boolean existVote, SubeeMode subeeMode) throws ProcessorException
-	{	delegateRecognizer = new VoteCombinerDelegateRecognizer(this,loadModelOnDemand,specific,voteMode,useRecall,existVote,subeeMode);
+	public VoteCombiner(boolean loadModelOnDemand, boolean specific, VoteMode voteMode, boolean useRecall, boolean existVote) throws ProcessorException
+	{	delegateRecognizer = new VoteCombinerDelegateRecognizer(this,loadModelOnDemand,specific,voteMode,useRecall,existVote);
 	}
 	
 	/////////////////////////////////////////////////////////////////

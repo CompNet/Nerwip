@@ -42,7 +42,7 @@ import fr.univavignon.common.data.entity.mention.MentionMeeting;
 import fr.univavignon.common.data.entity.mention.MentionOrganization;
 import fr.univavignon.common.data.entity.mention.MentionPerson;
 import fr.univavignon.common.data.entity.mention.MentionProduction;
-import fr.univavignon.nerwip.tools.time.Period;
+import fr.univavignon.common.tools.time.Period;
 
 /**
  * This class represents an event, i.e. a set of related entities.

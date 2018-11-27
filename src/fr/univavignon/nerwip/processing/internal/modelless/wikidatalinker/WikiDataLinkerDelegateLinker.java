@@ -36,10 +36,10 @@ import fr.univavignon.common.data.entity.AbstractNamedEntity;
 import fr.univavignon.common.data.entity.Entities;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.wikimedia.WmCommonTools;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.internal.modelless.AbstractModellessInternalDelegateLinker;
-import fr.univavignon.nerwip.tools.wikimedia.WmCommonTools;
 
 /**
  * This implements the actual work of entity linking for 

@@ -239,7 +239,7 @@ class DateExtractorDelegateRecognizer extends AbstractModellessInternalDelegateR
 					int day = 0;
 					if(dayFlag)
 						day = calendar.get(Calendar.DAY_OF_MONTH);
-					fr.univavignon.nerwip.tools.time.Date value = new fr.univavignon.nerwip.tools.time.Date(day,month,year);
+					fr.univavignon.common.tools.time.Date value = new fr.univavignon.common.tools.time.Date(day,month,year);
 					
 					// build mention
 					String valueStr = text.substring(startPos, endPos);

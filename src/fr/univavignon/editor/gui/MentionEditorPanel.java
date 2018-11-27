@@ -35,8 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -86,8 +84,6 @@ public class MentionEditorPanel extends JPanel implements AdjustmentListener, Do
 	 * 		{@link MentionEditor} window of the application. 
 	 * @param text
 	 * 		Full text of the article.
-	 * @param linkedText
-	 * 		Linked text of the article.
 	 * @param mentions
 	 * 		List of mentions to display.
 	 * @param references 
@@ -98,8 +94,6 @@ public class MentionEditorPanel extends JPanel implements AdjustmentListener, Do
 	 * 		Display mode ({@code true} for types, {@code false} for comparison).
 	 * @param typeDispl
 	 * 		Boolean display switches for each entity type.
-	 * @param linkState
-	 * 		Display switch for hyperlink display.
 	 * @param editable
 	 * 		Whether or not text can be modified in this panel (only for reference).
 	 * @param folder
@@ -107,15 +101,12 @@ public class MentionEditorPanel extends JPanel implements AdjustmentListener, Do
 	 * @param language
 	 * 		Natural language of the concerned article.
 	 */
-	public MentionEditorPanel(MentionEditor mainEditor, String text, String linkedText, Mentions mentions, Mentions references, String tooltip,
-		boolean mode, Map<EntityType,Boolean> typeDispl, boolean linkState, boolean editable, String folder, ArticleLanguage language)
+	public MentionEditorPanel(MentionEditor mainEditor, String text, Mentions mentions, Mentions references, String tooltip,
+		boolean mode, Map<EntityType,Boolean> typeDispl, boolean editable, String folder, ArticleLanguage language)
 	{	super(new BorderLayout());
 		this.mainEditor = mainEditor;
 		this.folder = folder;
 		this.language = language; 
-		
-		this.showHyperlinks = linkState;
-		this.linkedText = linkedText;
 		
 		// setup panel
 		textPane = new JTextPane();
@@ -296,27 +287,6 @@ public class MentionEditorPanel extends JPanel implements AdjustmentListener, Do
 	public void adjustmentValueChanged(AdjustmentEvent e)
 	{	int index = scrollBar.getValue();
 		mainEditor.setScrollPosition(index,this);
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// HYPERLINKS			/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Pattern used to detect hyperlinks */
-	private static final Pattern PATTERN_OPEN = Pattern.compile("<a[^>]+>");
-	/** Pattern used to detect hyperlinks */
-	private static final String TAG_CLOSE = "</a>";
-	/** Text including hyperlinks */
-	private String linkedText = null;
-	/** Whether or not hyperlinks should be displayed */
-	boolean showHyperlinks = false;
-	
-	/**
-	 * Switches on/off the display
-	 * of hyperlinks.
-	 */
-	public void switchHyperlinks()
-	{	showHyperlinks = !showHyperlinks;
-		updateHighlighting();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -566,30 +536,6 @@ if(endPos>document.getLength())
 				int length = endPos - startPos;
 				if(length>0)
 					document.setCharacterAttributes(startPos,length,excessStyle,true);
-			}
-		}
-		
-		// hyperlinks are possibly displayed, on top of the other formatting
-		if(showHyperlinks)
-		{	int offset = 0;
-			Matcher matcher = PATTERN_OPEN.matcher(linkedText);
-			while(matcher.find())
-			{	int startPos1 = matcher.start();
-				int endPos1 = matcher.end();
-				int length1 = endPos1 - startPos1;
-				int startPos = startPos1 - offset;
-				offset = offset + length1;
-				//System.out.println("startPos1="+startPos1+" endPos1="+endPos1+" length1="+length1+" offset="+offset+"("+matcher.group()+")");				
-							
-				int startPos2 = linkedText.indexOf(TAG_CLOSE, endPos1);
-				int length2 = TAG_CLOSE.length();
-				//System.out.println("startPos2="+startPos2+" length2="+length2+"("+matcher.group()+")");				
-				int endPos = startPos2 - offset;
-				int length = endPos - startPos;
-				//System.out.println("startPos="+startPos+" endPos="+endPos+" length="+length);				
-				document.setCharacterAttributes(startPos,length,linkStyle,false);
-				offset = offset + length2;
-				//System.out.println("offset="+offset);
 			}
 		}
 		
@@ -956,12 +902,9 @@ if(endPos>document.getLength())
 	 * 		Starting position of the inserted text.
 	 * @param text
 	 * 		Inserted text.
-	 * @param linkedText
-	 * 		Updated (hyper)linked text. 
 	 */
-	public void textInserted(int start, String text, String linkedText)
-	{	this.linkedText = linkedText;
-		try
+	public void textInserted(int start, String text)
+	{	try
 		{	Document document = textPane.getDocument();
 			document.insertString(start, text, null);
 			
@@ -986,12 +929,9 @@ if(endPos>document.getLength())
 	 * 		Starting position of the removed text.
 	 * @param length
 	 * 		Length of the removed text.
-	 * @param linkedText
-	 * 		Updated (hyper)linked text. 
 	 */
-	public void textRemoved(int start, int length, String linkedText)
-	{	this.linkedText = linkedText;
-		try
+	public void textRemoved(int start, int length)
+	{	try
 		{	Document document = textPane.getDocument();
 			document.remove(start, length);
 			
@@ -1087,9 +1027,6 @@ if(endPos>document.getLength())
 			references.rightShiftMentionPositions(start,length,rawText);
 			mainEditor.textInserted(start,text);
 			
-			// update linked text
-			linkedText = mainEditor.getCurrentLinkedText();
-			
 //			if(mentionAdjacent)
 //			{	SwingUtilities.invokeLater(new Runnable()
 //				{	@Override
@@ -1115,9 +1052,6 @@ if(endPos>document.getLength())
 			String rawText = document.getText(0, document.getLength());
 			references.leftShiftMentionPositions(start,length,rawText);
 			mainEditor.textRemoved(start,length);
-			
-			// update linked text
-			linkedText = mainEditor.getCurrentLinkedText();
 		}
 		catch (BadLocationException e1)
 		{	e1.printStackTrace();

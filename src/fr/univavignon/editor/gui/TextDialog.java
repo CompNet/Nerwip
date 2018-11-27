@@ -34,7 +34,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import fr.univavignon.nerwip.tools.file.FileTools;
+import fr.univavignon.tools.files.FileTools;
 
 /**
  * This class displays a dialog containing

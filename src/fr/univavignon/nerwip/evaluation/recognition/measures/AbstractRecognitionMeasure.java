@@ -39,10 +39,10 @@ import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.evaluation.AbstractMeasure;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.time.TimeFormatting;
+import fr.univavignon.tools.files.FileTools;
 
 /**
  * This class contains a set of methods useful for

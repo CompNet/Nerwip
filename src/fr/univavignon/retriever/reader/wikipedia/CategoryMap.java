@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -33,7 +34,8 @@ import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.article.ArticleCategory;
-import fr.univavignon.nerwip.tools.file.FileNames;
+import fr.univavignon.retriever.tools.RetrieverFileNames;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -60,7 +62,7 @@ public class CategoryMap
 	// DATA				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Map associating a category to certain words */
-	private final HashMap<String,ArticleCategory> map = new HashMap<String, ArticleCategory>();
+	private final Map<String,ArticleCategory> map = new HashMap<String, ArticleCategory>();
 	/** Expressions to be ignored while converting text to categories */
 	private final Set<String> ignoreStartsWith = new TreeSet<String>();
 	/** Expressions to be ignored while converting text to categories */
@@ -139,6 +141,8 @@ public class CategoryMap
 	/////////////////////////////////////////////////////////////////
 	// FILE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** XML schema file used to store category maps */
+	public final static String FI_CATMAP_SCHEMA = "categorymaps" + FileNames.EX_SCHEMA;
 	/** Name of the category */
 	private static final String ATT_NAME = "name";
 	/** Set of texts to be associated to categories */
@@ -163,12 +167,12 @@ public class CategoryMap
 	 */
 	private void read(String fileName)
 	{	// schema file
-		String schemaPath = FileNames.FO_SCHEMA + File.separator + FileNames.FI_CATMAP_SCHEMA;
+		String schemaPath = FileNames.FO_SCHEMA + File.separator + FI_CATMAP_SCHEMA;
 		File schemaFile = new File(schemaPath);
 
 		try
 		{	// load file
-			String fullName = FileNames.FO_RETRIEVAL + File.separator + fileName;
+			String fullName = RetrieverFileNames.FO_RETRIEVAL + File.separator + fileName;
 			File dataFile = new File(fullName);
 			Element root = XmlTools.getRootFromFile(dataFile,schemaFile);
 			

@@ -45,11 +45,10 @@ import org.jsoup.select.Elements;
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.freebase.FbTypeTools;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.string.StringTools;
 import fr.univavignon.retriever.reader.ArticleReader;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.html.HtmlNames;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * From a specified URL, this class retrieves a Wikipedia page,
@@ -129,24 +128,18 @@ public class WikipediaReader extends ArticleReader
 	 * to the article being retrieved.
 	 * First, we use the first line of text in the
 	 * article, of the form "Firstname Lastname (19xx-19xx) was a politician...".
-	 * If this leads to nothing, we use Freebase to retrieve all
-	 * the FB types associated to this Wikipedia page.
+	 * If this leads to nothing, we use an external source to retrieve all
+	 * the concepts associated to this page.
 	 * 
 	 * @param article
 	 * 		Article to be processed.
 	 * @return
 	 * 		List of categories (should be empty)
 	 * 
-	 * @throws ClientProtocolException
-	 * 		Problem while using Freebase.
-	 * @throws ParseException
-	 * 		Problem while using Freebase.
 	 * @throws IOException
-	 * 		Problem while using Freebase.
-	 * @throws org.json.simple.parser.ParseException
-	 * 		Problem while using Freebase.
+	 * 		Problem while using the external source.
 	 */
-	public List<ArticleCategory> getArticleCategories(Article article) throws IOException, org.json.simple.parser.ParseException
+	public List<ArticleCategory> getArticleCategories(Article article) throws IOException
 	{	logger.log("Retrieving the article categories");
 		logger.increaseOffset();
 		
@@ -156,8 +149,8 @@ public class WikipediaReader extends ArticleReader
 		
 		// if we get nothing, we try with Freebase
 		if(result.isEmpty())
-		{	logger.log("Trying now by using Freebase (generally less efficient)");
-			result = getArticleCategoriesFromFb(article);
+		{	logger.log("Trying now by using the external source (generally less efficient)");
+			result = getArticleCategoriesFromExt(article);
 		}
 		
 		if(result.isEmpty())
@@ -188,24 +181,19 @@ public class WikipediaReader extends ArticleReader
 	 * @return
 	 * 		Domain of activity of this person: military, sciences, etc.
 	 * 
-	 * @throws org.json.simple.parser.ParseException 
-	 * 		Problem while accessing Freebase.
 	 * @throws IOException 
 	 * 		Problem while accessing Freebase.
-	 * @throws ParseException 
-	 * 		Problem while accessing Freebase.
-	 * @throws ClientProtocolException 
-	 * 		Problem while accessing Freebase.
 	 */
-	public List<ArticleCategory> getArticleCategoriesFromFb(Article article) throws ClientProtocolException, ParseException, IOException, org.json.simple.parser.ParseException
+	public List<ArticleCategory> getArticleCategoriesFromExt(Article article) throws IOException
 	{	logger.log("Using Freebase to retrieve the article categories");
 		String name = article.getName();
 		logger.increaseOffset();
+//TODO update this method to use WP instead of FB
 		
 		// get all categories
 		logger.log("Getting all available Freebase types");
 		Set<ArticleCategory> categories = new TreeSet<ArticleCategory>();
-		List<String> fbTypes = FbTypeTools.getAllTypes(name);
+		List<String> fbTypes = null;//FbTypeTools.getAllTypes(name);
 		
 		logger.log("Processing them one by one");
 		logger.increaseOffset();
@@ -374,10 +362,10 @@ public class WikipediaReader extends ArticleReader
 	private final static String[] CLASS_DISAMB_LINK = {"plainlinks","homonymie"};
 	/** Class of WP edit buttons */
 	private final static String CLASS_EDIT = "editsection";
-	/** Class of external hyperlinks of the Wikipedia page */
-	private final static String CLASS_EXTERNAL = "external";
-	/** Class of image hyperlinks */
-	private final static String CLASS_IMAGE = "image";
+//	/** Class of external hyperlinks of the Wikipedia page */
+//	private final static String CLASS_EXTERNAL = "external";
+//	/** Class of image hyperlinks */
+//	private final static String CLASS_IMAGE = "image";
 	/** Class of the element containing the infobox of the Wikipedia page */
 	private final static String CLASS_INFORMATIONBOX = "infobox";
 	/** Class of the element containing some language-related information */
@@ -407,8 +395,8 @@ public class WikipediaReader extends ArticleReader
 	/** Class of boxes referring to other Wikimedia projects */
 	private final static String CLASS_INTERPROJECTS = "js-interprojets";
 	
-	/** Title of audio links  */
-	private final static String TITLE_LISTEN = "Listen";
+//	/** Title of audio links  */
+//	private final static String TITLE_LISTEN = "Listen";
 	/** Disambiguation link */
 	private final static String PARAGRAPH_FORTHE = "For the";
 
@@ -450,52 +438,40 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
 	@Override
-	protected boolean processQuoteElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processQuoteElement(Element element, StringBuilder rawStr)
 	{	boolean result = true;
 		
 		// possibly modify the previous characters 
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c=='\n')
-			{	rawStr.deleteCharAt(rawStr.length()-1);
-				linkedStr.deleteCharAt(linkedStr.length()-1);
-			}
+				rawStr.deleteCharAt(rawStr.length()-1);
 		}
 		
 		// insert quotes
 		rawStr.append(" \"");
-		linkedStr.append(" \"");
 		
 		// recursive processing
 		int rawIdx = rawStr.length();
-		int linkedIdx = linkedStr.length();
-		processAnyElement(element,rawStr,linkedStr);
+		processAnyElement(element,rawStr);
 
 		// possibly remove characters added after quote marks
-		while(rawStr.length()>rawIdx && 
-			(rawStr.charAt(rawIdx)=='\n' || rawStr.charAt(rawIdx)==' '))
-		{	rawStr.deleteCharAt(rawIdx);
-			linkedStr.deleteCharAt(linkedIdx);
-		}
+		while(rawStr.length()>rawIdx && (rawStr.charAt(rawIdx)=='\n' || rawStr.charAt(rawIdx)==' '))
+			rawStr.deleteCharAt(rawIdx);
 		
 		// possibly modify the ending characters 
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c=='\n')
-			{	rawStr.deleteCharAt(rawStr.length()-1);
-				linkedStr.deleteCharAt(linkedStr.length()-1);
-			}
+				rawStr.deleteCharAt(rawStr.length()-1);
 		}
 
 		// insert quotes
 		rawStr.append("\"");
-		linkedStr.append("\"");
 		
 		return result;
 	}
@@ -512,15 +488,13 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
 	@Override
-	protected boolean processHyperlinkElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processHyperlinkElement(Element element, StringBuilder rawStr)
 	{	boolean result;
-		String eltClass = element.attr(HtmlNames.ATT_CLASS);
+//		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
 //		if(eltClass==null)
 		{	result = true;
@@ -530,23 +504,6 @@ public class WikipediaReader extends ArticleReader
 			if(!str.isEmpty())
 			{	str = removeGtst(str);
 				rawStr.append(str);
-			
-//if(str.contains("Philadelphia, Pa."))	//debug stuff
-//	System.out.print("");
-				
-				// hyperlink
-				String eltTitle = element.attr(HtmlNames.ATT_TITLE);
-				if((eltClass==null
-						|| (!eltClass.contains(CLASS_IMAGE) && !eltClass.contains(CLASS_EXTERNAL)))
-						&& (eltTitle==null	
-						|| (!eltTitle.contains(TITLE_LISTEN)))
-				)
-				{	String href = element.attr(HtmlNames.ATT_HREF);
-					String code = "<" + HtmlNames.ELT_A + " " +HtmlNames.ATT_HREF + "=\"" + href + "\">" + str + "</" + HtmlNames.ELT_A + ">";
-					linkedStr.append(code);
-				}
-				else
-					linkedStr.append(str);
 			}
 		}
 		
@@ -585,39 +542,31 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @param ordered
 	 * 		Whether the list is numbered or not.
 	 */
 	@Override
-	protected void processListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr, boolean ordered)
+	protected void processListElement(Element element, StringBuilder rawStr,boolean ordered)
 	{	if(getLists)
 		{	// possibly remove the last new line character
 			if(rawStr.length()>0)
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c=='\n')
-				{	rawStr.deleteCharAt(rawStr.length()-1);
-					linkedStr.deleteCharAt(linkedStr.length()-1);
-				}
+					rawStr.deleteCharAt(rawStr.length()-1);
 			}
 			
 			// possibly remove preceeding space
 			if(rawStr.length()>0)
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c==' ')
-				{	rawStr.deleteCharAt(rawStr.length()-1);
-					linkedStr.deleteCharAt(linkedStr.length()-1);
-				}
+					rawStr.deleteCharAt(rawStr.length()-1);
 			}
 			
 			// possibly add a column
 			if(rawStr.length()>0)
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c!='.' && c!=':' && c!=';')
-				{	rawStr.append(":");
-					linkedStr.append(":");
-				}
+					rawStr.append(":");
 			}
 			
 			// process each list element
@@ -625,30 +574,24 @@ public class WikipediaReader extends ArticleReader
 			for(Element listElt: element.getElementsByTag(HtmlNames.ELT_LI))
 			{	// add leading space
 				rawStr.append(" ");
-				linkedStr.append(" ");
 				
 				// possibly add number
 				if(ordered)
-				{	rawStr.append(count+") ");
-					linkedStr.append(count+") ");
-				}
+					rawStr.append(count+") ");
 				count++;
 				
 				// get text and links
-				processAnyElement(listElt,rawStr,linkedStr);
+				processAnyElement(listElt,rawStr);
 				
 				// possibly remove the last new line character
 				if(rawStr.length()>0)
 				{	char c = rawStr.charAt(rawStr.length()-1);
 					if(c=='\n')
-					{	rawStr.deleteCharAt(rawStr.length()-1);
-						linkedStr.deleteCharAt(linkedStr.length()-1);
-					}
+						rawStr.deleteCharAt(rawStr.length()-1);
 				}
 				
 				// add final separator
 				rawStr.append(";");
-				linkedStr.append(";");
 			}
 			
 			// possibly remove last separator
@@ -656,14 +599,10 @@ public class WikipediaReader extends ArticleReader
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c==';')
 				{	rawStr.deleteCharAt(rawStr.length()-1);
-					linkedStr.deleteCharAt(linkedStr.length()-1);
 					c = rawStr.charAt(rawStr.length()-1);
 					if(c!='.')
-					{	rawStr.append(".");
-						linkedStr.append(".");
-					}
+						rawStr.append(".");
 					rawStr.append("\n");
-					linkedStr.append("\n");
 				}
 			}
 		}
@@ -680,37 +619,29 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 */
 	@Override
-	protected void processDescriptionListElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processDescriptionListElement(Element element, StringBuilder rawStr)
 	{	if(getLists)
 		{	// possibly remove the last new line character
 			if(rawStr.length()>0)
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c=='\n')
-				{	rawStr.deleteCharAt(rawStr.length()-1);
-					linkedStr.deleteCharAt(linkedStr.length()-1);
-				}
+					rawStr.deleteCharAt(rawStr.length()-1);
 			}
 			
 			// possibly remove the preceding space
 			if(rawStr.length()>0)
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c==' ')
-				{	rawStr.deleteCharAt(rawStr.length()-1);
-					linkedStr.deleteCharAt(linkedStr.length()-1);
-				}
+					rawStr.deleteCharAt(rawStr.length()-1);
 			}
 			
 			// possibly add a column
 			if(rawStr.length()>0)
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c!='.' && c!=':' && c!=';')
-				{	rawStr.append(":");
-					linkedStr.append(":");
-				}
+					rawStr.append(":");
 			}
 			
 			// process each list element
@@ -722,39 +653,32 @@ public class WikipediaReader extends ArticleReader
 			while(tempElt!=null)
 			{	// add leading space
 				rawStr.append(" ");
-				linkedStr.append(" ");
 				
 				// get term
 				String tempName = tempElt.tagName();
 				if(tempName.equals(HtmlNames.ELT_DT))
 				{	// process term
-					processAnyElement(tempElt,rawStr,linkedStr);
+					processAnyElement(tempElt,rawStr);
 					
 					// possibly remove the last new line character
 					if(rawStr.length()>0)
 					{	char c = rawStr.charAt(rawStr.length()-1);
 						if(c=='\n')
-						{	rawStr.deleteCharAt(rawStr.length()-1);
-							linkedStr.deleteCharAt(linkedStr.length()-1);
-						}
+							rawStr.deleteCharAt(rawStr.length()-1);
 					}
 					
 					// possibly remove preceding space
 					if(rawStr.length()>0)
 					{	char c = rawStr.charAt(rawStr.length()-1);
 						if(c==' ')
-						{	rawStr.deleteCharAt(rawStr.length()-1);
-							linkedStr.deleteCharAt(linkedStr.length()-1);
-						}
+							rawStr.deleteCharAt(rawStr.length()-1);
 					}
 					
 					// possibly add a column and space
 					if(rawStr.length()>0)
 					{	char c = rawStr.charAt(rawStr.length()-1);
 						if(c!='.' && c!=':' && c!=';')
-						{	rawStr.append(": ");
-							linkedStr.append(": ");
-						}
+							rawStr.append(": ");
 					}
 					
 					// go to next element
@@ -768,33 +692,27 @@ public class WikipediaReader extends ArticleReader
 //				if(tempName.equals(HtmlNames.ELT_DD))
 				if(tempElt!=null)
 				{	// process term
-					processAnyElement(tempElt,rawStr,linkedStr);
+					processAnyElement(tempElt,rawStr);
 					
 					// possibly remove the last new line character
 					if(rawStr.length()>0)
 					{	char c = rawStr.charAt(rawStr.length()-1);
 						if(c=='\n')
-						{	rawStr.deleteCharAt(rawStr.length()-1);
-							linkedStr.deleteCharAt(linkedStr.length()-1);
-						}
+							rawStr.deleteCharAt(rawStr.length()-1);
 					}
 					
 					// possibly remove preceeding space
 					if(rawStr.length()>0)
 					{	char c = rawStr.charAt(rawStr.length()-1);
 						if(c==' ')
-						{	rawStr.deleteCharAt(rawStr.length()-1);
-							linkedStr.deleteCharAt(linkedStr.length()-1);
-						}
+							rawStr.deleteCharAt(rawStr.length()-1);
 					}
 					
 					// possibly add a semi-column
 					if(rawStr.length()>0)
 					{	char c = rawStr.charAt(rawStr.length()-1);
 						if(c!='.' && c!=':' && c!=';')
-						{	rawStr.append(";");
-							linkedStr.append(";");
-						}
+							rawStr.append(";");
 					}
 					
 					// go to next element
@@ -810,14 +728,10 @@ public class WikipediaReader extends ArticleReader
 			{	char c = rawStr.charAt(rawStr.length()-1);
 				if(c==';')
 				{	rawStr.deleteCharAt(rawStr.length()-1);
-					linkedStr.deleteCharAt(linkedStr.length()-1);
 					c = rawStr.charAt(rawStr.length()-1);
 					if(c!='.')
-					{	rawStr.append(".");
-						linkedStr.append(".");
-					}
+						rawStr.append(".");
 					rawStr.append("\n");
-					linkedStr.append("\n");
 				}
 			}
 		}
@@ -837,13 +751,11 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
 	@Override
-	protected boolean processSpanElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processSpanElement(Element element, StringBuilder rawStr)
 	{	boolean result;
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
@@ -857,7 +769,7 @@ public class WikipediaReader extends ArticleReader
 			
 		{	result = true;
 			// otherwise, we process what's inside the span tag
-			processAnyElement(element,rawStr,linkedStr);
+			processAnyElement(element,rawStr);
 		}
 		
 		else
@@ -877,13 +789,11 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
 	@Override
-	protected boolean processDivisionElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processDivisionElement(Element element, StringBuilder rawStr)
 	{	boolean result;
 		String eltClass = element.attr(HtmlNames.ATT_CLASS);
 		
@@ -915,7 +825,7 @@ public class WikipediaReader extends ArticleReader
 			&& !eltClass.contains(CLASS_INFORMATIONBOX)
 		))
 		{	result = true;
-			processAnyElement(element, rawStr, linkedStr);
+			processAnyElement(element, rawStr);
 		}
 		
 		else
@@ -953,13 +863,11 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 * @return
 	 * 		{@code true} iff the element was processed.
 	 */
 	@Override
-	protected boolean processTableElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected boolean processTableElement(Element element, StringBuilder rawStr)
 	{	boolean result = false;
 		
 		if(getTables)
@@ -985,20 +893,16 @@ public class WikipediaReader extends ArticleReader
 					for(Element rowElt: tbodyElt.children())
 					{	for(Element colElt: rowElt.children())
 						{	// process cell content
-							processAnyElement(colElt, rawStr, linkedStr);
+							processAnyElement(colElt, rawStr);
 							
 							// possibly add final dot and space. 
 							if(rawStr.length()>0)
 							{	char c = rawStr.charAt(rawStr.length()-1);
 								if(c!=' ')
 								{	if(c=='.')
-									{	rawStr.append(" ");
-										linkedStr.append(" ");
-									}
+										rawStr.append(" ");
 									else
-									{	rawStr.append(". ");
-										linkedStr.append(". ");
-									}
+										rawStr.append(". ");
 								}
 							}
 						}
@@ -1036,30 +940,24 @@ public class WikipediaReader extends ArticleReader
 	 * 		Element to be processed.
 	 * @param rawStr
 	 * 		Current raw text string.
-	 * @param linkedStr
-	 * 		Current text with hyperlinks.
 	 */
 	@Override
-	protected void processParagraphElement(Element element, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processParagraphElement(Element element, StringBuilder rawStr)
 	{	// possibly add a new line character first
 		if(rawStr.length()>0)
 		{	char c =  rawStr.charAt(rawStr.length()-1);
 			if(c!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 		
 		// recursive processing
-		processAnyElement(element,rawStr,linkedStr);
+		processAnyElement(element,rawStr);
 		
 		// possibly add a new line character
 		if(rawStr.length()>0)
 		{	char c = rawStr.charAt(rawStr.length()-1);
 			if(c!='\n')
-			{	rawStr.append("\n");
-				linkedStr.append("\n");
-			}
+				rawStr.append("\n");
 		}
 	}
 	
@@ -1071,11 +969,9 @@ public class WikipediaReader extends ArticleReader
 	 * 		The element to be processed.
 	 * @param rawStr
 	 * 		The StringBuffer to contain the raw text.
-	 * @param linkedStr
-	 * 		The StringBuffer to contain the text with hyperlinks.
 	 */
 	@Override
-	protected void processAnyElement(Element textElement, StringBuilder rawStr, StringBuilder linkedStr)
+	protected void processAnyElement(Element textElement, StringBuilder rawStr)
 	{	// we process each element contained in the specified text element
 		for(Node node: textElement.childNodes())
 		{	// element node
@@ -1087,12 +983,12 @@ public class WikipediaReader extends ArticleReader
 				if(eltName.equals(HtmlNames.ELT_H2) || eltName.equals(HtmlNames.ELT_H3)
 					|| eltName.equals(HtmlNames.ELT_H4) || eltName.equals(HtmlNames.ELT_H5) || eltName.equals(HtmlNames.ELT_H6))
 				{	if(getSections)
-						processParagraphElement(element,rawStr,linkedStr);
+						processParagraphElement(element,rawStr);
 				}
 	
 				// paragraphs inside paragraphs are processed recursively
 				else if(eltName.equals(HtmlNames.ELT_P))
-				{	processParagraphElement(element,rawStr,linkedStr);
+				{	processParagraphElement(element,rawStr);
 				}
 				
 				// superscripts are to be avoided
@@ -1108,42 +1004,42 @@ public class WikipediaReader extends ArticleReader
 				
 				// we ignore certain types of span (phonetic trancription, WP buttons...) 
 				else if(eltName.equals(HtmlNames.ELT_SPAN))
-				{	processSpanElement(element,rawStr,linkedStr);
+				{	processSpanElement(element,rawStr);
 				}
 				
 				// hyperlinks must be included in the linked string, provided they are not external
 				else if(eltName.equals(HtmlNames.ELT_A))
-				{	processHyperlinkElement(element,rawStr,linkedStr);
+				{	processHyperlinkElement(element,rawStr);
 				}
 				
 				// lists
 				else if(eltName.equals(HtmlNames.ELT_UL))
-				{	processListElement(element,rawStr,linkedStr,false);
+				{	processListElement(element,rawStr,false);
 				}
 				else if(eltName.equals(HtmlNames.ELT_OL))
-				{	processListElement(element,rawStr,linkedStr,true);
+				{	processListElement(element,rawStr,true);
 				}
 				else if(eltName.equals(HtmlNames.ELT_DL))
-				{	processDescriptionListElement(element,rawStr,linkedStr);
+				{	processDescriptionListElement(element,rawStr);
 				}
 				
 				// list item
 				else if(eltName.equals(HtmlNames.ELT_LI))
-				{	processAnyElement(element,rawStr,linkedStr);
+				{	processAnyElement(element,rawStr);
 				}
 	
 				// divisions are just processed recursively
 				else if(eltName.equals(HtmlNames.ELT_DIV))
-				{	processDivisionElement(element,rawStr,linkedStr);
+				{	processDivisionElement(element,rawStr);
 				}
 				
 				// quotes are just processed recursively
 				else if(eltName.equals(HtmlNames.ELT_BLOCKQUOTE))
-				{	processQuoteElement(element,rawStr,linkedStr);
+				{	processQuoteElement(element,rawStr);
 				}
 				// citation
 				else if(eltName.equals(HtmlNames.ELT_CITE))
-				{	processParagraphElement(element,rawStr,linkedStr);
+				{	processParagraphElement(element,rawStr);
 				}
 				
 				// other elements are considered as simple text
@@ -1151,7 +1047,6 @@ public class WikipediaReader extends ArticleReader
 				{	String text = element.text();
 					text = removeGtst(text);
 					rawStr.append(text);
-					linkedStr.append(text);
 				}
 			}
 			
@@ -1168,7 +1063,6 @@ public class WikipediaReader extends ArticleReader
 				// complete string buffers
 				text = removeGtst(text);
 				rawStr.append(text);
-				linkedStr.append(text);
 			}
 		}
 	}
@@ -1201,7 +1095,6 @@ public class WikipediaReader extends ArticleReader
 			// get raw and linked texts
 			logger.log("Get raw and linked texts.");
 			StringBuilder rawStr = new StringBuilder();
-			StringBuilder linkedStr = new StringBuilder();
 			Element mainContentElt = document.getElementsByAttributeValue(HtmlNames.ATT_ID,ID_CONTENT).first();
 			Element bodyContentElt = mainContentElt.getElementsByClass(CLASS_CONTENT).first();
 			// processing each element in the content part
@@ -1216,8 +1109,7 @@ public class WikipediaReader extends ArticleReader
 				{	first = false;
 					// get section name
 					StringBuilder fakeRaw = new StringBuilder();
-					StringBuilder fakeLinked = new StringBuilder();
-					processParagraphElement(element,fakeRaw,fakeLinked);
+					processParagraphElement(element,fakeRaw);
 					String str = fakeRaw.toString().trim().toLowerCase(Locale.ENGLISH);
 					// check section name
 					int level = HtmlNames.ELT_HS.indexOf(eltName);
@@ -1227,8 +1119,7 @@ public class WikipediaReader extends ArticleReader
 					{	if(level<=ignoringSectionLevel)
 						{	ignoringSectionLevel = HtmlNames.ELT_HS.size();
 							rawStr.append("\n");
-							linkedStr.append("\n");
-							processParagraphElement(element,rawStr,linkedStr);
+							processParagraphElement(element,rawStr);
 						}
 					}
 				}
@@ -1240,49 +1131,49 @@ public class WikipediaReader extends ArticleReader
 						// ignore possible initial disambiguation link
 						if(!first || !str.startsWith(PARAGRAPH_FORTHE))	 
 						{	first = false;
-							processParagraphElement(element,rawStr,linkedStr);
+							processParagraphElement(element,rawStr);
 						}
 					}
 					
 					// list
 					else if(eltName.equals(HtmlNames.ELT_UL))
 					{	first = false;
-						processListElement(element,rawStr,linkedStr,false);
+						processListElement(element,rawStr,false);
 					}
 					else if(eltName.equals(HtmlNames.ELT_OL))
 					{	first = false;
-						processListElement(element,rawStr,linkedStr,true);
+						processListElement(element,rawStr,true);
 					}
 					else if(eltName.equals(HtmlNames.ELT_DL))
 					{	first = false;
-						processDescriptionListElement(element,rawStr,linkedStr);
+						processDescriptionListElement(element,rawStr);
 					}
 					
 					// tables
 					else if(eltName.equals(HtmlNames.ELT_TABLE))
-					{	first = !processTableElement(element, rawStr, linkedStr);
+					{	first = !processTableElement(element, rawStr);
 					}
 					
 					// divisions
 					else if(eltName.equals(HtmlNames.ELT_DIV))
 					{	// ignore possible initial picture 
 						if(!first || eltClass==null || !eltClass.contains(CLASS_THUMB))
-							first = !processDivisionElement(element, rawStr, linkedStr);
+							first = !processDivisionElement(element, rawStr);
 					}
 				
 					// we ignore certain types of span (phonetic trancription, WP buttons...) 
 					else if(eltName.equals(HtmlNames.ELT_SPAN))
-					{	first = !processSpanElement(element,rawStr,linkedStr);
+					{	first = !processSpanElement(element,rawStr);
 					}
 					
 					// hyperlinks must be included in the linked string, provided they are not external
 					else if(eltName.equals(HtmlNames.ELT_A))
-					{	first = !processHyperlinkElement(element,rawStr,linkedStr);
+					{	first = !processHyperlinkElement(element,rawStr);
 					}
 					
 					// quotes are just processed recursively
 					else if(eltName.equals(HtmlNames.ELT_BLOCKQUOTE))
-					{	first = !processQuoteElement(element,rawStr,linkedStr);
+					{	first = !processQuoteElement(element,rawStr);
 					}
 					
 					// other tags are ignored
@@ -1302,11 +1193,6 @@ public class WikipediaReader extends ArticleReader
 //			rawText = ArticleCleaning.replaceChars(rawText);
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");
-			String linkedText = linkedStr.toString();
-//			linkedText = cleanText(linkedText);
-//			linkedText = ArticleCleaning.replaceChars(linkedText);
-			result.setLinkedText(linkedText);
-			logger.log("Length of the linked text: "+linkedText.length()+" chars.");
 			
 			// get original html source code
 			logger.log("Get original HTML source code.");
@@ -1328,9 +1214,6 @@ public class WikipediaReader extends ArticleReader
 		{	e.printStackTrace();
 		}
 		catch (IOException e)
-		{	e.printStackTrace();
-		}
-		catch (org.json.simple.parser.ParseException e)
 		{	e.printStackTrace();
 		}
 		

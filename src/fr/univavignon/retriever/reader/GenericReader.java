@@ -44,11 +44,11 @@ import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.nerwip.tools.html.HtmlNames;
-import fr.univavignon.nerwip.tools.html.HtmlTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.retriever.reader.ArticleReader;
 import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.tools.html.HtmlNames;
+import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a Web page,
@@ -139,7 +139,6 @@ public class GenericReader extends ArticleReader
 		{	// init variables
 			String title = null;
 			StringBuilder rawStr = new StringBuilder();
-			StringBuilder linkedStr = new StringBuilder();
 			Date publishingDate = null;
 			Date modificationDate = null;
 			
@@ -213,7 +212,7 @@ public class GenericReader extends ArticleReader
 
 			// processing each element in the content part
 			logger.log("Get raw and linked texts");
-			processAnyElement(contentElt, rawStr, linkedStr);
+			processAnyElement(contentElt, rawStr);
 			
 			// create article object
 			result = new Article(name);
@@ -227,25 +226,18 @@ public class GenericReader extends ArticleReader
 			
 			// add the title to the content, just in case the entity appears there but not in the article body
 			String rawText = rawStr.toString();
-			String linkedText = linkedStr.toString();
 			if(title!=null && !title.isEmpty())
-			{	rawText = title + "\n" + rawText;
-				linkedText = title + "\n" + linkedText;
-			}
+				rawText = title + "\n" + rawText;
 			
 			// clean text
 //			rawText = cleanText(rawText);
 //			rawText = ArticleCleaning.replaceChars(rawText);
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");			
-//			linkedText = cleanText(linkedText);
-//			linkedText = ArticleCleaning.replaceChars(linkedText);
-			result.setLinkedText(linkedText);
-			logger.log("Length of the linked text: "+linkedText.length()+" chars.");
 			
 			// language
 			if(language==null)
-			{	language = StringTools.detectLanguage(rawText,false);
+			{	language = CommonStringTools.detectLanguage(rawText,false);
 				logger.log("Detected language: "+language);
 			}
 			result.setLanguage(language);

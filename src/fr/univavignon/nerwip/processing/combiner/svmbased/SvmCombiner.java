@@ -33,14 +33,12 @@ import fr.univavignon.nerwip.processing.AbstractProcessor;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer.SubeeMode;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;
 import fr.univavignon.nerwip.processing.internal.modelbased.lingpipe.LingPipe;
 import fr.univavignon.nerwip.processing.internal.modelbased.opennlp.OpenNlp;
 import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
-import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
 
 /**
  * This combiner relies on a SVM to perform its combination. 
@@ -54,7 +52,6 @@ import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
  * 		<li>OpenCalais (see {@link OpenCalais})</li>
  * 		<li>OpenNLP (see {@link OpenNlp})</li>
  * 		<li>Stanford NER (see {@link Stanford})</li>
- * 		<li>Subee (see {@link Subee})</li>
  * </ul>
  * Various options allow changing the behavior of this combiner:
  * <ul>
@@ -66,8 +63,6 @@ import fr.univavignon.nerwip.processing.internal.modelless.subee.Subee;
  * 		<li>{@code useCategories}: whether the SVM should use article categories
  * 		as input, to try improving its prediction. It is independent from
  * 		whether categories are used or not during the voting process.</li>
- * 		<li>{@code subeeMode}: whether to use our recognizer {@link Subee}, and if yes,
- * 		how to use it. See {@code SubeeMode}.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used, in the case
  * 		there is some voting involved in the combination.</li>
  * </ul>
@@ -89,14 +84,12 @@ public class SvmCombiner extends AbstractProcessor implements InterfaceRecognize
 	 * 		Indicates if categories should be used when combining mentions.
 	 * @param combineMode
 	 * 		 Indicates how mentions should be combined.
-	 * @param subeeMode
-	 * 		Indicates how our recognizer {@link Subee} is used (if it's used). 
 	 *
 	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public SvmCombiner(boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode, SubeeMode subeeMode) throws ProcessorException
-	{	delegateRecognizer = new SvmCombinerDelegateRecognizer(this,loadModelOnDemand,specific,useCategories,combineMode,subeeMode);
+	public SvmCombiner(boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode) throws ProcessorException
+	{	delegateRecognizer = new SvmCombinerDelegateRecognizer(this,loadModelOnDemand,specific,useCategories,combineMode);
 	}
 	
 	/////////////////////////////////////////////////////////////////

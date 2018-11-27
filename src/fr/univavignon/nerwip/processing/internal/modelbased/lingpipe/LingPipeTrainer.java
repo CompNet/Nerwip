@@ -45,8 +45,8 @@ import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
+import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.nerwip.processing.internal.modelbased.AbstractTrainer;
-import fr.univavignon.nerwip.tools.file.FileNames;
 
 /**
  * This class trains the LingPipe NER
@@ -78,7 +78,7 @@ public class LingPipeTrainer extends AbstractTrainer<Chunking>
 	// DATA				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the file containing the data */
-	private final static String DATA_FILENAME = FileNames.FO_OUTPUT + File.separator + "lingpipe.data.bin";
+	private final static String DATA_FILENAME = CommonFileNames.FO_OUTPUT + File.separator + "lingpipe.data.bin";
 	/** Map of EntityType to LingPipe type conversion */
 	private final static Map<EntityType, String> CONVERSION_MAP = new HashMap<EntityType, String>();
 	

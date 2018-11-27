@@ -32,9 +32,9 @@ import de.unihd.dbs.heideltime.standalone.POSTagger;
 import de.unihd.dbs.uima.annotator.heideltime.resources.Language;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * Class representing the predefined model used by HeidelTime for 
@@ -226,7 +226,7 @@ public enum HeidelTimeModelName
 	// FILES			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
     /** Name of the configuration file */
-	private final static String CONFIG_FILE = FileNames.FO_HEIDELTIME + File.separator + "config.props";
+	private final static String CONFIG_FILE = NerwipFileNames.FO_HEIDELTIME + File.separator + "config.props";
 	
 	/**
 	 * Returns the object to use for detecting dates.

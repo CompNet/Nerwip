@@ -39,9 +39,10 @@ import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.external.AbstractExternalDelegateRecognizer;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.file.FileTools;
-import fr.univavignon.nerwip.tools.string.StringTools;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class acts as a delegate for the mention recognition with Nero
@@ -140,6 +141,8 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 	/////////////////////////////////////////////////////////////////
 	// PROCESSING 			/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
+	/** Main script of the Nero tool */
+	private final static String FI_NERO_BASH = "irisa_ne" + FileNames.EX_BASH;
 	/** Whether mentions can contain other mentions ({@code false}) or are mutually exclusive ({@code true}) */
 	private boolean flat = false;
 	/** Switch used to enable the detection of non-flat mentions */
@@ -200,8 +203,8 @@ class NeroDelegateRecognizer extends AbstractExternalDelegateRecognizer
 				logger.increaseOffset();
 					Runtime rt = Runtime.getRuntime();
 					String mainCommand = "cat " + tempPath + " | " 
-						+ "." + File.separator + FileNames.FO_NERO_SCRIPTS + File.separator 
-						+ FileNames.FI_NERO_BASH + " " + neroTagger.toString();
+						+ "." + File.separator + NerwipFileNames.FO_NERO_SCRIPTS + File.separator 
+						+ FI_NERO_BASH + " " + neroTagger.toString();
 				    if(!flat)
 				    	mainCommand = mainCommand + " " + FLAT_SWITCH;
 			    	String[] commands = 

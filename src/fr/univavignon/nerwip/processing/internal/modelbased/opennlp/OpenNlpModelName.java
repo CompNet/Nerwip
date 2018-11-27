@@ -32,9 +32,9 @@ import java.util.Map.Entry;
 
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
-import fr.univavignon.nerwip.tools.file.FileNames;
-import fr.univavignon.nerwip.tools.log.HierarchicalLogger;
-import fr.univavignon.nerwip.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinder;
 import opennlp.tools.namefind.TokenNameFinderModel;
@@ -272,7 +272,7 @@ public enum OpenNlpModelName
 	 * 		Problem while loading the sentence detector.
 	 */
 	public SentenceDetectorME loadSentenceDetector() throws InvalidFormatException, IOException
-	{	String fileName = FileNames.FO_OPENNLP + File.separator + sentenceDetectorFile;
+	{	String fileName = NerwipFileNames.FO_OPENNLP + File.separator + sentenceDetectorFile;
 		File file = new File(fileName);
 		
 		logger.log("Load sentence detector: "+file.toString());
@@ -296,7 +296,7 @@ public enum OpenNlpModelName
 	 * 		Problem while loading the tokenizer.
 	 */
 	public TokenizerME loadTokenizer() throws InvalidFormatException, IOException
-	{	String fileName = FileNames.FO_OPENNLP + File.separator + tokenizerFile;
+	{	String fileName = NerwipFileNames.FO_OPENNLP + File.separator + tokenizerFile;
 		File file = new File(fileName);
 		
 		logger.log("Load tokenizer: "+file.toString());
@@ -324,7 +324,7 @@ public enum OpenNlpModelName
 		
 		Map<EntityType,List<TokenNameFinder>> result = new HashMap<EntityType,List<TokenNameFinder>>();
 		for(Entry<String,EntityType> entry: modelFiles.entrySet())
-		{	String fileName = FileNames.FO_OPENNLP + File.separator + entry.getKey();
+		{	String fileName = NerwipFileNames.FO_OPENNLP + File.separator + entry.getKey();
 			EntityType type = entry.getValue();
 			File file = new File(fileName);
 			logger.log("Load model: "+file.toString());
@@ -364,7 +364,7 @@ public enum OpenNlpModelName
 		for(Entry<String, EntityType> entry: modelFiles.entrySet())
 		{	String key = entry.getKey();
 			EntityType value = entry.getValue();
-			String fileName = FileNames.FO_OPENNLP + File.separator + key;
+			String fileName = NerwipFileNames.FO_OPENNLP + File.separator + key;
 			File file = new File(fileName);
 			result.put(value,file);
 		}

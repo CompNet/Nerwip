@@ -24,7 +24,7 @@ package fr.univavignon.common.data.entity;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
-import fr.univavignon.nerwip.tools.time.Period;
+import fr.univavignon.common.tools.time.Period;
 
 /**
  * Class representing a date entity, which is a kind of valued entity.
