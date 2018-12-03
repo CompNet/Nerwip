@@ -49,7 +49,7 @@ import fr.univavignon.common.tools.time.Period;
  *  <li>None, one or several locations;</li>
  * </ul>
  * <br/>
- * A basic event should contain at least either two acting entity (person or
+ * A basic event should contain at least either two acting entities (person or
  * organization), or one acting entity and a date.
  * <br/>
  * TODO This is a very basic version, that should be improved later. As of now,
