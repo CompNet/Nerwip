@@ -18,7 +18,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -350,9 +350,9 @@ public class SpotlightTools
 				method.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
 				logger.log("Send message to service");
-				HttpClient client = new DefaultHttpClient();
+				HttpClient httpClient = HttpClientBuilder.create().build();
 				HttpResponse response;
-				response = client.execute(method);
+				response = httpClient.execute(method);
 				int responseCode = response.getStatusLine().getStatusCode();
 				logger.log("Response Code : " + responseCode);
 

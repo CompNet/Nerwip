@@ -29,7 +29,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 
@@ -73,7 +72,7 @@ public class KnowledgeBase
 	/** XML file used to store keys */
 	public final static String FI_KB_NAMES = "kb_names" + FileNames.EX_TEXT;
 	/** Name of the text file containing the names of all registered KB */
-	public static final File FILE = new File(CommonFileNames.FO_MISC+File.separator+FI_KB_NAMES);
+	public static final File FILE = new File(FileNames.FO_MISC+File.separator+FI_KB_NAMES);
 	
 	/**
 	 * Loads all the registered KB names, based on the list provided

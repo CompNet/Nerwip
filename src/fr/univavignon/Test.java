@@ -39,7 +39,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jdom2.Content;
 import org.jdom2.Document;
@@ -62,10 +62,9 @@ import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.common.tools.corpus.ArticleLists;
 import fr.univavignon.common.tools.dbpedia.DbIdTools;
 import fr.univavignon.common.tools.dbpedia.DbTypeTools;
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.common.tools.keys.KeyHandler;
-import fr.univavignon.editor.MentionEditor;
-import fr.univavignon.extractor.data.event.Event;
+import fr.univavignon.edition.MentionEditor;
+import fr.univavignon.extraction.event.Event;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionIstanbulMeasure;
@@ -110,8 +109,9 @@ import fr.univavignon.nerwip.processing.internal.modelless.spotlight.Spotlight;
 import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDataLinker;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
 import fr.univavignon.nerwip.tools.file.NerwipFileNames;
-import fr.univavignon.retriever.ArticleRetriever;
-import fr.univavignon.retriever.reader.wikipedia.WikipediaReader;
+import fr.univavignon.retrieval.ArticleRetriever;
+import fr.univavignon.retrieval.reader.wikipedia.WikipediaReader;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
@@ -1790,7 +1790,7 @@ public class Test
 //		String articleName = "Seamus_Brennan";
 //		String articleName = "John_Zorn";
 //		String articleName = "Fleur_Pellerin";
-		String articlePath = CommonFileNames.FO_OUTPUT + File.separator + articleName;
+		String articlePath = FileNames.FO_OUTPUT + File.separator + articleName;
 		logger.log("Set up article: "+articlePath);
 		
 		logger.log("Launch viewer");
@@ -1823,8 +1823,8 @@ public class Test
 		urlParameters.add(new BasicNameValuePair("text[content]", "Je vais à Marseille cet été voir l'Olympique de Marseille."));
 		post.setEntity(new UrlEncodedFormEntity(urlParameters));
 		
-		HttpClient client = new DefaultHttpClient();
-		HttpResponse response = client.execute(post);
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		HttpResponse response = httpClient.execute(post);
 		int responseCode = response.getStatusLine().getStatusCode();
 		System.out.println("Response Code : " + responseCode);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));
@@ -1851,8 +1851,8 @@ public class Test
 			HttpGet get = new HttpGet(url);
 			get.setHeader("Authorization", "Basic " + encoding);
 
-			client = new DefaultHttpClient();
-			response = client.execute(get);
+			httpClient = HttpClientBuilder.create().build();
+			response = httpClient.execute(get);
 			responseCode = response.getStatusLine().getStatusCode();
 			System.out.println("Response Code : " + responseCode);
 			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"UTF-8"));

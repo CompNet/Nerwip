@@ -65,7 +65,7 @@ public class Article implements Comparable<Article>
 	public Article(String name)
 	{	this.name = name;
 		
-		initFiles(CommonFileNames.FO_OUTPUT);
+		initFiles(FileNames.FO_OUTPUT);
 	}
 	
 	/**
@@ -499,7 +499,7 @@ public class Article implements Comparable<Article>
 //		for(int i=0;i<name.length();i++)
 //			System.out.println(i+": '"+name.charAt(i)+"'=='"+"Ahmet_Davutoglu".charAt(i)+"' >> "+(name.charAt(i)=="Ahmet_Davutoglu".charAt(i)));
 		
-		String folderPath = CommonFileNames.FO_OUTPUT + File.separator + name;
+		String folderPath = FileNames.FO_OUTPUT + File.separator + name;
 //		File originalFile = new File(folderPath + File.separator + FileNames.FI_ORIGINAL_PAGE);
 		File rawFile = new File(folderPath + File.separator + CommonFileNames.FI_RAW_TEXT);
 //		File propertiesFile = new File(folderPath + File.separator + FileNames.FI_PROPERTIES);

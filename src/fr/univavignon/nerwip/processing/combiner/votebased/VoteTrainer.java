@@ -37,7 +37,7 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
-import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.retrieval.reader.ReaderException;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
 

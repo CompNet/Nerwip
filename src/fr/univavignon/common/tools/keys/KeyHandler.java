@@ -30,7 +30,6 @@ import java.util.Map;
 import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.xml.XmlTools;
 
@@ -79,7 +78,7 @@ public class KeyHandler
 	 */
 	private static void loadData()
 	{	// set up file names
-		String dataFileName = CommonFileNames.FO_MISC + File.separator + FI_KEY_LIST;
+		String dataFileName = FileNames.FO_MISC + File.separator + FI_KEY_LIST;
 		File dataFile = new File(dataFileName);
 		String schemaFileName = FileNames.FO_SCHEMA + File.separator + FI_KEY_SCHEMA;
 		File schemaFile = new File(schemaFileName);

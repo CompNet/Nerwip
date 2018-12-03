@@ -38,8 +38,24 @@ public class FileNames
 	public final static String FO_LOG = "log";
 	/** Resources folder */
 	public final static String FO_RESOURCES = "res";
+		/** Folder used to store certain cached files */
+		public final static String FO_CACHE = FO_RESOURCES + File.separator + "cache";
 		/** Folder containing the XML schemas */
 		public final static String FO_SCHEMA = FO_RESOURCES + File.separator + "schemas";
+		/** Folder used to store various data */
+		public final static String FO_MISC = FO_RESOURCES + File.separator + "misc";
+		/** Output folder */
+//		public final static String FO_OUTPUT = "out";	//actual folder
+	
+//		public final static String FO_OUTPUT = "/home/vlabatut/Dropbox/NetExtraction/Data";
+		public final static String FO_OUTPUT = "/home/vlabatut/Downloads/Data";
+//		public final static String FO_OUTPUT = "/home/vlabatut/eclipse/workspaces/Extraction/Nerwip/out";
+
+//		public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/Nerwip2/out";
+//		public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data2";
+//		public final static String FO_OUTPUT = "D:/Users/Vincent/Documents/Dropbox/NetExtraction/Data";
+//		public final static String FO_OUTPUT = "C:/Users/Vincent/Downloads/Data";
+//		public final static String FO_OUTPUT = "D:/Users/Vincent/Downloads/Web/_ner/fr";
 	
 	/////////////////////////////////////////////////////////////////
 	// FILES		/////////////////////////////////////////////////

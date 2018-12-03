@@ -46,7 +46,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -57,7 +57,6 @@ import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.AbstractNamedEntity;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.KnowledgeBase;
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
@@ -408,9 +407,9 @@ public class WmCommonTools
 			// if it fails, actually query the server
 			if(answer==null)
 			{	// query the server	
-				HttpClient httpclient = new DefaultHttpClient();   
+				HttpClient httpClient = HttpClientBuilder.create().build();
 				HttpGet request = new HttpGet(url);
-				HttpResponse response = httpclient.execute(request);
+				HttpResponse response = httpClient.execute(request);
 				// parse the answer to get an XML document
 				answer = WebTools.readAnswer(response);
 				if(cache)
@@ -519,9 +518,9 @@ public class WmCommonTools
 		// if it fails, actually query the server
 		if(answer==null)
 		{	// query the server	
-			HttpClient httpclient = new DefaultHttpClient();   
+			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(url);
-			HttpResponse response = httpclient.execute(request);
+			HttpResponse response = httpClient.execute(request);
 			// parse the answer to get an XML document
 			answer = WebTools.readAnswer(response);
 			if(cache)
@@ -682,9 +681,9 @@ public class WmCommonTools
 		// if it fails, actually query the server
 		if(answer==null)
 		{	// query the server	
-			HttpClient httpclient = new DefaultHttpClient();   
+			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(url);
-			HttpResponse response = httpclient.execute(request);
+			HttpResponse response = httpClient.execute(request);
 			// parse the answer to get an XML document
 			answer = WebTools.readAnswer(response);
 			if(cache)
@@ -753,9 +752,9 @@ public class WmCommonTools
 		// if it fails, actually query the server
 		if(answer==null)
 		{	// query the server	
-			HttpClient httpclient = new DefaultHttpClient();   
+			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(url);
-			HttpResponse response = httpclient.execute(request);
+			HttpResponse response = httpClient.execute(request);
 			// parse the answer to get an XML document
 			answer = WebTools.readAnswer(response);
 			if(cache)
@@ -854,9 +853,9 @@ public class WmCommonTools
 		// if it fails, actually query the server
 		if(answer==null)
 		{	// query the server	
-			HttpClient httpclient = new DefaultHttpClient();   
+			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(url);
-			HttpResponse response = httpclient.execute(request);
+			HttpResponse response = httpClient.execute(request);
 			// parse the answer to get an XML document
 			answer = WebTools.readAnswer(response);
 			if(cache)
@@ -914,9 +913,9 @@ public class WmCommonTools
 		logger.log("URL: "+url);
 
 		// query the server	
-		HttpClient httpclient = new DefaultHttpClient();   
+		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpGet request = new HttpGet(url);
-		HttpResponse response = httpclient.execute(request);
+		HttpResponse response = httpClient.execute(request);
 		// parse the answer to get an XML document
 		String answer = WebTools.readAnswer(response);
 		
@@ -927,7 +926,7 @@ public class WmCommonTools
 		Namespace ns = Namespace.getNamespace(NS_SPARQL_API);
 		
 		// open output file
-		String file = CommonFileNames.FO_OUTPUT + File.separator + "kb_names.txt";
+		String file = FileNames.FO_OUTPUT + File.separator + "kb_names.txt";
 		PrintWriter pw = FileTools.openTextFileWrite(file, "UTF-8");
 		
 		// extract the type(s) from the XML doc

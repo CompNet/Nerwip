@@ -40,11 +40,10 @@ import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.nerwip.tools.file.NerwipFileNames;
-import fr.univavignon.retriever.ArticleRetriever;
-import fr.univavignon.retriever.reader.ReaderException;
-import fr.univavignon.retriever.reader.wikipedia.WikipediaReader;
+import fr.univavignon.retrieval.ArticleRetriever;
+import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.reader.wikipedia.WikipediaReader;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
@@ -141,7 +140,7 @@ public class ArticleCompletion
 	{	logger.log("Setting categories in articles");
 		logger.increaseOffset();
 		
-		File file = new File(CommonFileNames.FO_OUTPUT + File.separator + "cats" + FileNames.EX_TEXT);	
+		File file = new File(FileNames.FO_OUTPUT + File.separator + "cats" + FileNames.EX_TEXT);	
 		FileInputStream fis = new FileInputStream(file);
 		InputStreamReader isr = new InputStreamReader(fis);
 		Scanner scanner = new Scanner(isr);
@@ -152,7 +151,7 @@ public class ArticleCompletion
 		{	String line = scanner.nextLine().trim();
 			String temp[] = line.split("\\t");
 			String name = temp[0];
-			String folderPath = CommonFileNames.FO_OUTPUT + File.separator + name;
+			String folderPath = FileNames.FO_OUTPUT + File.separator + name;
 			File folderFile = new File(folderPath);
 			if(folderFile.exists())
 			{	

@@ -35,7 +35,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -96,14 +96,14 @@ public class DbTypeTools
 		String query = PRE_RDFS + PRE_DBR + PRE_DBO + "select ?type where {<http://fr.dbpedia.org/resource/" + entity + "> rdf:type ?type.}";  
    
 		try
-		{	HttpClient httpclient = new DefaultHttpClient();
+		{	HttpClient httpClient = HttpClientBuilder.create().build();
 			List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
 			params.add(new BasicNameValuePair("query", query)); 
 			params.add(new BasicNameValuePair("Accept", "application/json"));
 			params.add(new BasicNameValuePair("output", "xml"));
 
 			HttpGet httpget = new HttpGet(service+"?"+URLEncodedUtils.format(params, "utf-8"));
-			HttpResponse response = httpclient.execute(httpget);
+			HttpResponse response = httpClient.execute(httpget);
 			logger.log( response.toString());
 
 			InputStream stream = response.getEntity().getContent();

@@ -23,8 +23,11 @@ package fr.univavignon.common.tools.strings;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +48,7 @@ import com.optimaize.langdetect.text.TextObjectFactory;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class contains various methods used when processing strings.
@@ -301,6 +305,100 @@ public class CommonStringTools
 				result = result + " ";
 		}
 		result = result + "^";
+		
+		return result;
+	}
+	
+	/////////////////////////////////////////////////////////////////
+	// FREQUENCIES		/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Compute the total word frequencies for the specified text.
+	 * If the language is specified, the stop-words are not counted.
+	 *  
+	 * @param text
+	 * 		The text to process.
+	 * @param language 
+	 * 		Language of the text, or {@code null} if stop-words should be counted.
+	 * @return
+	 * 		A map associating a frequency to each word appearing at least once.
+	 */
+	public static Map<String,Integer> computeWordFrequencies(String text, ArticleLanguage language)
+	{	List<String> texts = new ArrayList<String>();
+		texts.add(text);
+		Map<String,Integer> result = computeWordFrequencies(texts, language);
+		return result;
+	}
+	
+	/**
+	 * Compute the total word frequencies for the specified list of texts.
+	 * If the language is specified, the stop-words are not counted.
+	 * <br/>
+	 * The processed text is supposed to be clean.
+	 *  
+	 * @param texts
+	 * 		A list of texts.
+	 * @param language 
+	 * 		Language of the text, or {@code null} if stop-words should be counted.
+	 * @return
+	 * 		A map associating a frequency to each word appearing at least once.
+	 */
+	public static Map<String,Integer> computeWordFrequencies(Collection<String> texts, ArticleLanguage language)
+	{	Map<String,Integer> result = new HashMap<String,Integer>();
+		
+		// init the list of stopwords
+		List<String> stopWords;
+		if(language!=null)
+			stopWords = StopWordsManager.getStopWords(language);
+		else
+			stopWords = new ArrayList<String>();
+		
+		// process each text
+		for(String text: texts)
+		{	String cleanText = text.replaceAll("\\n", " ");
+			cleanText = cleanText.replaceAll("\\d+"," ");			// we ignore digits
+			cleanText = StringTools.removePunctuation(cleanText);	// and punctuation
+			cleanText = cleanText.toLowerCase();
+			
+			String[] tokens = cleanText.split(" ");
+			for(String token: tokens)
+			{	if(!stopWords.contains(token))
+				{	Integer c = result.get(token);
+					if(c==null)
+						c = 0;
+					c++;
+					result.put(token,c);
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Compute the total word frequencies for the specified list of tokens.
+	 * Unlike in {@link #computeWordFrequencies(Collection, ArticleLanguage)},
+	 * the text is supposed to have been tokenized, so the list is not a list 
+	 * of texts, but a list of tokens, which are directly compared. They are
+	 * also supposed to be already normalized: no cleaning is performed by the
+	 * method. Also, it does not distinguish stopwords from other words. 
+	 *  
+	 * @param tokens
+	 * 		A list of tokens.
+	 * @return
+	 * 		A map associating a frequency to each token appearing at least once.
+	 */
+	public static Map<String,Integer> computeFrequenciesFromTokens(Collection<String> tokens)
+	{	Map<String,Integer> result = new HashMap<String,Integer>();
+		
+		// process each token
+		for(String token: tokens)
+		{	Integer c = result.get(token);
+			if(c==null)
+				c = 0;
+			c++;
+			result.put(token,c);
+		}
 		
 		return result;
 	}

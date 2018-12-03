@@ -46,6 +46,7 @@ import org.xml.sax.SAXException;
 import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
@@ -73,8 +74,8 @@ public class ArticleLists
 		
 //		generateArticleList();
 		
-		File corpus = new File(CommonFileNames.FO_OUTPUT);
-		File output = new File(CommonFileNames.FO_OUTPUT+File.separator+"annotated.txt");
+		File corpus = new File(FileNames.FO_OUTPUT);
+		File output = new File(FileNames.FO_OUTPUT+File.separator+"annotated.txt");
 		generateAnnotatedArticleList(corpus,output);
 	
 		logger.close();
@@ -97,7 +98,7 @@ public class ArticleLists
 	 * 		A list of {@code File} objects.
 	 */
 	public static ArticleList getArticleList()
-	{	File corpusFolder = new File(CommonFileNames.FO_OUTPUT);
+	{	File corpusFolder = new File(FileNames.FO_OUTPUT);
 		ArticleList result = getArticleList(corpusFolder);
 		return result;
 	}
@@ -137,7 +138,7 @@ public class ArticleLists
 	 * 		Problem while accessing the list file.
 	 */
 	public static ArticleList getArticleList(String listFile) throws FileNotFoundException
-	{	String path = CommonFileNames.FO_OUTPUT + File.separator + listFile;
+	{	String path = FileNames.FO_OUTPUT + File.separator + listFile;
 		logger.log("Reading the list of articles from "+path);
 		logger.increaseOffset();
 		
@@ -150,7 +151,7 @@ public class ArticleLists
 			while(scanner.hasNextLine())
 			{	String line = scanner.nextLine().trim();
 				if(!line.isEmpty())
-				{	String fn = CommonFileNames.FO_OUTPUT + File.separator + line;
+				{	String fn = FileNames.FO_OUTPUT + File.separator + line;
 					File f = new File(fn);
 					result.add(f);
 				}
@@ -183,7 +184,7 @@ public class ArticleLists
 	{	logger.log("Retrieving the list of articles");
 		
 		// get the full list
-		File folder = new File(CommonFileNames.FO_OUTPUT);
+		File folder = new File(FileNames.FO_OUTPUT);
 //		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
 		File articles[] = folder.listFiles(fr.univavignon.common.tools.files.CommonFileTools.FILTER_ARTICLES);
 		List<File> list = Arrays.asList(articles);
@@ -336,7 +337,7 @@ public class ArticleLists
 	 */
 	public static List<URL> getArticleUrlList()
 	{	logger.log("Retrieving the list of article URLs");
-		File folder = new File(CommonFileNames.FO_OUTPUT);
+		File folder = new File(FileNames.FO_OUTPUT);
 //		File articles[] = folder.listFiles(FileTools.FILTER_DIRECTORY);
 		File articles[] = folder.listFiles(fr.univavignon.common.tools.files.CommonFileTools.FILTER_ARTICLES);
 		List<File> files = new ArrayList<File>(Arrays.asList(articles));
@@ -374,7 +375,7 @@ public class ArticleLists
 		ArticleList list = getArticleList();
 		Collections.sort(list);
 		
-		String filePath = CommonFileNames.FO_OUTPUT + File.separator + "generated.list.txt";
+		String filePath = FileNames.FO_OUTPUT + File.separator + "generated.list.txt";
 		PrintWriter pw = FileTools.openTextFileWrite(filePath, "UTF-8");
 		
 		for(File file: list)

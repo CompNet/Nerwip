@@ -34,8 +34,8 @@ import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.retriever.ArticleRetriever;
-import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.retrieval.ArticleRetriever;
+import fr.univavignon.retrieval.reader.ReaderException;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
 

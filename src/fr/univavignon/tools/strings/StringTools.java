@@ -107,8 +107,13 @@ public class StringTools
 //		removeNonLatinLetters("Super Mario Bros. Anime Movie Restored (Best Quality!) . English subbed . スーパーマリオブラザーズ ピーチ姫救出大作戦!");
 		
 		// clean spaces
-		String res = cleanSpaces("fdssd\n dsfsdf\nsd dsf sdfsd fdsf    sdfsdf  sdfsd\n\n\nsdfsdf");
-		System.out.println(res);
+//		String res = cleanSpaces("fdssd\n dsfsdf\nsd dsf sdfsd fdsf    sdfsdf  sdfsd\n\n\nsdfsdf");
+//		System.out.println(res);
+		
+		// test clean text
+		String text = "zeriou fke ? R dfikalnfsd po ! SZ : dsqd 4485. Fio 89% dezidj, defsoui ; ezrofd 98% fdskds !!";
+		String cleaned = cleanText(text,ArticleLanguage.FR);
+		System.out.println(cleaned);
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -411,15 +416,15 @@ public class StringTools
 		
 		// replace certain punctuation marks (list of characters obtained from Wikipedia)
 			// apostrophe and variants
-			output = output.replaceAll("[’’ʼ`´ʹʻʽʾʿˈˊʹ΄՚᾽᾿′Ꞌꞌ＇︐︑՝]","'");
+			output = output.replaceAll("[’’ʼ`´ʹʻʽʾʿˈˊʹ΄՚᾽᾿′Ꞌꞌ＇︐︑՝‘‛❛❜]","'");
 			// opening brackets
 			output = output.replaceAll("[(\\[{❴〈⧼❬❰❮〈〈⸤⸤｢｢「⌜⸢⟦⌈⌊⟆⟓⟬⟮⦃⦅⦇⦉⦋⦏⦑⦓⦕⦗⧘⧚❨❪❲⁅⸦⸨〔〖〘〚【（［｛<]", "(");
 			// closing brackets
 			output = output.replaceAll("[)\\]}❵〉⧽❭❱❯〉〉⸥⸥｣｣」⌝⸣⟧⌉⌋⟅⟔⟭⟯⦄⦆⦈⦊⦌⦐⦒⦔⦖⦘⧙⧛❩❫❳⁆⸧⸩〕〗〙〛】）］｝>]", ")");
 			// colons and variants
 			output = output.replaceAll("[:：ː]",":");
-			// coma and variants
-			output = output.replaceAll("[,،⸲⸴⹁、﹐﹑，､‚]",",");
+			// comma and variants
+			output = output.replaceAll("[,،⸲⸴⹁、﹐﹑，､‚❟]",",");
 			// hyphens and variants \u2012 \u2013 \u2014 \u2015 \u2053
 			output = output.replaceAll("[-‐‑֊᠆﹣－‒–—―⁓=*_/⁄∕／\\\\]","-");
 			// ellipsis and variants
@@ -429,9 +434,9 @@ public class StringTools
 			// period and variants
 			output = output.replaceAll("[⸼·]",".");
 			// opening double quotes
-			output = output.replaceAll(  "[«‹„⟪《『⸂⸄⸉⸌〝｟] ?", "\"");
+			output = output.replaceAll("[«‹”‟⟪《『⸂⸄⸉⸌〝〟🙷｟❝❠]", "\"");	// NOTE: at first, we were removing also the space in xxx " xxx " to get xxx "xxx". but some opening " are used as closing ones, and inversely
 			// closing double quotes
-			output = output.replaceAll(" ?[»›“⟫》』⸃⸅⸊⸍〞｠]", "\"");
+			output = output.replaceAll("[»›“„⟫》』⸃⸅⸊⸍〞🙸🙶｠❞⹂]", "\"");
 			// question mark and variants
 			output = output.replaceAll("[⁇﹖⁈⁉‽]","?");
 			// semicolon and variants
@@ -485,6 +490,30 @@ public class StringTools
 		result = result.replaceAll("\"", "");
 		result = result.replaceAll("\\n", " ");
 		result = result.replaceAll(" +"," ");
+		return result;
+	}
+	
+	/**
+	 * Normalizes the string representing a mention. This consists in
+	 * using lowercase only, removing newlines and punctuation, and 
+	 * trimming.
+	 * <br/>
+	 * This method is meant for clean text.
+	 * 
+	 * @param name
+	 * 		String to normalize.
+	 * @return
+	 * 		String after normalization.
+	 */
+	public static String cleanMentionName(String name)
+	{	String result = null;
+		if(name!=null)
+		{	result = name.toLowerCase();
+			result = result.replaceAll("\n"," ");
+			result = StringTools.removePunctuation(result);
+//			result = StringTools.removeDiacritics(result);	//TODO maybe drop the accents?
+			result = result.trim();
+		}
 		return result;
 	}
 	

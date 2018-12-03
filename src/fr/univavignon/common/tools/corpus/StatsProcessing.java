@@ -39,8 +39,8 @@ import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.common.tools.files.CommonFileNames;
-import fr.univavignon.retriever.ArticleRetriever;
-import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.retrieval.ArticleRetriever;
+import fr.univavignon.retrieval.reader.ReaderException;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
@@ -175,7 +175,7 @@ public class StatsProcessing
 		
 		// record stats
 		logger.log("Record statistics");
-		String path = CommonFileNames.FO_OUTPUT + File.separator + FI_STATS_TEXT;
+		String path = FileNames.FO_OUTPUT + File.separator + FI_STATS_TEXT;
 		PrintWriter pw = FileTools.openTextFileWrite(path, "UTF-8");
 		{	String header = "Name\tWords\tChars";
 			for(EntityType type: EntityType.values())

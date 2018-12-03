@@ -32,9 +32,9 @@ import java.util.Scanner;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.common.tools.files.CommonFileNames;
-import fr.univavignon.retriever.ArticleRetriever;
-import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.retrieval.ArticleRetriever;
+import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
@@ -92,7 +92,7 @@ public class ArticleRetrieval
 	{	logger.log("Adding new articles to our corpus");
 		logger.increaseOffset();
 		
-		File file = new File(CommonFileNames.FO_OUTPUT + File.separator + fileName);	
+		File file = new File(FileNames.FO_OUTPUT + File.separator + fileName);	
 		FileInputStream fis = new FileInputStream(file);
 		InputStreamReader isr = new InputStreamReader(fis);
 		Scanner scanner = new Scanner(isr);

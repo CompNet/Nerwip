@@ -38,7 +38,6 @@ import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.nerwip.processing.internal.modelbased.AbstractTrainer;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
@@ -82,7 +81,7 @@ public class OpenNlpTrainer extends AbstractTrainer<Map<EntityType,List<String>>
 	// DATA				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the file containing the data */
-	private final static String DATA_FILENAME = CommonFileNames.FO_OUTPUT + File.separator + "opennlp.data";
+	private final static String DATA_FILENAME = FileNames.FO_OUTPUT + File.separator + "opennlp.data";
 	/** Object used to split text into sentences */
 	private SentenceDetectorME sentenceDetector;
 

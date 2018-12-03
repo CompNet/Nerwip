@@ -23,7 +23,6 @@ package fr.univavignon.nerwip.tools.file;
 
 import java.io.File;
 
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.tools.files.FileNames;
 
 
@@ -47,7 +46,7 @@ public class NerwipFileNames
 	// FOLDERS		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Folder used to store WikiMedia cached files */
-	public final static String FO_CACHE_WIKIMEDIA = CommonFileNames.FO_CACHE + File.separator + "wikimedia";
+	public final static String FO_CACHE_WIKIMEDIA = FileNames.FO_CACHE + File.separator + "wikimedia";
 
 	/** Ner-related resources */
 	public final static String FO_NER = FileNames.FO_RESOURCES + File.separator + "ner";

@@ -34,11 +34,11 @@ import org.xml.sax.SAXException;
 import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.retriever.reader.ReaderException;
+import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
@@ -287,7 +287,7 @@ public abstract class AbstractEvaluator<T extends InterfaceProcessor, U extends 
 	 * 		Problem while accessing the file.
 	 */
 	private void writeResults() throws FileNotFoundException, UnsupportedEncodingException
-	{	File folder = new File(CommonFileNames.FO_OUTPUT);
+	{	File folder = new File(FileNames.FO_OUTPUT);
 		
 		for(int i=0;i<measures.size();i++)
 		{	// record values
@@ -296,9 +296,9 @@ public abstract class AbstractEvaluator<T extends InterfaceProcessor, U extends 
 			measure.writeNumbers(folder,dataName);
 			
 			// rename file
-			File oldFile = new File(CommonFileNames.FO_OUTPUT + File.separator + measure.getFileName());
+			File oldFile = new File(FileNames.FO_OUTPUT + File.separator + measure.getFileName());
 			T recognizer = recognizers.get(i);
-			String newName = CommonFileNames.FO_OUTPUT + File.separator 
+			String newName = FileNames.FO_OUTPUT + File.separator 
 				+ TimeFormatting.formatCurrentFileTime()
 				+ "." + getFolder(recognizer)
 				+ "." + measure.getFileName(); 

@@ -37,17 +37,20 @@ public class DateParser
 	public static Period parseDate(String text, ArticleLanguage language)
 	{	Period result = null;
 		
-		switch(language)
-		{	case EN:
-				result = DateParserEn.parseDate(text);
-				break;
-			case FR:
-				result = DateParserFr.parseDate(text);
-				break;
+		if(language!=null)
+		{	switch(language)
+			{	case EN:
+					result = DateParserEn.parseDate(text);
+					break;
+				case FR:
+					result = DateParserFr.parseDate(text);
+					break;
+			}
+			
+			if(result!=null && result.getStartDate()==null && result.getEndDate()==null)
+				result = null;
 		}
 		
-		if(result!=null && result.getStartDate()==null && result.getEndDate()==null)
-			result = null;
 		return result;
 	}
 }

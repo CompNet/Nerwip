@@ -32,8 +32,7 @@ import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.tools.corpus.ArticleLists;
 import fr.univavignon.common.tools.corpus.ArticleRetrieval;
-import fr.univavignon.common.tools.files.CommonFileNames;
-import fr.univavignon.editor.MentionEditor;
+import fr.univavignon.edition.MentionEditor;
 import fr.univavignon.nerwip.evaluation.recognition.RecognitionEvaluator;
 import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognitionMeasure;
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
@@ -60,7 +59,8 @@ import fr.univavignon.nerwip.processing.internal.modelless.dateextractor.DateExt
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
 import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalaisLanguage;
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
-import fr.univavignon.retriever.ArticleRetriever;
+import fr.univavignon.retrieval.ArticleRetriever;
+import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
@@ -870,7 +870,7 @@ public class Launch
 		File article = articles.get(0); // get the first of the list
 		String articleName = article.getName();
 		
-		String articlePath = CommonFileNames.FO_OUTPUT + File.separator + articleName;
+		String articlePath = FileNames.FO_OUTPUT + File.separator + articleName;
 		logger.log("Set up article: "+articlePath);
 		viewer.setArticle(articlePath);
 		

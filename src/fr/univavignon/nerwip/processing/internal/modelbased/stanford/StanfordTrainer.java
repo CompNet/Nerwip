@@ -39,9 +39,9 @@ import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.nerwip.processing.internal.modelbased.AbstractTrainer;
 import fr.univavignon.nerwip.tools.file.NerwipFileNames;
+import fr.univavignon.tools.files.FileNames;
 
 /**
  * This class trains the Stanford tool
@@ -70,7 +70,7 @@ public class StanfordTrainer extends AbstractTrainer<List<List<CoreLabel>>>
 	// DATA				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Name of the file containing the data */
-	private final static String DATA_FILENAME = CommonFileNames.FO_OUTPUT + File.separator + "stanford.data.bin";
+	private final static String DATA_FILENAME = FileNames.FO_OUTPUT + File.separator + "stanford.data.bin";
 	/** Data used when creating CoreLabel objects */
 	private final static String KEYS[] = {"word","answer"};
 	/** Map of EntityType to Stanford type conversion */
