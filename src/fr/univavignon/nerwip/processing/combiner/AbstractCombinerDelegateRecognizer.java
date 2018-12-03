@@ -296,54 +296,6 @@ public abstract class AbstractCombinerDelegateRecognizer extends AbstractDelegat
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// CATEGORY PROPORTIONS		/////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Number of articles of the given categories in the training set */
-	protected CategoryProportions categoryProportions;
-	
-//	/**
-//	 * Returns the current category proportions for this tool.
-//	 * 
-//	 * @return
-//	 * 		Previously processed category proportions.
-//	 */
-//	public CategoryProportions getCategoryProportions()
-//	{	return categoryProportions;
-//	}
-	
-	/**
-	 * Returns the name of the file containing
-	 * the category proportions for the training set. 
-	 * These values must have been processed previously, 
-	 * this class is not meant to perform this calculation.
-	 * 
-	 * @return
-	 * 		A String representing the path of the category proportions file.
-	 */
-	public String getCategoryProportionsPath()
-	{	String result = getModelPath() + File.separator + recognizer.getRecognizerFolder() + ".catprop" + FileNames.EX_TEXT;
-		return result;
-	}
-	
-	/**
-	 * Loads the previously processed category proportions,
-	 * to be used by this class to combine the recognizers outputs.
-	 * 
-	 * @throws ProcessorException
-	 * 		Problem while loading the category proportions.
-	 */
-	protected void loadCategoryProportions() throws ProcessorException
-	{	String filename = getCategoryProportionsPath();
-		try
-		{	categoryProportions = CategoryProportions.loadCategoryProportions(filename);
-		}
-		catch (IOException e)
-		{	e.printStackTrace();
-			throw new ProcessorException(e.getMessage());
-		}
-	}
-	
-	/////////////////////////////////////////////////////////////////
 	// VOTE				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Weights used when NER must vote */

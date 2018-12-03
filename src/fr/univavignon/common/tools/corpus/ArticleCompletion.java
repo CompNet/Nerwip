@@ -34,7 +34,6 @@ import java.util.Scanner;
 import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
@@ -69,9 +68,6 @@ public class ArticleCompletion
 	public static void main(String[] args) throws Exception
 	{	logger.setName("Article-Completion");
 		
-//		removeArticleCategories();
-//		insertArticleCategories();
-//		completeArticleCategories();
 //		insertArticleTitles();
 //		insertArticleLanguages(ArticleLanguage.FR);
 		reformatRetrievalDate();
@@ -82,141 +78,6 @@ public class ArticleCompletion
 	/////////////////////////////////////////////////////////////////
 	/** Common object used for logging */
 	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
-	
-	/////////////////////////////////////////////////////////////////
-	// CATEGORIES	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Removes the categories of all existing
-	 * articles in the corpus.
-	 * <br/>
-	 * Note: category loading must be disabled first,
-	 * by adding comments in class Article.
-	 * 
-	 * @throws IOException 
-	 * 		Problem while accessing the files.
-	 * @throws SAXException 
-	 * 		Problem while accessing the files.
-	 * @throws ParseException 
-	 * 		Problem while accessing the files.
-	 */
-	private static void removeArticleCategories() throws ParseException, SAXException, IOException
-	{	logger.log("Resetting categories in articles");
-		logger.increaseOffset();
-		
-		List<File> files = ArticleLists.getArticleList();
-		for(File file: files)
-		{	String name = file.getName();
-			logger.log("Processing article \"" + name + "\"");
-			logger.increaseOffset();
-
-			Article article = Article.read(name);
-			article.write();
-			
-			logger.decreaseOffset();
-		}
-		
-		logger.decreaseOffset();
-		logger.log("Categories reset");
-	}
-	
-	/**
-	 * This methods allows setting the category of 
-	 * articles already retrieved and manually annotated
-	 * for evaluation. This way, the annotation can be
-	 * performed overall, or in function of the category.
-	 * The categories must be listed in a file in which
-	 * each line contains the name of the article folder
-	 * and the corresponding category.
-	 * 
-	 * @throws ParseException
-	 * 		Problem while accessing the files.
-	 * @throws SAXException
-	 * 		Problem while accessing the files.
-	 * @throws IOException
-	 * 		Problem while accessing the files.
-	 */
-	private static void insertArticleCategories() throws ParseException, SAXException, IOException
-	{	logger.log("Setting categories in articles");
-		logger.increaseOffset();
-		
-		File file = new File(FileNames.FO_OUTPUT + File.separator + "cats" + FileNames.EX_TEXT);	
-		FileInputStream fis = new FileInputStream(file);
-		InputStreamReader isr = new InputStreamReader(fis);
-		Scanner scanner = new Scanner(isr);
-		logger.log("Reading file " + file);
-		
-		logger.increaseOffset();
-		while(scanner.hasNextLine())
-		{	String line = scanner.nextLine().trim();
-			String temp[] = line.split("\\t");
-			String name = temp[0];
-			String folderPath = FileNames.FO_OUTPUT + File.separator + name;
-			File folderFile = new File(folderPath);
-			if(folderFile.exists())
-			{	
-//				String gender = temp[1];
-				String categoryStr = temp[2].toUpperCase(Locale.ENGLISH);
-				ArticleCategory category = ArticleCategory.valueOf(categoryStr);
-				//category = StringTools.initialize(category);
-				logger.log("Processing '" + name + "': cat="+category);
-				List<ArticleCategory> categories = new ArrayList<ArticleCategory>();
-				categories.add(category);
-				
-				Article article = Article.read(name);
-				article.setCategories(categories);
-				article.write();
-			}
-			else
-				logger.log("Processing '" + temp[0] + "': folder not found");
-		}
-		logger.decreaseOffset();
-		
-		scanner.close();
-		logger.decreaseOffset();
-		logger.log("Categories set");
-	}
-	
-	/**
-	 * Reads existing article, and apply the new
-	 * method to set their categories.
-	 * 
-	 * @throws ParseException
-	 * 		Problem while accessing the files.
-	 * @throws SAXException
-	 * 		Problem while accessing the files.
-	 * @throws IOException
-	 * 		Problem while accessing the files.
-	 * @throws org.apache.http.ParseException
-	 * 		Problem while accessing the files.
-	 * @throws org.json.simple.parser.ParseException
-	 * 		Problem while accessing the files.
-	 */
-	private static void completeArticleCategories() throws ParseException, SAXException, IOException, org.apache.http.ParseException, org.json.simple.parser.ParseException
-	{	logger.log("Completing categories in articles");
-		logger.increaseOffset();
-
-		WikipediaReader reader = new WikipediaReader();
-		
-		List<File> files = ArticleLists.getArticleList();
-		for(File file: files)
-		{	String name = file.getName();
-			logger.log("Processing article \"" + name + "\"");
-			logger.increaseOffset();
-			Article article = Article.read(name);
-			
-			List<ArticleCategory> categories = reader.getArticleCategories(article);
-			article.setCategories(categories);
-			logger.log("Detected categories: " + categories.toString());
-			
-			article.write();
-			logger.log("Completed article written");
-			logger.decreaseOffset();
-		}
-		
-		logger.decreaseOffset();
-		logger.log("Categories completed");
-	}
 	
 	/////////////////////////////////////////////////////////////////
 	// TITLES		/////////////////////////////////////////////////

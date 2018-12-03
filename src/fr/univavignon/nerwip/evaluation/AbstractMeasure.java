@@ -26,7 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.entity.EntityType;
 
 /**
@@ -97,21 +96,6 @@ public abstract class AbstractMeasure
 	 * 		Associated value.
 	 */
 	public abstract float getScoreByType(String score, EntityType type);
-
-	/**
-	 * Get the value for
-	 * the specified score,
-	 * when considering only
-	 * the specified article category.
-	 * 
-	 * @param score
-	 * 		Score required by the user.
-	 * @param category
-	 * 		Category of interest.
-	 * @return
-	 * 		Associated value.
-	 */
-	public abstract float getScoreByCategory(String score, ArticleCategory category);
 
 	/////////////////////////////////////////////////////////////////
 	// RECORD			/////////////////////////////////////////////

@@ -35,7 +35,6 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognition
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
 import fr.univavignon.retrieval.reader.ReaderException;
 import fr.univavignon.tools.log.HierarchicalLogger;
@@ -135,35 +134,22 @@ public class VoteTrainer
 	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ProcessorException
 	{	VoteMode voteMode = delegateRecognizer.getVoteMode();
 		if(voteMode.hasWeights())
-		{	// vote weights
-			{	// process
-				List<EntityType> types = delegateRecognizer.getHandledEntityTypes();
-				List<InterfaceRecognizer> recognizers = delegateRecognizer.getRecognizers();
-				AbstractRecognitionMeasure measure = new RecognitionLilleMeasure(null);
-				RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, measure);
-				recognitionEvaluator.process();
-				List<String> names = Arrays.asList(
-					RecognitionLilleMeasure.SCORE_FP, RecognitionLilleMeasure.SCORE_TP,
-					RecognitionLilleMeasure.SCORE_FR, RecognitionLilleMeasure.SCORE_TR,
-					RecognitionLilleMeasure.SCORE_P, RecognitionLilleMeasure.SCORE_R
-				);
-				boolean byCategory = voteMode==VoteMode.WEIGHTED_CATEGORY;
-				VoteWeights<InterfaceRecognizer> voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names,byCategory);
-				
-				// record
-				String filePath = delegateRecognizer.getVoteWeightsPath();
-				voteWeights.recordVoteWeights(filePath);
-			}
+		{	// process
+			List<EntityType> types = delegateRecognizer.getHandledEntityTypes();
+			List<InterfaceRecognizer> recognizers = delegateRecognizer.getRecognizers();
+			AbstractRecognitionMeasure measure = new RecognitionLilleMeasure(null);
+			RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, measure);
+			recognitionEvaluator.process();
+			List<String> names = Arrays.asList(
+				RecognitionLilleMeasure.SCORE_FP, RecognitionLilleMeasure.SCORE_TP,
+				RecognitionLilleMeasure.SCORE_FR, RecognitionLilleMeasure.SCORE_TR,
+				RecognitionLilleMeasure.SCORE_P, RecognitionLilleMeasure.SCORE_R
+			);
+			VoteWeights<InterfaceRecognizer> voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names);
 			
-			// category proportions
-			if(voteMode==VoteMode.WEIGHTED_CATEGORY)
-			{	// process
-				CategoryProportions result = CategoryProportions.buildProportionsFromCorpus(folders);
-				
-				// record
-				String filePath = delegateRecognizer.getCategoryProportionsPath();
-				result.recordCategoryProportion(filePath);
-			}
+			// record
+			String filePath = delegateRecognizer.getVoteWeightsPath();
+			voteWeights.recordVoteWeights(filePath);
 		}
 		else
 			logger.log("No training needed for vote weights");

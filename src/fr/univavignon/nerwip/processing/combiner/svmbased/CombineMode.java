@@ -27,11 +27,9 @@ package fr.univavignon.nerwip.processing.combiner.svmbased;
  */
 public enum CombineMode
 {	/** Each recognizer accounts for one vote */
-	MENTION_UNIFORM("EntUnif"),
+	MENTION_UNIFORM("MentionUniform"),
 	/** Overall scores are used to determine vote weights */
-	MENTION_WEIGHTED_OVERALL("EntWghtOvrl"),
-	/** Category-related scores are used to determine vote weights */
-	MENTION_WEIGHTED_CATEGORY("EntWghtCat"),
+	MENTION_WEIGHTED("MentionWeighted"),
 	/** No vote at all (the SVM handles everything), processing one chunk at a time */
 	CHUNK_SINGLE("ChunkSngl"),
 	/** No vote at all (the SVM handles everything), using the previous chunk*/
@@ -59,8 +57,7 @@ public enum CombineMode
 	 * 		{@code true} if vote weights are required.
 	 */
 	public boolean hasWeights()
-	{	boolean result = this==MENTION_WEIGHTED_OVERALL
-			|| this==MENTION_WEIGHTED_CATEGORY;
+	{	boolean result = this==MENTION_WEIGHTED;
 		return result;
 	}
 	

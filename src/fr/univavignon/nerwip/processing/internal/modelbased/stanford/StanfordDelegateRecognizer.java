@@ -195,31 +195,6 @@ class StanfordDelegateRecognizer extends AbstractModelbasedInternalDelegateRecog
 //	/** Pattern used to find mentions in the NER output */
 //	private final static Pattern SEARCH_PATTERN = Pattern.compile("<(.+?)>(.+?)</.+?>",Pattern.DOTALL);
 	
-// old version	
-//	@Override
-//	public Mentions convert(List<List<CoreLabel>> data) throws ConverterException
-//	{	Mentions result = new Mentions(processorName);
-//				
-//		// extract mentions from text
-//		Matcher matcher = SEARCH_PATTERN.matcher(text);
-//		List<AbstractEntity<?>> mentions = result.getMentions();
-//		while(matcher.find())
-//		{	String typeStr = matcher.group(1);
-//			ArticleCategory type = CONVERSION_MAP.get(typeStr);
-//			int startPos = matcher.start();
-//			int endPos = matcher.end();
-//			String valueStr = matcher.group();
-//			String value = matcher.group(2);
-//			AbstractEntity<?> mention = AbstractEntity.build(type, startPos, endPos, processorName, valueStr, value);
-//			mentions.add(mention);
-//		}
-//		
-//		// adjust the positions of mentions
-//		fixPositions(mentions);
-//
-//		return result;
-//	}
-	
 	@Override
 	public Mentions convert(Article article, List<List<CoreLabel>> data) throws ProcessorException
 	{	ProcessorName recognizerName = recognizer.getName();

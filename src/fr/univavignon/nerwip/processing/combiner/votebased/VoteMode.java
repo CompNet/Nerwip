@@ -29,11 +29,9 @@ package fr.univavignon.nerwip.processing.combiner.votebased;
  */
 public enum VoteMode
 {	/** Each recognizer accounts for one vote */
-	UNIFORM("Unif"),
+	UNIFORM("Uniform"),
 	/** Overall scores are used to determine vote weights */
-	WEIGHTED_OVERALL("WghtOvrl"),
-	/** Category-related scores are used to determine vote weights */
-	WEIGHTED_CATEGORY("WghtCat");
+	WEIGHTED("Weighted");
 
 	/** String representing the parameter value */
 	private String name;
@@ -56,8 +54,7 @@ public enum VoteMode
 	 * 		{@code true} if vote weights are required.
 	 */
 	public boolean hasWeights()
-	{	boolean result = this==WEIGHTED_OVERALL
-			|| this==WEIGHTED_CATEGORY;
+	{	boolean result = this==WEIGHTED;
 		return result;
 	}
 	

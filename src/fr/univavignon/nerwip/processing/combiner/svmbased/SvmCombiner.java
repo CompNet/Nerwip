@@ -60,9 +60,6 @@ import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais
  * 		cannot handle mention positions, so it is resolved through a
  * 		voting process, not unlike what is performed by {@link VoteCombiner}.
  * 		Various vote processes are proposed, see {@link CombineMode}.</li>
- * 		<li>{@code useCategories}: whether the SVM should use article categories
- * 		as input, to try improving its prediction. It is independent from
- * 		whether categories are used or not during the voting process.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used, in the case
  * 		there is some voting involved in the combination.</li>
  * </ul>
@@ -80,16 +77,14 @@ public class SvmCombiner extends AbstractProcessor implements InterfaceRecognize
 	 * @param specific 
 	 *		Whether to use the standalone recognizers with their default models 
 	 *		({@code false}), or ones specifically trained on our corpus ({@code true}).
-	 * @param useCategories 
-	 * 		Indicates if categories should be used when combining mentions.
 	 * @param combineMode
 	 * 		 Indicates how mentions should be combined.
 	 *
 	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public SvmCombiner(boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode) throws ProcessorException
-	{	delegateRecognizer = new SvmCombinerDelegateRecognizer(this,loadModelOnDemand,specific,useCategories,combineMode);
+	public SvmCombiner(boolean loadModelOnDemand, boolean specific, CombineMode combineMode) throws ProcessorException
+	{	delegateRecognizer = new SvmCombinerDelegateRecognizer(this,loadModelOnDemand,specific,combineMode);
 	}
 	
 	/////////////////////////////////////////////////////////////////

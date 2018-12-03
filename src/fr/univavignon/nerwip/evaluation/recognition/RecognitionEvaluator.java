@@ -94,7 +94,6 @@ public class RecognitionEvaluator extends AbstractEvaluator<InterfaceRecognizer,
 		String name = folder.getName();
 		ArticleRetriever retriever = new ArticleRetriever();
 		Article article = retriever.process(name);
-		lastCategories = article.getCategories();
 		
 		// get reference mentions
 		Mentions refMentions = article.getReferenceMentions();
@@ -118,7 +117,7 @@ public class RecognitionEvaluator extends AbstractEvaluator<InterfaceRecognizer,
 			if(!cache || processNeeded)
 			{	logger.log("Processing results");
 				Mentions estMentions = recognizer.recognize(article);
-				AbstractRecognitionMeasure res = template.build(recognizer, types, refMentions, estMentions, lastCategories);
+				AbstractRecognitionMeasure res = template.build(recognizer, types, refMentions, estMentions);
 				
 				logger.log("Writing results to cache");
 				res.writeNumbers(resultsFolder,name);

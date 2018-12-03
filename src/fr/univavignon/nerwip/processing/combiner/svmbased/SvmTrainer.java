@@ -56,7 +56,6 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognition
 import fr.univavignon.nerwip.evaluation.recognition.measures.RecognitionLilleMeasure;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
 import fr.univavignon.retrieval.ArticleRetriever;
 import fr.univavignon.retrieval.reader.ReaderException;
@@ -467,7 +466,7 @@ public class SvmTrainer
 			}
 			
 			// convert mentions
-			convertMentionGroupToSvm(result,index,article,refType,estimations);
+			convertMentionGroupToSvm(result,index,refType,estimations);
 			
 			index++;
 		}
@@ -538,7 +537,7 @@ public class SvmTrainer
 					logger.log("Reference word is empty");
 				
 				// convert mentions
-				convertMentionWordToSvm(result,index,article,prevType,prevBeginning,refWe,estimations);
+				convertMentionWordToSvm(result,index,prevType,prevBeginning,refWe,estimations);
 				
 				// update previous info
 				if(refWe==null)
@@ -569,15 +568,13 @@ public class SvmTrainer
 	 * 		SVM data object to be completed.
 	 * @param index
 	 * 		Position in the data object.
-	 * @param article
-	 * 		Article to process.
 	 * @param refType
 	 * 		Type of the reference mention, 
 	 * 		or {@code null} if no reference mention. 
 	 * @param estMentions
 	 * 		Corresponding estimated mentions.
 	 */
-	private void convertMentionGroupToSvm(svm_problem data, int index, Article article, EntityType refType, Map<InterfaceRecognizer,AbstractMention<?>> estMentions)
+	private void convertMentionGroupToSvm(svm_problem data, int index, EntityType refType, Map<InterfaceRecognizer,AbstractMention<?>> estMentions)
 	{	logger.increaseOffset();
 		
 		// use combiner to process output
@@ -586,7 +583,7 @@ public class SvmTrainer
 		
 		// use combiner to process inputs
 		logger.log("Converting inputs");
-		data.x[index] = delegateRecognizer.convertMentionGroupToSvm(estMentions, article);
+		data.x[index] = delegateRecognizer.convertMentionGroupToSvm(estMentions);
 		
 		logger.decreaseOffset();
 	}
@@ -601,8 +598,6 @@ public class SvmTrainer
 	 * 		SVM data object to be completed.
 	 * @param index
 	 * 		Position in the data object.
-	 * @param article
-	 * 		Article to process.
 	 * @param prevType
 	 * 		Type used for the previous chunk.
 	 * @param prevBeginning
@@ -612,7 +607,7 @@ public class SvmTrainer
 	 * @param estWe
 	 * 		Corresponding estimated word-mention couples.
 	 */
-	private void convertMentionWordToSvm(svm_problem data, int index, Article article, EntityType prevType, Boolean prevBeginning, WordMention refWe, Map<InterfaceRecognizer,WordMention> estWe)
+	private void convertMentionWordToSvm(svm_problem data, int index, EntityType prevType, Boolean prevBeginning, WordMention refWe, Map<InterfaceRecognizer,WordMention> estWe)
 	{	logger.increaseOffset();
 		
 		// use combiner to process output
@@ -621,7 +616,7 @@ public class SvmTrainer
 		
 		// use combiner to process inputs
 		logger.log("Converting inputs");
-		data.x[index] = delegateRecognizer.convertMentionWordToSvm(prevType, prevBeginning, estWe, article);
+		data.x[index] = delegateRecognizer.convertMentionWordToSvm(prevType, prevBeginning, estWe);
 if(data.x[index]==null || index==131)
 	System.out.print("");
 		
@@ -899,34 +894,21 @@ if(data.x[index]==null || index==131)
 	private void processVoteData(ArticleList folders) throws ReaderException, IOException, ParseException, SAXException, ProcessorException
 	{	CombineMode combineMode = delegateRecognizer.getCombineMode();
 		if(combineMode.hasWeights())
-		{	// vote weights
-			{	// process
-				List<EntityType> types = combiner.getRecognizedEntityTypes();
-				List<InterfaceRecognizer> recognizers = delegateRecognizer.getRecognizers();
-				AbstractRecognitionMeasure measure = new RecognitionLilleMeasure(null);
-				RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, measure);
-				recognitionEvaluator.process();
-				List<String> names = Arrays.asList(
-					RecognitionLilleMeasure.SCORE_FP,
-					RecognitionLilleMeasure.SCORE_FR
-				);
-				boolean byCategory = combineMode==CombineMode.MENTION_WEIGHTED_CATEGORY;
-				VoteWeights<InterfaceRecognizer> voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names,byCategory);
-				
-				// record
-				String filePath = delegateRecognizer.getVoteWeightsPath();
-				voteWeights.recordVoteWeights(filePath);
-			}
+		{	// process
+			List<EntityType> types = combiner.getRecognizedEntityTypes();
+			List<InterfaceRecognizer> recognizers = delegateRecognizer.getRecognizers();
+			AbstractRecognitionMeasure measure = new RecognitionLilleMeasure(null);
+			RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, measure);
+			recognitionEvaluator.process();
+			List<String> names = Arrays.asList(
+				RecognitionLilleMeasure.SCORE_FP,
+				RecognitionLilleMeasure.SCORE_FR
+			);
+			VoteWeights<InterfaceRecognizer> voteWeights = VoteWeights.buildWeightsFromEvaluator(recognitionEvaluator,names);
 			
-			// category proportions
-			if(combineMode==CombineMode.MENTION_WEIGHTED_CATEGORY)
-			{	// process
-				CategoryProportions result = CategoryProportions.buildProportionsFromCorpus(folders);
-				
-				// record
-				String filePath = delegateRecognizer.getCategoryProportionsPath();
-				result.recordCategoryProportion(filePath);
-			}
+			// record
+			String filePath = delegateRecognizer.getVoteWeightsPath();
+			voteWeights.recordVoteWeights(filePath);
 		}
 	}
 	

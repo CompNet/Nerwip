@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
@@ -94,21 +93,19 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 * @param types
-	 * 		Types to consider in the assessmnent.
+	 * 		Types to consider in the assessment.
 	 * @param reference
 	 * 		Mentions used as reference.
 	 * @param estimation
 	 * 		Mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public RecognitionIstanbulMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
-	{	super(recognizer,types,reference,estimation,categories);
+	public RecognitionIstanbulMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation)
+	{	super(recognizer,types,reference,estimation);
 	}	
 
 	@Override
-	public AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
-	{	RecognitionIstanbulMeasure result = new RecognitionIstanbulMeasure(recognizer, types, reference, estimation, categories);
+	public AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimations)
+	{	RecognitionIstanbulMeasure result = new RecognitionIstanbulMeasure(recognizer, types, reference, estimations);
 		return result;
 	}
 
@@ -173,7 +170,7 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 	}
 
 	@Override
-	protected void processCounts(Mentions referenceOrig, Mentions estimationOrig, List<ArticleCategory> categories) 
+	protected void processCounts(Mentions referenceOrig, Mentions estimationOrig) 
 	{	// copy mention lists (those are going to be modified)
 		List<AbstractMention<?>> reference = new ArrayList<AbstractMention<?>>(referenceOrig.getMentions());
 		List<AbstractMention<?>> estimation = new ArrayList<AbstractMention<?>>(estimationOrig.getMentions());
@@ -182,24 +179,15 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 		cleanMentions(reference);
 		cleanMentions(estimation);
 		
-		// category mention lists
-		for(ArticleCategory category: categories)
-		{	for(String count: COUNTS)
-			{	Map<ArticleCategory,List<AbstractMention<?>>> map = mentionsByCategory.get(count);
-				List<AbstractMention<?>> list = new ArrayList<AbstractMention<?>>();
-				map.put(category,list);
-			}
-		}
-		
 		// look for the different cases
-		processTruePositives(reference, estimation, categories);
-		processExcessPositives(reference, estimation, categories);
-		processPartialPositives(reference, estimation, categories);
-		processFalsePositives(estimation, categories);
-		processFalseNegatives(reference, categories);
+		processTruePositives(reference, estimation);
+		processExcessPositives(reference, estimation);
+		processPartialPositives(reference, estimation);
+		processFalsePositives(estimation);
+		processFalseNegatives(reference);
 		
 		// update counts
-		updateCounts(categories);
+		updateCounts();
 	}
 	
 	/**
@@ -209,10 +197,8 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 	 * 		List of the mentions of reference.
 	 * @param estimation
 	 * 		List of the mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processTruePositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	private void processTruePositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation)
 	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
 		{	AbstractMention<?> ref = itRef.next();
@@ -240,11 +226,6 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(countName);
 						List<AbstractMention<?>> listByType = mapByType.get(refType);
 						listByType.add(est);
-						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(countName);
-						for(ArticleCategory category: categories)
-						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
-							listByCat.add(est);
-						}
 					}
 				}
 			}
@@ -258,10 +239,8 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 	 * 		List of the mentions of reference.
 	 * @param estimation
 	 * 		List of the mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processExcessPositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	private void processExcessPositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation)
 	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
 		{	AbstractMention<?> ref = itRef.next();
@@ -289,11 +268,6 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(countName);
 						List<AbstractMention<?>> listByType = mapByType.get(refType);
 						listByType.add(est);
-						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(countName);
-						for(ArticleCategory category: categories)
-						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
-							listByCat.add(est);
-						}
 					}
 				}
 			}
@@ -307,10 +281,8 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 	 * 		List of the mentions of reference.
 	 * @param estimation
 	 * 		List of the mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processPartialPositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	private void processPartialPositives(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation)
 	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
 		{	AbstractMention<?> ref = itRef.next();
@@ -338,11 +310,6 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 						Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(countName);
 						List<AbstractMention<?>> listByType = mapByType.get(refType);
 						listByType.add(est);
-						Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(countName);
-						for(ArticleCategory category: categories)
-						{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
-							listByCat.add(est);
-						}
 					}
 				}
 			}
@@ -354,10 +321,8 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 	 * 
 	 * @param estimation
 	 * 		List of the mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processFalsePositives(List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	private void processFalsePositives(List<AbstractMention<?>> estimation)
 	{	for(AbstractMention<?> est: estimation)
 		{	EntityType estType = est.getType();
 			List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FN);
@@ -365,11 +330,6 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 			Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FN);
 			List<AbstractMention<?>> listByType = mapByType.get(estType);
 			listByType.add(est);
-			Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FN);
-			for(ArticleCategory category: categories)
-			{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
-				listByCat.add(est);
-			}
 		}
 	}
 	
@@ -378,10 +338,8 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 	 * 
 	 * @param reference
 	 * 		List of the mentions of reference.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processFalseNegatives(List<AbstractMention<?>> reference, List<ArticleCategory> categories)
+	private void processFalseNegatives(List<AbstractMention<?>> reference)
 	{	for(AbstractMention<?> ref: reference)
 		{	EntityType refType = ref.getType();
 			List<AbstractMention<?>> listAll = mentionsAll.get(COUNT_FP);
@@ -389,11 +347,6 @@ public class RecognitionIstanbulMeasure extends AbstractRecognitionMeasure
 			Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(COUNT_FP);
 			List<AbstractMention<?>> listByType = mapByType.get(refType);
 			listByType.add(ref);
-			Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(COUNT_FP);
-			for(ArticleCategory category: categories)
-			{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
-				listByCat.add(ref);
-			}
 		}
 	}
 

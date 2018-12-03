@@ -149,20 +149,19 @@ class FullCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			recognizers.add(wikipediaDater);
 		}
 		
-		// other combinerName
-		logger.log("Init the other combinerName (Loc+Org+Per)");
+		// other combiner
+		logger.log("Init the other combiner (Loc+Org+Per)");
 		if(combinerName==CombinerName.SVM)
 		{	logger.log("SVM-based combinerName selected");
 			boolean specific = true;
-			boolean useCategories = true;
 			CombineMode combineMode = CombineMode.CHUNK_PREVIOUS;
-			SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCategories, combineMode);
+			SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, combineMode);
 			recognizers.add(svmCombiner);
 		}
 		else
-		{	logger.log("Vote-based combinerName selected");
+		{	logger.log("Vote-based combiner selected");
 			boolean specific = true;
-			VoteMode voteMode = VoteMode.WEIGHTED_CATEGORY;
+			VoteMode voteMode = VoteMode.WEIGHTED;
 			boolean useRecall = true;
 			boolean existVote = true;
 			VoteCombiner voteCombiner = new VoteCombiner(loadModelOnDemand, specific, voteMode, useRecall, existVote);

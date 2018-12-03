@@ -33,7 +33,6 @@ import java.util.Map;
 import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
@@ -110,7 +109,6 @@ public class StatsProcessing
 		List<String> names = new ArrayList<String>();
 		List<Integer> wordCounts = new ArrayList<Integer>();
 		List<Integer> charCounts = new ArrayList<Integer>();
-		List<List<ArticleCategory>> categories = new ArrayList<List<ArticleCategory>>();
 		Map<EntityType,List<Integer>> entityTypes = new HashMap<EntityType, List<Integer>>();
 		
 		// process each article
@@ -127,10 +125,6 @@ public class StatsProcessing
 			names.add(name);
 			Article article = retriever.process(name);
 			String text = article.getRawText();
-			// categories
-			List<ArticleCategory> cats = article.getCategories();
-			categories.add(cats);
-			logger.log("Categories: "+cats.toString());
 			// words
 			int wordCount = text.trim().split("\\s+").length;
 			wordCounts.add(wordCount);
@@ -180,8 +174,6 @@ public class StatsProcessing
 		{	String header = "Name\tWords\tChars";
 			for(EntityType type: EntityType.values())
 				header = header + "\t" + type.toString();
-			for(ArticleCategory cat: ArticleCategory.values())
-				header = header + "\t" + cat.toString();
 			pw.println(header);
 		}
 		for(int i=0;i<folders.size();i++)
@@ -191,13 +183,6 @@ public class StatsProcessing
 			for(EntityType type: EntityType.values())
 			{	List<Integer> list = entityTypes.get(type);
 				line = line + "\t" + list.get(i);
-			}
-			List<ArticleCategory> cats = categories.get(i);
-			for(ArticleCategory cat: ArticleCategory.values())
-			{	if(cats.contains(cat))
-					line = line + "\t1";
-				else
-					line = line + "\t0";
 			}
 			pw.println(line);
 		}

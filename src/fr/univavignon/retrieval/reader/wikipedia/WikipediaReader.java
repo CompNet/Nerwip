@@ -23,16 +23,10 @@ package fr.univavignon.retrieval.reader.wikipedia;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -43,7 +37,6 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.retrieval.reader.AbstractArticleReader;
 import fr.univavignon.retrieval.reader.ReaderException;
@@ -142,230 +135,6 @@ public class WikipediaReader extends AbstractArticleReader
 			logger.log("WARNING: unknown language, based on URL "+url);
 	}
 	
-	/////////////////////////////////////////////////////////////////
-	// CATEGORY		/////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Returns the list of categories associated
-	 * to the article being retrieved.
-	 * First, we use the first line of text in the
-	 * article, of the form "Firstname Lastname (19xx-19xx) was a politician...".
-	 * If this leads to nothing, we use an external source to retrieve all
-	 * the concepts associated to this page.
-	 * 
-	 * @param article
-	 * 		Article to be processed.
-	 * @return
-	 * 		List of categories (should be empty)
-	 * 
-	 * @throws IOException
-	 * 		Problem while using the external source.
-	 */
-	public List<ArticleCategory> getArticleCategories(Article article) throws IOException
-	{	logger.log("Retrieving the article categories");
-		logger.increaseOffset();
-		
-		// first we try with the first line of text in the article
-		logger.log("Trying first with the first sentence of the article");
-		List<ArticleCategory> result = getArticleCategoriesFromContent(article);
-		
-		// if we get nothing, we try with Freebase
-		if(result.isEmpty())
-		{	logger.log("Trying now by using the external source (generally less efficient)");
-			result = getArticleCategoriesFromExt(article);
-		}
-		
-		if(result.isEmpty())
-		{	logger.log("Could not find any category >> putting it into "+ArticleCategory.OTHER+")");
-			result.add(ArticleCategory.OTHER);
-		}
-			
-		logger.decreaseOffset();
-		logger.log("Categories retrieved: "+result.toString());
-		return result;
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// FREEBASE CATEGORY	/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** File containing the FB category map */
-	private final static String FB_CONVERSION_FILE = "catmap.fb.xml";
-	/** Map used to convert Freebase types to article categories */ 
-	private final static CategoryMap FB_CONVERSION_MAP = new CategoryMap(FB_CONVERSION_FILE);
-	
-	/**
-	 * Uses FreeBase to retrieve the category of
-	 * this article, i.e. the activity domain
-	 * of the concerned person.
-	 * 
-	 * @param article
-	 * 		Article to be processed.
-	 * @return
-	 * 		Domain of activity of this person: military, sciences, etc.
-	 * 
-	 * @throws IOException 
-	 * 		Problem while accessing Freebase.
-	 */
-	public List<ArticleCategory> getArticleCategoriesFromExt(Article article) throws IOException
-	{	logger.log("Using Freebase to retrieve the article categories");
-		String name = article.getName();
-		logger.increaseOffset();
-//TODO update this method to use WP instead of FB
-		
-		// get all categories
-		logger.log("Getting all available Freebase types");
-		Set<ArticleCategory> categories = new TreeSet<ArticleCategory>();
-		List<String> fbTypes = null;//FbTypeTools.getAllTypes(name);
-		
-		logger.log("Processing them one by one");
-		logger.increaseOffset();
-		for(String fbType: fbTypes)
-		{	logger.log("Processing type '"+fbType+"'");
-			logger.increaseOffset();
-			
-			if(FB_CONVERSION_MAP.isIgnored(fbType))
-			{	logger.log("Type rejected by the text/category map");
-			}
-			
-			else
-			{	logger.log("Type not rejected by the text/category map");
-				String domain = fbType.substring(0,fbType.indexOf('/',1));
-				ArticleCategory cat = FB_CONVERSION_MAP.get(domain);
-				if(cat==null)
-				{	logger.log("No category could be detected for this FB type");
-				}
-				else
-				{	categories.add(cat);
-					logger.log("Category identified for this FB type: "+cat);
-				}
-			}
-			logger.decreaseOffset();
-		}
-		logger.decreaseOffset();
-		
-// we used to select a single category: this doesn't work well >> now we keep them all
-//		System.out.println("detected categories: " + categories.toString());
-//		
-//		// count categories
-//		Map<ArticleCategory,Integer> counts = new HashMap<ArticleCategory, Integer>();
-//		for(ArticleCategory cat: categories)
-//		{	Integer count = counts.get(cat);
-//			if(count==null)
-//				count = 0;
-//			count++;
-//			counts.put(cat,count);
-//		}
-//		
-//		// select most frequent category
-//		ArticleCategory result = ArticleCategory.OTHER;
-//		Collection<Integer> c = counts.values();
-//		if(!c.isEmpty())
-//		{	int max = Collections.max(c);
-//			for(Entry<ArticleCategory,Integer> entry: counts.entrySet())
-//			{	int count = entry.getValue();
-//				if(count==max)
-//					result = entry.getKey();
-//			}
-//		}
-//		
-//		System.out.println("Selected category: " + result);
-//		System.out.println("\t"+name+"\t"+result);
-		
-		List<ArticleCategory> result = new ArrayList<ArticleCategory>(categories);
-		Collections.sort(result);
-		logger.log("detected categories: " + result.toString());
-		logger.decreaseOffset();
-		return result;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	// CONTENT CATEGORY		/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** File containing the FB category map */
-	private final static String CONTENT_CONVERSION_FILE = "catmap.content.xml";
-	/** Map of persons activities to article categories */
-	private final static CategoryMap CONTENT_CONVERSION_MAP = new CategoryMap(CONTENT_CONVERSION_FILE);
-	/** Verbs used to identify the part of the first sentence concerning the person's activity */
-	private final static List<String> STATE_VERBS = Arrays.asList("is","was","may be","might be","should be","can be","must be","could be");
-	
-	/**
-	 * Retrieves the category of the article
-	 * from its content, and more particularly
-	 * from its first sentence, which generally
-	 * takes the following form in biographies:
-	 * "Firstname Lastname (19xx-19xx) was/is a politician/artist/etc."
-	 * 
-	 * @param article
-	 * 		Article to be processed.
-	 * @return
-	 * 		The identified categories, possibly an empty list if none
-	 * 		could be identified.
-	 */
-	public List<ArticleCategory> getArticleCategoriesFromContent(Article article)
-	{	logger.log("Using the article content to retrieve its categories");
-		Set<ArticleCategory> categories = new TreeSet<ArticleCategory>();
-		logger.increaseOffset();
-	
-		// get first sentence
-		String text = article.getRawText();
-		String firstSentence = null;
-		Pattern pattern = Pattern.compile("[a-zA-Z0-9]{3,}\\. ");
-		Matcher matcher = pattern.matcher(text);
-		if(!matcher.find())
-			logger.log("Could not find the first sentence of the article");
-		else
-		{	int i = matcher.end();
-			firstSentence = text.substring(0,i);
-			logger.log("First sentence of the article: \""+firstSentence+"\"");
-		
-			// identify state verb (to be)
-			int index = firstSentence.length();
-			String verb = null;
-			for(String v: STATE_VERBS)
-			{	pattern = Pattern.compile("[^a-zA-Z0-9]"+v+"[^a-zA-Z0-9]");
-				matcher = pattern.matcher(firstSentence);
-				if(matcher.find())
-				{	i = matcher.start();
-					if(i>-1 && i<index)
-					{	index = i;
-						verb = v;
-					}
-				}
-			}
-			if(verb==null)
-				logger.log("WARNING: could not find any state verb in the first sentence");
-			else
-			{	logger.log("State verb detected in the sentence: '"+verb+"'");
-				
-				// look for key words located in the second part of the sentence (after the verb)
-				firstSentence = firstSentence.substring(index+verb.length());
-				logger.log("Focusing on the end of the sentence: \""+firstSentence+"\"");
-				logger.increaseOffset();
-				String temp[] = firstSentence.split("[^a-zA-Z0-9]");
-				for(String key: temp)
-				{	if(!key.isEmpty())
-					{	ArticleCategory cat = CONTENT_CONVERSION_MAP.get(key);
-						if(cat==null)
-						{	
-							logger.log(key+": no associated category");
-						}
-						else
-						{	categories.add(cat);
-							logger.log(key+": category "+cat);
-						}
-					}
-				}
-				logger.decreaseOffset();
-			}
-		}
-		
-		List<ArticleCategory> result = new ArrayList<ArticleCategory>(categories);
-		Collections.sort(result);
-		logger.decreaseOffset();
-		logger.log("detected categories: " + result.toString());
-		return result;
-	}
-
 	/////////////////////////////////////////////////////////////////
 	// RETRIEVE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////	
@@ -1225,10 +994,6 @@ public class WikipediaReader extends AbstractArticleReader
 			result.setOriginalPage(originalPage);
 			logger.log("Length of the original page: "+originalPage.length()+" chars.");
 			
-			// get the categories of the article 
-			List<ArticleCategory> categories = getArticleCategories(result);
-			result.setCategories(categories);
-
 			long endTime = System.currentTimeMillis();
 			logger.log("Total duration: "+(endTime-startTime)+" ms.");
 		}

@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
@@ -43,7 +42,6 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer;
-import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
 import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;
@@ -82,9 +80,6 @@ import libsvm.svm_node;
  * 		cannot handle mention positions, so it is resolved through a
  * 		voting process, not unlike what is performed by {@link VoteCombiner}.
  * 		Various vote processes are proposed, see {@link CombineMode}.</li>
- * 		<li>{@code useCategories}: whether the SVM should use article categories
- * 		as input, to try improving its prediction. It is independent from
- * 		whether categories are used or not during the voting process.</li>
  * 		<li>{@code useRecall}: whether or not recall should be used, in the case
  * 		there is some voting involved in the combination.</li>
  * </ul>
@@ -104,19 +99,16 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * @param specific 
 	 *		Whether to use the standalone recognizers with their default models 
 	 *		({@code false}), or ones specifically trained on our corpus ({@code true}).
-	 * @param useCategories 
-	 * 		Indicates if categories should be used when combining mentions.
 	 * @param combineMode
 	 * 		 Indicates how mentions should be combined.
 	 *
 	 * @throws ProcessorException
 	 * 		Problem while loading some combiner or tokenizer.
 	 */
-	public SvmCombinerDelegateRecognizer(SvmCombiner svmCombiner, boolean loadModelOnDemand, boolean specific, boolean useCategories, CombineMode combineMode) throws ProcessorException
+	public SvmCombinerDelegateRecognizer(SvmCombiner svmCombiner, boolean loadModelOnDemand, boolean specific, CombineMode combineMode) throws ProcessorException
 	{	super(svmCombiner);
 		
 		this.specific = specific;
-		this.useCategories = useCategories;
 		this.combineMode = combineMode;
 		
 		initRecognizers();
@@ -134,7 +126,6 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	{	String result = recognizer.getName().toString();
 		
 		result = result + "_" + "spec="+specific;
-		result = result + "_" + "cat="+useCategories;
 		result = result + "_" + "combine="+combineMode.toString();
 		
 //		result = result + "_" + "trim=" + trim;
@@ -266,16 +257,9 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	private void loadModel() throws ProcessorException
 	{	loadSvmModel();
 		if(combineMode.hasWeights())
-		{	loadVoteWeights();
-			if(combineMode==CombineMode.MENTION_WEIGHTED_CATEGORY)
-				loadCategoryProportions();
-			else
-				categoryProportions = CategoryProportions.buildUniformProportions();
-		}
+			loadVoteWeights();
 		else
-		{	voteWeights = VoteWeights.buildUniformWeights(recognizers);
-			categoryProportions = CategoryProportions.buildUniformProportions();
-		}
+			voteWeights = VoteWeights.buildUniformWeights(recognizers);
 	}
 	
     /**
@@ -289,7 +273,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	{	boolean result = svmModel!=null;
 		
 		if(result && combineMode.hasWeights())
-			result = voteWeights!=null && categoryProportions!=null;
+			result = voteWeights!=null;
 		
 		return result;
 	}
@@ -340,38 +324,6 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	private boolean useRecall = true;
 	
 	/**
-	 * Populates the specified SVM data object in order
-	 * to represent the categories of the specified article.
-	 * 
-	 * @param index
-	 * 		Where to start populating the SVM data object.
-	 * @param article
-	 * 		Article whose categories must be represented.
-	 * @param result
-	 * 		SVM data object to complete.
-	 * @return
-	 * 		Position in the object at the end of the update.
-	 */
-	private int convertCategoryToSvm(int index, Article article, svm_node result[])
-	{	ArticleCategory categoryValues[] = ArticleCategory.values();
-		int catSize = categoryValues.length;
-		
-		List<ArticleCategory> categories = article.getCategories();
-		int idx;
-		for(idx=index;idx<index+catSize;idx++)
-		{	result[idx] = new svm_node();
-			result[idx].index = idx + 1;
-			ArticleCategory category = categoryValues[idx];
-			if(categories.contains(category))
-				result[idx].value = +1;
-			else
-				result[idx].value = -1;
-		}
-		
-		return idx;
-	}
-	
-	/**
 	 * Converts the outputs of the selected recognizers,
 	 * into an object the SVM can process as an input.
 	 * <br/>
@@ -379,29 +331,18 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * 
 	 * @param group
 	 * 		Our internal representation of the recognizers outputs.
-	 * @param article
-	 * 		Processed article. 
 	 * @return
 	 * 		The SVM representation of the same data.
 	 */
-	protected svm_node[] convertMentionGroupToSvm(Map<InterfaceRecognizer, AbstractMention<?>> group, Article article)
-	{	ArticleCategory categoryValues[] = ArticleCategory.values();
-		int inSize;													// total number of SVM inputs
+	protected svm_node[] convertMentionGroupToSvm(Map<InterfaceRecognizer, AbstractMention<?>> group)
+	{	int inSize;													// total number of SVM inputs
 		int nerSize = recognizers.size() * HANDLED_TYPES.size();	// NER-related inputs
-		int catSize = categoryValues.length;						// category-related inputs
-		if(useCategories)
-			inSize = nerSize + catSize;
-		else
-			inSize = nerSize;
+		inSize = nerSize;
 		
 		// init SVM data structure
 		svm_node result[] = new svm_node[inSize];
 		int j = 0;
 		
-		// convert category
-		if(useCategories)
-			j = convertCategoryToSvm(j, article, result);
-
 		// convert NER outputs
 		for(InterfaceRecognizer recognizer: recognizers)
 		{	AbstractMention<?> mention = group.get(recognizer);
@@ -496,19 +437,13 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * 		BIO state used for the previous chunk (optional).
 	 * @param wordMentions
 	 * 		Word-mention couples to be converted.
-	 * @param article
-	 * 		Processed article. 
 	 * @return
 	 * 		The SVM representation of the same data.
 	 */
-	protected svm_node[] convertMentionWordToSvm(EntityType previousType, Boolean previousBeginning, Map<InterfaceRecognizer,WordMention> wordMentions, Article article)
-	{	ArticleCategory categoryValues[] = ArticleCategory.values();
-		int nerSize = recognizers.size() * (HANDLED_TYPES.size()+2);	// NER-related inputs (2 extras for BIO)
-		int catSize = categoryValues.length;							// category-related inputs
+	protected svm_node[] convertMentionWordToSvm(EntityType previousType, Boolean previousBeginning, Map<InterfaceRecognizer,WordMention> wordMentions)
+	{	int nerSize = recognizers.size() * (HANDLED_TYPES.size()+2);	// NER-related inputs (2 extras for BIO)
 		int prevSize = HANDLED_TYPES.size()+2;							// previous chunk
 		int inSize = nerSize;											// total number of SVM inputs
-		if(useCategories)
-			inSize = inSize + catSize;
 		if(combineMode==CombineMode.CHUNK_PREVIOUS)
 			inSize = inSize + prevSize;
 		
@@ -516,10 +451,6 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 		svm_node result[] = new svm_node[inSize];
 		int j = 0;
 		
-		// convert category
-		if(useCategories)
-			j = convertCategoryToSvm(j, article, result);
-
 		// convert previous chunk
 		if(combineMode==CombineMode.CHUNK_PREVIOUS)
 			j = convertMentionWordSglToSvm(j, previousType, previousBeginning, result);
@@ -567,7 +498,6 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 		ArticleLanguage language = article.getLanguage();
 		AbstractMention<?> result = null;
 		String rawText = article.getRawText();
-		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
 		
 		// identify entity type
 		EntityType type = null;
@@ -597,7 +527,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 					if(combineMode==CombineMode.MENTION_UNIFORM)
 						weight = 1f;
 					else
-						weight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FP, categoryWeights);
+						weight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_FP);
 					
 					// start position
 					{	int startPos = mention.getStartPos();
@@ -632,7 +562,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 						if(combineMode==CombineMode.MENTION_UNIFORM)
 							weight = 1f;
 						else
-							weight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FR, categoryWeights);
+							weight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_FR);
 						
 						// start position
 						{	int startPos = mention.getStartPos();
@@ -766,23 +696,6 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// USE CATEGORIES			/////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Indicates if categories should be used as SVM inputs */
-	private boolean useCategories;
-
-	/**
-	 * Indicates whether categories should be used when
-	 * combining the mentions.
-	 * 
-	 * @return
-	 * 		{@code true} iff categories should be used for mention combination.
-	 */
-	public boolean getUseCategories()
-	{	return useCategories;
-	}
-
-	/////////////////////////////////////////////////////////////////
 	// COMBINE MODE		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Indicates if mentions should be combined by mention (in which case several vote modes are possible) or by word */
@@ -859,7 +772,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			
 			// convert to SVM input
 			logger.log("Convert to SVM format");
-			svm_node[] x = convertMentionGroupToSvm(overlap,article);
+			svm_node[] x = convertMentionGroupToSvm(overlap);
 			rawOutput.append("x={");
 			for(svm_node xx: x)
 				rawOutput.append(xx.index+":"+xx.value+" ");
@@ -1111,7 +1024,7 @@ class SvmCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 				}
 				
 				// convert to SVM input
-				svm_node[] x = convertMentionWordToSvm(previousType,previousBeginning,weMap,article);
+				svm_node[] x = convertMentionWordToSvm(previousType,previousBeginning,weMap);
 //				logger.log("Convert to SVM format: x="+x.toString());
 				rawOutput.append("x={");
 				for(svm_node xx: x)

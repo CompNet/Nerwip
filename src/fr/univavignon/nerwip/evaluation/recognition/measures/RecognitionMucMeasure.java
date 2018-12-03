@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
@@ -87,11 +86,9 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	 * 		Mentions used as reference.
 	 * @param estimation
 	 * 		Mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public RecognitionMucMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
-	{	super(recognizer,types,reference,estimation,categories);
+	public RecognitionMucMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation)
+	{	super(recognizer,types,reference,estimation);
 	}	
 	
 	@Override
@@ -107,8 +104,8 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	}
 	
 	@Override
-	public RecognitionMucMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
-	{	RecognitionMucMeasure result = new RecognitionMucMeasure(recognizer,types,reference,estimation,categories);
+	public RecognitionMucMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation)
+	{	RecognitionMucMeasure result = new RecognitionMucMeasure(recognizer,types,reference,estimation);
 		return result;
 	}
 	
@@ -146,7 +143,7 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	}
 
 	@Override
-	public void processCounts(Mentions referenceOrig, Mentions estimationOrig, List<ArticleCategory> categories)
+	public void processCounts(Mentions referenceOrig, Mentions estimationOrig)
 	{	// copy mention lists (those are going to be modified)
 		List<AbstractMention<?>> reference = new ArrayList<AbstractMention<?>>(referenceOrig.getMentions());
 		List<AbstractMention<?>> estimation = new ArrayList<AbstractMention<?>>(estimationOrig.getMentions());
@@ -155,56 +152,39 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 		cleanMentions(reference);
 		cleanMentions(estimation);
 		
-		// mention lists by category
-		for(ArticleCategory category: categories)
-		{	for(String count: COUNTS)
-			{	Map<ArticleCategory,List<AbstractMention<?>>> map = mentionsByCategory.get(count);
-				List<AbstractMention<?>> list = new ArrayList<AbstractMention<?>>();
-				map.put(category,list);
-			}
-		}
-		
 		// look for the different cases
-		processSpatialExactMatches(reference, estimation, categories);
-		processSpatialPartialMatches(reference, estimation, categories);
-		processSpatialFalseAlarms(estimation, categories);
-		processSpatialOmissions(reference, categories);
+		processSpatialExactMatches(reference, estimation);
+		processSpatialPartialMatches(reference, estimation);
+		processSpatialFalseAlarms(estimation);
+		processSpatialOmissions(reference);
 		
 		// update counts
-		updateCounts(categories);
+		updateCounts();
 	}
 	
 	/**
 	 * Changes appropriately all the required structures in order to count the specified 
-	 * mention, for the specified type and categories, in the specified count type.
+	 * mention, for the specified type, in the specified count type.
 	 * 
 	 * @param mention
 	 * 		Mention to count.
 	 * @param type
 	 * 		Type associated to the count.
-	 * @param categories
-	 * 		Categories associated to the count.
 	 * @param count
 	 * 		Type of count.
 	 */
-	private void addToStructures(AbstractMention<?> mention, EntityType type, List<ArticleCategory> categories, String count)
+	private void addToStructures(AbstractMention<?> mention, EntityType type, String count)
 	{	List<AbstractMention<?>> listAll = mentionsAll.get(count);
 		listAll.add(mention);
 		
 		Map<EntityType,List<AbstractMention<?>>> mapByType = mentionsByType.get(count);
 		List<AbstractMention<?>> listByType = mapByType.get(type);
 		listByType.add(mention);
-		
-		Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(count);
-		for(ArticleCategory category: categories)
-		{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
-			listByCat.add(mention);
-		}
 	}
 	
 	/**
 	 * Changes appropriately all the required structures in order to count the specified 
-	 * mention, for the specified types and categories, in the specified count type.
+	 * mention, for the specified types, in the specified count type.
 	 * 
 	 * @param mention
 	 * 		Mention to count.
@@ -212,12 +192,10 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	 * 		Type associated to the count.
 	 * @param type2
 	 * 		Other type associated to the count.
-	 * @param categories
-	 * 		Categories associated to the count.
 	 * @param count
 	 * 		Type of count.
 	 */
-	private void addToStructures(AbstractMention<?> mention, EntityType type1, EntityType type2, List<ArticleCategory> categories, String count)
+	private void addToStructures(AbstractMention<?> mention, EntityType type1, EntityType type2, String count)
 	{	List<AbstractMention<?>> listAll = mentionsAll.get(count);
 		listAll.add(mention);
 		
@@ -229,12 +207,6 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 		{	listByType = mapByType.get(type2);
 			listByType.add(mention);
 		}
-		
-		Map<ArticleCategory,List<AbstractMention<?>>> mapByCat = mentionsByCategory.get(count);
-		for(ArticleCategory category: categories)
-		{	List<AbstractMention<?>> listByCat = mapByCat.get(category);
-			listByCat.add(mention);
-		}
 	}
 	
 	/**
@@ -244,10 +216,8 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	 * 		List of the mentions of reference.
 	 * @param estimation
 	 * 		List of the mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processSpatialExactMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	private void processSpatialExactMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation)
 	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
 		{	AbstractMention<?> ref = itRef.next();
@@ -263,15 +233,15 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 					itEst.remove();
 					
 					// update spatial evaluation
-					addToStructures(ref, refType, estType, categories, COUNT_CORRECT);
-					addToStructures(est, refType, estType, categories, COUNT_ACTUAL);
-					addToStructures(ref, refType, estType, categories, COUNT_POSSIBLE);
+					addToStructures(ref, refType, estType, COUNT_CORRECT);
+					addToStructures(est, refType, estType, COUNT_ACTUAL);
+					addToStructures(ref, refType, estType, COUNT_POSSIBLE);
 					
 					// update typical evaluation
 					if(refType==estType)
-						addToStructures(ref, refType, categories, COUNT_CORRECT);
-					addToStructures(est, estType, categories, COUNT_ACTUAL);
-					addToStructures(ref, refType, categories, COUNT_POSSIBLE);
+						addToStructures(ref, refType, COUNT_CORRECT);
+					addToStructures(est, estType, COUNT_ACTUAL);
+					addToStructures(ref, refType, COUNT_POSSIBLE);
 				}
 			}
 		}
@@ -284,10 +254,8 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	 * 		List of the mentions of reference.
 	 * @param estimation
 	 * 		List of the mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processSpatialPartialMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	private void processSpatialPartialMatches(List<AbstractMention<?>> reference, List<AbstractMention<?>> estimation)
 	{	Iterator<AbstractMention<?>> itRef = reference.iterator();
 		while(itRef.hasNext())
 		{	AbstractMention<?> ref = itRef.next();
@@ -303,14 +271,14 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 					itEst.remove();
 					
 					// update spatial evaluation
-					addToStructures(est, estType, categories, COUNT_ACTUAL);
-					addToStructures(ref, refType, categories, COUNT_POSSIBLE);
+					addToStructures(est, estType, COUNT_ACTUAL);
+					addToStructures(ref, refType, COUNT_POSSIBLE);
 					
 					// update typical evaluation
 					if(refType==estType)
-						addToStructures(ref, refType, categories, COUNT_CORRECT);
-					addToStructures(est, estType, categories, COUNT_ACTUAL);
-					addToStructures(ref, refType, categories, COUNT_POSSIBLE);
+						addToStructures(ref, refType, COUNT_CORRECT);
+					addToStructures(est, estType, COUNT_ACTUAL);
+					addToStructures(ref, refType, COUNT_POSSIBLE);
 				}
 			}
 		}
@@ -321,18 +289,16 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	 * 
 	 * @param estimation
 	 * 		List of the mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processSpatialFalseAlarms(List<AbstractMention<?>> estimation, List<ArticleCategory> categories)
+	private void processSpatialFalseAlarms(List<AbstractMention<?>> estimation)
 	{	for(AbstractMention<?> est: estimation)
 		{	EntityType estType = est.getType();
 	
 			// update spatial evaluation
-			addToStructures(est, estType, categories, COUNT_ACTUAL);
+			addToStructures(est, estType, COUNT_ACTUAL);
 				
 			// update typical evaluation
-			addToStructures(est, estType, categories, COUNT_ACTUAL);
+			addToStructures(est, estType, COUNT_ACTUAL);
 		}
 	}
 	
@@ -341,18 +307,16 @@ public class RecognitionMucMeasure extends AbstractRecognitionMeasure
 	 * 
 	 * @param reference
 	 * 		List of the mentions of reference.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	private void processSpatialOmissions(List<AbstractMention<?>> reference, List<ArticleCategory> categories)
+	private void processSpatialOmissions(List<AbstractMention<?>> reference)
 	{	for(AbstractMention<?> ref: reference)
 		{	EntityType refType = ref.getType();
 	
 			// update spatial evaluation
-			addToStructures(ref, refType, categories, COUNT_POSSIBLE);
+			addToStructures(ref, refType, COUNT_POSSIBLE);
 				
 			// update typical evaluation
-			addToStructures(ref, refType, categories, COUNT_POSSIBLE);
+			addToStructures(ref, refType, COUNT_POSSIBLE);
 		}
 	}
 	

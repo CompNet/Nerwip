@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.xml.sax.SAXException;
 
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.tools.time.TimeFormatting;
@@ -195,9 +194,6 @@ public abstract class AbstractEvaluator<T extends InterfaceProcessor, U extends 
 	/////////////////////////////////////////////////////////////////
 	// PROCESS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Name of the last article category processed */
-	protected List<ArticleCategory> lastCategories = null;
-	
 	/**
 	 * Evaluate the recognizers on
 	 * the specified article. The method

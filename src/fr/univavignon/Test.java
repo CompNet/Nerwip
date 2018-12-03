@@ -159,7 +159,6 @@ public class Test
      	
 //		testArticleRetriever(url);
 //		testArticlesRetriever();
-//		testCategoryRetriever();
 //		testFbidRetriever();
 //		testTypeRetriever();
 //		testDbIdRetriever();
@@ -189,7 +188,6 @@ public class Test
 //		testOpeNer(name);
 //	    testOpenNlp(name);
 //		testStanford(url);
-//		testSubee(url);
 //		testTagEn(name);
 //		testWikipediaDater(url);
 //    	testNaiveResolver(name);
@@ -865,8 +863,7 @@ public class Test
 		);
 		List<VoteMode> voteModes = Arrays.asList(
 			VoteMode.UNIFORM,
-			VoteMode.WEIGHTED_OVERALL,
-			VoteMode.WEIGHTED_CATEGORY
+			VoteMode.WEIGHTED
 		);
 		List<Boolean> useRecalls = Arrays.asList(
 			false,
@@ -964,14 +961,9 @@ public class Test
 //			false
 			true
 		);
-		List<Boolean> useCategories = Arrays.asList(
-			false
-//			true
-		);
 		List<CombineMode> combineModes = Arrays.asList(
 			CombineMode.MENTION_UNIFORM
-//			CombineMode.MENTION_WEIGHTED_OVERALL
-//			CombineMode.MENTION_WEIGHTED_CATEGORY
+//			CombineMode.MENTION_WEIGHTED
 //			CombineMode.CHUNK_SINGLE
 //			CombineMode.CHUNK_PREVIOUS
 		);
@@ -980,74 +972,66 @@ public class Test
 		{	logger.log("Now dealing with specific="+specific);
 			logger.increaseOffset();
 				
-			for(boolean useCats: useCategories)
-			{	logger.log("Now dealing with useCategories="+useCats);
+			for(CombineMode combineMode: combineModes)
+			{	logger.log("Now dealing with combineMode="+combineMode);
 				logger.increaseOffset();
 				
-				for(CombineMode combineMode: combineModes)
-				{	logger.log("Now dealing with combineMode="+combineMode);
-					logger.increaseOffset();
-					
-					SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCats, combineMode);
+				SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, combineMode);
 
-					// train
-					{	// set articles
-//						List<File> folders = Arrays.asList(
-//							new File(FileNames.FO_OUTPUT + File.separator + "Aart_Kemink")
-//							new File(FileNames.FO_OUTPUT + File.separator + "Abraham_Adan"),
-//							new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
-//						);
-//						ArticleList folders = ArticleLists.getArticleList();
-						ArticleList folders = ArticleLists.getArticleList("training.set.txt");
-//						ArticleList folders = ArticleLists.getArticleList("training.small.set.txt");
-						logger.log("Processed articles: ");
-						logger.increaseOffset();
-						for(File folder: folders)
-							logger.log(folder.getName());
-						logger.decreaseOffset();
-						
-						SvmTrainer trainer = new SvmTrainer(svmCombiner);
-						trainer.setSubCacheEnabled(true);
-						trainer.setCacheEnabled(false);
-						trainer.process(folders,false);
-//						double c=1.0000000000000000;	double gamma=0.13333334028720856;	//	false	EntUnif	none
-//						double c=1.0000000000000000;	double gamma=0.12440440535976931;	//	false	EntWghtOvrl	none
-//						double c=1.0000000000000000;	double gamma=0.13333334028720856;	//	false	EntWghtCat	none
-//					double c=0.5000000000000000;	double gamma=0.07999999821186067;	//	false	ChunkSngl	none
-//					double c=0.5000000000000000;	double gamma=0.06666667014360428;	//	false	ChunkPrev	none
-//						double c=0.9330329915368074;	double gamma=0.11111111193895341;	//	false	EntUnif	all
-//						double c=0.9330329915368074;	double gamma=0.11908594116906976;	//	false	EntWghtOvrl	all
-//						double c=1.0000000000000000;	double gamma=0.027777777984738353;	//	false	EntWghtCat	all
-//					double c=0.5000000000000000;	double gamma=0.06666667014360428;	//	false	ChunkSngl	all
-//					double c=0.5000000000000000;	double gamma=0.05714285746216773;	//	false	ChunkPrev	all
-//					double c=1.0000000000000000;	double gamma=0.07407407462596895;	//	true	EntUnif	none
-//					double c=1.0000000000000000;	double gamma=0.07407407462596895;	//	true	EntWghtOvrl	none
-//					double c=1.0000000000000000;	double gamma=0.07407407462596895;	//	true	EntWghtCat	none
-//					double c=0.5000000000000000;	double gamma=0.027027027681469914;	//	true	ChunkSngl	none
-//					double c=0.5000000000000000;	double gamma=0.02380952425301075;	//	true	ChunkPrev	none
-//					double c=1.0000000000000000;	double gamma=0.06666667014360428;	//	true	EntUnif	all
-//					double c=1.0000000000000000;	double gamma=0.06666667014360428;	//	true	EntWghtOvrl	all
-//					double c=1.0000000000000000;	double gamma=0.06666667014360428;	//	true	EntWghtCat	all
-//					double c=0.5000000000000000;	double gamma=0.02380952425301075;	//	true	ChunkSngl	all
-//					double c=0.5000000000000000;	double gamma=0.021276595070958138;	//	true	ChunkPrev	all
-//						trainer.process(folders,c,gamma);
-					}
-					
-//					// apply
-//					{	// retrieve article
-//						ArticleRetriever retriever = new ArticleRetriever();
-//						Article article = retriever.process(url);
-		//	
-//						svmCombiner.setSubCacheEnabled(true);
-//						svmCombiner.setCacheEnabled(false);
-//						svmCombiner.process(article);
-//					}
-					
-					logger.log("Done with combineMode="+combineMode);
+				// train
+				{	// set articles
+//					List<File> folders = Arrays.asList(
+//						new File(FileNames.FO_OUTPUT + File.separator + "Aart_Kemink")
+//						new File(FileNames.FO_OUTPUT + File.separator + "Abraham_Adan"),
+//						new File(FileNames.FO_OUTPUT + File.separator + "Adolf_hitler")
+//					);
+//					ArticleList folders = ArticleLists.getArticleList();
+					ArticleList folders = ArticleLists.getArticleList("training.set.txt");
+//					ArticleList folders = ArticleLists.getArticleList("training.small.set.txt");
+					logger.log("Processed articles: ");
+					logger.increaseOffset();
+					for(File folder: folders)
+						logger.log(folder.getName());
 					logger.decreaseOffset();
+					
+					SvmTrainer trainer = new SvmTrainer(svmCombiner);
+					trainer.setSubCacheEnabled(true);
+					trainer.setCacheEnabled(false);
+					trainer.process(folders,false);
+//					double c=1.0000000000000000;	double gamma=0.13333334028720856;	//	false	EntUnif	none
+//					double c=1.0000000000000000;	double gamma=0.12440440535976931;	//	false	EntWghtOvrl	none
+//					double c=1.0000000000000000;	double gamma=0.13333334028720856;	//	false	EntWghtCat	none
+//				double c=0.5000000000000000;	double gamma=0.07999999821186067;	//	false	ChunkSngl	none
+//				double c=0.5000000000000000;	double gamma=0.06666667014360428;	//	false	ChunkPrev	none
+//					double c=0.9330329915368074;	double gamma=0.11111111193895341;	//	false	EntUnif	all
+//					double c=0.9330329915368074;	double gamma=0.11908594116906976;	//	false	EntWghtOvrl	all
+//					double c=1.0000000000000000;	double gamma=0.027777777984738353;	//	false	EntWghtCat	all
+//				double c=0.5000000000000000;	double gamma=0.06666667014360428;	//	false	ChunkSngl	all
+//				double c=0.5000000000000000;	double gamma=0.05714285746216773;	//	false	ChunkPrev	all
+//				double c=1.0000000000000000;	double gamma=0.07407407462596895;	//	true	EntUnif	none
+//				double c=1.0000000000000000;	double gamma=0.07407407462596895;	//	true	EntWghtOvrl	none
+//				double c=1.0000000000000000;	double gamma=0.07407407462596895;	//	true	EntWghtCat	none
+//				double c=0.5000000000000000;	double gamma=0.027027027681469914;	//	true	ChunkSngl	none
+//				double c=0.5000000000000000;	double gamma=0.02380952425301075;	//	true	ChunkPrev	none
+//				double c=1.0000000000000000;	double gamma=0.06666667014360428;	//	true	EntUnif	all
+//				double c=1.0000000000000000;	double gamma=0.06666667014360428;	//	true	EntWghtOvrl	all
+//				double c=1.0000000000000000;	double gamma=0.06666667014360428;	//	true	EntWghtCat	all
+//				double c=0.5000000000000000;	double gamma=0.02380952425301075;	//	true	ChunkSngl	all
+//				double c=0.5000000000000000;	double gamma=0.021276595070958138;	//	true	ChunkPrev	all
+//					trainer.process(folders,c,gamma);
 				}
 				
-				logger.log("Done with useCategories="+useCats);
+//				// apply
+//				{	// retrieve article
+//					ArticleRetriever retriever = new ArticleRetriever();
+//					Article article = retriever.process(url);
+//	
+//					svmCombiner.setSubCacheEnabled(true);
+//					svmCombiner.setCacheEnabled(false);
+//					svmCombiner.process(article);
+//				}
+				
+				logger.log("Done with combineMode="+combineMode);
 				logger.decreaseOffset();
 			}
 			
@@ -1527,39 +1511,6 @@ public class Test
 //			new Stanford(StanfordModelName.NERWIP_MODEL, loadOnDemand, true,  false),	// 
 //			new Stanford(StanfordModelName.NERWIP_MODEL, loadOnDemand, true,  true),	// LOC, ORG, PERS
 			
-//			new Subee(false,false,false,false,false),
-//			new Subee(false,false,false,false,true),
-//			new Subee(false,false,false,true,false),
-//			new Subee(false,false,false,true,true),
-//			new Subee(false,false,true,false,false),
-//			new Subee(false,false,true,false,true),
-//			new Subee(false,false,true,true,false),
-//			new Subee(false,false,true,true,true),
-//			new Subee(false,true,false,false,false),
-//			new Subee(false,true,false,false,true),
-//			new Subee(false,true,false,true,false),
-//			new Subee(false,true,false,true,true),
-//			new Subee(false,true,true,false,false),
-//			new Subee(false,true,true,false,true),
-//			new Subee(false,true,true,true,false),
-//			new Subee(false,true,true,true,true),
-//			new Subee(true,false,false,false,false),
-//			new Subee(true,false,false,false,true),
-//			new Subee(true,false,false,true,false),
-//			new Subee(true,false,false,true,true),
-//			new Subee(true,false,true,false,false),
-//			new Subee(true,false,true,false,true),
-//			new Subee(true,false,true,true,false),
-//			new Subee(true,false,true,true,true),
-//			new Subee(true,true,false,false,false),
-//			new Subee(true,true,false,false,true),
-//			new Subee(true,true,false,true,false),
-//			new Subee(true,true,false,true,true),
-//			new Subee(true,true,true,false,false),
-//			new Subee(true,true,true,false,true),
-//			new Subee(true,true,true,true,false),
-//			new Subee(true,true,true,true,true),
-			
 //			new TagEn(TagEnModelName.MUC_MODEL, false, false),
 //			new TagEn(TagEnModelName.MUC_MODEL, false, true),
 //			new TagEn(TagEnModelName.MUC_MODEL, true, false),
@@ -1579,141 +1530,41 @@ public class Test
 			
 ////////////////////			
 			
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.ALL),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, false),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, false, true),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, false),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.UNIFORM, true, true),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED, false, false),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED, false, true),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED, true, false),
+//			new VoteCombiner(loadOnDemand, false, VoteMode.WEIGHTED, true, true),
 			
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.ALL),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.NONE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.SINGLE),
-//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.ALL),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, false),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, false, true),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, false),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.UNIFORM, true, true),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED, false, false),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED, false, true),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED, true, false),
+//			new VoteCombiner(loadOnDemand, true, VoteMode.WEIGHTED, true, true),
 			
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_UNIFORM),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.MENTION_WEIGHTED),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_SINGLE),
+//			new SvmCombiner(loadOnDemand, false, false, CombineMode.CHUNK_PREVIOUS),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_UNIFORM),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.MENTION_WEIGHTED),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_SINGLE),
+//			new SvmCombiner(loadOnDemand, false, true, CombineMode.CHUNK_PREVIOUS),
 
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE),
-//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_UNIFORM),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.MENTION_WEIGHTED),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_SINGLE),
+//			new SvmCombiner(loadOnDemand, true, false, CombineMode.CHUNK_PREVIOUS),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_UNIFORM),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.MENTION_WEIGHTED),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_SINGLE),
+//			new SvmCombiner(loadOnDemand, true, true, CombineMode.CHUNK_PREVIOUS),
 			
 //			new FullCombiner(CombinerName.SVM),
 //			new FullCombiner(CombinerName.VOTE),
@@ -1760,7 +1611,6 @@ public class Test
 		RecognitionEvaluator recognitionEvaluator = new RecognitionEvaluator(types, recognizers, folders, evaluation);
 		recognitionEvaluator.setCacheEnabled(false);
 		recognitionEvaluator.process();
-//		logger.log(((Subee)recognizers.get(0)).UNUSED_TYPES);
 		
 		logger.log("Evaluation finished");
 		logger.decreaseOffset();

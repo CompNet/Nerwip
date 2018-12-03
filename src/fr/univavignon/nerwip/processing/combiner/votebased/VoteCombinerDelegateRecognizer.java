@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
@@ -40,7 +39,6 @@ import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.nerwip.processing.combiner.AbstractCombinerDelegateRecognizer;
-import fr.univavignon.nerwip.processing.combiner.CategoryProportions;
 import fr.univavignon.nerwip.processing.combiner.VoteWeights;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;
 import fr.univavignon.nerwip.processing.internal.modelbased.illinois.IllinoisModelName;
@@ -262,16 +260,9 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 */
 	private void loadModel() throws ProcessorException
 	{	if(voteMode.hasWeights())
-		{	loadVoteWeights();
-			if(voteMode==VoteMode.WEIGHTED_CATEGORY)
-				loadCategoryProportions();
-			else
-				categoryProportions = CategoryProportions.buildUniformProportions();
-		}
+			loadVoteWeights();
 		else
-		{	voteWeights = VoteWeights.buildUniformWeights(recognizers);
-			categoryProportions = CategoryProportions.buildUniformProportions();
-		}
+			voteWeights = VoteWeights.buildUniformWeights(recognizers);
 	}
 	
     /**
@@ -282,7 +273,7 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
      * 		{@code true} iff the combiner has already been loaded.
     */
 	private boolean isLoaded()
-	{	boolean result = voteWeights!=null && categoryProportions!=null;
+	{	boolean result = voteWeights!=null;
 		return result;
 	}
 	
@@ -325,9 +316,6 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 		logger.log("Get the list of overlapping mentions");
 		List<Map<InterfaceRecognizer, AbstractMention<?>>> overlaps = Mentions.identifyOverlaps(mentions);
 		
-		// process the weights associated to article categories
-		Map<ArticleCategory,Float> categoryWeights = categoryProportions.processCategoryWeights(article);
-		
 		// compare/combine them
 		logger.log("Process each group of mentions");
 		logger.increaseOffset();
@@ -344,16 +332,16 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			}
 			
 			// determine mention existence
-			boolean existence = voteForExistence(article,categoryWeights, map);
+			boolean existence = voteForExistence(map);
 			rawOutput.append("Existence="+existence+"\n");
 			
 			if(existence)
 			{	// determine mention position
-				int pos[] = voteForPosition(article,categoryWeights, map);
+				int pos[] = voteForPosition(map);
 				rawOutput.append("Position=("+pos[0]+","+pos[1]+")\n");
 				
 				// determine entity type
-				EntityType type = voteForType(article,categoryWeights, map);
+				EntityType type = voteForType(map);
 				rawOutput.append("Type="+type+"\n");
 				
 				// build new, appropriate mention
@@ -384,16 +372,12 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * the group of estimated mentions corresponds to an actual
 	 * mention.
 	 * 
-	 * @param article
-	 * 		Concerned article. 
-	 * @param categoryWeights
-	 * 		Weights associated to the article categories. 
 	 * @param map 
 	 * 		Group of estimated mentions.
 	 * @return 
 	 * 		{@code true} iff the conclusion is that the mention is correct.
 	 */
-	protected boolean voteForExistence(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?>> map)
+	protected boolean voteForExistence(Map<InterfaceRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for existence:");
 		logger.increaseOffset();
 		boolean result = false;
@@ -411,9 +395,9 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 						conWeight = 1f;
 					else
 					{	if(useRecall)
-							conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TR, categoryWeights);
+							conWeight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_TR);
 						else
-							conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
+							conWeight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_TP);
 					}
 					voteAgainst = voteAgainst + conWeight;
 				}
@@ -422,7 +406,7 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 					if(voteMode==VoteMode.UNIFORM)
 						proWeight = 1f;
 					else
-						proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
+						proWeight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_TP);
 					voteFor = voteFor + proWeight;
 				}
 			}
@@ -444,16 +428,12 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * Combine the recognizers results, in order to determine the
 	 * position of the mention represented by the specified group.
 	 * 
-	 * @param article
-	 * 		Concerned article. 
-	 * @param categoryWeights
-	 * 		Weights associated to the article categories. 
 	 * @param map 
 	 * 		Group of estimated mentions.
 	 * @return 
 	 * 		An array of two integers corresponding to the mention position.
 	 */
-	protected int[] voteForPosition(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?>> map)
+	protected int[] voteForPosition(Map<InterfaceRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for position:");
 		logger.increaseOffset();
 		Map<Integer,Float> startScores = new HashMap<Integer, Float>();
@@ -470,7 +450,7 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 				if(voteMode==VoteMode.UNIFORM)
 					proWeight = 1f;
 				else
-					proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FP, categoryWeights);
+					proWeight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_FP);
 				
 				// start position
 				int startPos = mention.getStartPos();
@@ -502,7 +482,7 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 					if(voteMode==VoteMode.UNIFORM)
 						conWeight = 1f;
 					else
-						conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_FR, categoryWeights);
+						conWeight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_FR);
 					
 					// start position
 					{	int startPos = mention.getStartPos();
@@ -543,16 +523,12 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 	 * Combine the recognizers results, in order to determine the
 	 * type of the mention represented by the specified group.
 	 * 
-	 * @param article
-	 * 		Concerned article. 
-	 * @param categoryWeights
-	 * 		Weights associated to the article categories. 
 	 * @param map 
 	 * 		Group of estimated mentions.
 	 * @return 
-	 * 		Type of the mention represnted by the group.
+	 * 		Type of the mention represented by the group.
 	 */
-	protected EntityType voteForType(Article article, Map<ArticleCategory,Float> categoryWeights, Map<InterfaceRecognizer, AbstractMention<?>> map)
+	protected EntityType voteForType(Map<InterfaceRecognizer, AbstractMention<?>> map)
 	{	logger.log("Start voting for type: ");
 		logger.increaseOffset();
 		Map<EntityType,Float> typeScores = new HashMap<EntityType, Float>();
@@ -566,7 +542,7 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 			if(voteMode==VoteMode.UNIFORM)
 				proWeight = 1f;
 			else
-				proWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TP, categoryWeights);
+				proWeight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_TP);
 			
 			if(mention!=null)
 			{	EntityType type = mention.getType();
@@ -588,7 +564,7 @@ class VoteCombinerDelegateRecognizer extends AbstractCombinerDelegateRecognizer
 				if(voteMode==VoteMode.UNIFORM)
 					conWeight = 1f;
 				else
-					conWeight = voteWeights.processVotingWeight(article, recognizer, RecognitionLilleMeasure.SCORE_TR, categoryWeights);
+					conWeight = voteWeights.processVotingWeight(recognizer, RecognitionLilleMeasure.SCORE_TR);
 					
 				if(mention!=null)
 				{	EntityType type = mention.getType();

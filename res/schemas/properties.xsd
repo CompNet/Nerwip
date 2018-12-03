@@ -22,7 +22,6 @@
 	If not, see <http://www.gnu.org/licenses/>.
  -->
  
-	<xsd:include schemaLocation="_categories.xsd"/>
 	<xsd:include schemaLocation="_languages.xsd"/>
 
 	<xsd:complexType name="tAuthors">
@@ -39,10 +38,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:simpleType name="tCategoryList">
-		<xsd:list itemType="tCategory"/>
-	</xsd:simpleType>
-
 	<xsd:complexType name="tProperties">
 		<xsd:sequence>
 			<xsd:element name="title" type="xsd:string" />
@@ -50,7 +45,6 @@
 			<xsd:element name="language" type="tLanguage" minOccurs="0"/>
 			<xsd:element name="authors" type="tAuthors"  minOccurs="0"/>
 			<xsd:element name="dates" type="tDates" />
-			<xsd:element name="category" type="tCategoryList" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

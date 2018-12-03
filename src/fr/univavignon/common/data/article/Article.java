@@ -29,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -299,35 +298,6 @@ public class Article implements Comparable<Article>
 	}
 
 	/////////////////////////////////////////////////////////////////
-	// CATEGORIES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/** Categories of the source page (military, science, etc.) */
-	private final List<ArticleCategory> categories = new ArrayList<ArticleCategory>();
-	
-	/**
-	 * Returns the categories of this article
-	 * (military, science, etc.).
-	 * 
-	 * @return
-	 * 		Categories of this article.
-	 */
-	public List<ArticleCategory> getCategories()
-	{	return categories;
-	}
-
-	/**
-	 * Changes the categories of this article
-	 * (military, science, etc.).
-	 * 
-	 * @param categories
-	 * 		New categories of this article.
-	 */
-	public void setCategories(Collection<ArticleCategory> categories)
-	{	this.categories.clear();
-		this.categories.addAll(categories);
-	}
-
-	/////////////////////////////////////////////////////////////////
 	// ORIGINAL PAGE	/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Original source code of the web page */
@@ -465,8 +435,6 @@ public class Article implements Comparable<Article>
 	private static final String ELT_AUTHOR = "author";
 	/** List of article authors */
 	private static final String ELT_AUTHORS = "authors";
-	/** Category of article (military, scientist, etc.) */
-	private static final String ELT_CATEGORY = "category";
 	/** Dates associated to an article */
 	private static final String ELT_DATES = "dates";
 	/** Language of an article */
@@ -680,19 +648,6 @@ public class Article implements Comparable<Article>
 				}
 			}
 		}
-		
-		// categories of biography
-		{	Element catElt = root.getChild(ELT_CATEGORY);
-			if(catElt!=null)
-			{	String catsStr = catElt.getTextTrim().toUpperCase(Locale.ENGLISH);
-				String temp[] = catsStr.split(" ");
-				categories.clear();
-				for(String catStr: temp)
-				{	ArticleCategory cat = ArticleCategory.valueOf(catStr);
-					categories.add(cat);
-				}
-			}
-		}
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -796,17 +751,6 @@ public class Article implements Comparable<Article>
 					modificationDateElt.setText(modificationDateStr);
 					datesElt.addContent(modificationDateElt);
 				}
-		}
-		
-		// categories of biography
-		if(!categories.isEmpty())
-		{	String catStr = "";
-			for(ArticleCategory category: categories)
-				catStr = catStr + category.toString() + " ";
-			catStr = catStr.substring(0,catStr.length()-1);
-			Element catElt = new Element(ELT_CATEGORY);
-			catElt.setText(catStr);
-			root.addContent(catElt);
 		}
 		
 		// record file

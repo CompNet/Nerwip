@@ -26,11 +26,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -38,24 +35,18 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorModel;
 import java.awt.image.LookupOp;
-import java.awt.image.LookupTable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
@@ -80,7 +71,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
@@ -89,7 +79,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.parsers.ParserConfigurationException;
@@ -98,7 +87,6 @@ import org.jdom2.Element;
 import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.EntityType;
@@ -115,21 +103,6 @@ import fr.univavignon.edition.language.LanguageLoader;
 import fr.univavignon.edition.tools.EditorFileNames;
 import fr.univavignon.edition.tools.EditorFileTools;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.nerwip.processing.combiner.fullcombiner.FullCombiner;
-import fr.univavignon.nerwip.processing.combiner.svmbased.SvmCombiner;
-import fr.univavignon.nerwip.processing.combiner.votebased.VoteCombiner;
-import fr.univavignon.nerwip.processing.internal.modelbased.illinois.Illinois;
-import fr.univavignon.nerwip.processing.internal.modelbased.illinois.IllinoisModelName;
-import fr.univavignon.nerwip.processing.internal.modelbased.lingpipe.LingPipe;
-import fr.univavignon.nerwip.processing.internal.modelbased.lingpipe.LingPipeModelName;
-import fr.univavignon.nerwip.processing.internal.modelbased.opennlp.OpenNlp;
-import fr.univavignon.nerwip.processing.internal.modelbased.opennlp.OpenNlpModelName;
-import fr.univavignon.nerwip.processing.internal.modelbased.stanford.Stanford;
-import fr.univavignon.nerwip.processing.internal.modelbased.stanford.StanfordModelName;
-import fr.univavignon.nerwip.processing.internal.modelless.dateextractor.DateExtractor;
-import fr.univavignon.nerwip.processing.internal.modelless.opencalais.OpenCalais;
-import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
-import fr.univavignon.nerwip.tools.file.NerwipFileNames;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
@@ -145,7 +118,6 @@ import fr.univavignon.tools.xml.XmlTools;
  * @author Yasa Akbulut
  * @author Vincent Labatut
  */
-@SuppressWarnings("unused")
 public class MentionEditor implements WindowListener, ChangeListener
 {
 	/**
@@ -349,176 +321,43 @@ public class MentionEditor implements WindowListener, ChangeListener
 //			new Stanford(StanfordModelName.NERWIP_MODEL, true, true,  false).getFolder(),
 //			new Stanford(StanfordModelName.NERWIP_MODEL, true, true,  true).getFolder(),
 //			
-//			new Subee(false,false,false,false,false).getFolder(),
-//			new Subee(false,false,false,false,true).getFolder(),
-//			new Subee(false,false,false,true,false).getFolder(),
-//			new Subee(false,false,false,true,true).getFolder(),
-//			new Subee(false,false,true,false,false).getFolder(),
-//			new Subee(false,false,true,false,true).getFolder(),
-//			new Subee(false,false,true,true,false).getFolder(),
-//			new Subee(false,false,true,true,true).getFolder(),
-//			new Subee(false,true,false,false,false).getFolder(),
-//			new Subee(false,true,false,false,true).getFolder(),
-//			new Subee(false,true,false,true,false).getFolder(),
-//			new Subee(false,true,false,true,true).getFolder(),
-//			new Subee(false,true,true,false,false).getFolder(),
-//			new Subee(false,true,true,false,true).getFolder(),
-//			new Subee(false,true,true,true,false).getFolder(),
-//			new Subee(false,true,true,true,true).getFolder(),
-//			new Subee(true,false,false,false,false).getFolder(),
-//			new Subee(true,false,false,false,true).getFolder(),
-//			new Subee(true,false,false,true,false).getFolder(),
-//			new Subee(true,false,false,true,true).getFolder(),
-//			new Subee(true,false,true,false,false).getFolder(),
-//			new Subee(true,false,true,false,true).getFolder(),
-//			new Subee(true,false,true,true,false).getFolder(),
-//			new Subee(true,false,true,true,true).getFolder(),
-//			new Subee(true,true,false,false,false).getFolder(),
-//			new Subee(true,true,false,false,true).getFolder(),
-//			new Subee(true,true,false,true,false).getFolder(),
-//			new Subee(true,true,false,true,true).getFolder(),
-//			new Subee(true,true,true,false,false).getFolder(),
-//			new Subee(true,true,true,false,true).getFolder(),
-//			new Subee(true,true,true,true,false).getFolder(),
-//			new Subee(true,true,true,true,true).getFolder(),
-//			
 //			new WikipediaDater().getFolder(),
 //			
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, false, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.ALL).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, false).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.UNIFORM, false, true).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, false).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.UNIFORM, true, true).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.WEIGHTED, false, false).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.WEIGHTED, false, true).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.WEIGHTED, true, false).getFolder(),
+//			new VoteCombiner(true, false, VoteMode.WEIGHTED, true, true).getFolder(),
 //			
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, false, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, false, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, true, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_OVERALL, true, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, false, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, false, true, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, true, false, SubeeMode.ALL).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.NONE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.SINGLE).getFolder(),
-//			new VoteCombiner(true, true, VoteMode.WEIGHTED_CATEGORY, true, true, SubeeMode.ALL).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, false).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.UNIFORM, false, true).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, false).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.UNIFORM, true, true).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.WEIGHTED, false, false).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.WEIGHTED, false, true).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.WEIGHTED, true, false).getFolder(),
+//			new VoteCombiner(true, true, VoteMode.WEIGHTED, true, true).getFolder(),
 //			
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, false, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL).getFolder(),
+//			new SvmCombiner(true, false, false, CombineMode.MENTION_UNIFORM).getFolder(),
+//			new SvmCombiner(true, false, false, CombineMode.MENTION_WEIGHTED).getFolder(),
+//			new SvmCombiner(true, false, false, CombineMode.CHUNK_SINGLE).getFolder(),
+//			new SvmCombiner(true, false, false, CombineMode.CHUNK_PREVIOUS).getFolder(),
+//			new SvmCombiner(true, false, true, CombineMode.MENTION_UNIFORM).getFolder(),
+//			new SvmCombiner(true, false, true, CombineMode.WEIGHTED).getFolder(),
+//			new SvmCombiner(true, false, true, CombineMode.CHUNK_SINGLE).getFolder(),
+//			new SvmCombiner(true, false, true, CombineMode.CHUNK_PREVIOUS).getFolder(),
 //
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_UNIFORM, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.CHUNK_SINGLE, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, false, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_UNIFORM, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_WEIGHTED_OVERALL, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.MENTION_WEIGHTED_CATEGORY, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE, SubeeMode.ALL).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.NONE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.SINGLE).getFolder(),
-//			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS, SubeeMode.ALL).getFolder(),
+//			new SvmCombiner(true, true, false, CombineMode.MENTION_UNIFORM).getFolder(),
+//			new SvmCombiner(true, true, false, CombineMode.WEIGHTED).getFolder(),
+//			new SvmCombiner(true, true, false, CombineMode.CHUNK_SINGLE).getFolder(),
+//			new SvmCombiner(true, true, false, CombineMode.CHUNK_PREVIOUS).getFolder(),
+//			new SvmCombiner(true, true, true, CombineMode.MENTION_UNIFORM).getFolder(),
+//			new SvmCombiner(true, true, true, CombineMode.WEIGHTED).getFolder(),
+//			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE).getFolder(),
+//			new SvmCombiner(true, true, true, CombineMode.CHUNK_PREVIOUS).getFolder(),
 //				
 //			new FullCombiner(CombinerName.SVM).getFolder(),
 //			new FullCombiner(CombinerName.VOTE).getFolder()
@@ -1994,7 +1833,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 					}
 			    }
 			};
-			String initial = name.substring(0,1);
+//			String initial = name.substring(0,1);
 			nextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
 			nextAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_NEXT));
 		}
@@ -2077,7 +1916,7 @@ public class MentionEditor implements WindowListener, ChangeListener
 				{	saveReferenceCopy();
 			    }
 			};
-			String initial = name.substring(0,1);
+//			String initial = name.substring(0,1);
 			copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift S"));
 			copyAction.putValue(Action.SHORT_DESCRIPTION, language.getTooltip(ACTION_COPY));
 			copyAction.setEnabled(false); //TODO maybe other actions should be disabled too, when there's no article currently open?
@@ -2694,26 +2533,26 @@ public class MentionEditor implements WindowListener, ChangeListener
 	/** List of allowed subfolder names (can be empty) */
 	private final List<String> prefixes = new ArrayList<String>();
 	
-	/**
-	 * Restricts the displayed results only
-	 * to subfolders whose names are amongst
-	 * the ones specified in the parameter.
-	 * The reference file is always displayed,
-	 * when present. When the prefixes list
-	 * is empty, then all results are displayed.
-	 * <br/>
-	 * This method is meant to speed up the display
-	 * of numerous results, which can otherwise make
-	 * the GUI veeeery slow.
-	 *  
-	 * @param prefixes
-	 * 		List of subfolder names to display,
-	 * 		or an empty list to display everything.
-	 */
-	private void setPrefixes(List<String> prefixes)
-	{	this.prefixes.clear();
-		this.prefixes.addAll(prefixes);
-	}
+//	/**
+//	 * Restricts the displayed results only
+//	 * to subfolders whose names are amongst
+//	 * the ones specified in the parameter.
+//	 * The reference file is always displayed,
+//	 * when present. When the prefixes list
+//	 * is empty, then all results are displayed.
+//	 * <br/>
+//	 * This method is meant to speed up the display
+//	 * of numerous results, which can otherwise make
+//	 * the GUI veeeery slow.
+//	 *  
+//	 * @param prefixes
+//	 * 		List of subfolder names to display,
+//	 * 		or an empty list to display everything.
+//	 */
+//	private void setPrefixes(List<String> prefixes)
+//	{	this.prefixes.clear();
+//		this.prefixes.addAll(prefixes);
+//	}
 	
 	/////////////////////////////////////////////////////////////////
 	// CHANGE LISTENER	/////////////////////////////////////////////

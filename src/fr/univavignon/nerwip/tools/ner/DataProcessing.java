@@ -24,41 +24,19 @@ package fr.univavignon.nerwip.tools.ner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.xml.sax.SAXException;
-
-import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
-import fr.univavignon.common.data.article.ArticleList;
-import fr.univavignon.common.data.entity.EntityType;
-import fr.univavignon.common.data.entity.mention.AbstractMention;
-import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.nerwip.tools.file.NerwipFileNames;
-import fr.univavignon.retrieval.ArticleRetriever;
-import fr.univavignon.retrieval.reader.ReaderException;
-import fr.univavignon.retrieval.reader.wikipedia.WikipediaReader;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class contains various methods to manage the data files
@@ -66,7 +44,6 @@ import fr.univavignon.tools.strings.StringTools;
  *  
  * @author Vincent Labatut
  */
-@SuppressWarnings("unused")
 public class DataProcessing
 {	
 	/**
@@ -102,9 +79,9 @@ public class DataProcessing
 //			"universities.txt"
 //		),"organizations.txt");
 		
-//		mergeDictionaries(Arrays.asList(
-//			"people.txt"
-//		),"persons.txt");
+		mergeDictionaries(Arrays.asList(
+			"people.txt"
+		),"persons.txt");
 	}
 	
 	/////////////////////////////////////////////////////////////////

@@ -77,8 +77,7 @@ public class DbTypeTools
 	 * and retrieves all its Wikidata types.
 	 * <br/>
 	 * Those types must then be processed in order to
-	 * get the corresponding {@link EntityType} or
-	 * article category.
+	 * get the corresponding {@link EntityType}.
 	 * 
 	 * @param entity
 	 * 		Name of the entity.

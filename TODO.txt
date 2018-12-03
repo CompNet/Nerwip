@@ -1,6 +1,8 @@
 ////////////////////////////////////////////////////////////////////
 // REFACTORING/SYNCH
 ////////////////////////////////////////////////////////////////////
+- look for the word "categor"
+
 - try to merge the events from extraction vs. search
   maybe event=article vs. event=verb?
   >> distinguish "topic" (=whole article) from event?

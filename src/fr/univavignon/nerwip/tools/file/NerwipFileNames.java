@@ -76,8 +76,6 @@ public class NerwipFileNames
 			public final static String FO_STANFORD_MODELS = FO_STANFORD + File.separator + "models";
 			/** Folder of Stanford clusters */
 			public final static String FO_STANFORD_CLUSTERS = FO_STANFORD + File.separator + "clusters";
-		/** Folder of Subee resources */
-		public final static String FO_SUBEE = FO_NER + File.separator + "subee";
 		/** Folder of SVM combiner resources */
 		public final static String FO_SVMCOMBINER = FO_NER + File.separator + "svmcombiner";
 		/** Folder of TagEN resources */

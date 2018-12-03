@@ -684,9 +684,8 @@ public class Launch
 		
 		boolean loadModelOnDemand = true;
 		boolean specific = true;
-		boolean useCategories = true;
 		CombineMode combineMode = CombineMode.CHUNK_SINGLE;
-		SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCategories, combineMode);
+		SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, combineMode);
 		SvmTrainer trainer = new SvmTrainer(svmCombiner);
 		trainer.setSubCacheEnabled(true);
 		trainer.setCacheEnabled(false);
@@ -741,9 +740,8 @@ public class Launch
 
 		boolean loadModelOnDemand = true;
 		boolean specific = true;
-		boolean useCategories = true;
 		CombineMode combineMode = CombineMode.CHUNK_SINGLE;
-		SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, useCategories, combineMode);
+		SvmCombiner svmCombiner = new SvmCombiner(loadModelOnDemand, specific, combineMode);
 		svmCombiner.setCacheEnabled(false);
 		svmCombiner.recognize(article);
 		
@@ -781,7 +779,7 @@ public class Launch
 		// set the recognizers we want to evaluate (like before in evaluateStandaloneTools)
 		InterfaceRecognizer temp[] =
 		{	new VoteCombiner(true, true, VoteMode.UNIFORM, true, true),
-			new SvmCombiner(true, true, true, CombineMode.CHUNK_SINGLE)
+			new SvmCombiner(true, true, CombineMode.CHUNK_SINGLE)
 		};
 		List<InterfaceRecognizer> recognizers = Arrays.asList(temp);
 		logger.log("Processed recognizers: ");

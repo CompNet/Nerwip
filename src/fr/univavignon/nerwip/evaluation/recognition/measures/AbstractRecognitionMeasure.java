@@ -29,13 +29,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeSet;
 
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
@@ -106,21 +102,19 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 * @param types
-	 * 		Types to consider in the assessmnent.
+	 * 		Types to consider in the assessment.
 	 * @param reference
 	 * 		Mentions used as reference.
 	 * @param estimation
 	 * 		Mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of article (military, scientist, etc.).
 	 */
-	public AbstractRecognitionMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories)
+	public AbstractRecognitionMeasure(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation)
 	{	this.recognizer = recognizer;
 		this.types.addAll(types);
 		
 		initialize();
 		
-		processCounts(reference, estimation, categories);
+		processCounts(reference, estimation);
 	}
 	
 	/**
@@ -130,17 +124,15 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 * @param types
-	 * 		Types to consider in the assessmnent.
+	 * 		Types to consider in the assessment.
 	 * @param reference
 	 * 		Mentions used as reference.
 	 * @param estimation
 	 * 		Mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of article (military, scientist, etc.).
 	 * @return
 	 * 		The created measure. 
 	 */
-	public abstract AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation, List<ArticleCategory> categories);
+	public abstract AbstractRecognitionMeasure build(InterfaceRecognizer recognizer, List<EntityType> types, Mentions reference, Mentions estimation);
 	
 	/**
 	 * Builds the appropriate measure,
@@ -151,7 +143,7 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	 * @param recognizer
 	 * 		Concerned recognizer.
 	 * @param types
-	 * 		Types to consider in the assessmnent.
+	 * 		Types to consider in the assessment.
 	 * @return
 	 * 		The created measure. 
 	 */
@@ -220,45 +212,19 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	}
 	
 	/////////////////////////////////////////////////////////////////
-	// CATEGORIES		/////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	/**
-	 * Return the categories (military, scientist, etc.) represented 
-	 * during this assessment.
-	 * 
-	 * @return
-	 * 		A list of categories.
-	 */
-	public List<ArticleCategory> getCategories()
-	{	Set<ArticleCategory> temp = new TreeSet<ArticleCategory>();
-		
-		for(String count: getCountNames())
-		{	Map<ArticleCategory,Integer> map = countsByCategory.get(count);
-			Set<ArticleCategory> categories = map.keySet();
-			temp.addAll(categories);
-		}
-		
-		List<ArticleCategory> result = new ArrayList<ArticleCategory>(temp);
-		return result;
-	}
-	
-	/////////////////////////////////////////////////////////////////
 	// MENTIONS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** List of all processed mention */
 	protected Map<String,List<AbstractMention<?>>> mentionsAll = null;
 	/** List of mentions by type */
 	protected Map<String,Map<EntityType,List<AbstractMention<?>>>> mentionsByType = null;
-	/** List of mentions by category */
-	protected Map<String,Map<ArticleCategory,List<AbstractMention<?>>>> mentionsByCategory = null;
-
+	
 	/**
 	 * Initializes the lists of mentions.
 	 */
 	private void initializeMentions()
 	{	mentionsAll = new HashMap<String,List<AbstractMention<?>>>();
 		mentionsByType = new HashMap<String,Map<EntityType,List<AbstractMention<?>>>>();
-		mentionsByCategory = new HashMap<String,Map<ArticleCategory,List<AbstractMention<?>>>>();
 
 		for(String measure: getCountNames())
 		{	// overall 
@@ -269,9 +235,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 			for(EntityType type: types)
 				mentionsByTypeMap.put(type, new ArrayList<AbstractMention<?>>());
 			mentionsByType.put(measure, mentionsByTypeMap);
-			// by category 
-			Map<ArticleCategory,List<AbstractMention<?>>> mentionsByCatMap = new HashMap<ArticleCategory, List<AbstractMention<?>>>();
-			mentionsByCategory.put(measure, mentionsByCatMap);
 		}
 	}
 	
@@ -308,25 +271,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 		return result;
 	}
 	
-	/**
-	 * Returns the list of mentions,
-	 * for the specified count,
-	 * and considering only the specified
-	 * article category.
-	 * 
-	 * @param count
-	 * 		Count of interest.
-	 * @param category
-	 * 		Category of interest. 
-	 * @return
-	 * 		List of corresponding mentions.
-	 */
-	public List<AbstractMention<?>> getMentionsByCategory(String count, ArticleCategory category)
-	{	Map<ArticleCategory,List<AbstractMention<?>>> map = mentionsByCategory.get(count);
-		List<AbstractMention<?>> result = map.get(category);
-		return result;
-	}
-	
 	/////////////////////////////////////////////////////////////////
 	// COUNTS			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -334,8 +278,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	protected Map<String,Integer> countsAll = null;
 	/** Numbers of mentions by entity type */
 	protected Map<String,Map<EntityType,Integer>> countsByType = null;
-	/** Numbers of mentions by article category */
-	protected Map<String,Map<ArticleCategory,Integer>> countsByCategory = null;
 
 	/**
 	 * Initializes the lists of counts.
@@ -343,7 +285,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	private void initializeCounts()
 	{	countsAll = new HashMap<String,Integer>();
 		countsByType = new HashMap<String,Map<EntityType,Integer>>();
-		countsByCategory = new HashMap<String,Map<ArticleCategory,Integer>>();
 	
 		for(String count: getCountNames())
 		{	// overall 
@@ -354,10 +295,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 			for(EntityType type: types)
 				countsByTypeMap.put(type, 0);
 			countsByType.put(count, countsByTypeMap);
-			
-			// by category
-			Map<ArticleCategory,Integer> countsByCategoryMap = new HashMap<ArticleCategory,Integer>();
-			countsByCategory.put(count, countsByCategoryMap);
 		}
 	}
 	
@@ -404,25 +341,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	}
 
 	/**
-	 * Get the value for
-	 * the specified count,
-	 * when considering only
-	 * the specified article category.
-	 * 
-	 * @param count
-	 * 		Count required by the user.
-	 * @param category
-	 * 		Category of interest.
-	 * @return
-	 * 		Associated value.
-	 */
-	public int getCountByCategory(String count, ArticleCategory category)
-	{	Map<ArticleCategory,Integer> map = countsByCategory.get(count);
-		int result = map.get(category);
-		return result;
-	}
-
-	/**
 	 * Processes all counts for the specified
 	 * estimated mentions (detected by a NER
 	 * tool), relatively to reference mentions 
@@ -432,10 +350,8 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	 * 		List of mentions of reference.
 	 * @param estimationOrig
 	 * 		List of mentions detected by the recognizer.
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	protected abstract void processCounts(Mentions referenceOrig, Mentions estimationOrig, List<ArticleCategory> categories);
+	protected abstract void processCounts(Mentions referenceOrig, Mentions estimationOrig);
 	
 	/**
 	 * Updates the counts of this measure, by adding the counts from the
@@ -452,8 +368,7 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	 * 		Values to add to this object.
 	 */
 	public void updateCounts(AbstractRecognitionMeasure result)
-	{	List<ArticleCategory> categories = result.getCategories();
-		for(String count: getCountNames())
+	{	for(String count: getCountNames())
 		{	// total counts
 			int countAll0 = countsAll.get(count);
 			int countAll1 = result.getCountAll(count);
@@ -468,28 +383,14 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 				countType0 = countType0 + countType1;
 				map.put(type, countType0);
 			}
-			
-			// counts by category
-			for(ArticleCategory category: categories)
-			{	Map<ArticleCategory,Integer> map = countsByCategory.get(count);
-				Integer countCat0 = map.get(category);
-				if(countCat0==null)
-					countCat0 = 0;
-				int countCat1 = result.getCountByCategory(count,category);
-				countCat0 = countCat0 + countCat1;
-				map.put(category, countCat0);
-			}
 		}
 	}
 	
 	/**
 	 * After the mentions have been processed,
 	 * this method processes the counts.
-	 * 
-	 * @param categories
-	 * 		Categories of the considered article.
 	 */
-	protected void updateCounts(List<ArticleCategory> categories)
+	protected void updateCounts()
 	{	for(String count: getCountNames())
 		{	// total counts
 			{	List<AbstractMention<?>> list = mentionsAll.get(count);
@@ -506,16 +407,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 					countsMap.put(type, value);
 				}
 			}
-			
-			// counts by category
-			{	Map<ArticleCategory, Integer> countsMap = countsByCategory.get(count);
-				Map<ArticleCategory, List<AbstractMention<?>>> mentionsMap = mentionsByCategory.get(count);
-				for(ArticleCategory category: categories)
-				{	List<AbstractMention<?>> list = mentionsMap.get(category);
-					int value = list.size();
-					countsMap.put(category, value);
-				}
-			}
 		}
 	}
 	
@@ -526,8 +417,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 	protected Map<String,Float> scoresAll = null;
 	/** Scores by entity type */
 	protected Map<String,Map<EntityType,Float>> scoresByType = null;
-	/** Scores by article category */
-	protected Map<String,Map<ArticleCategory,Float>> scoresByCategory = null;
 	
 //	protected void initScores()
 //	{	scoresAll = new HashMap<String,Integer>();
@@ -556,17 +445,6 @@ public abstract class AbstractRecognitionMeasure extends AbstractMeasure
 		return result;
 	}
 
-	@Override
-	public float getScoreByCategory(String score, ArticleCategory category)
-	{	Map<ArticleCategory,Float> map = scoresByCategory.get(score);
-Float temp = map.get(category);
-if(temp==null)
-	temp = 0f;
-return temp;
-//		float result = map.get(category);
-//		return result;
-	}
-
 	/**
 	 * Uses the current counts to
 	 * process all score values.
@@ -578,9 +456,6 @@ return temp;
 		
 		// values by type
 		processScoresByType();
-		
-		// values by category
-		processScoresByCategory();
 	}
 	
 	/**
@@ -625,39 +500,6 @@ return temp;
 	}
 	
 	/**
-	 * Uses the current counts to
-	 * process score values by category.
-	 */
-	private void processScoresByCategory()
-	{	List<ArticleCategory> categories = getCategories();
-		scoresByCategory = new HashMap<String, Map<ArticleCategory,Float>>();
-		for(ArticleCategory category: categories)
-		{	// get the appropriate maps
-			Map<String, Float> scores = new HashMap<String, Float>();
-			Map<String, Integer> counts = new HashMap<String, Integer>();
-			for(String c: getCountNames())
-			{	Map<ArticleCategory, Integer> map = countsByCategory.get(c);
-				int value = map.get(category);
-				counts.put(c,value);
-			}
-			
-			// process scores
-			processScores(counts, scores);
-			
-			// update maps
-			for(String s: getScoreNames())
-			{	Map<ArticleCategory, Float> map = scoresByCategory.get(s);
-				if(map==null)
-				{	map = new HashMap<ArticleCategory, Float>();
-					scoresByCategory.put(s,map);
-				}
-				float value = scores.get(s);
-				map.put(category,value);
-			}
-		}
-	}
-	
-	/**
 	 * Processes the scores for the
 	 * specified counts, and complete
 	 * the existing scores list with
@@ -693,10 +535,10 @@ return temp;
 		pw.println();
 		
 		// write data
-		writeValues(pw,getCountNames(),COUNTS_STRING,countsAll,countsByType,countsByCategory);
+		writeValues(pw,getCountNames(),COUNTS_STRING,countsAll,countsByType);
 		pw.println();
 		processScores();
-		writeValues(pw,getScoreNames(),SCORES_STRING,scoresAll,scoresByType,scoresByCategory);
+		writeValues(pw,getScoreNames(),SCORES_STRING,scoresAll,scoresByType);
 		
 		pw.close();
 	}
@@ -716,12 +558,9 @@ return temp;
 	 * 		Total values.
 	 * @param mapByType
 	 * 		Values by type.
-	 * @param mapByCategory
-	 * 		Values by category.
 	 */
-	private <T extends Number> void writeValues(PrintWriter pw, List<String> names, String header, Map<String, T> mapAll, Map<String, Map<EntityType, T>> mapByType, Map<String, Map<ArticleCategory, T>> mapByCategory)
+	private <T extends Number> void writeValues(PrintWriter pw, List<String> names, String header, Map<String, T> mapAll, Map<String, Map<EntityType, T>> mapByType)
 	{	StringBuffer line;
-		List<ArticleCategory> categories = getCategories();
 	
 		// init lines
 		List<StringBuffer> lines = new ArrayList<StringBuffer>();
@@ -731,9 +570,6 @@ return temp;
 		lines.add(new StringBuffer("# "+header+" by type ##########"));
 		for(EntityType type: types)
 			lines.add(new StringBuffer(type.toString()));
-		lines.add(new StringBuffer("# "+header+" by category ######"));
-		for(ArticleCategory category: categories)
-			lines.add(new StringBuffer(category.toString()));
 		lines.add(new StringBuffer("# "+header+" done #############"));
 			
 		// complete lines
@@ -754,13 +590,6 @@ return temp;
 				line.append("\t" + value);
 			}
 			line = it.next();
-			for(ArticleCategory category: categories)
-			{	line = it.next();
-				Map<ArticleCategory, T> map = mapByCategory.get(name);
-				T value = map.get(category);
-				line.append("\t" + value);
-			}
-			line = it.next(); 
 		}
 		
 		// write lines
@@ -798,18 +627,15 @@ return temp;
 			line = scanner.nextLine();
 			line = scanner.nextLine();
 			line = scanner.nextLine();
-			readCounts(scanner, getCountNames(), result.countsAll, result.countsByType, result.countsByCategory);
+			readCounts(scanner, getCountNames(), result.countsAll, result.countsByType);
 			scanner.nextLine();
 			result.scoresAll = new HashMap<String,Float>();
 			result.scoresByType = new HashMap<String,Map<EntityType,Float>>();
-			result.scoresByCategory = new HashMap<String,Map<ArticleCategory,Float>>();
 			for(String score: getScoreNames())
 			{	Map<EntityType,Float> scoresByTypeMap = new HashMap<EntityType,Float>();
 				result.scoresByType.put(score,scoresByTypeMap);
-				Map<ArticleCategory,Float> scoresByCategoryMap = new HashMap<ArticleCategory,Float>();
-				result.scoresByCategory.put(score, scoresByCategoryMap);
 			}
-			readScores(scanner, getScoreNames(), result.scoresAll, result.scoresByType, result.scoresByCategory);
+			readScores(scanner, getScoreNames(), result.scoresAll, result.scoresByType);
 			
 			scanner.close();
 		}
@@ -835,12 +661,9 @@ return temp;
 	 * 		Total values.
 	 * @param mapByType
 	 * 		Values by type.
-	 * @param mapByCategory
-	 * 		Values by category.
 	 */
-	private void readCounts(Scanner scanner, List<String> names, Map<String, Integer> mapAll, Map<String, Map<EntityType, Integer>> mapByType, Map<String, Map<ArticleCategory, Integer>> mapByCategory)
-	{	List<ArticleCategory> categories = new ArrayList<ArticleCategory>();
-		types.clear();
+	private void readCounts(Scanner scanner, List<String> names, Map<String, Integer> mapAll, Map<String, Map<EntityType, Integer>> mapByType)
+	{	types.clear();
 		List<String> lines = new ArrayList<String>();
 		String line;
 		
@@ -856,15 +679,6 @@ return temp;
 			String temp[] = line.split("\\t");
 			EntityType type = EntityType.valueOf(temp[0]);
 			types.add(type);
-			line = scanner.nextLine();
-		}
-		while(!line.startsWith("#"));
-		line = scanner.nextLine();
-		do
-		{	lines.add(line);
-			String temp[] = line.split("\\t");
-			ArticleCategory cat = ArticleCategory.valueOf(temp[0].toUpperCase(Locale.ENGLISH));
-			categories.add(cat);
 			line = scanner.nextLine();
 		}
 		while(!line.startsWith("#"));
@@ -885,13 +699,6 @@ return temp;
 				Map<EntityType, Integer> map = mapByType.get(name);
 				map.put(type,value);
 			}
-			for(ArticleCategory category: categories)
-			{	line = it.next();
-				String temp[] = line.split("\\t");
-				int value = Integer.parseInt(temp[i+1]); 
-				Map<ArticleCategory, Integer> map = mapByCategory.get(name);
-				map.put(category,value);
-			}
 		}
 	}
 	
@@ -910,12 +717,9 @@ return temp;
 	 * 		Total values.
 	 * @param mapByType
 	 * 		Values by type.
-	 * @param mapByCategory
-	 * 		Values by category.
 	 */
-	private void readScores(Scanner scanner, List<String> names, Map<String, Float> mapAll, Map<String, Map<EntityType, Float>> mapByType, Map<String, Map<ArticleCategory, Float>> mapByCategory)
-	{	List<ArticleCategory> categories = new ArrayList<ArticleCategory>();
-		types.clear();
+	private void readScores(Scanner scanner, List<String> names, Map<String, Float> mapAll, Map<String, Map<EntityType, Float>> mapByType)
+	{	types.clear();
 		List<String> lines = new ArrayList<String>();
 		String line;
 		
@@ -931,15 +735,6 @@ return temp;
 			String temp[] = line.split("\\t");
 			EntityType type = EntityType.valueOf(temp[0]);
 			types.add(type);
-			line = scanner.nextLine();
-		}
-		while(!line.startsWith("#"));
-		line = scanner.nextLine();
-		do
-		{	lines.add(line);
-			String temp[] = line.split("\\t");
-			ArticleCategory cat = ArticleCategory.valueOf(temp[0].toUpperCase(Locale.ENGLISH));
-			categories.add(cat);
 			line = scanner.nextLine();
 		}
 		while(!line.startsWith("#"));
@@ -959,13 +754,6 @@ return temp;
 				float value = Float.parseFloat(temp[i+1]); 
 				Map<EntityType, Float> map = mapByType.get(name);
 				map.put(type,value);
-			}
-			for(ArticleCategory category: categories)
-			{	line = it.next();
-				String temp[] = line.split("\\t");
-				float value = Float.parseFloat(temp[i+1]); 
-				Map<ArticleCategory, Float> map = mapByCategory.get(name);
-				map.put(category,value);
 			}
 		}
 	}

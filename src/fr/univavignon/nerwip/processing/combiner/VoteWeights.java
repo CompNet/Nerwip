@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +32,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeSet;
 
-import fr.univavignon.common.data.article.Article;
-import fr.univavignon.common.data.article.ArticleCategory;
 import fr.univavignon.nerwip.evaluation.AbstractEvaluator;
 import fr.univavignon.nerwip.evaluation.AbstractMeasure;
 import fr.univavignon.nerwip.processing.InterfaceProcessor;
@@ -64,7 +61,7 @@ public class VoteWeights<T extends InterfaceProcessor>
 	public VoteWeights(List<T> recognizers)
 	{	this.recognizers.addAll(recognizers);
 		for(T recognizer: recognizers)
-		{	Map<String,Map<ArticleCategory,Float>> map = new HashMap<String, Map<ArticleCategory,Float>>();
+		{	Map<String,Float> map = new HashMap<String, Float>();
 			data.put(recognizer,map);
 		}
 	}
@@ -83,17 +80,12 @@ public class VoteWeights<T extends InterfaceProcessor>
 		logger.increaseOffset();
 		
 		VoteWeights<U> result = new VoteWeights<U>(recognizers);
-		List<ArticleCategory> categories = Arrays.asList(ArticleCategory.values());
-			
+		float weight = 1f;
+		
 		for(U recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
-			Map<String,Map<ArticleCategory,Float>> recMap = result.data.get(recognizer);
-			Map<ArticleCategory,Float> mesMap = new HashMap<ArticleCategory, Float>();
-			recMap.put(UNIFORM_NAME, mesMap);
-			for(ArticleCategory category: categories)
-			{	float weight = 1f;
-				mesMap.put(category, weight);
-			}
+			Map<String,Float> map = result.data.get(recognizer);
+			map.put(UNIFORM_NAME, weight);
 		}
 		
 		logger.increaseOffset();
@@ -108,18 +100,15 @@ public class VoteWeights<T extends InterfaceProcessor>
 	 * 		Object used to perform the evaluation.
 	 * @param names
 	 * 		Names of the scores of interest.
-	 * @param byCategory
-	 * 		Whether the scores should be considered category-wise ({@code true}) or overall ({@code false}).
 	 * @return
 	 * 		New VoteWeights instance with the weights resulting from the evaluation.
 	 */
-	public static <U extends InterfaceProcessor, V extends  AbstractMeasure, W extends AbstractEvaluator<U,V>> VoteWeights<U> buildWeightsFromEvaluator(W recognitionEvaluator, List<String> names, boolean byCategory)
+	public static <U extends InterfaceProcessor, V extends  AbstractMeasure, W extends AbstractEvaluator<U,V>> VoteWeights<U> buildWeightsFromEvaluator(W recognitionEvaluator, List<String> names)
 	{	logger.log("Initializes vote weights with evaluator "+recognitionEvaluator);
 		logger.increaseOffset();
 		
 		List<U> recognizers = recognitionEvaluator.getRecognizers();
 		VoteWeights<U> result = new VoteWeights<U>(recognizers);
-		List<ArticleCategory> categories = Arrays.asList(ArticleCategory.values());
 		Collections.sort(names);
 		
 		for(U recognizer: recognizers)
@@ -127,26 +116,11 @@ public class VoteWeights<T extends InterfaceProcessor>
 			logger.increaseOffset();
 			
 			V measure = recognitionEvaluator.getMeasure(recognizer);
-			Map<String,Map<ArticleCategory,Float>> recMap = result.data.get(recognizer);
+			Map<String,Float> map = result.data.get(recognizer);
 			for(String name: names)
-			{	logger.log("Processing measure "+name+":");
-				logger.increaseOffset();
-
-				String msg = "";
-				Map<ArticleCategory,Float> mesMap = new HashMap<ArticleCategory, Float>();
-				recMap.put(name, mesMap);
-				for(ArticleCategory category: categories)
-				{	float weight;
-					if(byCategory)
-						weight = measure.getScoreByCategory(name, category);
-					else
-						weight = measure.getScoreAll(name);
-					mesMap.put(category, weight);
-					msg = " " + msg + category + "=" + weight;
-				}
-				
-				logger.log(msg);
-				logger.decreaseOffset();
+			{	float weight = measure.getScoreAll(name);
+				map.put(name, weight);
+				logger.log("Processing measure "+name+": "+weight);
 			}
 			
 			logger.decreaseOffset();
@@ -168,7 +142,7 @@ public class VoteWeights<T extends InterfaceProcessor>
 	/** Name used for uniform weights */
 	private final static String UNIFORM_NAME = "Uniform";
 	/** Maps containing all the weights */
-	private final Map<T,Map<String,Map<ArticleCategory,Float>>> data = new HashMap<T,Map<String,Map<ArticleCategory,Float>>>();
+	private final Map<T,Map<String,Float>> data = new HashMap<T,Map<String,Float>>();
 	/** List of recognizers (important to keep their original order) */
 	private final List<T> recognizers = new ArrayList<T>();
 	
@@ -176,40 +150,19 @@ public class VoteWeights<T extends InterfaceProcessor>
 	// PROCESSING		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Processes the relative specified weight for the specified article
-	 * and the specified category proportions, using the weight stored
-	 * in this object, and for the specified recognizer.
-	 * <br/>
-	 * We basically look up for the category describing the article,
-	 * and use the concerned category weights to modulate the concerned
-	 * recognizer raw voting weights, leading to normalized voting weights. 
+	 * Processes the relative specified weight for the specified article,
+	 * using the weight stored in this object, and for the specified recognizer.
 	 *  
-	 * @param article
-	 * 		Article to be considered.
 	 * @param recognizer
 	 * 		Recognizer concerned by the processing.
 	 * @param name 
 	 * 		Name of the voting weight.
-	 * @param categoryWeights 
-	 * 		Previously processed category relative weights for the specified article.
 	 * @return
 	 * 		Voting weight resulting from the process.
 	 */
-	public float processVotingWeight(Article article, T recognizer, String name, Map<ArticleCategory,Float> categoryWeights)
-	{	float result = 0;
-		List<ArticleCategory> categories = article.getCategories();
-		Map<String,Map<ArticleCategory,Float>> recMap = data.get(recognizer);
-		Map<ArticleCategory, Float> mesMap = recMap.get(name);
-		
-		for(ArticleCategory cat: categories)
-		{	// normalize weight
-			float modifier = categoryWeights.get(cat);
-			float baseWeight = mesMap.get(cat);
-			float normWeight = modifier*baseWeight;
-			
-			result = result + normWeight;
-		}
-		
+	public float processVotingWeight(T recognizer, String name)
+	{	Map<String,Float> map = data.get(recognizer);
+		float result = map.get(name);
 		return result;
 	}
 
@@ -220,7 +173,7 @@ public class VoteWeights<T extends InterfaceProcessor>
 	 * Initializes a new VoteWeights object by
 	 * reading data in the specified file, assuming
 	 * it was created to describe the same recognizers
-	 * than those specified as parameters.
+	 * as those specified as parameters.
 	 * 
 	 * @param filePath
 	 * 		Complete path of the file to read.
@@ -239,54 +192,39 @@ public class VoteWeights<T extends InterfaceProcessor>
 		logger.increaseOffset();
 		
 		VoteWeights<U> result = new VoteWeights<U>(recognizers);
-		List<ArticleCategory> categories = new ArrayList<ArticleCategory>();
-	
 		Scanner scanner = FileTools.openTextFileRead(filePath, "UTF-8");
 		
+		// read the list of measure names
+		List<String> measureNames = new ArrayList<String>();
+		{	String line = scanner.nextLine();
+			String temp[] = line.split("\t");
+			for(String name: temp)
+			{	name = name.trim();
+				if(!name.isEmpty())
+					measureNames.add(name);
+			}
+		}
 		// process each recognizer	
 		for(U recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
 			
-			Map<String,Map<ArticleCategory,Float>> recMap = result.data.get(recognizer);
-			
-			// read category ordered list
 			String line = scanner.nextLine();
-			{	String temp[] = line.split("\t");
-				String nerName = temp[0];
-				if(nerName.equals(recognizer.getName().toString()))
-					logger.log("WARNING: just recognizer '"+nerName+"' where it should have been '"+recognizer+"'");
-				for(int i=1;i<temp.length;i++)
-				{	String catStr = temp[i];
-					ArticleCategory category = ArticleCategory.valueOf(catStr);
-					categories.add(category);
-				}
-			}
+			String temp[] = line.split("\t");
+			
+			// read recognizer name
+			String nerName = temp[0];
+			if(nerName.equals(recognizer.getName().toString()))
+				logger.log("WARNING: found recognizer '"+nerName+"' where it should have been '"+recognizer+"'");
+			Map<String,Float> map = result.data.get(recognizer);
 			
 			// read weights
 			logger.log("Reading values: ");
-			while(!line.isEmpty())
-			{	// setup the map
-				line = scanner.nextLine();
-				String temp[] = line.split("\t");
-				String name = temp[0];
-				Map<ArticleCategory,Float> mesMap = new HashMap<ArticleCategory, Float>();
-				recMap.put(name, mesMap);
-				
-				logger.log("Processing measure "+name);
-				logger.increaseOffset();
-				String msg = "Read values:";
-				
-				// add all needed weights
-				for(int i=1;i<temp.length;i++)
-				{	ArticleCategory category = categories.get(i-1);
-					Float proportion = Float.parseFloat(temp[1]);
-					mesMap.put(category, proportion);
-					msg = msg + " " + category + "=" + proportion;
-				}
-				
-				logger.log(msg);
-				logger.decreaseOffset();
+			int i = 1;
+			for(String name: measureNames)
+			{	Float weight = Float.parseFloat(temp[i]);
+				logger.log("Measure "+name+"="+weight);
+				map.put(name,weight);
 			}
 			
 			logger.decreaseOffset();
@@ -312,50 +250,34 @@ public class VoteWeights<T extends InterfaceProcessor>
 	{	logger.log("Recording vote weights");
 		logger.increaseOffset();
 		
+		// open file
 		PrintWriter writer = FileTools.openTextFileWrite(filePath, "UTF-8");
-
-		// get category list
-		TreeSet<ArticleCategory> categories = new TreeSet<ArticleCategory>();
-		{	Map<String,Map<ArticleCategory,Float>> recMap = data.entrySet().iterator().next().getValue();
-			Map<ArticleCategory,Float> mesMap = recMap.entrySet().iterator().next().getValue();
-			categories.addAll(mesMap.keySet());
+		
+		// get the list of measures and write it
+		logger.log("Writing the measure names");
+		TreeSet<String> names;
+		{	Map<String,Float> map = data.values().iterator().next();
+			names = new TreeSet<String>(map.keySet());
+			for(String name: names)
+				writer.print("\t"+name);
+			writer.println();
 		}
 		
-		// write each recognizer
+		// write the values of each recognizer
 		for(T recognizer: recognizers)
 		{	logger.log("Processing recognizer "+recognizer);
 			logger.increaseOffset();
-		
-			Map<String,Map<ArticleCategory,Float>> recMap = data.get(recognizer);
-			
-			// write categories
-			logger.log("Writing category names: "+categories.toString());
-			writer.print(recognizer.getName());
-			for(ArticleCategory category: categories)
-				writer.print("\t"+category.toString());
-			writer.println();
-			
-			// write weights
-			TreeSet<String> names = new TreeSet<String>(recMap.keySet());
-			for(String name: names)
-			{	logger.log("Processing measure "+name);
-				logger.increaseOffset();
-				String msg = "Read values:";
+				// write recognizer name
+				writer.print(recognizer.getName());
 				
-				writer.print(name);
-				Map<ArticleCategory,Float> mesMap = recMap.get(name);
-				for(ArticleCategory category: categories)
-				{	float weight = mesMap.get(category);
+				// write weights
+				Map<String,Float> map = data.get(recognizer);
+				for(String name: names)
+				{	float weight = map.get(name);
 					writer.print("\t"+weight);
-					msg = msg + " " + category + "=" + weight;
 				}
+				
 				writer.println();
-
-				logger.log(msg);
-				logger.decreaseOffset();
-			}
-			
-			writer.println();
 			logger.decreaseOffset();
 		}
 		
