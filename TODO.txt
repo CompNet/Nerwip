@@ -1,8 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 // REFACTORING/SYNCH
 ////////////////////////////////////////////////////////////////////
-- look for the word "categor"
-
 - try to merge the events from extraction vs. search
   maybe event=article vs. event=verb?
   >> distinguish "topic" (=whole article) from event?
@@ -15,9 +13,6 @@
 ////////////////////////////////////////////////////////////////////
 - check that the retriever works correctly (all variants: WP, Web, etc.)
   - check where the cleaning is done
-
-- use Wikimedia Foundation services instead of FB when retrieving articles (to get the category)
-  >> or just stop retrieving the categories?
 
 - read/write existing corpora and check whether new texts are different
   - possibly require some manual corrections
