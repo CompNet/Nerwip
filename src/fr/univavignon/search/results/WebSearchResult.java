@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.retrieval.ArticleRetriever;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.ReaderException;
 import fr.univavignon.search.events.Event;
 import fr.univavignon.search.events.ReferenceEvent;
 import fr.univavignon.tools.files.FileNames;

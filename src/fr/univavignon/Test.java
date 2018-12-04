@@ -110,7 +110,7 @@ import fr.univavignon.nerwip.processing.internal.modelless.wikidatalinker.WikiDa
 import fr.univavignon.nerwip.processing.internal.modelless.wikipediadater.WikipediaDater;
 import fr.univavignon.nerwip.tools.file.NerwipFileNames;
 import fr.univavignon.retrieval.ArticleRetriever;
-import fr.univavignon.retrieval.reader.wikipedia.WikipediaReader;
+import fr.univavignon.retrieval.wikipedia.WikipediaReader;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;

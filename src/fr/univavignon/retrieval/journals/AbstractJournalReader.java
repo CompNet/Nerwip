@@ -1,4 +1,4 @@
-package fr.univavignon.retrieval.tools;
+package fr.univavignon.retrieval.journals;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -21,21 +21,46 @@ package fr.univavignon.retrieval.tools;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 
-import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.retrieval.AbstractArticleReader;
 
 /**
- * This class contains various constants
- * related to file and folder names.
- *  
+ * Abstract class for more specific classes dedicated to
+ * journal article extraction.
+ * 
  * @author Vincent Labatut
  */
-public class RetrieverFileNames
-{	
+public abstract class AbstractJournalReader extends AbstractArticleReader
+{
 	/////////////////////////////////////////////////////////////////
-	// FOLDERS		/////////////////////////////////////////////////
+	// NAME				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/** Folder containing retrieval-related data */
-	public final static String FO_RETRIEVAL = FileNames.FO_RESOURCES + File.separator + "retrieval";
+	@Override
+	public String getName(URL url)
+	{	String address = url.toString();
+		
+		// convert the full URL to a file-compatible name
+		String result = null;
+		try 
+		{	result = URLEncoder.encode(address,"UTF-8");
+			// reverse the transformation :
+			// String original = URLDecoder.decode(result, "UTF-8");
+		
+			// needed if the URL is longer than the max length authorized by the OS for folder names
+			if(result.length()>255)	
+				result = result.substring(0,255);
+
+		}
+		catch (UnsupportedEncodingException e)
+		{	e.printStackTrace();
+		}
+		
+		// alternative : generate a random name (not reproducible, though)
+//		UUID.randomUUID();
+
+		return result;
+	}
 }

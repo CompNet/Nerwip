@@ -33,7 +33,7 @@ import java.util.Scanner;
 import org.xml.sax.SAXException;
 
 import fr.univavignon.retrieval.ArticleRetriever;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.ReaderException;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;

@@ -30,8 +30,6 @@ import org.xml.sax.SAXException;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
-import fr.univavignon.retrieval.reader.AbstractArticleReader;
-import fr.univavignon.retrieval.reader.ReaderException;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
 

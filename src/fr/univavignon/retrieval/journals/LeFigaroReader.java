@@ -1,4 +1,4 @@
-package fr.univavignon.retrieval.reader.journals;
+package fr.univavignon.retrieval.journals;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -35,25 +35,26 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.tools.strings.CommonStringTools;
-import fr.univavignon.retrieval.reader.AbstractArticleReader;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.AbstractArticleReader;
+import fr.univavignon.retrieval.ReaderException;
 import fr.univavignon.tools.html.HtmlNames;
 import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a page
- * from the French newspaper La Voix du Nord (as of 21/08/2017),
+ * from the French newspaper Le Figaro (as of 09/09/2017),
  * and gives access to the raw and linked texts, as well
  * as other metadata (authors, publishing date, etc.).
  * 
  * @author Vincent Labatut
  */
-public class LaVoixDuNordReader extends AbstractJournalReader
+public class LeFigaroReader extends AbstractJournalReader
 {	
 	/**
 	 * Method defined only for a quick test.
@@ -66,11 +67,11 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-//		URL url = new URL("http://www.lavoixdunord.fr/207069/article/2017-08-21/un-mineur-accuse-d-apologie-du-terrorisme-apres-les-attentats-espagnols");
-//		URL url = new URL("http://www.lavoixdunord.fr/206352/article/2017-08-19/l-eglise-notre-dame-point-de-depart-de-la-francigena-en-france");
-		URL url = new URL("http://www.lavoixdunord.fr/128575/article/2017-03-07/le-vieux-lille-peur-de-perdre-une-centaine-d-emplois-tous-secteurs-confondus");
+		URL url = new URL("http://www.lefigaro.fr/international/2017/08/16/01003-20170816ARTFIG00075-violences-a-charlottesville-la-polemique-racontee-en-quatre-episodes.php");
+//		URL url = new URL("http://www.lefigaro.fr/sciences/2017/08/17/01008-20170817ARTFIG00132-daniel-zagury-l-homme-qui-se-vaccina-contre-le-sida.php");
+//		URL url = new URL("http://www.lefigaro.fr/elections/presidentielles/2017/03/02/35003-20170302ARTFIG00373-fillon-les-elus-on-fera-sans-eux-les-electeurs-de-droite-ils-tiennent.php");
 		
-		AbstractArticleReader reader = new LaVoixDuNordReader();
+		AbstractArticleReader reader = new LeFigaroReader();
 		Article article = reader.processUrl(url, ArticleLanguage.FR);
 		System.out.println(article);
 		article.write();
@@ -80,8 +81,8 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 	// DOMAIN			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Text allowing to detect the domain */
-	public static final String DOMAIN = "www.lavoixdunord.fr";
-	
+	public static final String DOMAIN = "www.lefigaro.fr";
+
 	@Override
 	public String getDomain()
 	{	return DOMAIN;
@@ -107,22 +108,17 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 	/** Format used to parse the dates */
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.FRENCH);
 	
-	/** Class of the author names */
-	private final static String CLASS_AUTHORS = "capitalize";
-	/** Class of the article description */
-	private final static String CLASS_DESCRIPTION = "gr-article-teaser";
+	/** Class of the list of author names */
+	private final static String CLASS_AUTHORS = "fig-content-metas__authors";
+	/** Class of one author's name */
+	private final static String CLASS_AUTHOR = "fig-content-metas__author";
+	/** Class of the article description panel */
+	private final static String CLASS_DESCRIPTION = "fig-content__chapo";
 	/** Class of the article body */
-	private final static String CLASS_ARTICLE_END = "gr-content-footer";
-	/** Class of the article body */
-	private final static String CLASS_ARTICLE_MAIN = "gr-content-text";
-	/** Class of the article information */
-	private final static String CLASS_INFO = "gr-article-infos";
-	/** Class of the dates */
-	private final static String CLASS_DETAILS = "entry-details";
-	
+	private final static String CLASS_ARTICLE_BODY = "fig-content__body";
 	/** Class of the restricted access */
-	private final static String MSG_RESTRICTED = "Vous avez consulté vos articles gratuits ce mois-ci.";
-
+	private final static String CLASS_PAYWALL = "fig-premium-paywall";
+	
 	@Override
 	public Article processUrl(URL url, ArticleLanguage language) throws ReaderException
 	{	Article result = null;
@@ -134,7 +130,7 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 			StringBuilder rawStr = new StringBuilder();
 			Date publishingDate = null;
 			Date modificationDate = null;
-			List<String> authors = new ArrayList<String>();
+			List<String> authors = null;
 			
 			// get the page
 			String address = url.toString();
@@ -145,38 +141,44 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 			{	logger.log("ERROR: Could not retrieve the document at URL "+url);
 				throw new ReaderException("Could not retrieve the document at URL "+url);
 			}
-			
+	
 			// get the article element
 			logger.log("Get the main element of the document");
 			Elements articleElts = document.getElementsByTag(HtmlNames.ELT_ARTICLE);
+			Element articleElt = null;
 			if(articleElts.size()==0)
-				throw new IllegalArgumentException("No <article> element found in the Web page");
-			else if(articleElts.size()>1)
-				logger.log("WARNING: found several <article> elements in the same page.");
-			Element articleElt = articleElts.first();
-			Element headerElt = articleElt.getElementsByTag(HtmlNames.ELT_HEADER).first();
-			Element infoElt = headerElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_INFO).first();
-			Element detailsElt = infoElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DETAILS).first();			
-			
+			{	//throw new IllegalArgumentException("No <article> element found in the Web page");
+				logger.log("WARNING: no <article> element found in this Web page: this generally means it is a list of articles, so we ignore it.");
+				throw new ReaderException("No <article> element in Web page "+url);
+			}
+			else 
+			{	if(articleElts.size()>1)
+					logger.log("WARNING: found several <article> elements in the same page.");
+				articleElt = articleElts.first();
+			}
+					
 			// check if the access is restricted
-			String text = articleElt.text();
-			if(text.contains(MSG_RESTRICTED))
+			Elements promoElts = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_PAYWALL);
+			if(!promoElts.isEmpty())
 				logger.log("WARNING: The access to this article is limited, only the beginning is available.");
-			
+	
 			// get the title
-			Element titleElt = headerElt.getElementsByTag(HtmlNames.ELT_H1).first();
-			title = titleElt.text(); 
+			Element titleElt = articleElt.getElementsByTag(HtmlNames.ELT_H1).first();
+			List<TextNode> textNodes = titleElt.textNodes();	// we need to ignore "avant-première" and other similar indications
+			for(TextNode textNode: textNodes)
+				title = title + " " + textNode.text();
 			logger.log("Get title: \""+title+"\"");
-
+			
 			// retrieve the dates
-			Elements timeElts = detailsElt.getElementsByTag(HtmlNames.ELT_TIME);
-			if(!timeElts.isEmpty())
-			{	Element timeElt = timeElts.get(0);
-				publishingDate = HtmlTools.getDateFromTimeElt(timeElt,DATE_FORMAT);
+			Elements dateElts = articleElt.getElementsByTag(HtmlNames.ELT_TIME);
+			Iterator<Element> it = dateElts.iterator();
+			if(it.hasNext())
+			{	Element pubDateElt = it.next();
+				publishingDate = HtmlTools.getDateFromTimeElt(pubDateElt,DATE_FORMAT);
 				logger.log("Found the publishing date: "+publishingDate);
-				if(timeElts.size()>1)
-				{	timeElt = timeElts.get(1);
-					modificationDate = HtmlTools.getDateFromTimeElt(timeElt,DATE_FORMAT);
+				if(it.hasNext())
+				{	Element updtDateElt = it.next();
+					modificationDate = HtmlTools.getDateFromTimeElt(updtDateElt,DATE_FORMAT);
 					logger.log("Found the last modification date: "+modificationDate);
 				}
 				else
@@ -186,40 +188,38 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 				logger.log("Did not find any publication date");
 			
 			// retrieve the authors
-			Element authorElt = detailsElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_AUTHORS).first();
-			if(authorElt!=null)
-			{	String authorName = authorElt.text();
-				authorName = removeGtst(authorName);
-				authors.add(authorName);
-				logger.log("Authors: ");
-				logger.log(authors);
+			Elements authorElts = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_AUTHOR);
+			it = authorElts.iterator();
+			while(it.hasNext())
+			{	Element elt = it.next();
+				String classStr = elt.attr(HtmlNames.ATT_CLASS);
+				if(classStr.contains(CLASS_AUTHORS))
+					it.remove();
+			}
+			if(!authorElts.isEmpty())
+			{	logger.log("List of the authors found for this article:");
+				logger.increaseOffset();
+					authors = new ArrayList<String>();
+					for(Element nameElt: authorElts)
+					{	String authorName = nameElt.text();
+						authorName = removeGtst(authorName);
+						logger.log(authorName);
+						authors.add(authorName);
+					}
+				logger.decreaseOffset();
 			}
 			else
-				logger.log("Could not find any author for this article");
-
+				logger.log("WARNING: could not find any author, which is unusual");
+					
 			// get the description
-			Elements descriptionElts = headerElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DESCRIPTION);
-			if(!descriptionElts.isEmpty())
-			{	Element descriptionElt = descriptionElts.first();
-				processAnyElement(descriptionElt, rawStr);
-			}
-	
+			Element descriptionElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_DESCRIPTION).first();
+			String text = descriptionElt.text() + "\n";
+			text = removeGtst(text);
+			rawStr.append(text);
+			
 			// processing the article main content
-			Element contentElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_ARTICLE_MAIN).first();
-			Elements parElts = contentElt.children();
-			if(parElts.isEmpty())
-				throw new ReaderException("Could not find the body of the article at URL "+url);
-			else
-			{	Iterator<Element> it = parElts.iterator();
-				Element parElt = it.next();
-				String classStr = parElt.attr(HtmlNames.ATT_CLASS);
-				while(!classStr.equalsIgnoreCase(CLASS_ARTICLE_END))
-				{	processAnyElement(parElt, rawStr);
-					rawStr.append("\n");
-					parElt = it.next();
-					classStr = parElt.attr(HtmlNames.ATT_CLASS);
-				}
-			}
+			Element contentElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_ARTICLE_BODY).first();
+			processAnyElement(contentElt, rawStr);
 			
 			// create and init article object
 			result = new Article(name);
@@ -240,7 +240,7 @@ public class LaVoixDuNordReader extends AbstractJournalReader
 			// clean text
 			result.setRawText(rawText);
 			logger.log("Length of the raw text: "+rawText.length()+" chars.");
-			
+
 			// language
 			if(language==null)
 			{	language = CommonStringTools.detectLanguage(rawText,false);

@@ -1,4 +1,4 @@
-package fr.univavignon.retrieval.reader;
+package fr.univavignon.retrieval;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -41,8 +41,8 @@ import de.l3s.boilerpipe.extractors.ArticleExtractor;
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.tools.strings.CommonStringTools;
-import fr.univavignon.retrieval.reader.AbstractArticleReader;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.AbstractArticleReader;
+import fr.univavignon.retrieval.ReaderException;
 import fr.univavignon.tools.html.HtmlNames;
 import fr.univavignon.tools.html.HtmlTools;
 

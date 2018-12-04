@@ -1,4 +1,4 @@
-package fr.univavignon.retrieval.reader;
+package fr.univavignon.retrieval;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -57,15 +57,15 @@ import org.jsoup.select.Elements;
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.tools.files.CommonFileNames;
-import fr.univavignon.retrieval.reader.journals.LExpressReader;
-import fr.univavignon.retrieval.reader.journals.LaProvenceReader;
-import fr.univavignon.retrieval.reader.journals.LaVoixDuNordReader;
-import fr.univavignon.retrieval.reader.journals.LeFigaroReader;
-import fr.univavignon.retrieval.reader.journals.LeMondeReader;
-import fr.univavignon.retrieval.reader.journals.LeParisienReader;
-import fr.univavignon.retrieval.reader.journals.LePointReader;
-import fr.univavignon.retrieval.reader.journals.LiberationReader;
-import fr.univavignon.retrieval.reader.wikipedia.WikipediaReader;
+import fr.univavignon.retrieval.journals.LExpressReader;
+import fr.univavignon.retrieval.journals.LaProvenceReader;
+import fr.univavignon.retrieval.journals.LaVoixDuNordReader;
+import fr.univavignon.retrieval.journals.LeFigaroReader;
+import fr.univavignon.retrieval.journals.LeMondeReader;
+import fr.univavignon.retrieval.journals.LeParisienReader;
+import fr.univavignon.retrieval.journals.LePointReader;
+import fr.univavignon.retrieval.journals.LiberationReader;
+import fr.univavignon.retrieval.wikipedia.WikipediaReader;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.html.HtmlNames;

@@ -39,7 +39,7 @@ import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.retrieval.ArticleRetriever;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.ReaderException;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;

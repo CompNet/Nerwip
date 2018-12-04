@@ -38,7 +38,7 @@ import fr.univavignon.nerwip.evaluation.recognition.measures.AbstractRecognition
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.retrieval.ArticleRetriever;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.ReaderException;
 
 /**
  * This class is used to evaluate the performance

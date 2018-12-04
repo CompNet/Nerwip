@@ -60,7 +60,7 @@ import fr.univavignon.search.results.WebSearchResults;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorException;
 import fr.univavignon.nerwip.processing.combiner.straightcombiner.StraightCombiner;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.ReaderException;
 import fr.univavignon.search.tools.files.SearchFileNames;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;

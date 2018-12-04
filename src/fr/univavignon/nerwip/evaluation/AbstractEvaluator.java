@@ -36,7 +36,7 @@ import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.processing.InterfaceProcessor;
 import fr.univavignon.nerwip.processing.ProcessorException;
-import fr.univavignon.retrieval.reader.ReaderException;
+import fr.univavignon.retrieval.ReaderException;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;

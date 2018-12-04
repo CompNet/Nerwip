@@ -1,4 +1,4 @@
-package fr.univavignon.retrieval.reader;
+package fr.univavignon.retrieval;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
