@@ -43,7 +43,7 @@ public class DbpCommonTools
 	/////////////////////////////////////////////////////////////////
 	// URL			 		/////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	/* TODO the lookup service works only for english,as of april 2017 
+	/* TODO the lookup service works only for english, as of april 2017 
 	 * manual: https://github.com/dbpedia/lookup
 	 */
 //	/** URL to access the DBpedia lookup service: prefix */

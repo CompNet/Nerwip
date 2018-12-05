@@ -93,7 +93,7 @@ public class ArticleRetriever
 	 * Switches the cache flag for the
 	 * reader used by this {@code ArticleRetriever},
 	 * which means: whether or not the HTML
-	 * source code should be cached (independtly 
+	 * source code should be cached (independently 
 	 * from the textual content).
 	 * 
 	 * @param enabled
@@ -175,7 +175,11 @@ public class ArticleRetriever
 			catch(Exception e)
 			{	logger.decreaseOffset();
 				logger.decreaseOffset();
-				throw e;
+//				throw e;
+				logger.log("ERROR: the specific reader did not work: it is probably obsolete due to some change in the web page structure. Now trying the generic reader instead.");
+				// if the specific reader does not work, just apply the generic one
+				reader = new BoilerpipeReader();
+				result = reader.read(url, language);
 			}
 			logger.decreaseOffset();
 			
@@ -200,11 +204,11 @@ public class ArticleRetriever
 	}
 
 	/**
-	 * Returns the texts corresponding to the specified name.
+	 * Returns the texts corresponding to the specified name,
+	 * which is supposed to be cached (otherwise, it will fail).
 	 * <br/>
-	 * We suppose the corresponding article was previously cached,
-	 * otherwise the method will fail, and you rather have to
-	 * use {@link #process(URL)}. 
+	 * If the string is actually a URL, this method behaves  
+	 * as {@link #process(URL)}. 
 	 * 
 	 * @param name
 	 * 		Name of the folder containing the article.

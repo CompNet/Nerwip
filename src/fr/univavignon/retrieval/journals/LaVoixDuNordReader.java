@@ -48,7 +48,7 @@ import fr.univavignon.tools.html.HtmlTools;
 /**
  * From a specified URL, this class retrieves a page
  * from the French newspaper La Voix du Nord (as of 21/08/2017),
- * and gives access to the raw and linked texts, as well
+ * and gives access to the raw text, as well
  * as other metadata (authors, publishing date, etc.).
  * 
  * @author Vincent Labatut

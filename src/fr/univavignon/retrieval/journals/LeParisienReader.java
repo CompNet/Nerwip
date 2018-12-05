@@ -48,7 +48,7 @@ import fr.univavignon.tools.html.HtmlNames;
 /**
  * From a specified URL, this class retrieves a page
  * from the French newspaper Le Parisien (as of 17/08/2017),
- * and gives access to the raw and linked texts, as well
+ * and gives access to the raw text, as well
  * as other metadata (authors, publishing date, etc.).
  * 
  * @author Vincent Labatut
@@ -66,10 +66,10 @@ public class LeParisienReader extends AbstractJournalReader
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-//		URL url = new URL("http://www.leparisien.fr/economie/tabac-pourquoi-les-francais-fument-toujours-autant-17-08-2017-7196751.php");
+		URL url = new URL("http://www.leparisien.fr/economie/tabac-pourquoi-les-francais-fument-toujours-autant-17-08-2017-7196751.php");
 //		URL url = new URL("http://www.leparisien.fr/economie/loi-travail-l-elysee-lache-du-lest-sur-le-timing-24-05-2017-6978660.php");
 //		URL url = new URL("http://actualites.leparisien.fr/bertrand-delanoe");
-		URL url = new URL("http://www.leparisien.fr/paris-75/paris-fait-elle-assez-pour-le-logement-social-05-03-2017-6734658.php");
+//		URL url = new URL("http://www.leparisien.fr/paris-75/paris-fait-elle-assez-pour-le-logement-social-05-03-2017-6734658.php");
 		
 		AbstractArticleReader reader = new LeParisienReader();
 		Article article = reader.processUrl(url, ArticleLanguage.FR);

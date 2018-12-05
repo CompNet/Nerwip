@@ -49,7 +49,7 @@ import fr.univavignon.tools.html.HtmlTools;
 /**
  * From a specified URL, this class retrieves a page
  * from the French newspaper LeMonde (as of 17/08/2017),
- * and gives access to the raw and linked texts, as well
+ * and gives access to the raw text, as well
  * as other metadata (authors, publishing date, etc.).
  * 
  * @author Vincent Labatut
@@ -196,8 +196,8 @@ public class LeMondeReader extends AbstractJournalReader
 				logger.decreaseOffset();
 			}
 			
-			// get raw and linked texts
-			logger.log("Get raw and linked texts");
+			// get raw text
+			logger.log("Get raw text");
 			StringBuilder rawStr = new StringBuilder();
 			
 			// processing each element in the article body

@@ -52,7 +52,7 @@ import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a Web page,
- * and gives access to the raw and linked texts. A generic
+ * and gives access to the raw text. A generic
  * strategy is applied to detect which part of the page
  * corresponds to some relevant content (cf. {@link #getContentElement(Element)}.
  * 
@@ -211,7 +211,7 @@ public class GenericReader extends AbstractArticleReader
 			}
 
 			// processing each element in the content part
-			logger.log("Get raw and linked texts");
+			logger.log("Get raw text");
 			processAnyElement(contentElt, rawStr);
 			
 			// create article object

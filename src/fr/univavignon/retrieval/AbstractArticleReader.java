@@ -290,7 +290,8 @@ public abstract class AbstractArticleReader
 					Response response = Jsoup.connect(url.toString())
 				           .ignoreContentType(true)
 //				           .userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
-				           .userAgent("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0")
+//				           .userAgent("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0")
+				           .userAgent("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:63.0) Gecko/20100101 Firefox/63.0")
 				           .referrer("http://www.google.fr")   
 				           .timeout(timeOut) 
 				           .followRedirects(true)
@@ -408,7 +409,8 @@ public abstract class AbstractArticleReader
             connection.setChunkedStreamingMode(0);
             connection.setRequestProperty("Content-Length", "0");
 //			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36");
+//			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36");
+			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
             connection.connect();
             
             // setup input stream
@@ -750,7 +752,7 @@ public abstract class AbstractArticleReader
 	}
 	
 	/**
-	 * Just inserts a line break in both raw and linked texts.
+	 * Just inserts a line break in the raw text.
 	 * 
 	 * @param element
 	 * 		Element to be processed.

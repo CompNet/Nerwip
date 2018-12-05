@@ -27,6 +27,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,8 +48,8 @@ import fr.univavignon.tools.html.HtmlTools;
 
 /**
  * From a specified URL, this class retrieves a page
- * from the French newspaper La Provence (as of 18/08/2017),
- * and gives access to the raw and linked texts, as well
+ * from the French newspaper La Provence (as of 05/12/2018),
+ * and gives access to the raw text, as well
  * as other metadata (authors, publishing date, etc.).
  * 
  * @author Vincent Labatut
@@ -105,28 +106,25 @@ public class LaProvenceReader extends AbstractJournalReader
 	/////////////////////////////////////////////////////////////////	
 	/** Format used to parse the dates */
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX",Locale.FRENCH);
-
-	/** Item prop of the publication date */
-	private final static String ITEMPROP_DATE_PUB = "datePublished";
-	/** Item prop of the modification date */
-	private final static String ITEMPROP_DATE_UPDT = "dateModified";
-
-	/** Class of the author names */
-	private final static String CLASS_AUTHOR = "signature";
+	
 	/** Class of the article text */
 	private final static String CLASS_TEXT = "p402_premium";
 	/** Class of the article live event */
 	private final static String CLASS_LIVE = "live_container";
+	/** Class of the article title */
+	private final static String CLASS_TITLE = "title-article";	
+	/** Class of the article header */
+	private final static String CLASS_ARTICLE_HEADER = "header-article";
+	/** Class of the article header */
+	private final static String CLASS_ARTICLE_BODY = "body-article";
+	/** Class of the article author */
+	private final static String CLASS_AUTHOR = "author-article";
+	/** Class of the restricted access */
+	private final static String CLASS_RESTRICTED = "body-article-premium";
 	
-	/** Id of the article information */
-	private final static String ID_INFO = "article-infos";
-	/** Id of the title */
-	private final static String ID_TITLE = "divTitle";
-	/** Id of the article body */
-	private final static String ID_BODY = "id_article_corps";
-	/** Id of the restricted access */
-	private final static String ID_RESTRICTED = "textePayant";
-	
+	/** Text put before the author's name*/
+	private final static String AUTHOR_PREFIX = "par ";
+
 	@Override
 	public Article processUrl(URL url, ArticleLanguage language) throws ReaderException
 	{	Article result = null;
@@ -159,47 +157,56 @@ public class LaProvenceReader extends AbstractJournalReader
 			else if(articleElts.size()>1)
 				logger.log("WARNING: found several <article> elements in the same page.");
 			articleElt = articleElts.first();
-			Element infoElt = articleElt.getElementById(ID_INFO);
-			Element bodyElt = articleElt.getElementById(ID_BODY);
+			Element headerElt = articleElt.getElementsByClass(CLASS_ARTICLE_HEADER).first();
+			Element bodyElt = articleElt.getElementsByClass(CLASS_ARTICLE_BODY).first();
 			
 			// get the title
-			Element titleElt = infoElt.getElementById(ID_TITLE);
-			title = titleElt.text();
-			logger.log("Get title: \""+title+"\"");
-	
+			Elements titleElts = headerElt.getElementsByClass(CLASS_TITLE);
+			if(!titleElts.isEmpty())
+			{	Element titleElt = titleElts.first();
+				title = titleElt.text();
+				logger.log("Found title: \""+title+"\"");
+			}
+			else
+				logger.log("Did not find the title");
+
 			// retrieve the dates
-			Elements pubDateElts = infoElt.getElementsByAttributeValueContaining(HtmlNames.ATT_ITEMPROP, ITEMPROP_DATE_PUB);
+			Elements pubDateElts = headerElt.getElementsByTag(HtmlNames.ELT_TIME);
 			if(!pubDateElts.isEmpty())
-			{	Element pubDateElt = pubDateElts.first();
+			{	Iterator<Element> it = pubDateElts.iterator();
+				Element pubDateElt = it.next();
 				publishingDate = HtmlTools.getDateFromTimeElt(pubDateElt,DATE_FORMAT);
 				logger.log("Found the publishing date: "+publishingDate);
+				if(it.hasNext())
+				{	Element modDateElt = it.next();
+					modificationDate = HtmlTools.getDateFromTimeElt(modDateElt,DATE_FORMAT);
+					logger.log("Found a last modification date: "+modificationDate);
+				}
+				else
+					logger.log("Did not find any last modification date");
 			}
 			else
 				logger.log("Did not find any publication date");
-			Elements updtDateElts = infoElt.getElementsByAttributeValueContaining(HtmlNames.ATT_ITEMPROP, ITEMPROP_DATE_UPDT);
-			if(!updtDateElts.isEmpty())
-			{	Element updtDateElt = updtDateElts.first();
-				modificationDate = HtmlTools.getDateFromTimeElt(updtDateElt,DATE_FORMAT);
-				logger.log("Found the last modification date: "+modificationDate);
-			}
-			else
-				logger.log("Did not find any last modification date");
 			
 			// retrieve the author
-			Element authorElt = articleElt.getElementsByAttributeValueContaining(HtmlNames.ATT_CLASS, CLASS_AUTHOR).first();
-			if(authorElt==null)
+			Elements authorElts = articleElt.getElementsByClass(CLASS_AUTHOR);
+			if(authorElts.isEmpty())
 				logger.log("Could not find any author");
 			else
-			{	String authorName = authorElt.text();
+			{	Element authorElt = authorElts.first();
+				String authorName = authorElt.text();
 				authorName = removeGtst(authorName);
+				if(authorName.toLowerCase(Locale.ENGLISH).startsWith(AUTHOR_PREFIX.toLowerCase(Locale.ENGLISH)))
+					authorName = authorName.substring(AUTHOR_PREFIX.length());
 				logger.log("Found the author: "+authorName);
 				authors.add(authorName);
 			}
 			
 			// check if the access is restricted
-			Element restrElt = articleElt.getElementById(ID_RESTRICTED);
-			if(restrElt!=null)
+			Elements restrElts = bodyElt.getElementsByClass(CLASS_RESTRICTED);
+			if(!restrElts.isEmpty())
 			{	logger.log("WARNING: The access to this article is limited, only the beginning is available.");
+				Element restrElt = restrElts.first();  
 				processAnyElement(restrElt, rawStr);
 			}
 			else
@@ -240,7 +247,7 @@ public class LaProvenceReader extends AbstractJournalReader
 				result.addAuthors(authors);
 			
 			// add the title to the content, just in case the entity appears there but not in the article body
-			String rawText = rawStr.toString();
+			String rawText = rawStr.toString().trim();
 			if(title!=null && !title.isEmpty())
 				rawText = title + "\n" + rawText;
 			

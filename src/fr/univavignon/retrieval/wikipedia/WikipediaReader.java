@@ -45,7 +45,7 @@ import fr.univavignon.tools.strings.StringTools;
 
 /**
  * From a specified URL, this class retrieves a Wikipedia page,
- * and gives access to the raw and linked texts.
+ * and gives access to the raw texts.
  * 
  * @author Vincent Labatut
  */
@@ -196,14 +196,14 @@ public class WikipediaReader extends AbstractArticleReader
 		Arrays.asList("audio books", "audio recordings", /*"awards", "awards and honors",*/
 			"bibliography", "books",
 			"collections", "collections (selection)",
-			"directed",
+			"directed", "discography",
 			"external links",
 			"film adaptations", "film and television adaptations", "filmography", "footnotes", "further reading",
 			"gallery",
 //			"honours",
 			"main writings",
 			"notes", "nudes",
-			"patents", "publications",
+			"patents", "productions", "publications",
 			"quotes",
 			"references",
 			"secondary bibliography", "see also", "selected bibliography", "selected filmography", "selected list of works", "selected works", "self-portraits", "sources", "stage adaptations",
@@ -798,7 +798,7 @@ public class WikipediaReader extends AbstractArticleReader
 				{	processSpanElement(element,rawStr);
 				}
 				
-				// hyperlinks must be included in the linked string, provided they are not external
+				// hyperlinks could be treated there
 				else if(eltName.equals(HtmlNames.ELT_A))
 				{	processHyperlinkElement(element,rawStr);
 				}
@@ -886,8 +886,8 @@ public class WikipediaReader extends AbstractArticleReader
 			String title = firstHeadingElt.text();
 			logger.log("Get title: "+title);
 			
-			// get raw and linked texts
-			logger.log("Get raw and linked texts.");
+			// get raw text
+			logger.log("Get raw text.");
 			StringBuilder rawStr = new StringBuilder();
 			Element mainContentElt = document.getElementsByAttributeValue(HtmlNames.ATT_ID,ID_CONTENT).first();
 			Element bodyContentElt = mainContentElt.getElementsByClass(CLASS_CONTENT).first();
@@ -907,7 +907,7 @@ public class WikipediaReader extends AbstractArticleReader
 					String str = fakeRaw.toString().trim().toLowerCase(Locale.ENGLISH);
 					// check section name
 					int level = HtmlNames.ELT_HS.indexOf(eltName);
-					if(IGNORED_SECTIONS.get(language.ordinal()).contains(str))
+					if(IGNORED_SECTIONS.get(this.language.ordinal()).contains(str))
 						ignoringSectionLevel = Math.min(ignoringSectionLevel,level);
 					else
 					{	if(level<=ignoringSectionLevel)
@@ -960,7 +960,7 @@ public class WikipediaReader extends AbstractArticleReader
 					{	first = !processSpanElement(element,rawStr);
 					}
 					
-					// hyperlinks must be included in the linked string, provided they are not external
+					// we could list hyperlinks here if needed
 					else if(eltName.equals(HtmlNames.ELT_A))
 					{	first = !processHyperlinkElement(element,rawStr);
 					}
@@ -979,7 +979,7 @@ public class WikipediaReader extends AbstractArticleReader
 			result.setTitle(title);
 			result.setUrl(url);
 			result.initRetrievalDate();
-			result.setLanguage(language);
+			result.setLanguage(this.language);
 			
 			// clean text
 			String rawText = rawStr.toString();

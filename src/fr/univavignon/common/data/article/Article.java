@@ -393,7 +393,7 @@ public class Article implements Comparable<Article>
 	// CONTENT			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Cleans both texts (raw and linked) of the article, in order to
+	 * Cleans the raw text of the article, in order to
 	 * remove non-standard space characters, punctuation, ligatures, which
 	 * could complicate the task of the recognizers, or any subsequent 
 	 * processing.

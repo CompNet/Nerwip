@@ -202,7 +202,7 @@ public class ResultsManagement
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Removes the files produced during NER detection,
-	 * but not the article files: raw text, linked text,
+	 * but not the article files: raw text,
 	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed.
 	 * 
@@ -236,7 +236,7 @@ public class ResultsManagement
 	
 	/**
 	 * Removes the files produced during NER detection,
-	 * but not the article files: raw text, linked text,
+	 * but not the article files: raw text,
 	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed.
 	 * <br/>
@@ -258,7 +258,7 @@ public class ResultsManagement
 
 	/**
 	 * Removes the files produced during NER detection,
-	 * but not the article files: raw text, linked text,
+	 * but not the article files: raw text,
 	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed.
 	 * <br/>
@@ -310,7 +310,7 @@ public class ResultsManagement
 	/////////////////////////////////////////////////////////////////
 	/**
 	 * Moves the files produced during NER detection,
-	 * but not the article files: raw text, linked text,
+	 * but not the article files: raw text,
 	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed. The
 	 * files are moved to the specified targeted folder.
@@ -367,7 +367,7 @@ public class ResultsManagement
 	
 	/**
 	 * Moves the files produced during NER detection,
-	 * but not the article files: raw text, linked text,
+	 * but not the article files: raw text,
 	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed. The
 	 * files are moved to the specified targeted folder.
@@ -392,7 +392,7 @@ public class ResultsManagement
 	
 	/**
 	 * Moves the files produced during NER detection,
-	 * but not the article files: raw text, linked text,
+	 * but not the article files: raw text,
 	 * reference mentions, original html file, property file,
 	 * etc. Only the specified articles are processed. The
 	 * files are moved to the specified targeted folder.

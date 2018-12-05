@@ -1,4 +1,4 @@
-package fr.univavignon;
+package fr.univavignon.nerwip;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
@@ -155,7 +155,8 @@ public class Test
     	
 //		String name = "Barack_Obama";
      	
-//		testHeidelTimeRaw();
+//		testTreeTagger();
+		testHeidelTimeRaw();
 
 //		testDbIdRetriever();
 //		testDbTypeRetriever();
@@ -1603,6 +1604,32 @@ public class Test
 		System.out.println("\nResult="+result);
 	}
 	
+	/**
+	 * Test the installation of TreeTagger.
+	 * 
+	 * @exception Exception
+	 * 		Some problem occurred...
+	 */
+	private static void testTreeTagger() throws Exception
+	{	// windows commands
+//		Process p = Runtime.getRuntime().exec("cmd /c echo %PATH%");
+//		Process p = Runtime.getRuntime().exec("cmd /c cd");
+//		Process p = Runtime.getRuntime().exec("cmd /c dir res\\ner\\treetagger");
+//		Process p = Runtime.getRuntime().exec("perl -h");
+		
+		Process p = Runtime.getRuntime().exec("ls -l res/ner/treetagger");
+		
+		int res = p.waitFor();
+		System.out.println("return code="+res);
+	 
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	    StringBuffer sb = new StringBuffer();
+	    String line = "";			
+	    while ((line = reader.readLine())!= null)
+	    	sb.append(line + "\n");
+	    System.out.println(sb);
+	}
+
 	/**
 	 * Test the installation of TagEn.
 	 * 

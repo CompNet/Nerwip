@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Combinations;
@@ -125,7 +126,7 @@ public class CommonStringTools
 	// PROPER NAMES		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/**
-	 * Generates all possible human names from a string representing
+	 * Generates all possible human names from various strings representing
 	 * the full name. This methods allows considering various combinations
 	 * of lastname(s) and firstname(s).
 	 * 
@@ -171,6 +172,25 @@ public class CommonStringTools
 			}
 		}
 		
+		return result;
+	}
+	
+	/**
+	 * Generates all possible human names from a string representing
+	 * the full name. This methods allows considering various combinations
+	 * of lastname(s) and firstname(s).
+	 * 
+	 * @param name
+	 * 		The surface form of the entity, should contain several names 
+	 * 		separated by spaces.
+	 * @return
+	 * 		A list of strings corresponding to alternative forms of the 
+	 * 		original name.
+	 */
+	public static List<String> getPossibleNames(String name)
+	{	Set<String> names = new TreeSet<String>();
+		names.add(name);
+		List<String> result = getPossibleNames(names);
 		return result;
 	}
 	

@@ -29,6 +29,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
+import fr.univavignon.tools.log.HierarchicalLogger;
+import fr.univavignon.tools.log.HierarchicalLoggerManager;
+
 /**
  * This class contains a set of methods related to HTML managment.
  * 
@@ -36,6 +39,12 @@ import org.jsoup.nodes.TextNode;
  */
 public class HtmlTools
 {	
+	/////////////////////////////////////////////////////////////////
+	// LOGGER		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Common object used for logging */
+	public static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+	
 	/////////////////////////////////////////////////////////////////
 	// TEXT				/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -98,7 +107,8 @@ public class HtmlTools
 		{	result = dateFormat.parse(valueStr);
 		}
 		catch (ParseException e)
-		{	e.printStackTrace();
+		{	//e.printStackTrace();
+//			logger.log("WARNING: could not parse date using format \""+dateFormat+"\" ("+timeElt+")");
 		}
 	
 		return result;

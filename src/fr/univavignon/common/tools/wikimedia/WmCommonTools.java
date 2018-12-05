@@ -376,7 +376,7 @@ public class WmCommonTools
 	 * @throws JDOMException
 	 * 		Problem while parsing the service response.
 	 */
-	private static Map<String,String> retrieveIdsFromName(List<String> possibleNames, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
+	protected static Map<String,String> retrieveIdsFromName(List<String> possibleNames, ArticleLanguage language) throws ClientProtocolException, IOException, JDOMException
 	{	logger.log("Retrieving ids for entity "+possibleNames.get(0)+" (in "+language+")");
 		logger.increaseOffset();
 		Map<String,String> result = new HashMap<String,String>();
@@ -499,7 +499,7 @@ public class WmCommonTools
 	 * @throws JDOMException 
 	 * 		Problem while parsing the service response.
 	 */
-	private static Map<String,String> retrieveIdsFromDisambiguation(ArticleLanguage language, String label) throws IllegalStateException, IOException, JDOMException
+	protected static Map<String,String> retrieveIdsFromDisambiguation(ArticleLanguage language, String label) throws IllegalStateException, IOException, JDOMException
 	{	logger.log("Processing the disambiguation page "+label+" (in "+language+")");
 		logger.increaseOffset();
 		Map<String,String> result = new HashMap<String,String>();
@@ -997,32 +997,4 @@ public class WmCommonTools
 		logger.decreaseOffset();
 		logger.log("Done: retrieved "+names.size()+" names");
 	}
-	
-//    public static void main(String[] args) throws Exception
-//    {	// possible names
-////    	System.out.println(getPossibleNames("Lastname")+"\n\n");
-////    	System.out.println(getPossibleNames("Firstname Lastname")+"\n\n");
-////    	System.out.println(getPossibleNames("Firstname Middlename Lastname")+"\n\n");
-////    	System.out.println(getPossibleNames("Firstname Middlename Lastname1 Lastname2")+"\n\n");
-////    	System.out.println(getPossibleNames("Firstname1 Firstname2 Middlename Lastname1 Lastname2")+"\n\n");
-//    	
-//    	// disambiguation page
-////    	Map<String,String> res = retrieveIdsFromDisambiguation(ArticleLanguage.FR, "Lecointe");
-////    	System.out.println(res);
-//    	
-//    	// retrieve the ids
-////    	List<String> possibleNames = getPossibleNames("Adolphe Lucien Lecointe");
-////    	Map<String,String> res = retrieveIdsFromName(possibleNames, ArticleLanguage.FR);
-////    	System.out.println(res);
-//    	
-//    	// general lookup method
-////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Adolphe Lucien Lecointe", EntityType.PERSON);
-//////    	AbstractNamedEntity entity = AbstractNamedEntity.buildEntity(-1, "Achille Eugène Fèvre", EntityType.PERSON);
-////    	lookupNamedEntity(entity, ArticleLanguage.FR);
-////    	System.out.println(entity);
-////    	Map<KnowledgeBase, String> extIds = entity.getExternalIds();
-////    	System.out.println(extIds);
-//    	
-//    	extractKbList();
-//	}
 }

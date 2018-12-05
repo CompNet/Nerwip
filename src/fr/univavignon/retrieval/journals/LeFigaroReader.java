@@ -49,7 +49,7 @@ import fr.univavignon.tools.html.HtmlTools;
 /**
  * From a specified URL, this class retrieves a page
  * from the French newspaper Le Figaro (as of 09/09/2017),
- * and gives access to the raw and linked texts, as well
+ * and gives access to the raw text, as well
  * as other metadata (authors, publishing date, etc.).
  * 
  * @author Vincent Labatut

@@ -46,8 +46,7 @@ import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
 /**
  * This class handles DBpedia ids, and more particularly
- * the mapping between named entities and their DBpedia
- * ids.
+ * the mapping between named entities and their DBpedia ids.
  * <br/>
  * TODO to be properly integrated in {@link DbpCommonTools}.
  * 

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/boilerpipe-1.2.0.jar" sourcepath="lib/boilerpipe-sources-1.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-csv-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar" sourcepath="lib/commons-codec-1.10-sources.jar"/>
@@ -40,11 +44,14 @@
 	<classpathentry kind="lib" path="lib/LbjNerTagger-2.1.jar" sourcepath="lib/LbjNerTagger-2.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/libsvm-3.17.jar" sourcepath="lib/libsvm-3.17-src.zip"/>
 	<classpathentry kind="lib" path="lib/lingpipe-4.1.0.jar" sourcepath="lib/lingpipe-4.0.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/nekohtml-1.9.13.jar"/>
 	<classpathentry kind="lib" path="lib/nerc-fr-bin.jar"/>
 	<classpathentry kind="lib" path="lib/opennlp-maxent-3.0.3.jar" sourcepath="lib/opennlp-maxent-3.0.3-src.zip"/>
 	<classpathentry kind="lib" path="lib/opennlp-tools-1.5.3.jar" sourcepath="lib/opennlp-tools-1.5.3-src.zip"/>
 	<classpathentry kind="lib" path="lib/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="lib/stanford-ner-2012-11-11.jar" sourcepath="lib/stanford-ner-1.2.7-src.zip"/>
 	<classpathentry kind="lib" path="lib/thumbelina.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.11.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
