@@ -12,6 +12,10 @@
 // ARTICLE RETRIEVAL
 ////////////////////////////////////////////////////////////////////
 - check that the retriever works correctly (all variants: WP, Web, etc.)
+  - in a separate class:
+  		1) read existing article
+  		2) re-clean it
+  		3) compare with existing article
   - check where the cleaning is done
 
 - read/write existing corpora and check whether new texts are different
