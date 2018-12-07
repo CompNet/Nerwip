@@ -46,6 +46,7 @@ import org.xml.sax.SAXException;
 import fr.univavignon.common.data.article.ArticleList;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.common.tools.files.CommonFileTools;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
@@ -116,7 +117,7 @@ public class ArticleLists
 	{	logger.log("Retrieving the list of articles");
 		ArticleList result = null;
 //		File articles[] = corpusFolder.listFiles(FileTools.FILTER_DIRECTORY);
-		File articles[] = corpusFolder.listFiles(fr.univavignon.common.tools.files.CommonFileTools.FILTER_ARTICLES);
+		File articles[] = corpusFolder.listFiles(CommonFileTools.FILTER_ARTICLES);
 		if(articles!=null)
 		{	List<File> list = Arrays.asList(articles);
 			Collections.sort(list);

@@ -61,6 +61,7 @@ import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.edition.MentionEditor;
 import fr.univavignon.nerwip.processing.ProcessorName;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class implements a panel designed to
@@ -553,6 +554,21 @@ if(endPos>document.getLength())
 //				document.setCharacterAttributes(startPos,length,searchStyle,true);
 //				//System.out.println("doc length: "+document.getLength()+" startPos:"+startPos+" endPos:"+endPos);				
 //			}
+		
+			// other stuff (comparison between raw and clean text)
+			String rawText = textPane.getText();
+			String cleanText = StringTools.cleanText(rawText, ArticleLanguage.FR);
+			int i = 0;
+			boolean goOn = true;
+			while(i<rawText.length() && i<cleanText.length() && goOn)
+			{	char c1 = (char)rawText.codePointAt(i);
+				char c2 = (char)cleanText.codePointAt(i);
+				if(c1!=c2)
+					goOn = false;
+				else
+					i++;
+			}
+			document.setCharacterAttributes(i,rawText.length(),searchStyle,true);
 //		}
 //		catch (BadLocationException e)
 //		{	e.printStackTrace();

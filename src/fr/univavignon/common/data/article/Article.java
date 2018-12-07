@@ -560,11 +560,11 @@ public class Article implements Comparable<Article>
 		result.setRawText(rawText);
 		
 		// clean the texts
-		result.cleanContent();
-		// possibly re-record the article if its content was changed due to cleaning
-		boolean changed = !rawText.equals(result.getRawText());
-		if(changed)
-			result.write();
+//		result.cleanContent();
+//		// possibly re-record the article if its content was changed due to cleaning
+//		boolean changed = !rawText.equals(result.getRawText());
+//		if(changed)
+//			result.write();
 	}
 	
 	/**

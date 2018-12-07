@@ -181,7 +181,7 @@ public class StringTools
 	// PUNCTUATION		/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Accepted punctuation marks, in a clean text */
-	private final static String PUNCTUATION = "'():,\\-!.\";&@%+";
+	private final static String PUNCTUATION = "'():,\\-!?.\";&@%+";
 	
 	/**
 	 * Checks whether the specified character is a punctuation mark or not.

@@ -27,11 +27,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.tools.files.CommonFileNames;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
+import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class was used to clean articles, in order to avoid problems 
@@ -60,8 +62,11 @@ public class ArticleCleaning
 	 * 		Problem while comparing.
 	 */
 	public static void main(String[] args) throws Exception
-	{	boolean includeAnnotatedText = false;
-		cleanAll(includeAnnotatedText);
+	{	
+//		boolean includeAnnotatedText = false;
+//		cleanAll(includeAnnotatedText);
+		
+		checkAll(ArticleLanguage.FR);
 	}
 		
 	/////////////////////////////////////////////////////////////////
@@ -71,7 +76,7 @@ public class ArticleCleaning
 	private static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 
 	/////////////////////////////////////////////////////////////////
-	// PROCESS		/////////////////////////////////////////////////
+	// CLEAN		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** File containing the reference mentions */
 	private final static String FI_REFERENCE_TEXT = "reference" + FileNames.EX_TEXT;
@@ -99,7 +104,7 @@ public class ArticleCleaning
 	}
 	
 	/**
-	 * Clean the specified article.
+	 * Cleans the specified article.
 	 * 
 	 * @param article
 	 * 		Folder of the article to clean.
@@ -195,5 +200,93 @@ public class ArticleCleaning
 		}
 		
 		return result;
+	}
+
+	/////////////////////////////////////////////////////////////////
+	// CHECK		/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Compares the original and (re-)cleaned versions of each article
+	 * in the corpus. This to check whether new adjustments in the 
+	 * cleaning process affect already existing articles.
+	 * @param language 
+	 * 		Language of the article.
+	 * 
+	 * @throws IOException
+	 * 		Problem while accessing the file
+	 */
+	private static void checkAll(ArticleLanguage language) throws IOException
+	{	logger.log("Check all articles in the out folder");
+		logger.increaseOffset();
+		
+		// get the list of articles
+		List<File> articles = ArticleLists.getArticleList();
+		for(File article: articles)
+			checkArticle(article,language);
+		
+		logger.decreaseOffset();
+		logger.log("All articles checked");
+	}
+	
+	/**
+	 * Checks the specified article. Compares the original and 
+	 * (re-)cleaned versions, in order to check whether new 
+	 * adjustments in the cleaning process affect already 
+	 * existing articles.
+
+	 * 
+	 * @param article
+	 * 		Folder of the article to clean.
+	 * @param language 
+	 * 		Language of the article.
+	 * 
+	 * @throws IOException 
+	 * 		Problem while accessing the files.
+	 */
+	private static void checkArticle(File article, ArticleLanguage language) throws IOException
+	{	String name = article.getName();
+		logger.log("Checking article "+name);
+		logger.increaseOffset();
+		
+		// retrieve text content
+		String rawPath = article.getPath() + File.separator + CommonFileNames.FI_RAW_TEXT;
+		logger.log("Retrieve raw text: "+rawPath);
+		String raw = FileTools.readTextFile(rawPath, "UTF-8");
+		
+		// clean text content
+		logger.log("Clean text");
+		String cleaned = StringTools.cleanText(raw, language);
+		
+		// compare content
+		logger.log("Comparing texts: (length "+raw.length()+" vs "+cleaned.length()+")");
+		logger.increaseOffset();
+		int i = 0;
+		boolean goOn = true;
+		while(i<raw.length() && i<cleaned.length() && goOn)
+		{	char c1 = (char)raw.codePointAt(i);
+			char c2 = (char)cleaned.codePointAt(i);
+			if(c1!=c2)
+			{	logger.log("Difference at position "+i+":");
+				int start = Math.max(0, i-20);
+				int end = Math.min(i+20,Math.min(raw.length(), cleaned.length()));
+				String marker = "|";
+				for(int j=0;j<i-start;j++)
+					marker = " " + marker;
+				logger.log(raw.substring(start, end));
+				logger.log(marker);
+				logger.log(cleaned.substring(start, end));
+				goOn = false;
+			}
+			i++;
+		}
+		if(goOn)
+			logger.log("The texts are exactly the same");
+		else
+		{	logger.log("The texts are different: must check why");
+		}
+		logger.decreaseOffset();
+		
+		logger.log("Check over for article "+name);
+		logger.decreaseOffset();
 	}
 }
