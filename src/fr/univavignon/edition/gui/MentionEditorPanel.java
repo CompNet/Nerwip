@@ -61,7 +61,6 @@ import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.edition.MentionEditor;
 import fr.univavignon.nerwip.processing.ProcessorName;
-import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class implements a panel designed to
@@ -545,7 +544,8 @@ if(endPos>document.getLength())
 //		try
 //		{	
 ////			Pattern pattern = Pattern.compile("([A-Za-z]|\\d)\\.[A-Za-z]");
-//			Pattern pattern = Pattern.compile("(\\b(o|O)rder|(o|O)rdre|(l|L)(e|é)gion)\\b");
+////			Pattern pattern = Pattern.compile("(\\b(o|O)rder|(o|O)rdre|(l|L)(e|é)gion)\\b");
+//			Pattern pattern = Pattern.compile("[ł/–‘’\\[\\]… —&“”£]");
 //			Matcher matcher = pattern.matcher(document.getText(0, document.getLength()));
 //			while(matcher.find())
 //			{	int startPos = matcher.start();
@@ -556,19 +556,20 @@ if(endPos>document.getLength())
 //			}
 		
 			// other stuff (comparison between raw and clean text)
-			String rawText = textPane.getText();
-			String cleanText = StringTools.cleanText(rawText, ArticleLanguage.FR);
-			int i = 0;
-			boolean goOn = true;
-			while(i<rawText.length() && i<cleanText.length() && goOn)
-			{	char c1 = (char)rawText.codePointAt(i);
-				char c2 = (char)cleanText.codePointAt(i);
-				if(c1!=c2)
-					goOn = false;
-				else
-					i++;
-			}
-			document.setCharacterAttributes(i,rawText.length(),searchStyle,true);
+//			String rawText = textPane.getText();
+//			String cleanText = StringTools.cleanText(rawText, ArticleLanguage.FR);
+//			int i = 0;
+//			boolean goOn = true;
+//			while(i<rawText.length() && i<cleanText.length() && goOn)
+//			{	char c1 = (char)rawText.codePointAt(i);
+//				char c2 = (char)cleanText.codePointAt(i);
+//				if(c1!=c2)
+//					goOn = false;
+//				else
+//					i++;
+//			}
+//			document.setCharacterAttributes(i,rawText.length(),searchStyle,true);
+			
 //		}
 //		catch (BadLocationException e)
 //		{	e.printStackTrace();

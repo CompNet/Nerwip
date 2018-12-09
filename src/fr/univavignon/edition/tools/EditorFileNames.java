@@ -45,7 +45,7 @@ public class EditorFileNames
 	// FILES		/////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Configuration file */
-	public final static String FI_CONFIGURATION = "config" + FileNames.EX_XML;
+	public final static String FI_CONFIGURATION = "edconfig" + FileNames.EX_XML;
 	/** Configuration schema */
 	public final static String FI_CONFIGURATION_SCHEMA = "edconfig" + FileNames.EX_SCHEMA;
 	

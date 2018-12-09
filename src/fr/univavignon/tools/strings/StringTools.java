@@ -368,7 +368,7 @@ public class StringTools
 //			output = output.replaceAll("\\. \\.", "\\.");
 		
 		// replace multiple consecutive punctuation marks by a single one 
-		output = output.replaceAll("([\\.,;:] )[\\.,;:]", "$1");
+		output = output.replaceAll("([\\.,;:] )\\1", "$1");
 
 		// remove spaces before dots 
 		output = output.replaceAll(" \\.", ".");
@@ -379,7 +379,7 @@ public class StringTools
 		// adds a final dot when it is missing at the end of a sentence (itself detected thanks to the new line)
 //			output = output.replaceAll("([^(\\.|\\-)])\\n", "$1.\n");
 		
-		// insert a space after a coma, when missing
+		// insert a space after a coma, when missing (pb when English numbers are present, like 3,000, or french ones like 12,34) 
 //			output = output.replaceAll(",([^ _])", ", $1");
 
 		// insert a space after a semi-column, when missing
@@ -400,19 +400,404 @@ public class StringTools
 		output = output.replaceAll("Ꜹ", "Av");
 		output = output.replaceAll("ꜻ", "av");
 		output = output.replaceAll("Ꜻ", "Av");
-		output = output.replaceAll("ﬁ", "fi");
-		output = output.replaceAll("ﬂ", "fl");
+		output = output.replaceAll("🙰", "et");
 		output = output.replaceAll("ﬀ", "ff");
 		output = output.replaceAll("ﬃ", "ffi");
 		output = output.replaceAll("ﬄ", "ffl");
+		output = output.replaceAll("ﬁ", "fi");
+		output = output.replaceAll("ﬂ", "fl");
 		output = output.replaceAll("œ", "oe");
 		output = output.replaceAll("Œ", "Oe");
 		output = output.replaceAll("ꝏ", "oo");
 		output = output.replaceAll("Ꝏ", "Oo");
+		output = output.replaceAll("ẞ", "ss");
+		output = output.replaceAll("ß", "ss");
 		output = output.replaceAll("ﬆ", "st");
+		output = output.replaceAll("ﬅ", "st");
+		output = output.replaceAll("Þ", "Th");
+		output = output.replaceAll("þ", "th");
 		output = output.replaceAll("ꜩ", "tz");
 		output = output.replaceAll("Ꜩ", "Tz");
 		output = output.replaceAll("ᵫ", "ue");
+		output = output.replaceAll("Ꝡ", "Vy");
+		output = output.replaceAll("ꝡ", "vy");
+		// phonetic transcription
+		output = output.replaceAll("ȸ", "db");
+		output = output.replaceAll("ʣ", "dz");
+		output = output.replaceAll("ʥ", "dz");
+		output = output.replaceAll("ʤ", "dz");
+		output = output.replaceAll("ʩ", "fn");
+		output = output.replaceAll("Ĳ", "IJ");
+		output = output.replaceAll("ĳ", "ij");
+		output = output.replaceAll("ʪ", "ls");
+		output = output.replaceAll("ʫ", "lz");
+		output = output.replaceAll("ɮ", "lz");
+		output = output.replaceAll("ȹ", "qp");
+		output = output.replaceAll("ʨ", "tc");
+		output = output.replaceAll("ʦ", "ts");
+		output = output.replaceAll("ʧ", "ts");
+		output = output.replaceAll("ꭐ", "ui");
+		output = output.replaceAll("ꭑ", "ui");
+		// digrapgs
+		output = output.replaceAll("Ǳ", "DZ");
+		output = output.replaceAll("ǲ", "Dz");
+		output = output.replaceAll("ǳ", "dz");
+		output = output.replaceAll("Ǆ", "DZ");
+		output = output.replaceAll("ǅ", "Dz");
+		output = output.replaceAll("ǆ", "dz");
+		output = output.replaceAll("Ĳ", "IJ");
+		output = output.replaceAll("ĳ", "ij");
+		output = output.replaceAll("Ǉ", "LJ");
+		output = output.replaceAll("ǈ", "Lj");
+		output = output.replaceAll("ǉ", "lj");
+		output = output.replaceAll("Ǌ", "NJ");
+		output = output.replaceAll("ǋ", "Nj");
+		output = output.replaceAll("ǌ", "nk");
+		// look like diacritics, but are not considered as such
+		// A
+		output = output.replaceAll("Ⱥ", "A");
+		output = output.replaceAll("ⱥ", "a");
+		output = output.replaceAll("Ą́", "Á");
+		output = output.replaceAll("ą́", "á");
+		output = output.replaceAll("Ą̃", "A");
+		output = output.replaceAll("ą̃", "a");
+		output = output.replaceAll("Ā̀", "À");
+		output = output.replaceAll("ā̀", "à");
+		output = output.replaceAll("A̋", "A");
+		output = output.replaceAll("a̋", "a");
+		output = output.replaceAll("ᶏ", "a");
+		// B
+		output = output.replaceAll("Ƀ", "B");
+		output = output.replaceAll("ƀ", "b");
+		output = output.replaceAll("Ꞗ", "B");
+		output = output.replaceAll("ꞗ", "b");
+		output = output.replaceAll("ᵬ", "b");
+		output = output.replaceAll("ᶀ", "b");
+		// C
+		output = output.replaceAll("Ȼ", "C");
+		output = output.replaceAll("ȼ", "c");
+		output = output.replaceAll("Ꞓ", "C");
+		output = output.replaceAll("ꞓ", "c");
+		output = output.replaceAll("Ƈ", "C");
+		output = output.replaceAll("ƈ", "c");
+		output = output.replaceAll("ɕ", "c");
+		output = output.replaceAll("ꞔ", "c");
+		// D
+		output = output.replaceAll("Ɖ", "D");
+		output = output.replaceAll("ɖ", "d");
+		output = output.replaceAll("Đ", "D");
+		output = output.replaceAll("đ", "d");
+		output = output.replaceAll("D̦", "D");
+		output = output.replaceAll("d̦", "d");
+		output = output.replaceAll("Ð", "D");
+		output = output.replaceAll("ð", "d");
+		output = output.replaceAll("Ɗ", "D");
+		output = output.replaceAll("ɗ", "d");
+		output = output.replaceAll("ᵭ", "d");
+		output = output.replaceAll("ᶁ", "d");
+		output = output.replaceAll("ᶑ", "d");
+		output = output.replaceAll("ȡ", "d");
+		// E
+		output = output.replaceAll("Ɇ", "E");
+		output = output.replaceAll("ɇ", "e");
+		output = output.replaceAll("Ê̄", "E");
+		output = output.replaceAll("ê̄", "e");
+		output = output.replaceAll("Ê̌", "E");
+		output = output.replaceAll("ê̌", "e");
+		output = output.replaceAll("Ė́", "E");
+		output = output.replaceAll("ė́", "e");
+		output = output.replaceAll("Ė̃", "E");
+		output = output.replaceAll("ė̃", "e");
+		output = output.replaceAll("Ę́", "E");
+		output = output.replaceAll("ę́", "e");
+		output = output.replaceAll("Ę̃", "E");
+		output = output.replaceAll("ę̃", "e");
+		output = output.replaceAll("E̋", "E");
+		output = output.replaceAll("e̋", "e");
+		output = output.replaceAll("E̩", "E");
+		output = output.replaceAll("e̩", "e");
+		output = output.replaceAll("È̩", "È");
+		output = output.replaceAll("è̩", "è");
+		output = output.replaceAll("É̩", "É");
+		output = output.replaceAll("é̩", "é");
+		output = output.replaceAll("ᶒ", "e");
+		output = output.replaceAll("ⱸ", "e");
+		output = output.replaceAll("ꬴ", "e");
+		output = output.replaceAll("ꬳ", "e");
+		output = output.replaceAll("ꬳ", "e");
+		// F
+		output = output.replaceAll("Ꞙ", "F");
+		output = output.replaceAll("ꞙ", "f");
+		output = output.replaceAll("Ƒ", "F");
+		output = output.replaceAll("ƒ", "f");
+		output = output.replaceAll("ᵮ", "f");
+		output = output.replaceAll("ᶂ", "f");
+		// G
+		output = output.replaceAll("Ꞡ", "G");
+		output = output.replaceAll("ꞡ", "g");
+		output = output.replaceAll("Ǥ", "G");
+		output = output.replaceAll("ǥ", "g");
+		output = output.replaceAll("G̃", "G");
+		output = output.replaceAll("g̃", "g");
+		output = output.replaceAll("Ɠ", "G");
+		output = output.replaceAll("ɠ", "g");
+		output = output.replaceAll("ᶃ", "g");
+		output = output.replaceAll("ꬶ", "g");
+		// H
+		output = output.replaceAll("Ħ", "H");
+		output = output.replaceAll("ħ", "h");
+		output = output.replaceAll("H̱", "H");
+		output = output.replaceAll("ẖ", "h");
+		output = output.replaceAll("Ⱨ", "H");
+		output = output.replaceAll("ⱨ", "h");
+		output = output.replaceAll("Ɦ", "H");
+		output = output.replaceAll("ɦ", "h");
+		output = output.replaceAll("ꞕ", "h");
+		// I
+		output = output.replaceAll("Ɨ", "I");
+		output = output.replaceAll("ɨ", "i");
+		output = output.replaceAll("i̇́", "i");
+		output = output.replaceAll("i̇̀", "i");
+		output = output.replaceAll("i̇̃", "i");
+		output = output.replaceAll("Į́", "i");
+		output = output.replaceAll("į̇́", "i");
+		output = output.replaceAll("Į̃", "i");
+		output = output.replaceAll("į̇̃", "i");
+		output = output.replaceAll("Ī̀", "I");
+		output = output.replaceAll("ī̀", "i");
+		output = output.replaceAll("I̋", "I");
+		output = output.replaceAll("i̋", "i");
+		output = output.replaceAll("Ɨ", "I");
+		output = output.replaceAll("ɨ", "i");
+		output = output.replaceAll("İ", "I");
+		output = output.replaceAll("ᶖ", "i");
+		output = output.replaceAll("ı", "i");
+		// J
+		output = output.replaceAll("Ɉ", "J");
+		output = output.replaceAll("ɉ", "j");
+		output = output.replaceAll("J̌", "J");
+		output = output.replaceAll("ǰ", "j");
+		output = output.replaceAll("ȷ", "j");
+		output = output.replaceAll("Ʝ", "J");
+		output = output.replaceAll("ʝ", "j");
+		output = output.replaceAll("j̇̃", "j");
+		output = output.replaceAll("ɟ", "j");
+		output = output.replaceAll("ʄ", "j");
+		// K
+		output = output.replaceAll("Ꝃ", "K");
+		output = output.replaceAll("ꝃ", "k");
+		output = output.replaceAll("Ꞣ", "K");
+		output = output.replaceAll("ꞣ", "k");
+		output = output.replaceAll("Ꝁ", "K");
+		output = output.replaceAll("ꝁ", "k");
+		output = output.replaceAll("Ꝅ", "K");
+		output = output.replaceAll("ꝅ", "k");
+		output = output.replaceAll("Ƙ", "K");
+		output = output.replaceAll("ƙ", "k");
+		output = output.replaceAll("Ⱪ", "K");
+		output = output.replaceAll("ⱪ", "k");
+		output = output.replaceAll("ᶄ", "k");
+		// L
+		output = output.replaceAll("Ƚ", "L");
+		output = output.replaceAll("ƚ", "l");
+		output = output.replaceAll("Ⱡ", "L");
+		output = output.replaceAll("ⱡ", "l");
+		output = output.replaceAll("Ꝉ", "L");
+		output = output.replaceAll("ꝉ", "l");
+		output = output.replaceAll("Ł", "L");
+		output = output.replaceAll("ł", "l");
+		output = output.replaceAll("ᴌ", "l");
+		output = output.replaceAll("L̃", "L");
+		output = output.replaceAll("l̃", "l");
+		output = output.replaceAll("Ɫ", "L");
+		output = output.replaceAll("ɫ", "l");
+		output = output.replaceAll("Ɬ", "L");
+		output = output.replaceAll("ɬ", "l");
+		output = output.replaceAll("ꞎ", "l");
+		output = output.replaceAll("ꬷ", "l");
+		output = output.replaceAll("ꬸ", "l");
+		output = output.replaceAll("ꬹ", "l");
+		output = output.replaceAll("ᶅ", "l");
+		output = output.replaceAll("ɭ", "l");
+		output = output.replaceAll("ȴ", "l");
+		// M
+		output = output.replaceAll("M̋", "M");
+		output = output.replaceAll("m̋", "m");
+		output = output.replaceAll("M̃", "M");
+		output = output.replaceAll("m̃", "m");
+		output = output.replaceAll("ᵯ", "m");
+		output = output.replaceAll("ᶆ", "m");
+		output = output.replaceAll("Ɱ", "M");
+		output = output.replaceAll("ɱ", "m");
+		output = output.replaceAll("ꬺ", "m");
+		// N
+		output = output.replaceAll("Ꞥ", "N");
+		output = output.replaceAll("ꞥ", "n");
+		output = output.replaceAll("N̈", "N");
+		output = output.replaceAll("n̈", "n");
+		output = output.replaceAll("Ɲ", "N");
+		output = output.replaceAll("ɲ", "n");
+		output = output.replaceAll("Ŋ", "N");
+		output = output.replaceAll("ŋ", "n");
+		output = output.replaceAll("Ꞑ", "N");
+		output = output.replaceAll("ꞑ", "n");
+		output = output.replaceAll("ᵰ", "n");
+		output = output.replaceAll("ᶇ", "n");
+		output = output.replaceAll("ɳ", "n");
+		output = output.replaceAll("ȵ", "n");
+		output = output.replaceAll("ꬻ", "n");
+		output = output.replaceAll("ꬼ", "n");
+		// O
+		output = output.replaceAll("Ɵ", "O");
+		output = output.replaceAll("ɵ", "o");
+		output = output.replaceAll("Ꝋ", "O");
+		output = output.replaceAll("ꝋ", "o");
+		output = output.replaceAll("Ø", "O");
+		output = output.replaceAll("ø", "o");
+		output = output.replaceAll("O͘", "O");
+		output = output.replaceAll("o͘", "o");
+		output = output.replaceAll("Ǿ", "Ó");
+		output = output.replaceAll("ǿ", "ó");
+		output = output.replaceAll("O̩", "Ó");
+		output = output.replaceAll("o̩", "ó");
+		output = output.replaceAll("Ò̩", "Ò");
+		output = output.replaceAll("ò̩", "ò");
+		output = output.replaceAll("Ó̩", "Ó");
+		output = output.replaceAll("ó̩", "ó");
+		output = output.replaceAll("Ꝍ", "O");
+		output = output.replaceAll("ꝍ", "o");
+		output = output.replaceAll("ⱺ", "o");
+		// P
+		output = output.replaceAll("Ᵽ", "P");
+		output = output.replaceAll("ᵽ", "p");
+		output = output.replaceAll("Ꝑ", "P");
+		output = output.replaceAll("ꝑ", "p");
+		output = output.replaceAll("Ƥ", "P");
+		output = output.replaceAll("ƥ", "p");
+		output = output.replaceAll("Ꝓ", "P");
+		output = output.replaceAll("ꝓ", "p");
+		output = output.replaceAll("Ꝕ", "P");
+		output = output.replaceAll("ꝕ", "p");
+		output = output.replaceAll("P̃", "P");
+		output = output.replaceAll("p̃", "p");
+		output = output.replaceAll("ᵱ", "p");
+		output = output.replaceAll("ᶈ", "p");
+		// Q
+		output = output.replaceAll("Ꝙ", "Q");
+		output = output.replaceAll("ꝙ", "q");
+		output = output.replaceAll("Ꝗ", "Q");
+		output = output.replaceAll("ꝗ", "q");
+		output = output.replaceAll("ɋ", "q");
+		output = output.replaceAll("ʠ", "q");
+		// R
+		output = output.replaceAll("Ꞧ", "R");
+		output = output.replaceAll("ꞧ", "r");
+		output = output.replaceAll("Ɍ", "R");
+		output = output.replaceAll("ɍ", "r");
+		output = output.replaceAll("R̃", "R");
+		output = output.replaceAll("r̃", "r");
+		output = output.replaceAll("Ɽ", "R");
+		output = output.replaceAll("ɽ", "r");
+		output = output.replaceAll("ᵲ", "r");
+		output = output.replaceAll("ᶉ", "r");
+		output = output.replaceAll("ꭉ", "r");
+		// S
+		output = output.replaceAll("Ꞩ", "S");
+		output = output.replaceAll("ꞩ", "s");
+		output = output.replaceAll("S̩", "S");
+		output = output.replaceAll("s̩", "s");
+		output = output.replaceAll("Ȿ", "S");
+		output = output.replaceAll("ȿ", "s");
+		output = output.replaceAll("ʂ", "s");
+		output = output.replaceAll("ᶊ", "s");
+		output = output.replaceAll("ᵴ", "s");
+		// T
+		output = output.replaceAll("Ⱦ", "T");
+		output = output.replaceAll("ⱦ", "t");
+		output = output.replaceAll("Ŧ", "T");
+		output = output.replaceAll("ŧ", "t");
+		output = output.replaceAll("Ƭ", "T");
+		output = output.replaceAll("ƭ", "t");
+		output = output.replaceAll("Ʈ", "T");
+		output = output.replaceAll("ʈ", "t");
+		output = output.replaceAll("T̈", "T");
+		output = output.replaceAll("ẗ", "t");
+		output = output.replaceAll("ᵵ", "t");
+		output = output.replaceAll("ƫ", "t");
+		output = output.replaceAll("ȶ", "t");
+		// U
+		output = output.replaceAll("Ʉ", "U");
+		output = output.replaceAll("ʉ", "u");
+		output = output.replaceAll("Ų́", "Ú");
+		output = output.replaceAll("ų́", "ú");
+		output = output.replaceAll("Ų̃", "Ũ");
+		output = output.replaceAll("ų̃", "ũ");
+		output = output.replaceAll("Ū̀", "Ù");
+		output = output.replaceAll("ū̀", "ù");
+		output = output.replaceAll("Ū́", "Ú");
+		output = output.replaceAll("ū́", "ú");
+		output = output.replaceAll("Ū̃", "Ũ");
+		output = output.replaceAll("ū̃", "ũ");
+		output = output.replaceAll("Ʉ", "U");
+		output = output.replaceAll("ʉ", "u");
+		output = output.replaceAll("Ꞹ", "U");
+		output = output.replaceAll("ꞹ", "u");
+		output = output.replaceAll("ᶙ", "u");
+		output = output.replaceAll("ꭒ", "u");
+		// V
+		output = output.replaceAll("Ꝟ", "V");
+		output = output.replaceAll("ꝟ", "v");
+		output = output.replaceAll("Ʋ", "V");
+		output = output.replaceAll("ʋ", "v");
+		output = output.replaceAll("Ỽ", "V");
+		output = output.replaceAll("ỽ", "v");
+		output = output.replaceAll("ᶌ", "v");
+		output = output.replaceAll("ⱱ", "v");
+		output = output.replaceAll("ⱴ", "v");
+		// W
+		output = output.replaceAll("W̊", "W");
+		output = output.replaceAll("ẘ", "w");
+		output = output.replaceAll("Ⱳ", "W");
+		output = output.replaceAll("ⱳ", "w");
+		// X
+		output = output.replaceAll("X́", "X");
+		output = output.replaceAll("x́", "x");
+		output = output.replaceAll("X̂", "X");
+		output = output.replaceAll("x̂", "x");
+		output = output.replaceAll("X̌", "X");
+		output = output.replaceAll("x̌", "x");
+		output = output.replaceAll("X̧", "X");
+		output = output.replaceAll("x̧", "x");
+		output = output.replaceAll("X̱", "X");
+		output = output.replaceAll("x̱", "x");
+		output = output.replaceAll("X̣", "X");
+		output = output.replaceAll("x̣", "x");
+		output = output.replaceAll("ᶍ", "x");
+		// Y
+		output = output.replaceAll("Ɏ", "Y");
+		output = output.replaceAll("ɏ", "y");
+		output = output.replaceAll("Y̊", "Y");
+		output = output.replaceAll("ẙ", "y");
+		output = output.replaceAll("Ƴ", "Y");
+		output = output.replaceAll("ƴ", "y");
+		output = output.replaceAll("Ỿ", "Y");
+		output = output.replaceAll("ỿ", "y");
+		// Z
+		output = output.replaceAll("Ƶ", "Z");
+		output = output.replaceAll("ƶ", "z");
+		output = output.replaceAll("Ȥ", "Z");
+		output = output.replaceAll("ȥ", "z");
+		output = output.replaceAll("Ⱬ", "Z");
+		output = output.replaceAll("ⱬ", "z");
+		output = output.replaceAll("Ɀ", "Z");
+		output = output.replaceAll("ɀ", "z");
+		output = output.replaceAll("ᵶ", "z");
+		output = output.replaceAll("ᶎ", "z");
+		output = output.replaceAll("ʐ", "z");
+		output = output.replaceAll("ʑ", "z");
+		
+		// misc chars
+		output = output.replaceAll("²", "2");
 		
 		// replace certain punctuation marks (list of characters obtained from Wikipedia)
 			// apostrophe and variants
@@ -432,7 +817,9 @@ public class StringTools
 			// exclamation mark and variants
 			output = output.replaceAll("[ǃ‼⁈⁉⚠❕❗❢❣ꜝꜞꜟ﹗！🕴᥄]","!");
 			// period and variants
-			output = output.replaceAll("[⸼·]",".");
+			output = output.replaceAll("[⸼ּ	᛫．]",".");
+			// centered dots and bullets
+			output = output.replaceAll("[··•‧∘∙⋅⏺●◦⚫⦁⸰⸱⸳・ꞏ･𐄁]","-");
 			// opening double quotes
 			output = output.replaceAll("[«‹”‟⟪《『⸂⸄⸉⸌〝〟🙷｟❝❠]", "\"");	// NOTE: at first, we were removing also the space in xxx " xxx " to get xxx "xxx". but some opening " are used as closing ones, and inversely
 			// closing double quotes
@@ -448,7 +835,7 @@ public class StringTools
 			repl = language.getEt();
 		output = output.replaceAll(" & "," "+repl+" ");
 		// remove the remaining & (not space-separated)
-		output = output.replaceAll("&","/");
+		output = output.replaceAll("&","-");
 		
 		// replace 2 consecutive single quotes by 1 double quote
 		output = output.replaceAll("''+", "\"");
@@ -616,15 +1003,349 @@ public class StringTools
 		Normalizer.normalize(text, Form.NFKD)	// catches supposedly more diacritics
 			.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 		
-		// for some reason, certain characters are missed by the above instruction
-		result = result.replace('ł','l');		
-		result = result.replace('Ł','L');
-//		result = result.replace('Š','S');
-//		result = result.replace('š','s');
-//		result = result.replace('Č','C');
-//		result = result.replace('č','c');
-//		result = result.replace('Ž','Z');
-//		result = result.replace('ž','z');
+		// for some reason, some characters look like they have a diacritic
+		// but are actually considered as completely different characters
+		// and as such, they are missed by the above instruction
+		result = result.replaceAll("Ⱥ", "A");
+		result = result.replaceAll("ⱥ", "a");
+		result = result.replaceAll("Ą́", "A");
+		result = result.replaceAll("ą́", "a");
+		result = result.replaceAll("Ą̃", "A");
+		result = result.replaceAll("ą̃", "a");
+		result = result.replaceAll("Ā̀", "A");
+		result = result.replaceAll("ā̀", "a");
+		result = result.replaceAll("A̋", "A");
+		result = result.replaceAll("a̋", "a");
+		result = result.replaceAll("ᶏ", "a");
+		
+		result = result.replaceAll("Ƀ", "B");
+		result = result.replaceAll("ƀ", "b");
+		result = result.replaceAll("Ꞗ", "B");
+		result = result.replaceAll("ꞗ", "b");
+		result = result.replaceAll("ᵬ", "b");
+		result = result.replaceAll("ᶀ", "b");
+		
+		result = result.replaceAll("Ȼ", "C");
+		result = result.replaceAll("ȼ", "c");
+		result = result.replaceAll("Ꞓ", "C");
+		result = result.replaceAll("ꞓ", "c");
+		result = result.replaceAll("Ƈ", "C");
+		result = result.replaceAll("ƈ", "c");
+		result = result.replaceAll("ɕ", "c");
+		result = result.replaceAll("ꞔ", "c");
+		
+		result = result.replaceAll("Ɖ", "D");
+		result = result.replaceAll("ɖ", "d");
+		result = result.replaceAll("Đ", "D");
+		result = result.replaceAll("đ", "d");
+		result = result.replaceAll("D̦", "D");
+		result = result.replaceAll("d̦", "d");
+		result = result.replaceAll("Ð", "D");
+		result = result.replaceAll("ð", "d");
+		result = result.replaceAll("Ɗ", "D");
+		result = result.replaceAll("ɗ", "d");
+		result = result.replaceAll("ᵭ", "d");
+		result = result.replaceAll("ᶁ", "d");
+		result = result.replaceAll("ᶑ", "d");
+		result = result.replaceAll("ȡ", "d");
+
+		result = result.replaceAll("Ɇ", "E");
+		result = result.replaceAll("ɇ", "e");
+		result = result.replaceAll("Ê̄", "E");
+		result = result.replaceAll("ê̄", "e");
+		result = result.replaceAll("Ê̌", "E");
+		result = result.replaceAll("ê̌", "e");
+		result = result.replaceAll("Ė́", "E");
+		result = result.replaceAll("ė́", "e");
+		result = result.replaceAll("Ė̃", "E");
+		result = result.replaceAll("ė̃", "e");
+		result = result.replaceAll("Ę́", "E");
+		result = result.replaceAll("ę́", "e");
+		result = result.replaceAll("Ę̃", "E");
+		result = result.replaceAll("ę̃", "e");
+		result = result.replaceAll("E̋", "E");
+		result = result.replaceAll("e̋", "e");
+		result = result.replaceAll("E̩", "E");
+		result = result.replaceAll("e̩", "e");
+		result = result.replaceAll("È̩", "E");
+		result = result.replaceAll("è̩", "e");
+		result = result.replaceAll("É̩", "E");
+		result = result.replaceAll("é̩", "e");
+		result = result.replaceAll("ᶒ", "e");
+		result = result.replaceAll("ⱸ", "e");
+		result = result.replaceAll("ꬴ", "e");
+		result = result.replaceAll("ꬳ", "e");
+		result = result.replaceAll("ꬳ", "e");
+		
+		result = result.replaceAll("Ꞙ", "F");
+		result = result.replaceAll("ꞙ", "f");
+		result = result.replaceAll("Ƒ", "F");
+		result = result.replaceAll("ƒ", "f");
+		result = result.replaceAll("ᵮ", "f");
+		result = result.replaceAll("ᶂ", "f");
+		
+		result = result.replaceAll("Ꞡ", "G");
+		result = result.replaceAll("ꞡ", "g");
+		result = result.replaceAll("Ǥ", "G");
+		result = result.replaceAll("ǥ", "g");
+		result = result.replaceAll("G̃", "G");
+		result = result.replaceAll("g̃", "g");
+		result = result.replaceAll("Ɠ", "G");
+		result = result.replaceAll("ɠ", "g");
+		result = result.replaceAll("ᶃ", "g");
+		result = result.replaceAll("ꬶ", "g");
+		
+		result = result.replaceAll("Ħ", "H");
+		result = result.replaceAll("ħ", "h");
+		result = result.replaceAll("H̱", "H");
+		result = result.replaceAll("ẖ", "h");
+		result = result.replaceAll("Ⱨ", "H");
+		result = result.replaceAll("ⱨ", "h");
+		result = result.replaceAll("Ɦ", "H");
+		result = result.replaceAll("ɦ", "h");
+		result = result.replaceAll("ꞕ", "h");
+		
+		result = result.replaceAll("Ɨ", "I");
+		result = result.replaceAll("ɨ", "i");
+		result = result.replaceAll("i̇́", "i");
+		result = result.replaceAll("i̇̀", "i");
+		result = result.replaceAll("i̇̃", "i");
+		result = result.replaceAll("Į́", "i");
+		result = result.replaceAll("į̇́", "i");
+		result = result.replaceAll("Į̃", "i");
+		result = result.replaceAll("į̇̃", "i");
+		result = result.replaceAll("Ī̀", "I");
+		result = result.replaceAll("ī̀", "i");
+		result = result.replaceAll("I̋", "I");
+		result = result.replaceAll("i̋", "i");
+		result = result.replaceAll("Ɨ", "I");
+		result = result.replaceAll("ɨ", "i");
+		result = result.replaceAll("İ", "I");
+		result = result.replaceAll("ᶖ", "i");
+		result = result.replaceAll("ı", "i");
+		
+		result = result.replaceAll("Ɉ", "J");
+		result = result.replaceAll("ɉ", "j");
+		result = result.replaceAll("J̌", "J");
+		result = result.replaceAll("ǰ", "j");
+		result = result.replaceAll("ȷ", "j");
+		result = result.replaceAll("Ʝ", "J");
+		result = result.replaceAll("ʝ", "j");
+		result = result.replaceAll("j̇̃", "j");
+		result = result.replaceAll("ɟ", "j");
+		result = result.replaceAll("ʄ", "j");
+		
+		result = result.replaceAll("Ꝃ", "K");
+		result = result.replaceAll("ꝃ", "k");
+		result = result.replaceAll("Ꞣ", "K");
+		result = result.replaceAll("ꞣ", "k");
+		result = result.replaceAll("Ꝁ", "K");
+		result = result.replaceAll("ꝁ", "k");
+		result = result.replaceAll("Ꝅ", "K");
+		result = result.replaceAll("ꝅ", "k");
+		result = result.replaceAll("Ƙ", "K");
+		result = result.replaceAll("ƙ", "k");
+		result = result.replaceAll("Ⱪ", "K");
+		result = result.replaceAll("ⱪ", "k");
+		result = result.replaceAll("ᶄ", "k");
+		
+		result = result.replaceAll("Ƚ", "L");
+		result = result.replaceAll("ƚ", "l");
+		result = result.replaceAll("Ⱡ", "L");
+		result = result.replaceAll("ⱡ", "l");
+		result = result.replaceAll("Ꝉ", "L");
+		result = result.replaceAll("ꝉ", "l");
+		result = result.replaceAll("Ł", "L");
+		result = result.replaceAll("ł", "l");
+		result = result.replaceAll("ᴌ", "l");
+		result = result.replaceAll("L̃", "L");
+		result = result.replaceAll("l̃", "l");
+		result = result.replaceAll("Ɫ", "L");
+		result = result.replaceAll("ɫ", "l");
+		result = result.replaceAll("Ɬ", "L");
+		result = result.replaceAll("ɬ", "l");
+		result = result.replaceAll("ꞎ", "l");
+		result = result.replaceAll("ꬷ", "l");
+		result = result.replaceAll("ꬸ", "l");
+		result = result.replaceAll("ꬹ", "l");
+		result = result.replaceAll("ᶅ", "l");
+		result = result.replaceAll("ɭ", "l");
+		result = result.replaceAll("ȴ", "l");
+		
+		result = result.replaceAll("M̋", "M");
+		result = result.replaceAll("m̋", "m");
+		result = result.replaceAll("M̃", "M");
+		result = result.replaceAll("m̃", "m");
+		result = result.replaceAll("ᵯ", "m");
+		result = result.replaceAll("ᶆ", "m");
+		result = result.replaceAll("Ɱ", "M");
+		result = result.replaceAll("ɱ", "m");
+		result = result.replaceAll("ꬺ", "m");
+		
+		result = result.replaceAll("Ꞥ", "N");
+		result = result.replaceAll("ꞥ", "n");
+		result = result.replaceAll("N̈", "N");
+		result = result.replaceAll("n̈", "n");
+		result = result.replaceAll("Ɲ", "N");
+		result = result.replaceAll("ɲ", "n");
+		result = result.replaceAll("Ŋ", "N");
+		result = result.replaceAll("ŋ", "n");
+		result = result.replaceAll("Ꞑ", "N");
+		result = result.replaceAll("ꞑ", "n");
+		result = result.replaceAll("ᵰ", "n");
+		result = result.replaceAll("ᶇ", "n");
+		result = result.replaceAll("ɳ", "n");
+		result = result.replaceAll("ȵ", "n");
+		result = result.replaceAll("ꬻ", "n");
+		result = result.replaceAll("ꬼ", "n");
+		
+		result = result.replaceAll("Ɵ", "O");
+		result = result.replaceAll("ɵ", "o");
+		result = result.replaceAll("Ꝋ", "O");
+		result = result.replaceAll("ꝋ", "o");
+		result = result.replaceAll("Ø", "O");
+		result = result.replaceAll("ø", "o");
+		result = result.replaceAll("O͘", "O");
+		result = result.replaceAll("o͘", "o");
+		result = result.replaceAll("Ǿ", "O");
+		result = result.replaceAll("ǿ", "o");
+		result = result.replaceAll("O̩", "O");
+		result = result.replaceAll("o̩", "o");
+		result = result.replaceAll("Ò̩", "O");
+		result = result.replaceAll("ò̩", "o");
+		result = result.replaceAll("Ó̩", "O");
+		result = result.replaceAll("ó̩", "o");
+		result = result.replaceAll("Ꝍ", "O");
+		result = result.replaceAll("ꝍ", "o");
+		result = result.replaceAll("ⱺ", "o");
+		
+		result = result.replaceAll("Ᵽ", "P");
+		result = result.replaceAll("ᵽ", "p");
+		result = result.replaceAll("Ꝑ", "P");
+		result = result.replaceAll("ꝑ", "p");
+		result = result.replaceAll("Ƥ", "P");
+		result = result.replaceAll("ƥ", "p");
+		result = result.replaceAll("Ꝓ", "P");
+		result = result.replaceAll("ꝓ", "p");
+		result = result.replaceAll("Ꝕ", "P");
+		result = result.replaceAll("ꝕ", "p");
+		result = result.replaceAll("P̃", "P");
+		result = result.replaceAll("p̃", "p");
+		result = result.replaceAll("ᵱ", "p");
+		result = result.replaceAll("ᶈ", "p");
+		
+		result = result.replaceAll("Ꝙ", "Q");
+		result = result.replaceAll("ꝙ", "q");
+		result = result.replaceAll("Ꝗ", "Q");
+		result = result.replaceAll("ꝗ", "q");
+		result = result.replaceAll("ɋ", "q");
+		result = result.replaceAll("ʠ", "q");
+		
+		result = result.replaceAll("Ꞧ", "R");
+		result = result.replaceAll("ꞧ", "r");
+		result = result.replaceAll("Ɍ", "R");
+		result = result.replaceAll("ɍ", "r");
+		result = result.replaceAll("R̃", "R");
+		result = result.replaceAll("r̃", "r");
+		result = result.replaceAll("Ɽ", "R");
+		result = result.replaceAll("ɽ", "r");
+		result = result.replaceAll("ᵲ", "r");
+		result = result.replaceAll("ᶉ", "r");
+		result = result.replaceAll("ꭉ", "r");
+		
+		result = result.replaceAll("Ꞩ", "S");
+		result = result.replaceAll("ꞩ", "s");
+		result = result.replaceAll("S̩", "S");
+		result = result.replaceAll("s̩", "s");
+		result = result.replaceAll("Ȿ", "S");
+		result = result.replaceAll("ȿ", "s");
+		result = result.replaceAll("ʂ", "s");
+		result = result.replaceAll("ᶊ", "s");
+		result = result.replaceAll("ᵴ", "s");
+		
+		result = result.replaceAll("Ⱦ", "T");
+		result = result.replaceAll("ⱦ", "t");
+		result = result.replaceAll("Ŧ", "T");
+		result = result.replaceAll("ŧ", "t");
+		result = result.replaceAll("Ƭ", "T");
+		result = result.replaceAll("ƭ", "t");
+		result = result.replaceAll("Ʈ", "T");
+		result = result.replaceAll("ʈ", "t");
+		result = result.replaceAll("T̈", "T");
+		result = result.replaceAll("ẗ", "t");
+		result = result.replaceAll("ᵵ", "t");
+		result = result.replaceAll("ƫ", "t");
+		result = result.replaceAll("ȶ", "t");
+		
+		result = result.replaceAll("Ʉ", "U");
+		result = result.replaceAll("ʉ", "u");
+		result = result.replaceAll("Ų́", "U");
+		result = result.replaceAll("ų́", "u");
+		result = result.replaceAll("Ų̃", "U");
+		result = result.replaceAll("ų̃", "u");
+		result = result.replaceAll("Ū̀", "U");
+		result = result.replaceAll("ū̀", "u");
+		result = result.replaceAll("Ū́", "U");
+		result = result.replaceAll("ū́", "u");
+		result = result.replaceAll("Ū̃", "U");
+		result = result.replaceAll("ū̃", "u");
+		result = result.replaceAll("Ʉ", "U");
+		result = result.replaceAll("ʉ", "u");
+		result = result.replaceAll("Ꞹ", "U");
+		result = result.replaceAll("ꞹ", "u");
+		result = result.replaceAll("ᶙ", "u");
+		result = result.replaceAll("ꭒ", "u");
+		
+		result = result.replaceAll("Ꝟ", "V");
+		result = result.replaceAll("ꝟ", "v");
+		result = result.replaceAll("Ʋ", "V");
+		result = result.replaceAll("ʋ", "v");
+		result = result.replaceAll("Ỽ", "V");
+		result = result.replaceAll("ỽ", "v");
+		result = result.replaceAll("ᶌ", "v");
+		result = result.replaceAll("ⱱ", "v");
+		result = result.replaceAll("ⱴ", "v");
+		
+		result = result.replaceAll("W̊", "W");
+		result = result.replaceAll("ẘ", "w");
+		result = result.replaceAll("Ⱳ", "W");
+		result = result.replaceAll("ⱳ", "w");
+		
+		result = result.replaceAll("X́", "X");
+		result = result.replaceAll("x́", "x");
+		result = result.replaceAll("X̂", "X");
+		result = result.replaceAll("x̂", "x");
+		result = result.replaceAll("X̌", "X");
+		result = result.replaceAll("x̌", "x");
+		result = result.replaceAll("X̧", "X");
+		result = result.replaceAll("x̧", "x");
+		result = result.replaceAll("X̱", "X");
+		result = result.replaceAll("x̱", "x");
+		result = result.replaceAll("X̣", "X");
+		result = result.replaceAll("x̣", "x");
+		result = result.replaceAll("ᶍ", "x");
+		
+		result = result.replaceAll("Ɏ", "Y");
+		result = result.replaceAll("ɏ", "y");
+		result = result.replaceAll("Y̊", "Y");
+		result = result.replaceAll("ẙ", "y");
+		result = result.replaceAll("Ƴ", "Y");
+		result = result.replaceAll("ƴ", "y");
+		result = result.replaceAll("Ỿ", "Y");
+		result = result.replaceAll("ỿ", "y");
+		
+		result = result.replaceAll("Ƶ", "Z");
+		result = result.replaceAll("ƶ", "z");
+		result = result.replaceAll("Ȥ", "Z");
+		result = result.replaceAll("ȥ", "z");
+		result = result.replaceAll("Ⱬ", "Z");
+		result = result.replaceAll("ⱬ", "z");
+		result = result.replaceAll("Ɀ", "Z");
+		result = result.replaceAll("ɀ", "z");
+		result = result.replaceAll("ᵶ", "z");
+		result = result.replaceAll("ᶎ", "z");
+		result = result.replaceAll("ʐ", "z");
+		result = result.replaceAll("ʑ", "z");
 		
 		return result;
 	}
