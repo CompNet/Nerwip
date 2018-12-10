@@ -63,8 +63,8 @@ public class ArticleCleaning
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-//		boolean includeAnnotatedText = false;
-//		cleanAll(includeAnnotatedText);
+		boolean includeAnnotatedText = false;
+		cleanAll(includeAnnotatedText);
 		
 		checkAll(ArticleLanguage.FR);
 	}
