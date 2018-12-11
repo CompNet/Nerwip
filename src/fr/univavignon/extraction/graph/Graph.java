@@ -34,7 +34,7 @@ import java.util.TreeSet;
 import org.jdom2.Comment;
 import org.jdom2.Element;
 
-import fr.univavignon.common.tools.time.TimeFormatting;
+import fr.univavignon.tools.time.TimeFormatting;
 import fr.univavignon.tools.xml.GraphmlTools;
 import fr.univavignon.tools.xml.XmlTools;
 

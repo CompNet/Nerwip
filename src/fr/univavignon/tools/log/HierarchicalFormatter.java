@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
-import fr.univavignon.common.tools.time.TimeFormatting;
+import fr.univavignon.tools.time.TimeFormatting;
 
 /**
  * Displays the log in a hierarchical way,

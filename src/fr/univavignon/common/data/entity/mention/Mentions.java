@@ -43,10 +43,10 @@ import fr.univavignon.common.data.entity.Entities;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.tools.files.CommonFileNames;
-import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.nerwip.processing.ProcessorName;
 import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.time.TimeFormatting;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**

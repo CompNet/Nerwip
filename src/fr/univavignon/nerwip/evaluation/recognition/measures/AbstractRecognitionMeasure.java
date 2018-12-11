@@ -35,10 +35,10 @@ import java.util.Scanner;
 import fr.univavignon.common.data.entity.EntityType;
 import fr.univavignon.common.data.entity.mention.AbstractMention;
 import fr.univavignon.common.data.entity.mention.Mentions;
-import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.nerwip.evaluation.AbstractMeasure;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.tools.files.FileTools;
+import fr.univavignon.tools.time.TimeFormatting;
 
 /**
  * This class contains a set of methods useful for

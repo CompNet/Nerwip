@@ -39,12 +39,12 @@ import org.xml.sax.SAXException;
 import fr.univavignon.common.data.article.Article;
 import fr.univavignon.common.data.entity.mention.Mentions;
 import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.nerwip.processing.InterfaceRecognizer;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.tools.strings.StringTools;
 import fr.univavignon.tools.xml.XmlTools;
 
 /**
@@ -412,7 +412,7 @@ public class Article implements Comparable<Article>
 		
 		// raw text
 		logger.log("Clean raw text");
-		rawText = StringTools.cleanText(rawText,language);
+		rawText = CommonStringTools.cleanText(rawText,language);
 		
 		// clean title
 		logger.log("Possibly setup title (if none), and clean it");
@@ -423,7 +423,7 @@ public class Article implements Comparable<Article>
 			else
 				title = "Empty article!";
 		}
-		title = StringTools.cleanTitle(title,language);
+		title = CommonStringTools.cleanTitle(title,language);
 		
 		logger.decreaseOffset();
 	}

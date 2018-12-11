@@ -1,4 +1,4 @@
-package fr.univavignon.common.tools.time;
+package fr.univavignon.tools.time;
 
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages

@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -93,6 +94,43 @@ public class CommonStringTools
 	/** Common object used for logging */
 	public static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
 	
+	/////////////////////////////////////////////////////////////////
+	// CLEAN			/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/**
+	 * Clean a string representing an article title, by calling method
+	 * {@link StringTools#cleanTitle(String, Locale)}.
+	 * 
+	 * @param title
+	 * 		Original raw title.
+	 * @param language
+	 * 		Language of the title to process.
+	 * @return
+	 * 		Clean version of the title.
+	 */
+	public static String cleanTitle(String title, ArticleLanguage language)
+	{	Locale locale = language.getLocale();
+		String result = StringTools.cleanTitle(title, locale);
+		return result;
+	}
+	
+	/**
+	 * Clean a string representing an article, by calling method
+	 * {@link StringTools#cleanText(String, Locale)}.
+	 *    
+	 * @param input
+	 * 		The string to process.
+	 * @param language 
+	 * 		Language of the considered text.
+	 * @return
+	 * 		Cleaned string.
+	 */
+	public static String cleanText(String input, ArticleLanguage language)
+	{	Locale locale = language.getLocale();
+		String result = StringTools.cleanText(input, locale);
+		return result;
+	}
+
 	/////////////////////////////////////////////////////////////////
 	// DISTANCE			/////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

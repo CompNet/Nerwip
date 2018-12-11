@@ -37,8 +37,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fr.univavignon.common.tools.time.TimeFormatting;
 import fr.univavignon.tools.files.FileNames;
+import fr.univavignon.tools.time.TimeFormatting;
 
 /**
  * Wrapper allowing to introduce

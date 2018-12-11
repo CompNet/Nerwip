@@ -25,14 +25,15 @@ import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
 
@@ -112,7 +113,7 @@ public class StringTools
 		
 		// test clean text
 		String text = "zeriou fke ? R dfikalnfsd po ! SZ : dsqd 4485. Fio 89% dezidj, defsoui ; ezrofd 98% fdskds !!";
-		String cleaned = cleanText(text,ArticleLanguage.FR);
+		String cleaned = cleanText(text,Locale.FRENCH);
 		System.out.println(cleaned);
 	}
 	
@@ -121,6 +122,16 @@ public class StringTools
 	/////////////////////////////////////////////////////////////////
 	/** Common object used for logging */
 	public static HierarchicalLogger logger = HierarchicalLoggerManager.getHierarchicalLogger();
+	
+	/////////////////////////////////////////////////////////////////
+	// ET			/////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+	/** Map used to replaced "&" by the appropriate full word */
+	private static final Map<Locale,String> ET_MAP = new HashMap<Locale,String>();
+	static
+	{	ET_MAP.put(Locale.ENGLISH,"and");
+		ET_MAP.put(Locale.FRENCH, "et");
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// COMPARISON		/////////////////////////////////////////////
@@ -283,7 +294,7 @@ public class StringTools
 	 * To summarize, we do the following:
 	 * <ul>
 	 * 	<li>Clean problems related to the variants of the space character, using {@link #cleanSpaces(String)}.</li>
-	 * 	<li>Iteratively clean the text using {@link #cleanInnerText(String,ArticleLanguage)}, until stability.</li>
+	 * 	<li>Iteratively clean the text using {@link #cleanInnerText(String,Locale)}, until stability.</li>
 	 * </ul>
 	 *    
 	 * @param input
@@ -293,7 +304,7 @@ public class StringTools
 	 * @return
 	 * 		Cleaned string.
 	 */
-	public static String cleanText(String input, ArticleLanguage language)
+	public static String cleanText(String input, Locale language)
 	{	String output = input;
 		
 		if(input!=null)
@@ -314,7 +325,7 @@ public class StringTools
 	
 	/**
 	 * Clean some text taken from an article, and which is not a URL.
-	 * This method is meant used only by {@link #cleanText(String,ArticleLanguage)}.
+	 * This method is meant used only by {@link #cleanText(String,Locale)}.
 	 * <br/>
 	 * It involves numerous operations:
 	 * <ul>
@@ -341,7 +352,7 @@ public class StringTools
 	 * @return
 	 * 		The cleaned text.
 	 */
-	private static String cleanInnerText(String input, ArticleLanguage language)
+	private static String cleanInnerText(String input, Locale language)
 	{	String output = input;
 		
 		// replace all white spaces by regular spaces
@@ -832,7 +843,7 @@ public class StringTools
 		// replace space-separated & by the full word
 		String repl = "/";
 		if(language!=null)
-			repl = language.getEt();
+			repl = ET_MAP.get(language);
 		output = output.replaceAll(" & "," "+repl+" ");
 		// remove the remaining & (not space-separated)
 		output = output.replaceAll("&","-");
@@ -861,7 +872,7 @@ public class StringTools
 	
 	/**
 	 * Clean a string representing an article title. It is cleaned like
-	 * regular text using {@link #cleanText(String,ArticleLanguage)}, then new lines and
+	 * regular text using {@link #cleanText(String,Locale)}, then new lines and
 	 * double quotes are removed (so that this string can be put in a CSV
 	 * file if needed).
 	 * 
@@ -872,8 +883,8 @@ public class StringTools
 	 * @return
 	 * 		Clean version of the title.
 	 */
-	public static String cleanTitle(String title, ArticleLanguage language)
-	{	String result = cleanText(title,language);
+	public static String cleanTitle(String title, Locale language)
+	{	String result = cleanText(title, language);
 		result = result.replaceAll("\"", "");
 		result = result.replaceAll("\\n", " ");
 		result = result.replaceAll(" +"," ");
@@ -913,7 +924,7 @@ public class StringTools
 	 * character variants are replaced by '\n'. All consecutive redundant whitespaces are 
 	 * removed. The text is also trimmed (leading and trailing whitespaces are removed).
 	 * <br/>
-	 * This method is meant to be used only by {@link #cleanText(String,ArticleLanguage)}.
+	 * This method is meant to be used only by {@link #cleanText(String,Locale)}.
 	 *  
 	 * @param string
 	 * 		The original string (not modified).
@@ -1354,7 +1365,7 @@ public class StringTools
 	 * Removes all the non-latin letters, as they are generally not supported
 	 * by the recognizers (or other processors).
 	 * <br/>
-	 * This method is meant to be used only by {@link #cleanInnerText(String,ArticleLanguage)}.
+	 * This method is meant to be used only by {@link #cleanInnerText(String,Locale)}.
 	 * 
 	 * @param input
 	 * 		Original string.

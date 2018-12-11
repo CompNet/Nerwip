@@ -1,5 +1,7 @@
 package fr.univavignon.common.data.article;
 
+import java.util.Locale;
+
 /*
  * Nerwip - Named Entity Extraction in Wikipedia Pages
  * Copyright 2011-18 Vincent Labatut et al.
@@ -33,21 +35,20 @@ public enum ArticleLanguage
 	FR;
 	
 	/**
-	 * Returns the word "and" in this language. This is used when replacing 
-	 * the symbol "&" during text cleaning.
+	 * Returns the locale associated to this language.
 	 * 
 	 * @return
-	 * 		A string corresponding to the word "and" in this language.
+	 * 		The Locale representing this language.
 	 */
-	public String getEt()
-	{	String result = null;
+	public Locale getLocale()
+	{	Locale result = null;
 		
 		switch(this)
 		{	case EN:
-				result = "and";
+				result = Locale.ENGLISH;
 				break;
 			case FR:
-				result = "et";
+				result = Locale.FRENCH;
 				break;
 		}
 		

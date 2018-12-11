@@ -29,11 +29,11 @@ import java.util.regex.Pattern;
 
 import fr.univavignon.common.data.article.ArticleLanguage;
 import fr.univavignon.common.tools.files.CommonFileNames;
+import fr.univavignon.common.tools.strings.CommonStringTools;
 import fr.univavignon.tools.files.FileNames;
 import fr.univavignon.tools.files.FileTools;
 import fr.univavignon.tools.log.HierarchicalLogger;
 import fr.univavignon.tools.log.HierarchicalLoggerManager;
-import fr.univavignon.tools.strings.StringTools;
 
 /**
  * This class was used to clean articles, in order to avoid problems 
@@ -255,7 +255,7 @@ public class ArticleCleaning
 		
 		// clean text content
 		logger.log("Clean text");
-		String cleaned = StringTools.cleanText(raw, language);
+		String cleaned = CommonStringTools.cleanText(raw, language);
 		
 		// compare content
 		logger.log("Comparing texts: (length "+raw.length()+" vs "+cleaned.length()+")");
