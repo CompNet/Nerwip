@@ -43,9 +43,9 @@ The rest of the files are resources:
 ## Installation
 First, be sure to get the source code of a stable release by checking the [release page](https://github.com/CompNet/Nerwip/releases) of the GitHub repo. Second, you need to download some additional files to get the required data.
 
-Most of the data files are too large to be compatible with GitHub constraints. For this reason, they are hosted on [FigShare](http://figshare.com/articles/Nerwip_Corpus/1289791). Before using Nerwip, you need to retrieve these archives and unzip them in the Eclipse project.
+Most of the data files are too large to be compatible with GitHub constraints. For this reason, they are hosted on [FigShare](https://doi.org/10.6084/m9.figshare.1289791). Before using Nerwip, you need to retrieve these archives and unzip them in the Eclipse project.
 
-1. Go to our FigShare page http://figshare.com/articles/Nerwip_Corpus/1289791
+1. Go to our FigShare page https://doi.org/10.6084/m9.figshare.1289791
 2. *Optional*: this GitHub project contains only a small part of our corpus. If you want the whole dataset, then: 
   * Download the v4 of the corpus as a Zip archive, 
   * Extract the `out` folder,
