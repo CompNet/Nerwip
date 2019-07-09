@@ -37,7 +37,7 @@ The source code takes the form of an Eclipse project. It is organized as follows
 The rest of the files are resources:
 * Folder `lib` contains the external libraries, especially the NER-related ones (cf. the *Dependencies* section).
 * Folder `log` contains the log generated during the processing.
-* Folder `out` contains the articles and the files generated during the process. On this GitHub repo, it is empty for space matters, but a corpus can be retrieved from [FigShare](http://figshare.com/articles/Nerwip_Corpus/1289791).
+* Folder `out` contains the articles and the files generated during the process. On this GitHub repo, it is empty for space matters, but a corpus can be retrieved from [FigShare](https://doi.org/10.6084/m9.figshare.1289791).
 * Folder `res` contains the XML schemas (XSD files) used by Nerwip, as well as the configuration files required by certain NER tools.
 
 ## Installation
@@ -45,7 +45,7 @@ First, be sure to get the source code of a stable release by checking the [relea
 
 Most of the data files are too large to be compatible with GitHub constraints. For this reason, they are hosted on [FigShare](http://figshare.com/articles/Nerwip_Corpus/1289791). Before using Nerwip, you need to retrieve these archives and unzip them in the Eclipse project.
 
-1. Go to our FigShare page http://figshare.com/articles/Nerwip_Corpus/1289791
+1. Go to our FigShare page https://doi.org/10.6084/m9.figshare.1289791
 2. *Optional*: this GitHub project contains only a small part of our corpus. If you want the whole dataset, then: 
   * Download the v4 of the corpus as a Zip archive, 
   * Extract the `out` folder,
