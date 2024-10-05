@@ -7,7 +7,7 @@ Nerwip v4
 * Copyright 2013 (v3) Samet Atdağ & Vincent Labatut
 * Copyright 2014-15 (v4) Vincent Labatut
 
-Nerwip is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see `licence.txt`
+`Nerwip` is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see `licence.txt`
 
 * **Lab site:** http://lia.univ-avignon.fr
 * **GitHub repo:** https://github.com/CompNet/Nerwip
@@ -18,7 +18,19 @@ Nerwip is free software: you can redistribute it and/or modify it under the term
 ## Description
 This platform was initially designed to apply and compare Named Entity Recognition (NER) tools on collections of texts. It was later specialized to process biographical articles extracted from the English version of Wikipedia. It allows using several standard standalone tools listed below, as well as some custom tools. It also implements several ways of combining the outputs of standalone NER tools to improve the global output.
 
-The first results obtained on Wikipedia biographical texts were published in [AL'13]. 
+The first results obtained on Wikipedia biographical texts were published in [[AL'13](#references)]. If you use this software, please cite this reference:
+```bibtex
+@InProceedings{Atdag2013a,
+  author    = {Atdağ, Samet and Labatut, Vincent},
+  title     = {A Comparison of Named Entity Recognition Tools Applied to Biographical Texts},
+  booktitle = {2nd International Conference on Systems and Computer Science},
+  year      = {2013},
+  pages     = {228-233},
+  address   = {Lille, FR},
+  doi       = {10.1109/IcConSCS.2013.6632052},
+}
+```
+
 
 ## Organization
 The source code takes the form of an Eclipse project. It is organized as follows: 
@@ -40,12 +52,13 @@ The rest of the files are resources:
 * Folder `out` contains the articles and the files generated during the process. On this GitHub repo, it is empty for space matters, but a corpus can be retrieved from [FigShare](http://figshare.com/articles/Nerwip_Corpus/1289791).
 * Folder `res` contains the XML schemas (XSD files) used by Nerwip, as well as the configuration files required by certain NER tools.
 
+
 ## Installation
 First, be sure to get the source code of a stable release by checking the [release page](https://github.com/CompNet/Nerwip/releases) of the GitHub repo. Second, you need to download some additional files to get the required data.
 
 Most of the data files are too large to be compatible with GitHub constraints. For this reason, they are hosted on [FigShare](https://doi.org/10.6084/m9.figshare.1289791). Before using Nerwip, you need to retrieve these archives and unzip them in the Eclipse project.
 
-1. Go to our FigShare page https://doi.org/10.6084/m9.figshare.1289791
+1. Go to our [FigShare](http://figshare.com/articles/Nerwip_Corpus/1289791) page.
 2. This GitHub project contains only a small part of our corpus. If you want the whole dataset, then: 
   * Download the v4 of the corpus as a Zip archive, 
   * Extract the `out` folder,
@@ -60,6 +73,7 @@ Finally, some of the NER tools integrated in Nerwip require some key or password
 * OpenCalais: this NER tool takes the form of a Web service.
 All keys are set up in the dedicated XML file `keys.xml`, which is located in `res/misc`.
 
+
 ## Use
 The main objective of this project is the automatic annotation of entities. However, it also includes a tool allowing to easily perform the manual annotation of texts, in order to constitute a ground-truth used when evaluating the automatic tools.
 
@@ -71,9 +85,11 @@ The output folder is `out` by default. This can be changed by editing the class 
 ### Manual Annotation
 The project contains a graphical interface allowing the  visualization of annotated texts, as well as the annotation of texts. This means this tool might be used to annotate new articles, to change existing annotations, or to visualy check the output of a NER tool. This annotation tool corresponds to the class `tr.edu.gsu.nerwip.edition.EntityEditor`, which can be directly launched.
 
+
 ## Extension
 It is relatively straightforward to extend our platform in order to include other NER tools (standalone or combination). For this purpose, one has to extend one of the classes `tr.edu.gsu.nerwip.recognition.combiner.AbstractCombiner` (to combine some NER tools already integrated in Nerwip), `tr.edu.gsu.nerwip.recognition.internal.AbstractInternalRecognizer` (for a NER tool taking the form of a Java program, and programmatically invocable directly from Nerwip), or `tr.edu.gsu.nerwip.recognition.external.AbstractExternalRecognizer` (for a NER tool whose only invocable through the command line). For standalone NER tools, it is also necessary to extend either `tr.edu.gsu.nerwip.recognition.internal.AbstractInternalConverter` (conversion between the NER tool Java objects and Nerwip's)
 or `tr.edu.gsu.nerwip.recognition.external.AbstractExternalConverter` (reads the file generated by the external NER tool and convert its content in Nerwip objects). Note new evaluation measures can also be defined by extending the class `tr.edu.gsu.nerwip.evaluation.measure.AbstractMeasure`.
+
 
 ## Dependencies
 Here are the dependencies for Nerwip:
@@ -95,5 +111,5 @@ Here are the dependencies for Nerwip:
 
 
 ## References
-* **[L'13]** V. Labatut. *Improved Named Entity Recognition Through SVM-Based Combination*, Technical report, Galatasaray University, Computer Science Department, 16p, 2013. [⟨hal-01322867⟩](https://hal.archives-ouvertes.fr/hal-01322867)
-* **[AL'13]** S. Atdağ & V. Labatut. *A Comparison of Named Entity Recognition Tools Applied to Biographical Texts*, 2nd International Conference on Systems and Computer Science, 2013, 228-233. [doi: 10.1109/IcConSCS.2013.6632052](https://doi.org/10.1109/IcConSCS.2013.6632052) - [⟨hal-00849797⟩](https://hal.archives-ouvertes.fr/hal-00849797)
+* **[AL'13]** S. Atdağ & V. Labatut. *A Comparison of Named Entity Recognition Tools Applied to Biographical Texts*, 2nd International Conference on Systems and Computer Science, 228-233, 2013. DOI: [10.1109/IcConSCS.2013.6632052](https://doi.org/10.1109/IcConSCS.2013.6632052) [⟨hal-01322867⟩](https://hal.archives-ouvertes.fr/hal-01322867) [⟨hal-00849797⟩](https://hal.archives-ouvertes.fr/hal-00849797)
+* **[L'13]** V. Labatut. *Improved Named Entity Recognition Through SVM-Based Combination*, Technical Report, Galatasaray University, 2013. [⟨hal-01322867⟩](https://hal.archives-ouvertes.fr/hal-01322867)
